@@ -73,7 +73,7 @@
         {
           "title": "gm/ID Extraction — SKY130",
           "url": "https://github.com/chennakeshavadasa/gmid_SKY130",
-          "desc": "gm/ID lookup tables and extraction scripts for SKY130, enabling structured gm/ID-based design with open-source tools.",
+          "desc": "gm/ID lookup tables and extraction scripts for SKY130 enabling structured design methodology with open-source tools.",
           "tag": "Open Source",
           "tagHot": false
         }
