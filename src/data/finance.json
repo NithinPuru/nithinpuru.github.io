@@ -1,33 +1,32 @@
 {
   "groups": [
     {
-      "heading": "Tools & experiments",
+      "heading": "Quantitative Finance Projects",
       "entries": [
         {
-          "title": "Career Semi Quant Terminal",
-          "url": "https://github.com/chennakeshavadasa/career-semi-quant",
-          "desc": "A zero-server, fully client-side quantitative analytics dashboard for the global semiconductor industry \u2014 built to evaluate equity components (RSUs, options, ESPPs) when weighing job offers. Every computation runs in the browser; no synthetic data is ever shown.",
-          "meta": "Finance \u00b7 Quant \u00b7 Vanilla JS \u00b7 MIT",
-          "tag": "Featured",
-          "tagHot": true,
-          "links": [
-            {
-              "label": "Live demo",
-              "url": "https://chennakeshavadasa.github.io/career-semi-quant/"
-            }
-          ]
+          "title": "Career Semi-Quant Terminal",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "Zero-backend, single-HTML web application providing institutional-grade quantitative analysis of 40+ semiconductor companies. Pure-JavaScript analytics engine implementing RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, Sharpe/Sortino ratios, and GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.",
+          "meta": "JavaScript · Semiconductor Equities · Monte Carlo · VaR/CVaR · Sharpe/Sortino",
+          "tag": "Live",
+          "tagHot": true
+        }
+      ]
+    },
+    {
+      "heading": "Quantitative Methods",
+      "entries": [
+        {
+          "title": "Time-Series Forecasting",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "Applied ARIMA and Holt-Winters exponential smoothing models for financial time-series forecasting and trend decomposition.",
+          "meta": "Python · ARIMA · Holt-Winters · SciPy"
         },
         {
-          "title": "Research-Radar",
-          "url": "https://github.com/chennakeshavadasa/Research-Radar",
-          "desc": "A radar for the latest work across AI, finance and chip design.",
-          "meta": "Web tool \u00b7 AI \u00b7 Finance \u00b7 Chips"
-        },
-        {
-          "title": "FOREX_QUANT",
-          "url": "https://github.com/chennakeshavadasa/FOREX_QUANT",
-          "desc": "Quantitative experiments in foreign-exchange markets.",
-          "meta": "Finance \u00b7 Forex"
+          "title": "Risk Metrics & Portfolio Analysis",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "Implementation of standard risk metrics including Value-at-Risk (VaR), Conditional VaR (CVaR), Beta, Sharpe ratio, and Sortino ratio for portfolio performance evaluation.",
+          "meta": "Python · NumPy · Pandas · Scikit-learn"
         }
       ]
     }

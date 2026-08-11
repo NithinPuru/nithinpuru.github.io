@@ -6,7 +6,7 @@ import Layout from "../layouts/Layout.astro";
 
 // Data hygiene: star counts and repo totals below are supplied truth that
 // goes stale as the GitHub accounts evolve. Re-verify src/data/*.json when
-// updating content; the "28 public repositories" figure appears in section 3.
+// updating content.
 import projects from "../data/projects.json";
 import publications from "../data/publications.json";
 import finance from "../data/finance.json";
@@ -15,7 +15,7 @@ const github = "https://github.com/chennakeshavadasa";
 const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
 const email = "nithinpurushothama@gmail.com";
 
-// Resolves a public/ asset path against the configured base ("/" locally,
+// Resolves a public/ asset path against the configured base ("/") locally,
 // "/repo/" on a GitHub Pages project site).
 const asset = (p) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
@@ -46,7 +46,7 @@ const portrait = existsSync("public/portrait.jpg")
         <figure class="portrait">
           {
             portrait ? (
-              <img src={portrait} alt="Portrait of Nithin P" width="720" height="900" />
+              <img src={portrait} alt="Portrait of Nithin Purushothama" width="720" height="900" />
             ) : (
               <span class="portrait__placeholder">portrait</span>
             )
@@ -55,30 +55,23 @@ const portrait = existsSync("public/portrait.jpg")
         </figure>
 
         <div class="masthead__head">
-          <h1>Nithin&nbsp;P</h1>
+          <h1>Nithin&nbsp;Purushothama</h1>
 
           <p class="doc-meta">
-            <span>Analog / Mixed-Signal IC Designer</span>
-            <span class="sep" aria-hidden="true">·</span>
-            <span>Low-Power Circuits &amp; Systems Group, IIT Gandhinagar</span>
+            <span>Analog &middot; Mixed-Signal IC Designer</span>
           </p>
         </div>
 
         <div class="abstract">
           <span class="ab-label">Abstract</span>
           <p>
-            Analog/mixed-signal IC designer working on ultra-low-power data
-            converters, biomedical circuits and wearable sensors. I have
-            designed analog blocks &mdash; switched-capacitor amplifiers, ring
-            amplifiers, filters, LDOs, bandgap references and OTAs &mdash;
-            across 28&nbsp;nm to 180&nbsp;nm nodes, and I build open-source
-            tools and datasets around the gm/ID design methodology.
-          </p>
-          <p>
-            Away from the chip, my interests run to macroeconomics and
-            data-driven quantitative analysis of business decisions &mdash;
-            applying machine learning to large-scale economic and financial
-            datasets.
+            Analog/Mixed-Signal IC designer with tapeout experience across SKY130, GF180MCU, IHP SG13G2,
+            UMC 55&nbsp;nm, and TSMC 28&nbsp;nm nodes. Research background from the LP-CAS Lab at IIT Gandhinagar
+            (advisor: Prof. Madhav K. Pathak), with ongoing industry work on PVT Monitor and Reference IPs
+            at Omni Design Technologies. IEEE SSCS Code-a-Chip Travel Grant awardee (ESSERC 2026).
+            Research interests span dynamic amplifiers, voltage references, LDOs, and analog neural network
+            primitives. A parallel interest in quantitative finance drives open-source semiconductor equity
+            analysis tools.
           </p>
         </div>
 
@@ -91,91 +84,153 @@ const portrait = existsSync("public/portrait.jpg")
       </div>
     </header>
 
-    <section class="section" id="research" aria-labelledby="research-h">
+    <section class="section" id="experience" aria-labelledby="experience-h">
       <header class="section-head" data-reveal>
         <span class="section-no" aria-hidden="true">2</span>
-        <h2 class="section-title" id="research-h">Research</h2>
+        <h2 class="section-title" id="experience-h">Experience</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
-      <p class="section-lede" data-reveal>
-        Circuits that must work at the edge of power and precision &mdash; and,
-        separately, markets read the same way.
-      </p>
 
-      <h3 class="group-head">Circuits</h3>
-      <ul class="interest-list" data-reveal>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          Ultra-low-power data converters
-          <span class="note">analog</span>
+      <ul class="cv-highlights" data-reveal>
+        <li>
+          <span class="k">Omni Design Technologies</span>
+          <span>
+            <span class="mono" style="font-size:0.76rem">Bengaluru, India · Analog Design Intern · March 2026 – Present</span><br />
+            Designing Bandgap Core and Reference Analog blocks for PVT Monitor and Reference IPs in TSMC 28&nbsp;nm CMOS.
+            Replaced BG CORE opamp with a self-biased folded-cascode OTA and always-on startup circuit, fixing a common-mode latch bug.
+            Owns REF ANALOG: 5 temperature-compensated high-PSRR reference voltages and an 8&times;200&nbsp;&mu;A current reference
+            with trim-based programmability achieving &plusmn;20&nbsp;ppm/&deg;C drift.
+          </span>
         </li>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          Biomedical circuits &amp; wearable sensors
-          <span class="note">health</span>
+        <li>
+          <span class="k">PhyTau Semiconductors</span>
+          <span>
+            <span class="mono" style="font-size:0.76rem">Bengaluru, India · Analog Design Engineer · October 2025 – February 2026</span><br />
+            Worked on a 4-input PWM comparator with hysteresis for a multi-phase DC-DC converter SoC in UMC 55&nbsp;nm CMOS.
+            Redesigned comparator to introduce programmable hysteresis at the first stage, eliminating trip-point glitches and
+            reducing propagation delay; reduced power consumption by 30%.
+          </span>
         </li>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          gm/ID design methodology &amp; open-PDK tooling
-          <span class="note">methodology</span>
+        <li>
+          <span class="k">IIT Gandhinagar — LP-CAS Lab</span>
+          <span>
+            <span class="mono" style="font-size:0.76rem">Gandhinagar, India · Research Intern (Advisor: Prof. Madhav K. Pathak) · February 2025 – August 2025</span><br />
+            Developed Ron/gm-based design methodology for non-linear dynamic amplifiers; proposed a Ring Amplifier LDO architecture;
+            proposed a translinear MAC architecture for analog neural networks using digitally controlled subthreshold MOSFET cells.
+            Teaching Assistant for graduate course PMIC Design (EE660).
+            Tapeout: sub-5&nbsp;ppm/&deg;C bandgap reference in SKY130 through TinyTapeout 10.
+          </span>
         </li>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          Machine learning for analog design
-          <span class="note">ML-for-EDA</span>
+        <li>
+          <span class="k">ISRO — Master Control Facility</span>
+          <span>
+            <span class="mono" style="font-size:0.76rem">P Hassan, India · Intern · October 2023 – November 2023</span><br />
+            GeoSat-based satellite communication in the Antenna System for Satellite TTC within C-Band (6&nbsp;GHz)
+            at the Baseband RF Division, Master Control Facility. Calibrated antenna systems to achieve
+            Cross-Polar Discrimination (XPD) during In-Orbit Testing of GSAT-31.
+          </span>
         </li>
       </ul>
+    </section>
 
-      <h3 class="group-head">Beyond the chip</h3>
-      <ul class="interest-list" data-reveal>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          Macroeconomics &amp; data-driven analysis of business decisions
-          <span class="note">economics</span>
+    <section class="section" id="education" aria-labelledby="education-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">3</span>
+        <h2 class="section-title" id="education-h">Education</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <ul class="cv-highlights" data-reveal>
+        <li>
+          <span class="k">Visvesvaraya Technological University</span>
+          <span>
+            <span class="mono" style="font-size:0.76rem">Bengaluru, India · December 2021 – June 2025</span><br />
+            Bachelor of Engineering — Electronics and Communication Engineering<br />
+            CGPA: 8.6 / 10
+          </span>
         </li>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          Machine learning on large-scale economic and financial datasets
-          <span class="note">quant</span>
+      </ul>
+    </section>
+
+    <section class="section" id="awards" aria-labelledby="awards-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">4</span>
+        <h2 class="section-title" id="awards-h">Awards</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <ul class="cv-highlights" data-reveal>
+        <li>
+          <span class="k">IEEE SSCS &ldquo;Code-a-Chip&rdquo; Travel Grant — 2026</span>
+          <span>
+            <span class="mono" style="font-size:0.76rem">IEEE Solid-State Circuits Society (SSCS) — Open-Source Ecosystem (TC-OSE)</span><br />
+            Awarded $5,000 travel grant (Young Professional&rsquo;s category) for &ldquo;Ron/gm Based Design Methodology for
+            Dynamic Amplifiers&rdquo; &mdash; a notebook demonstrating a novel design methodology for inverter-based dynamic
+            amplifiers on IHP SG13G2 using open-source EDA tools. Presented at ESSERC 2026, Palma de Mallorca, Spain.
+          </span>
         </li>
-        <li class="interest">
-          <span class="dash" aria-hidden="true">·</span>
-          Quantitative tools for the semiconductor industry
-          <span class="note">finance</span>
+      </ul>
+    </section>
+
+    <section class="section" id="skills" aria-labelledby="skills-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">5</span>
+        <h2 class="section-title" id="skills-h">Skills</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <ul class="cv-highlights" data-reveal>
+        <li>
+          <span class="k">Core Skills</span>
+          <span>Analog IC Design, Switched-Capacitor Amplifiers, Ring Amplifiers, LDOs, BGRs, OTAs, CMOS Circuit Design, Tapeout (DRC, LVS, PEX), Mixed-Signal Simulation</span>
+        </li>
+        <li>
+          <span class="k">EDA Tools</span>
+          <span>Cadence Virtuoso/Spectre, NGSpice, Xschem, Magic VLSI, KLayout, Netgen, LTspice, Keysight ADS</span>
+        </li>
+        <li>
+          <span class="k">PDKs</span>
+          <span>TSMC 28&nbsp;nm, UMC 55&nbsp;nm, IHP SG13G2 (BiCMOS), SKY130, GF180MCU</span>
+        </li>
+        <li>
+          <span class="k">Languages</span>
+          <span>Python, MATLAB, C/C++, Verilog, SystemVerilog, OCEAN Script, NGSpice Control Language, LaTeX</span>
+        </li>
+        <li>
+          <span class="k">ML &amp; Quant</span>
+          <span>NumPy, Pandas, SciPy, Scikit-learn, PyTorch (basics); Financial modelling, Monte Carlo simulation, Time-series analysis (ARIMA, Holt-Winters), Risk metrics (VaR, CVaR, Sharpe/Sortino)</span>
         </li>
       </ul>
     </section>
 
     <section class="section" id="work" aria-labelledby="work-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">3</span>
+        <span class="section-no" aria-hidden="true">6</span>
         <h2 class="section-title" id="work-h">Selected Work</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        A curated catalogue of what I have designed and built &mdash; research
-        prototypes, analog blocks, methodology tooling and RF work. Every entry
-        is a real, open repository.
+        A curated catalogue of what I have designed and built &mdash; tapeouts,
+        analog blocks, and open-source EDA tooling. Every entry is a real artifact.
       </p>
 
       <WorkList groups={projects.groups} />
 
       <p class="section-foot" data-reveal>
-        The full catalogue &mdash; 28 public repositories &mdash; lives on{" "}
+        The full catalogue lives on{" "}
         <a href={`${github}?tab=repositories`}>GitHub</a>.
       </p>
     </section>
 
     <section class="section" id="publications" aria-labelledby="publications-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">4</span>
+        <span class="section-no" aria-hidden="true">7</span>
         <h2 class="section-title" id="publications-h">Publications &amp; Tape-outs</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        Everything listed below is a real, open artifact. Peer-reviewed papers
-        will be added here as they appear &mdash; this section is plain JSON, so
-        new entries drop in without touching any markup.
+        Peer-reviewed conference papers and fabricated silicon. New entries drop
+        in without touching markup &mdash; this section is plain JSON.
       </p>
 
       <WorkList groups={publications.groups} />
@@ -183,15 +238,13 @@ const portrait = existsSync("public/portrait.jpg")
 
     <section class="section" id="finance" aria-labelledby="finance-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">5</span>
+        <span class="section-no" aria-hidden="true">8</span>
         <h2 class="section-title" id="finance-h">Quantitative Finance</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        Outside circuit design, my primary interest is macroeconomics and
-        data-driven quantitative analysis of business decisions &mdash;
-        applying machine learning to large-scale economic and financial
-        datasets.
+        A parallel interest in quantitative finance drives open-source semiconductor
+        equity analysis tools and methodology work.
       </p>
 
       <WorkList groups={finance.groups} />
@@ -199,7 +252,7 @@ const portrait = existsSync("public/portrait.jpg")
 
     <section class="section" id="cv" aria-labelledby="cv-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">6</span>
+        <span class="section-no" aria-hidden="true">9</span>
         <h2 class="section-title" id="cv-h">Curriculum Vitae</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -207,47 +260,34 @@ const portrait = existsSync("public/portrait.jpg")
       <div class="cv-frame" data-reveal>
         <!-- CV delivery: drop cv.pdf into public/ so it is served at /cv.pdf (this button already targets it). -->
         <p>
-          A one-page, typeset CV, kept current with the work on this page.
+          A typeset CV, kept current with the work on this page.
         </p>
         <a class="btn btn--solid" href={asset("cv.pdf")} target="_blank" rel="noopener noreferrer">
           <Icon name="down" />
           Open CV (.pdf)
         </a>
       </div>
-
-      <ul class="cv-highlights" data-reveal>
-        <li><span class="k">Discipline</span><span>Analog / mixed-signal IC design</span></li>
-        <li><span class="k">Blocks</span><span>Switched-capacitor amplifiers · ring amplifiers · filters · LDOs · BGRs · OTAs</span></li>
-        <li><span class="k">Nodes</span><span>28 nm – 180 nm</span></li>
-        <li><span class="k">PDKs</span><span>SKY130 · GF180MCUD · IHP 130 nm BiCMOS</span></li>
-        <li><span class="k">Tools</span><span>Cadence Virtuoso · NGspice · Keysight ADS · open-source flows</span></li>
-        <li><span class="k">Education</span><span>B.Tech &mdash; major project: piecewise-compensated bandgap reference in SKY130</span></li>
-      </ul>
     </section>
 
     <section class="section" id="contact" aria-labelledby="contact-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">7</span>
+        <span class="section-no" aria-hidden="true">10</span>
         <h2 class="section-title" id="contact-h">Contact</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
       <div data-reveal>
         <div class="contact-row">
-          <span class="k">GitHub</span>
-          <a href={github}>chennakeshavadasa</a>
-        </div>
-        <div class="contact-row">
-          <span class="k">LinkedIn</span>
-          <a href={linkedin}>Nithin Purushothama</a>
-        </div>
-        <div class="contact-row">
           <span class="k">Email</span>
           <a href={`mailto:${email}`}>{email}</a>
         </div>
         <div class="contact-row">
-          <span class="k">Lab</span>
-          <a href="https://sites.google.com/iitgn.ac.in/madhav-pathak">Low-Power Circuits &amp; Systems Group, IIT Gandhinagar</a>
+          <span class="k">GitHub</span>
+          <a href={github}>github.com/chennakeshavadasa</a>
+        </div>
+        <div class="contact-row">
+          <span class="k">LinkedIn</span>
+          <a href={linkedin}>linkedin.com/in/nithin-purushothama-70664727b</a>
         </div>
       </div>
     </section>
@@ -255,7 +295,7 @@ const portrait = existsSync("public/portrait.jpg")
     <div class="site-footer" role="contentinfo">
       <span>Typeset in Computer Modern</span>
       <span aria-hidden="true">·</span>
-      <span>© 2026 Nithin P</span>
+      <span>&copy; 2026 Nithin Purushothama</span>
       <span aria-hidden="true">·</span>
       <a href={github}>GitHub</a>
       <span aria-hidden="true">·</span>

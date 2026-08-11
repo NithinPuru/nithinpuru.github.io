@@ -1,38 +1,45 @@
 {
   "groups": [
     {
-      "heading": "Tape-outs",
+      "heading": "Conference Papers",
       "entries": [
         {
-          "title": "Sub-5 ppm/\u00b0C Voltage Reference \u2014 TinyTapeout 10",
-          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
-          "desc": "Analog tape-out in SKY130 with the Low-Power Circuits & Systems Lab, IIT Gandhinagar. Co-designed with Kartikay Mani Tripathi; supervised by Prof. Madhav Pathak.",
-          "meta": "2026 \u00b7 SKY130 \u00b7 TinyTapeout 10",
-          "tag": "Chip",
+          "title": "Ron/gm Based Design Methodology for Dynamic Amplifiers",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "Novel design methodology for inverter-based non-linear dynamic amplifiers. Models RC, large-signal, and small-signal settling stages; validated on an inverter-based switched-capacitor amplifier in IHP SG13G2 using open-source EDA tools.",
+          "meta": "ESSERC 2026 · Palma de Mallorca, Spain · September 2026",
+          "tag": "Upcoming",
           "tagHot": true,
           "links": [
-            {
-              "label": "3D GDS view",
-              "url": "https://gds-viewer.tinytapeout.com/?model=https://low-power-circuits-iot-systems-group.github.io/LPCAS_TP1/tinytapeout.gds&process=SKY130"
-            }
+            { "label": "IEEE SSCS Code-a-Chip Travel Grant Award — $5,000", "url": "https://sscs.ieee.org" }
           ]
         },
         {
-          "title": "LPCAS Test Project \u2014 GF0P3",
-          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
-          "desc": "Test tape-out project for the LPC group on the TinyTapeout GF0P3 run.",
-          "meta": "2026 \u00b7 GF0P3 \u00b7 Tcl"
+          "title": "Analog CMOS Multiplier Circuits: Design and Comparative Analysis",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "Design and comparison of analog multiplier circuits for low-power pre-ADC sensor processing, power management, and analog neural networks using translinear and linear MOSFET-based MAC architectures.",
+          "meta": "IEEE ICEE 2025"
         }
       ]
     },
     {
-      "heading": "Open data & methodology",
+      "heading": "Tape-outs",
       "entries": [
         {
-          "title": "gm/ID Characterisation \u2014 GF180MCUD",
-          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/gmid_GF180MCUD",
-          "desc": "gm/ID data and scripts for GlobalFoundries GF180MCUD, contributed within the Low-Power Circuits & Systems group.",
-          "meta": "Apache-2.0 \u00b7 Jupyter \u00b7 GF180MCUD"
+          "title": "Sub-5 ppm/°C Piecewise-Compensated Bandgap Reference",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "High-PSRR Bandgap Reference with piecewise curvature compensation and a low-power always-on startup circuit, designed in SKY130 at IIT Gandhinagar LP-CAS Lab. Fabricated through the TinyTapeout 10 SKY130 shuttle.",
+          "meta": "SKY130 · TinyTapeout 10 · sub-5 ppm/°C TC",
+          "tag": "Fabricated",
+          "tagHot": true
+        },
+        {
+          "title": "Folded-Cascode OTA",
+          "url": "https://github.com/chennakeshavadasa",
+          "desc": "Designed and submitted through the TinyTapeout GF180 (TTGF0P3) analog shuttle. Full pre-tapeout verification including DRC, LVS, and PEX extraction.",
+          "meta": "GF180MCU · TinyTapeout TTGF0P3",
+          "tag": "Fabricated",
+          "tagHot": true
         }
       ]
     }
