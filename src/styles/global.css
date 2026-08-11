@@ -327,7 +327,7 @@ a {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas:
-    "portrait"
+
     "head"
     "abstract"
     "action";
@@ -335,43 +335,7 @@ a {
   justify-items: center;
   text-align: center;
 }
-.portrait {
-  grid-area: portrait;
-  margin: 0;
-  width: 320px;
-  max-width: 100%;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.portrait img,
-.portrait__placeholder {
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  object-position: center top;
-  border: 1px solid var(--rule-strong);
-  background: var(--paper);
-}
-.portrait__placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-.portrait figcaption {
-  margin-top: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  color: var(--ink-3);
-  text-align: center;
-}
+
 .masthead__head {
   grid-area: head;
   align-self: auto;
@@ -388,11 +352,7 @@ a {
 .masthead__grid .btn {
   grid-area: action;
 }
-@media (max-width: 720px) {
-  .portrait {
-    width: 240px;
-  }
-}
+
 
 /* Buttons */
 .btn {
