@@ -158,6 +158,7 @@ a {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: var(--nav-h);
   padding: 0 2rem;
@@ -167,8 +168,8 @@ a {
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
-  text-align: center;
   text-decoration: none;
+  pointer-events: auto;
 }
 .site-nav__name {
   font-family: var(--font-mono);
@@ -177,17 +178,14 @@ a {
   text-transform: uppercase;
 }
 .site-nav__sub {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.03em;
-  color: var(--ink-3);
+  display: none;
 }
 .site-nav__links {
-  margin-left: auto;
+  position: absolute;
+  right: 2rem;
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   align-items: center;
-  flex-shrink: 0;
 }
 .site-nav__links::-webkit-scrollbar {
   display: none;
