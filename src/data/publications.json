@@ -1,0 +1,40 @@
+{
+  "groups": [
+    {
+      "heading": "Tape-outs",
+      "entries": [
+        {
+          "title": "Sub-5 ppm/\u00b0C Voltage Reference \u2014 TinyTapeout 10",
+          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
+          "desc": "Analog tape-out in SKY130 with the Low-Power Circuits & Systems Lab, IIT Gandhinagar. Co-designed with Kartikay Mani Tripathi; supervised by Prof. Madhav Pathak.",
+          "meta": "2026 \u00b7 SKY130 \u00b7 TinyTapeout 10",
+          "tag": "Chip",
+          "tagHot": true,
+          "links": [
+            {
+              "label": "3D GDS view",
+              "url": "https://gds-viewer.tinytapeout.com/?model=https://low-power-circuits-iot-systems-group.github.io/LPCAS_TP1/tinytapeout.gds&process=SKY130"
+            }
+          ]
+        },
+        {
+          "title": "LPCAS Test Project \u2014 GF0P3",
+          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
+          "desc": "Test tape-out project for the LPC group on the TinyTapeout GF0P3 run.",
+          "meta": "2026 \u00b7 GF0P3 \u00b7 Tcl"
+        }
+      ]
+    },
+    {
+      "heading": "Open data & methodology",
+      "entries": [
+        {
+          "title": "gm/ID Characterisation \u2014 GF180MCUD",
+          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/gmid_GF180MCUD",
+          "desc": "gm/ID data and scripts for GlobalFoundries GF180MCUD, contributed within the Low-Power Circuits & Systems group.",
+          "meta": "Apache-2.0 \u00b7 Jupyter \u00b7 GF180MCUD"
+        }
+      ]
+    }
+  ]
+}

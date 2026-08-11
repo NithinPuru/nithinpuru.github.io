@@ -1,0 +1,265 @@
+---
+import { existsSync } from "node:fs";
+import WorkList from "../components/WorkList.astro";
+import Icon from "../components/Icon.astro";
+import Layout from "../layouts/Layout.astro";
+
+// Data hygiene: star counts and repo totals below are supplied truth that
+// goes stale as the GitHub accounts evolve. Re-verify src/data/*.json when
+// updating content; the "28 public repositories" figure appears in section 3.
+import projects from "../data/projects.json";
+import publications from "../data/publications.json";
+import finance from "../data/finance.json";
+
+const github = "https://github.com/chennakeshavadasa";
+const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
+const email = "nithinpurushothama@gmail.com";
+
+// Resolves a public/ asset path against the configured base ("/" locally,
+// "/repo/" on a GitHub Pages project site).
+const asset = (p) =>
+  `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
+
+// Portrait: drop public/portrait.jpg (or portrait.png) to replace the
+// placeholder frame. It is served at /portrait.jpg (or /portrait.png).
+const portrait = existsSync("public/portrait.jpg")
+  ? asset("portrait.jpg")
+  : existsSync("public/portrait.png")
+    ? asset("portrait.png")
+    : null;
+---
+<Layout>
+  <div class="sheet">
+    <header class="masthead" id="about">
+      <svg class="masthead__trace" viewBox="0 0 720 26" preserveAspectRatio="none" fill="none" aria-hidden="true">
+        <path
+          d="M0 13 L720 13"
+          pathLength="100"
+          stroke="currentColor"
+          stroke-width="1"
+          vector-effect="non-scaling-stroke"
+          stroke-linecap="square"
+        />
+      </svg>
+
+      <div class="masthead__grid">
+        <figure class="portrait">
+          {
+            portrait ? (
+              <img src={portrait} alt="Portrait of Nithin P" width="720" height="900" />
+            ) : (
+              <span class="portrait__placeholder">portrait</span>
+            )
+          }
+          <figcaption class="mono">Fig. 1 &mdash; Portrait</figcaption>
+        </figure>
+
+        <div class="masthead__head">
+          <h1>Nithin&nbsp;P</h1>
+
+          <p class="doc-meta">
+            <span>Analog / Mixed-Signal IC Designer</span>
+            <span class="sep" aria-hidden="true">·</span>
+            <span>Low-Power Circuits &amp; Systems Group, IIT Gandhinagar</span>
+          </p>
+        </div>
+
+        <div class="abstract">
+          <span class="ab-label">Abstract</span>
+          <p>
+            Analog/mixed-signal IC designer working on ultra-low-power data
+            converters, biomedical circuits and wearable sensors. I have
+            designed analog blocks &mdash; switched-capacitor amplifiers, ring
+            amplifiers, filters, LDOs, bandgap references and OTAs &mdash;
+            across 28&nbsp;nm to 180&nbsp;nm nodes, and I build open-source
+            tools and datasets around the gm/ID design methodology.
+          </p>
+          <p>
+            Away from the chip, my interests run to macroeconomics and
+            data-driven quantitative analysis of business decisions &mdash;
+            applying machine learning to large-scale economic and financial
+            datasets.
+          </p>
+        </div>
+
+        <a class="btn btn--ghost" href="#contact">
+          Get in touch
+          <span class="btn__arrow" aria-hidden="true">
+            <Icon name="down" />
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <section class="section" id="research" aria-labelledby="research-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">2</span>
+        <h2 class="section-title" id="research-h">Research</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <p class="section-lede" data-reveal>
+        Circuits that must work at the edge of power and precision &mdash; and,
+        separately, markets read the same way.
+      </p>
+
+      <h3 class="group-head">Circuits</h3>
+      <ul class="interest-list" data-reveal>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          Ultra-low-power data converters
+          <span class="note">analog</span>
+        </li>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          Biomedical circuits &amp; wearable sensors
+          <span class="note">health</span>
+        </li>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          gm/ID design methodology &amp; open-PDK tooling
+          <span class="note">methodology</span>
+        </li>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          Machine learning for analog design
+          <span class="note">ML-for-EDA</span>
+        </li>
+      </ul>
+
+      <h3 class="group-head">Beyond the chip</h3>
+      <ul class="interest-list" data-reveal>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          Macroeconomics &amp; data-driven analysis of business decisions
+          <span class="note">economics</span>
+        </li>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          Machine learning on large-scale economic and financial datasets
+          <span class="note">quant</span>
+        </li>
+        <li class="interest">
+          <span class="dash" aria-hidden="true">·</span>
+          Quantitative tools for the semiconductor industry
+          <span class="note">finance</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">3</span>
+        <h2 class="section-title" id="work-h">Selected Work</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <p class="section-lede" data-reveal>
+        A curated catalogue of what I have designed and built &mdash; research
+        prototypes, analog blocks, methodology tooling and RF work. Every entry
+        is a real, open repository.
+      </p>
+
+      <WorkList groups={projects.groups} />
+
+      <p class="section-foot" data-reveal>
+        The full catalogue &mdash; 28 public repositories &mdash; lives on{" "}
+        <a href={`${github}?tab=repositories`}>GitHub</a>.
+      </p>
+    </section>
+
+    <section class="section" id="publications" aria-labelledby="publications-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">4</span>
+        <h2 class="section-title" id="publications-h">Publications &amp; Tape-outs</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <p class="section-lede" data-reveal>
+        Everything listed below is a real, open artifact. Peer-reviewed papers
+        will be added here as they appear &mdash; this section is plain JSON, so
+        new entries drop in without touching any markup.
+      </p>
+
+      <WorkList groups={publications.groups} />
+    </section>
+
+    <section class="section" id="finance" aria-labelledby="finance-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">5</span>
+        <h2 class="section-title" id="finance-h">Quantitative Finance</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <p class="section-lede" data-reveal>
+        Outside circuit design, my primary interest is macroeconomics and
+        data-driven quantitative analysis of business decisions &mdash;
+        applying machine learning to large-scale economic and financial
+        datasets.
+      </p>
+
+      <WorkList groups={finance.groups} />
+    </section>
+
+    <section class="section" id="cv" aria-labelledby="cv-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">6</span>
+        <h2 class="section-title" id="cv-h">Curriculum Vitae</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <div class="cv-frame" data-reveal>
+        <!-- CV delivery: drop cv.pdf into public/ so it is served at /cv.pdf (this button already targets it). -->
+        <p>
+          A one-page, typeset CV, kept current with the work on this page.
+        </p>
+        <a class="btn btn--solid" href={asset("cv.pdf")} target="_blank" rel="noopener noreferrer">
+          <Icon name="down" />
+          Open CV (.pdf)
+        </a>
+      </div>
+
+      <ul class="cv-highlights" data-reveal>
+        <li><span class="k">Discipline</span><span>Analog / mixed-signal IC design</span></li>
+        <li><span class="k">Blocks</span><span>Switched-capacitor amplifiers · ring amplifiers · filters · LDOs · BGRs · OTAs</span></li>
+        <li><span class="k">Nodes</span><span>28 nm – 180 nm</span></li>
+        <li><span class="k">PDKs</span><span>SKY130 · GF180MCUD · IHP 130 nm BiCMOS</span></li>
+        <li><span class="k">Tools</span><span>Cadence Virtuoso · NGspice · Keysight ADS · open-source flows</span></li>
+        <li><span class="k">Education</span><span>B.Tech &mdash; major project: piecewise-compensated bandgap reference in SKY130</span></li>
+      </ul>
+    </section>
+
+    <section class="section" id="contact" aria-labelledby="contact-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">7</span>
+        <h2 class="section-title" id="contact-h">Contact</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <div data-reveal>
+        <div class="contact-row">
+          <span class="k">GitHub</span>
+          <a href={github}>chennakeshavadasa</a>
+        </div>
+        <div class="contact-row">
+          <span class="k">LinkedIn</span>
+          <a href={linkedin}>Nithin Purushothama</a>
+        </div>
+        <div class="contact-row">
+          <span class="k">Email</span>
+          <a href={`mailto:${email}`}>{email}</a>
+        </div>
+        <div class="contact-row">
+          <span class="k">Lab</span>
+          <a href="https://sites.google.com/iitgn.ac.in/madhav-pathak">Low-Power Circuits &amp; Systems Group, IIT Gandhinagar</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="site-footer" role="contentinfo">
+      <span>Typeset in Computer Modern</span>
+      <span aria-hidden="true">·</span>
+      <span>© 2026 Nithin P</span>
+      <span aria-hidden="true">·</span>
+      <a href={github}>GitHub</a>
+      <span aria-hidden="true">·</span>
+      <a href={linkedin}>LinkedIn</a>
+    </div>
+  </div>
+</Layout>

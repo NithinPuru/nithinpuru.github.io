@@ -1,0 +1,35 @@
+{
+  "groups": [
+    {
+      "heading": "Tools & experiments",
+      "entries": [
+        {
+          "title": "Career Semi Quant Terminal",
+          "url": "https://github.com/chennakeshavadasa/career-semi-quant",
+          "desc": "A zero-server, fully client-side quantitative analytics dashboard for the global semiconductor industry \u2014 built to evaluate equity components (RSUs, options, ESPPs) when weighing job offers. Every computation runs in the browser; no synthetic data is ever shown.",
+          "meta": "Finance \u00b7 Quant \u00b7 Vanilla JS \u00b7 MIT",
+          "tag": "Featured",
+          "tagHot": true,
+          "links": [
+            {
+              "label": "Live demo",
+              "url": "https://chennakeshavadasa.github.io/career-semi-quant/"
+            }
+          ]
+        },
+        {
+          "title": "Research-Radar",
+          "url": "https://github.com/chennakeshavadasa/Research-Radar",
+          "desc": "A radar for the latest work across AI, finance and chip design.",
+          "meta": "Web tool \u00b7 AI \u00b7 Finance \u00b7 Chips"
+        },
+        {
+          "title": "FOREX_QUANT",
+          "url": "https://github.com/chennakeshavadasa/FOREX_QUANT",
+          "desc": "Quantitative experiments in foreign-exchange markets.",
+          "meta": "Finance \u00b7 Forex"
+        }
+      ]
+    }
+  ]
+}

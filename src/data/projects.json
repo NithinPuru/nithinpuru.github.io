@@ -1,0 +1,117 @@
+{
+  "groups": [
+    {
+      "heading": "Research prototypes",
+      "entries": [
+        {
+          "title": "Sub-5 ppm/\u00b0C Voltage Reference with High PSRR",
+          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
+          "desc": "Higher-order temperature-compensated voltage reference in SKY130, designed with the Low-Power Circuits & Systems Lab, IIT Gandhinagar (with Kartikay Mani Tripathi; supervised by Prof. Madhav Pathak) and submitted as an analog TinyTapeout 10 tape-out.",
+          "meta": "SKY130 \u00b7 TinyTapeout 10 \u00b7 IIT Gandhinagar",
+          "tag": "Tape-out",
+          "tagHot": true,
+          "links": [
+            {
+              "label": "3D GDS view",
+              "url": "https://gds-viewer.tinytapeout.com/?model=https://low-power-circuits-iot-systems-group.github.io/LPCAS_TP1/tinytapeout.gds&process=SKY130"
+            }
+          ]
+        },
+        {
+          "title": "Piecewise-Compensated Bandgap Voltage Reference",
+          "url": "https://github.com/chennakeshavadasa/Bandgap-Voltage-Reference-SKY130",
+          "desc": "A piecewise-compensated bandgap reference in SKY130, completed as the major project of my B.Tech.",
+          "meta": "SKY130 \u00b7 Bandgap \u00b7 B.Tech major project"
+        },
+        {
+          "title": "schmitt-bo \u2014 ML-Guided Analog Sizing",
+          "url": "https://github.com/chennakeshavadasa/schmitt-bo",
+          "desc": "Bayesian optimisation over a Gaussian-process surrogate to size a SKY130 CMOS Schmitt trigger \u2014 an early ML-for-EDA experiment.",
+          "meta": "ML-for-EDA \u00b7 Gaussian process \u00b7 ngspice",
+          "tag": "ML for EDA"
+        }
+      ]
+    },
+    {
+      "heading": "Analog blocks",
+      "entries": [
+        {
+          "title": "Miller-Compensated Two-Stage Op-amp",
+          "url": "https://github.com/chennakeshavadasa/Miller-Compensated-Two-stage-OPAMP-using-SKY130PDK",
+          "desc": "A Miller-compensated two-stage operational amplifier, designed and characterised in open-source SKY130.",
+          "meta": "SKY130 \u00b7 OTA \u00b7 18 stars"
+        },
+        {
+          "title": "Low-Dropout Voltage Regulator",
+          "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
+          "desc": "LDO design in SKY130 covering regulation, dropout behaviour and stability.",
+          "meta": "SKY130 \u00b7 LDO \u00b7 17 stars"
+        },
+        {
+          "title": "Self-Calibrating Comparator",
+          "url": "https://github.com/chennakeshavadasa/Comparator-Design-with-SkyWater-130PDK",
+          "desc": "Comparator resolving differential signals down to \u00b11 mV; self-calibration removes the need for trimming.",
+          "meta": "SKY130 \u00b7 Comparator \u00b7 3 stars"
+        },
+        {
+          "title": "Two-Stage Op-amp Across 45 / 90 / 180 nm",
+          "url": "https://github.com/chennakeshavadasa/Design-and-Layout-Implementation-of-Two-stage-Opamp-using-45-90-180nm-Technology",
+          "desc": "Two-stage op-amp design and layout implemented across three technology nodes.",
+          "meta": "Layout \u00b7 8 stars"
+        }
+      ]
+    },
+    {
+      "heading": "gm/ID methodology & PDK tooling",
+      "entries": [
+        {
+          "title": "gmid-hub \u2014 Unified gm/ID Explorer",
+          "url": "https://github.com/chennakeshavadasa/gmid-hub",
+          "desc": "A single browser tool for gm/ID exploration across the IHP SG13G2, SKY130A and GF180MCU-D open PDKs.",
+          "meta": "Web tool \u00b7 SKY130 \u00b7 GF180 \u00b7 IHP"
+        },
+        {
+          "title": "gmid_SKY130",
+          "url": "https://github.com/chennakeshavadasa/gmid_SKY130",
+          "desc": "gm/ID characterisation scripts and data for the SkyWater 130 nm PDK.",
+          "meta": "Jupyter \u00b7 SKY130 \u00b7 16 stars"
+        },
+        {
+          "title": "gmid_IHP130",
+          "url": "https://github.com/chennakeshavadasa/gmid_IHP130",
+          "desc": "gm/ID characterisation data for the IHP 130 nm BiCMOS open PDK.",
+          "meta": "Jupyter \u00b7 IHP 130 nm"
+        },
+        {
+          "title": "Schematic Area Estimator",
+          "url": "https://github.com/chennakeshavadasa/SCH_AREA_ESTIMATOR",
+          "desc": "Estimates schematic area across the SKY130, GF180MCU and IHP130 PDKs.",
+          "meta": "Python \u00b7 Tooling"
+        },
+        {
+          "title": "SKY130 Design IPs",
+          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
+          "desc": "Reusable analog block IPs in SKY130, published so they can be reused in future designs.",
+          "meta": "SKY130 \u00b7 IP"
+        }
+      ]
+    },
+    {
+      "heading": "RF & communication",
+      "entries": [
+        {
+          "title": "2.4 GHz LNA in Keysight ADS",
+          "url": "https://github.com/chennakeshavadasa/2.4-GHz-LNA-using-Keysight-ADS",
+          "desc": "2.4 GHz low-noise amplifier project with a Python-automated design flow in Keysight ADS.",
+          "meta": "RF \u00b7 LNA \u00b7 7 stars"
+        },
+        {
+          "title": "C-Band LNA Proof of Concept",
+          "url": "https://github.com/chennakeshavadasa/Design-and-Implementation-of-C-Band-LNA-Proof-of-Concept",
+          "desc": "Proof-of-concept C-band low-noise amplifier for geostationary satellite communication.",
+          "meta": "RFIC \u00b7 LNA"
+        }
+      ]
+    }
+  ]
+}

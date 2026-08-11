@@ -1,0 +1,28 @@
+---
+const links = [
+  { id: "about", label: "About" },
+  { id: "research", label: "Research" },
+  { id: "work", label: "Work" },
+  { id: "publications", label: "Publications" },
+  { id: "finance", label: "Finance" },
+  { id: "cv", label: "CV" },
+  { id: "contact", label: "Contact" },
+];
+---
+<header class="site-nav">
+  <div class="site-nav__bar">
+    <a class="site-nav__brand" href="#about" aria-label="Nithin P — back to top">
+      <span class="site-nav__name">Nithin&nbsp;P</span>
+      <span class="site-nav__sub" aria-hidden="true">Analog/Mixed-Signal IC Design</span>
+    </a>
+    <nav class="site-nav__links" aria-label="Sections">
+      {
+        links.map((l) => (
+          <a href={`#${l.id}`} data-nav>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

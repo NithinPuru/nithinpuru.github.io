@@ -1,0 +1,19 @@
+{
+  "name": "nithinyahu",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio of Nithin P (chennakeshavadasa) — analog/mixed-signal IC designer, typeset like a freshly-compiled LaTeX document.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.2.0",
+    "katex": "^0.18.3"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.62.1"
+  }
+}

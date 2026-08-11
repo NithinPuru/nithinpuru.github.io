@@ -1,0 +1,17 @@
+---
+interface Props {
+  name: "external" | "down";
+}
+const { name } = Astro.props;
+---
+{
+  name === "external" ? (
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M7 17 17 7M9 7h8v8" />
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 4v16M6 14l6 6 6-6" />
+    </svg>
+  )
+}

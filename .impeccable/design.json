@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-10T00:00:00Z",
+  "title": "Design System: nithinyahu",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "oklch(98% 0.004 90)", "tonalRamp": ["oklch(90% 0.01 90)", "oklch(93% 0.008 90)", "oklch(95% 0.006 90)", "oklch(97% 0.005 90)", "oklch(98% 0.004 90)", "oklch(99% 0.003 90)", "oklch(99.5% 0.002 90)", "oklch(100% 0 90)"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(22% 0.01 80)", "tonalRamp": ["oklch(15% 0.01 80)", "oklch(20% 0.01 80)", "oklch(26% 0.01 80)", "oklch(34% 0.01 80)", "oklch(44% 0.012 80)", "oklch(56% 0.012 80)", "oklch(70% 0.012 80)", "oklch(85% 0.01 80)"] },
+      "ink-2": { "role": "neutral", "displayName": "Ink Two", "canonical": "oklch(38% 0.012 80)", "tonalRamp": [] },
+      "ink-3": { "role": "neutral", "displayName": "Ink Three", "canonical": "oklch(52% 0.015 80)", "tonalRamp": [] },
+      "accent": { "role": "primary", "displayName": "Oxford Ink Blue", "canonical": "oklch(38% 0.05 250)", "tonalRamp": ["oklch(20% 0.05 250)", "oklch(26% 0.055 250)", "oklch(33% 0.055 250)", "oklch(38% 0.05 250)", "oklch(45% 0.05 250)", "oklch(55% 0.05 250)", "oklch(68% 0.045 250)", "oklch(82% 0.03 250)"] },
+      "annot": { "role": "tertiary", "displayName": "Annotation Red", "canonical": "oklch(42% 0.13 28)", "tonalRamp": ["oklch(25% 0.12 28)", "oklch(33% 0.13 28)", "oklch(40% 0.13 28)", "oklch(48% 0.13 28)", "oklch(56% 0.12 28)", "oklch(66% 0.11 28)", "oklch(78% 0.09 28)", "oklch(90% 0.05 28)"] },
+      "annot-soft": { "role": "tertiary", "displayName": "Annotation Soft", "canonical": "oklch(50% 0.11 30)", "tonalRamp": [] },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "rgba(25, 24, 20, 0.16)", "tonalRamp": [] },
+      "rule-strong": { "role": "neutral", "displayName": "Rule Strong", "canonical": "rgba(25, 24, 20, 0.34)", "tonalRamp": [] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The masthead name only — the single largest face on the page." },
+      "headline": { "displayName": "Headline", "purpose": "Numbered section titles." },
+      "title": { "displayName": "Title", "purpose": "Work-entry titles; the title itself is the link." },
+      "body": { "displayName": "Body", "purpose": "Justified, hyphenated prose in the 46rem column." },
+      "label": { "displayName": "Label", "purpose": "Typewriter document metadata: tags, dates, bibliographic lines, nav." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "All reveals, draws, and state transitions." },
+      { "name": "reveal", "value": "opacity + translateY(12px) over 0.65s, stagger up to 420ms", "purpose": "Scroll-into-view entry; reversed on exit." },
+      { "name": "rule-draw", "value": "scaleX(0 -> 1) over 1s", "purpose": "Section hairline rules drawing in." },
+      { "name": "ink-settle", "value": "blur(5px) -> 0 + rise over 1.1s", "purpose": "One authored moment on the masthead." },
+      { "name": "hairline-draw", "value": "stroke-dashoffset 100 -> 0 over 1.1s", "purpose": "Masthead hairline drawing left to right." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "600px" },
+      { "name": "md", "value": "760px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Section link in the fixed running-head bar.",
+      "html": "<a class=\"ds-nav-link\" href=\"#work\">Work</a>",
+      "css": ".ds-nav-link { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: #45413a; text-decoration: none; padding: 0.5rem 0.55rem; border-bottom: 1px solid transparent; } .ds-nav-link:hover, .ds-nav-link.is-active { color: #2b4863; } .ds-nav-link.is-active { border-bottom-color: #2b4863; } .ds-nav-link:focus-visible { outline: 2px solid #2b4863; outline-offset: 3px; }"
+    },
+    {
+      "name": "Work Entry",
+      "kind": "card",
+      "refersTo": "entry-title",
+      "description": "The JSON-driven bibliography-style list item used by Work, Publications and Finance.",
+      "html": "<article class=\"ds-entry\"><div class=\"ds-entry-top\"><h3 class=\"ds-entry-title\"><a href=\"#\">Miller-Compensated Two-Stage Op-amp</a></h3><span class=\"ds-tag ds-tag-hot\">Tape-out</span></div><p class=\"ds-entry-desc\">A Miller-compensated two-stage operational amplifier, designed and characterised in open-source SKY130.</p><div class=\"ds-entry-meta\">SKY130 · OTA · 18 stars</div></article>",
+      "css": ".ds-entry { border-top: 1px solid rgba(25,24,20,0.16); padding-block: 1.05rem; } .ds-entry:first-child { border-top: none; } .ds-entry-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; } .ds-entry-title { margin: 0; font-family: 'KaTeX_Main', Georgia, serif; font-size: 1.16rem; font-weight: 700; line-height: 1.4; } .ds-entry-title a { color: #191814; text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: rgba(25,24,20,0.34); text-underline-offset: 4px; } .ds-entry-title a:hover { color: #2b4863; } .ds-tag { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #6f6a5e; } .ds-tag-hot { color: #8f3526; } .ds-entry-desc { margin: 0.4rem 0 0.55rem; max-width: 40rem; color: #45413a; font-size: 0.98em; text-align: justify; hyphens: auto; } .ds-entry-meta { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.76rem; color: #6f6a5e; }"
+    },
+    {
+      "name": "Open CV Button",
+      "kind": "button",
+      "refersTo": "cv-btn",
+      "description": "Solid primary document action — ink fill inverting to paper on hover; opens /cv.pdf in a new tab.",
+      "html": "<a class=\"ds-cv-btn\" href=\"/cv.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Open CV (.pdf)</a>",
+      "css": ".ds-cv-btn { display: inline-flex; align-items: center; gap: 0.55rem; font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: #faf9f4; background: #191814; border: 1px solid #191814; padding: 0.78rem 1.15rem; text-decoration: none; transition: color 0.22s cubic-bezier(0.16,1,0.3,1), background-color 0.22s cubic-bezier(0.16,1,0.3,1); } .ds-cv-btn:hover, .ds-cv-btn:focus-visible { color: #191814; background: transparent; outline: 2px solid #2b4863; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button (Get in touch)",
+      "kind": "button",
+      "refersTo": "cv-btn",
+      "description": "Outlined masthead action that scrolls to the contact section.",
+      "html": "<a class=\"ds-btn-ghost\" href=\"#contact\">Get in touch</a>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 0.55rem; font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: #191814; background: transparent; border: 1px solid #191814; padding: 0.78rem 1.15rem; text-decoration: none; transition: color 0.22s cubic-bezier(0.16,1,0.3,1), background-color 0.22s cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover, .ds-btn-ghost:focus-visible { color: #faf9f4; background: #191814; outline: 2px solid #2b4863; outline-offset: 3px; }"
+    },
+    {
+      "name": "Portrait Figure",
+      "kind": "custom",
+      "refersTo": "paper",
+      "description": "Framed 4:5 portrait leading the masthead beside the name; hairline border holds the real image or a typewriter placeholder.",
+      "html": "<figure class=\"ds-portrait\"><span class=\"ds-portrait-ph\">portrait</span><figcaption>Fig. 1 — Portrait</figcaption></figure>",
+      "css": ".ds-portrait { margin: 0; width: 100%; max-width: 12.5rem; } .ds-portrait-ph { display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 5; border: 1px solid rgba(25,24,20,0.34); font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: #6f6a5e; } .ds-portrait figcaption { margin-top: 0.4rem; font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.7rem; color: #6f6a5e; text-align: right; }"
+    },
+    {
+      "name": "Group Rubric",
+      "kind": "chip",
+      "refersTo": "nav-link",
+      "description": "Typewriter rubric prefixing each group of entries inside a section.",
+      "html": "<h4 class=\"ds-rubric\">Analog blocks</h4>",
+      "css": ".ds-rubric { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.74rem; letter-spacing: 0.13em; text-transform: uppercase; color: #6f6a5e; margin: 2.5rem 0 0.35rem; } .ds-rubric::before { content: '\\2014  '; color: #a54837; }"
+    },
+    {
+      "name": "Contact Row",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Mono label + value separated by a hairline, used for contact and CV highlights.",
+      "html": "<div class=\"ds-contact\"><span class=\"ds-contact-k\">GitHub</span><a class=\"ds-contact-v\" href=\"#\">chennakeshavadasa</a></div>",
+      "css": ".ds-contact { display: flex; align-items: baseline; gap: 1rem; padding-block: 0.8rem; border-top: 1px solid rgba(25,24,20,0.16); font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.84rem; } .ds-contact-k { flex: 0 0 7.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.72rem; color: #6f6a5e; } .ds-contact-v { color: #2b4863; text-decoration: none; border-bottom: 1px solid rgba(25,24,20,0.16); } .ds-contact-v:hover { border-bottom-color: #2b4863; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Freshly-Typeset Paper",
+    "overview": "A portfolio that reads as the output of a LaTeX compiler the moment it lands: Computer Modern serif set against warm paper, typewriter metadata, numbered \\section headers, justified measure, and structure drawn with 1px hairline rules — never cards, never shadows, never rounded corners. The subject is an analog IC designer, and the world is deliberately mechanical: type that looks set, rules that look drawn, and annotation marks used the way a proofreader uses red ink — once and for a reason. The page refuses the agency card grid and the hero-metric template outright.",
+    "keyCharacteristics": [
+      "Computer Modern serif (KaTeX_Main) over typewriter (KaTeX_Typewriter) metadata",
+      "Ink-on-paper palette with exactly one blue accent and a sparing annotation red",
+      "Numbered section grammar with hairline rules that draw on reveal",
+      "Justified, hyphenated body measure in a single centered column",
+      "Flat, square, hairline-drawn surfaces — no cards, shadows, gradients, or radii",
+      "Reveal-on-scroll with stagger; full reduced-motion and no-JS fallbacks"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Exactly one ink-blue accent exists. Hierarchy comes from weight and size, never a second hue.", "section": "colors" },
+      { "name": "The Sparing Red Rule", "body": "Annotation red appears only as small rubrics and status tags. If a screen shows more than a handful, the point is lost.", "section": "colors" },
+      { "name": "The Hairline Rule", "body": "Structure is drawn with 1px rules. A box, shadow, or radius where a hairline belongs is a foreign object.", "section": "colors" },
+      { "name": "The Justified Measure Rule", "body": "Body copy is justified with hyphens: auto inside the 46rem column; left-ragged prose where a typeset page could justify is a miss.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Depth is drawn with rules and ink, never shadowed.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the numbered \\section grammar — numerals carry the document's cross-reference structure.",
+      "Do set body copy justified with hyphenation inside the 46rem measure.",
+      "Do reserve typewriter for document metadata: labels, dates, tags, bibliographic lines, nav.",
+      "Do draw structure with 1px hairlines and ink weight, never with boxes or shadows.",
+      "Do use the single oxford-blue accent for links, numerals, and small markers.",
+      "Do reveal content on scroll with a subtle fade + 12px rise and a stagger of up to 420ms; honor prefers-reduced-motion and no-JS.",
+      "Do add new Work/Publication/Finance entries by editing the corresponding src/data/*.json."
+    ],
+    "donts": [
+      "Don't introduce cards, rounded corners, shadows, gradients, or a glass/dark-terminal surface.",
+      "Don't add a second accent hue; fold hierarchy into weight and size.",
+      "Don't use unicode glyphs or emoji as icons — author 1.5px SVG linework.",
+      "Don't place a kicker or eyebrow above a heading; the heading carries itself.",
+      "Don't hand-draw or wobble the masthead line — it is a mechanical hairline.",
+      "Don't fabricate biographical, publication, or star-count claims; every entry must be real, supplied content."
+    ]
+  }
+}

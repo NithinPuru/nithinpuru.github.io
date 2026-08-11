@@ -1,0 +1,99 @@
+---
+import Icon from "./Icon.astro";
+
+interface EntryLink {
+  label: string;
+  url: string;
+}
+
+interface Entry {
+  title: string;
+  url?: string;
+  desc?: string;
+  meta?: string;
+  tag?: string;
+  tagHot?: boolean;
+  links?: EntryLink[];
+}
+
+interface Group {
+  heading?: string;
+  entries: Entry[];
+}
+
+interface Props {
+  groups: Group[];
+}
+
+const { groups } = Astro.props;
+---
+<div class="worklist">
+  {
+    groups.map((group) => (
+      <div data-reveal-group>
+        {group.heading && <h3 class="group-head">{group.heading}</h3>}
+        <ul class="entries">
+          {
+            group.entries.map((entry) => (
+              <li class="entry" data-reveal>
+                <div class="entry__top">
+                  <h4 class="entry__title">
+                    <a href={entry.url}>
+                      {entry.title}
+                      {entry.url && (
+                        <span class="entry__arrow" aria-hidden="true">
+                          <Icon name="external" />
+                        </span>
+                      )}
+                    </a>
+                  </h4>
+                  {entry.tag && (
+                    <span class={"entry__tag" + (entry.tagHot ? " is-hot" : "")}>
+                      {entry.tag}
+                    </span>
+                  )}
+                </div>
+                {entry.desc && <p class="entry__desc">{entry.desc}</p>}
+                <div class="entry__meta">
+                  {entry.meta && <span>{entry.meta}</span>}
+                  {entry.links && (
+                    <span class="entry__links">
+                      {entry.links.map((link) => (
+                        <a href={link.url}>
+                          <Icon name="external" />
+                          {link.label}
+                        </a>
+                      ))}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .entry__arrow {
+    display: inline-block;
+    margin-left: 0.4rem;
+    vertical-align: 2px;
+    color: var(--accent);
+  }
+  .entry__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .entry__links a svg {
+    color: var(--accent);
+  }
+</style>
