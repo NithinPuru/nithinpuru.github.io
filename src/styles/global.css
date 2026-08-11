@@ -310,7 +310,7 @@ a {
 
 .abstract {
   margin-top: 2.4rem;
-  max-width: 40rem;
+  max-width: 100%;
 }
 .abstract .ab-label {
   display: block;
@@ -353,7 +353,7 @@ a {
 .masthead__grid .abstract {
   grid-area: abstract;
   margin-top: 0;
-  max-width: 40rem;
+  max-width: 100%;
   width: 100%;
   text-align: left;
 }
