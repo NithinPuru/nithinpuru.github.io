@@ -1,18 +1,7 @@
 ---
-import { readFileSync } from 'fs';
-
-let notebookStyles = '';
-let notebookBody = '';
-
-try {
-  const raw = readFileSync('public/WrongmNotebook.html', 'utf-8');
-  const headMatch = raw.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
-  const bodyMatch = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-  notebookStyles = headMatch ? headMatch[1] : '';
-  notebookBody   = bodyMatch ? bodyMatch[1] : raw;
-} catch (e) {
-  notebookBody = '<p style="padding:2rem;">Notebook not found — run nbconvert first.</p>';
-}
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const notebookParam = encodeURIComponent('Wrøngm.ipynb');
+const colabUrl = 'https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing';
 ---
 
 <!DOCTYPE html>
@@ -21,47 +10,84 @@ try {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ron/gm Notebook — Nithin Purushothama</title>
-    <Fragment set:html={notebookStyles} />
     <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: 'Courier New', monospace;
+        background: #faf9f6;
+      }
+
       .nb-bar {
-        position: sticky;
-        top: 0;
-        z-index: 9999;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0.6rem 1.5rem;
         background: #faf9f6;
         border-bottom: 1px solid #ddd;
-        font-family: monospace;
         font-size: 0.75rem;
         letter-spacing: 0.05em;
+        flex-shrink: 0;
       }
+
       .nb-bar a {
         text-decoration: none;
         text-transform: uppercase;
         color: #111;
       }
-      .nb-bar .colab {
+
+      .nb-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .btn {
         border: 1px solid #111;
         padding: 0.3rem 0.85rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #111;
+        font-family: inherit;
       }
-      .nb-bar .colab:hover {
+
+      .btn:hover {
         background: #111;
         color: #faf9f6;
+      }
+
+      .nb-note {
+        font-size: 0.7rem;
+        color: #666;
+        letter-spacing: 0.03em;
+      }
+
+      iframe {
+        flex: 1;
+        width: 100%;
+        border: none;
       }
     </style>
   </head>
   <body>
     <div class="nb-bar">
-      <a href="/">← Back</a>
-      <a
-        href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="colab"
-      >Open in Google Colab ↗</a>
+      <a href={`${base}/`}>← Back</a>
+      <div class="nb-actions">
+        <span class="nb-note">Run cells directly below ↓</span>
+        <a href={colabUrl} target="_blank" rel="noopener noreferrer" class="btn">
+          Open in Colab ↗
+        </a>
+      </div>
     </div>
-    <Fragment set:html={notebookBody} />
+    <iframe
+      src={`${base}/lab/index.html?path=${notebookParam}`}
+      title="Ron/gm Design Methodology — Interactive Notebook"
+      allow="cross-origin-isolated"
+    ></iframe>
   </body>
 </html>
