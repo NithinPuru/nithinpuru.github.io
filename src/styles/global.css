@@ -301,6 +301,7 @@ a {
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%;
 }
 .doc-meta .sep {
   color: var(--ink-3);
