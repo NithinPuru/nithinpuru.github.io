@@ -6,7 +6,7 @@
         {
           "title": "Ron/gm Based Design Methodology for Dynamic Amplifiers",
           "url": "https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing",
-          "desc": "A Ron/gm-based methodology for inverter-based dynamic amplifiers, covering RC, large-signal, and small-signal settling. Authors: Nithin Purushothama, Pramoda SR, Suyajnaa, Runpeng Gao, Praveen Kumar Venkatachala, Prof. Madhav Pathak.",
+          "desc": "Nithin Purushothama, Pramoda SR, Suyajnaa, Runpeng Gao, Praveen Kumar Venkatachala, Prof. Madhav Pathak. \"Ron/gm Based Design Methodology for Dynamic Amplifiers.\" ESSERC 2026, Palma de Mallorca, Spain, September 2026. Poster presentation.",
           "meta": "ESSERC 2026 · Palma de Mallorca, Spain · Poster Presentation",
           "tag": "Upcoming",
           "tagHot": true,
@@ -24,7 +24,7 @@
         {
           "title": "Analog CMOS Multiplier Circuits: Design and Comparative Analysis",
           "url": "https://github.com/chennakeshavadasa",
-          "desc": "Comparison of translinear and linear MOSFET-based MAC architectures for low-power analog neural networks.",
+          "desc": "Nithin Purushothama, Prof. Madhav Pathak. \"Analog CMOS Multiplier Circuits: Design and Comparative Analysis.\" IEEE ICEE 2025.",
           "meta": "IEEE ICEE 2025"
         }
       ]
@@ -35,14 +35,14 @@
         {
           "title": "Sub-5 ppm/°C Piecewise-Compensated Bandgap Reference",
           "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
-          "desc": "Fabricated through TinyTapeout 10 (SKY130) at LP-CAS Lab, IIT Gandhinagar. Co-designers: Kartikay Mani Tripathi, Prof. Madhav Pathak.",
+          "desc": "Nithin Purushothama, Kartikay Mani Tripathi, Prof. Madhav Pathak. Piecewise-compensated bandgap reference fabricated through TinyTapeout 10, SKY130 PDK, LP-CAS Lab IITGN.",
           "tag": "Fabricated",
           "tagHot": true
         },
         {
           "title": "Folded-Cascode OTA",
           "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
-          "desc": "Submitted through the TinyTapeout GF180 test shuttle as a hands-on learning exercise in the full tapeout flow.",
+          "desc": "Nithin Purushothama. Submitted through TinyTapeout GF180 (TTGF0P3) test shuttle — a hands-on exercise in the full tapeout flow end-to-end.",
           "tag": "Fabricated",
           "tagHot": false
         }
