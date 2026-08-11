@@ -4,20 +4,20 @@
       "heading": "Tape-outs",
       "entries": [
         {
-          "title": "Sub-5 ppm/°C Piecewise-Compensated Bandgap Reference",
-          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
-          "desc": "Higher-order temperature-compensated voltage reference with piecewise BJT non-ideality compensation and a low-power always-on startup circuit. Designed at LP-CAS Lab, IIT Gandhinagar under Prof. Madhav Pathak. Fabricated through TinyTapeout 10 (tt10-analog-template), SKY130 PDK. Co-designers: Kartikay Mani Tripathi, Prof. Madhav Pathak.",
-          "meta": "SKY130 · TinyTapeout 10 · sub-5 ppm/°C TC · 2 stars",
+          "title": "Sub-5 ppm/°C Bandgap Reference",
+          "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130",
+          "desc": "Piecewise-compensated bandgap reference with a low-power startup circuit, fabricated through TinyTapeout 10 in SKY130.",
+          "meta": "SKY130 · TinyTapeout 10",
           "tag": "Fabricated",
           "tagHot": true
         },
         {
-          "title": "Folded-Cascode OTA Tapeout",
-          "url": "https://github.com/chennakeshavadasa",
-          "desc": "Folded-Cascode OTA submitted through the TinyTapeout GF180 (TTGF0P3) analog shuttle. Full pre-tapeout verification including DRC, LVS, and PEX extraction in GF180MCU-D PDK.",
-          "meta": "GF180MCU-D · TinyTapeout TTGF0P3",
+          "title": "Folded-Cascode OTA",
+          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
+          "desc": "A learning exercise — submitted through the TinyTapeout GF180 test shuttle to experience the full tapeout flow end-to-end.",
+          "meta": "GF180MCU-D · TinyTapeout TTGF0P3 · Test Shuttle",
           "tag": "Fabricated",
-          "tagHot": true
+          "tagHot": false
         }
       ]
     },
@@ -25,65 +25,65 @@
       "heading": "Analog IC Design",
       "entries": [
         {
-          "title": "Design of Process-Invariant Ring Amplifier using Deadzone Regulation",
-          "url": "https://github.com/chennakeshavadasa",
-          "desc": "PVT-robust Ring Amplifier in IHP SG13G2 (BiCMOS). A deadzone regulation circuit with negative feedback controls third-stage quiescent current across corners. Dynamic error analysis covers RC, large-signal, and small-signal settling; validated in a switched-capacitor amplifier.",
-          "meta": "IHP SG13G2 · BiCMOS · Ring Amplifier · SC Amplifier"
+          "title": "Process-Invariant Ring Amplifier",
+          "url": "https://github.com/chennakeshavadasa/PVT-Invariant-Ring-Amplifier",
+          "desc": "Ring amplifier in IHP SG13G2 with deadzone regulation for robust PVT performance, validated in a switched-capacitor amplifier.",
+          "meta": "IHP SG13G2 · BiCMOS · Ring Amplifier"
         },
         {
-          "title": "Ultra-Low Power Two-Transistor Subthreshold Voltage Reference",
-          "url": "https://github.com/chennakeshavadasa",
-          "desc": "Voltage reference using native NMOS devices matching subthreshold currents between a diode-tied NMOS and a load transistor. Achieved 60 ppm/°C TC across process corners with power ≤ 2 pW.",
-          "meta": "SKY130 · Native NMOS · 60 ppm/°C · ≤ 2 pW"
+          "title": "Two-Transistor Subthreshold Voltage Reference",
+          "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
+          "desc": "An ultra-low power voltage reference using native NMOS subthreshold operation, achieving sub-picoWatt power.",
+          "meta": "SKY130 · Subthreshold · Native NMOS"
         },
         {
-          "title": "Piecewise-Compensated High-PSRR Bandgap Reference",
-          "url": "https://github.com/chennakeshavadasa",
-          "desc": "Bandgap reference with higher-order curvature correction in SKY130 and GPDK90. Achieves 4.4 ppm/°C TC using piecewise BJT non-ideality compensation and improved PSRR via cascode current mirrors. Full PVT corner verification.",
-          "meta": "SKY130 · GPDK90 · BGR · 4.4 ppm/°C TC"
-        },
-        {
-          "title": "Low Dropout Voltage Regulator (LDO)",
+          "title": "Low Dropout Voltage Regulator",
           "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
-          "desc": "LDO in SKY130 achieving 1 µs transient settling for a 100 pF, 50 mA load with −60 dB PSRR. Integrated a digital on-chip load for transient testing and an enable switch for complete shutdown.",
-          "meta": "SKY130 · LDO · −60 dB PSRR · 1 µs settling · 12 stars"
+          "desc": "LDO in SKY130 with integrated digital on-chip load for transient testing.",
+          "meta": "SKY130 · LDO"
         },
         {
-          "title": "Rail-to-Rail Input Swing OTA",
-          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
-          "desc": "Folded-cascode OTA in SKY130 with complementary PMOS/NMOS differential pair folding for rail-to-rail input swing. 63–64 dB DC gain, 2 MHz UGF, 85° phase margin across all PVT corners. Input-referred offset: μ = 0.11 mV, σ = 1.54 mV.",
-          "meta": "SKY130 · Rail-to-Rail OTA · 64 dB · 85° PM"
+          "title": "Rail-to-Rail OTA",
+          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/tree/main/OTAs/Rail_to_Rail_OTA_Inp_IP/without_internal_bias",
+          "desc": "Folded-cascode OTA with complementary PMOS/NMOS differential pair for full rail-to-rail input swing.",
+          "meta": "SKY130 · Folded Cascode"
         },
         {
-          "title": "2-Stage Fully Differential OTA",
+          "title": "Fully Differential OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
-          "desc": "Fully differential OTA in SKY130 with PMOS differential pair and NMOS load. Buffer-based common-mode reference stabilises output CM level for high gain and bandwidth.",
-          "meta": "SKY130 · Fully Differential OTA"
+          "desc": "Two-stage fully differential OTA with buffer-based CM feedback for stable output common-mode level.",
+          "meta": "SKY130 · Fully Differential"
         },
         {
-          "title": "Design of Power-on Reset Circuit",
-          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
-          "desc": "POR circuit in SKY130 using a current comparator with PMOS/NMOS current mirrors for threshold detection. VPOR asserts Enable at VDD = 1.5 V across PVT corners.",
-          "meta": "SKY130 · POR · 1.5 V threshold · PVT Verified"
+          "title": "Power-on Reset Circuit",
+          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
+          "desc": "Current comparator-based POR in SKY130 that asserts Enable at a defined VDD threshold across PVT corners.",
+          "meta": "SKY130 · POR"
         }
       ]
     },
     {
-      "heading": "Open-Source EDA & Automation",
+      "heading": "Open-Source EDA",
       "entries": [
         {
-          "title": "Automation of PVT and SPICE Simulation Framework for Analog Design",
-          "url": "https://github.com/chennakeshavadasa",
-          "desc": "Open-source Python tools for analog IC design automation: PVT sweep framework for NGSpice with automated metric extraction and comparison plots; SPICE-to-area estimation tool using Magic VLSI for early floorplanning before physical layout.",
-          "meta": "Python · NGSpice · Magic VLSI · Open-Source",
+          "title": "PVT Simulation Automation",
+          "url": "https://github.com/chennakeshavadasa/Cross_corners_script_Ngspice",
+          "desc": "Python framework for automated PVT corner sweeps in NGSpice with metric extraction and comparison plots.",
+          "meta": "Python · NGSpice · Open-Source",
           "tag": "Open Source",
-          "tagHot": false
+          "tagHot": false,
+          "links": [
+            {
+              "label": "Schematic Area Estimator",
+              "url": "https://github.com/chennakeshavadasa/SCH_AREA_ESTIMATOR"
+            }
+          ]
         },
         {
-          "title": "gm/ID Extraction Scripts — SKY130",
+          "title": "gm/ID Extraction — SKY130",
           "url": "https://github.com/chennakeshavadasa/gmid_SKY130",
-          "desc": "Collection of gm/ID extraction scripts and datasets for the SKY130 PDK. Enables interactive gm/ID-based design methodology using open-source EDA tools. Includes NMOS/PMOS LVT/HVT parameter extraction and plotting scripts.",
-          "meta": "Python · SKY130 · gm/ID Methodology · Open-Source",
+          "desc": "gm/ID lookup tables and extraction scripts for SKY130, enabling structured gm/ID-based design with open-source tools.",
+          "meta": "Python · SKY130 · gm/ID",
           "tag": "Open Source",
           "tagHot": false
         }

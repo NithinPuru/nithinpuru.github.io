@@ -5,22 +5,26 @@
       "entries": [
         {
           "title": "Ron/gm Based Design Methodology for Dynamic Amplifiers",
-          "url": "https://sscs.ieee.org/membership/young-professionals/ieee-sscs-code-a-chip-travel-grant-award",
-          "desc": "Novel Ron/gm-based design methodology for inverter-based non-linear dynamic amplifiers. Models RC, large-signal, and small-signal settling stages; validated on an inverter-based switched-capacitor amplifier in IHP SG13G2 using open-source EDA tools (Xschem, NGSpice). Authors: Nithin Purushothama, Pramoda SR, Suyajnaa, Runpeng Gao, Praveen Kumar Venkatachala, Prof. Madhav Pathak.",
-          "meta": "ESSERC 2026 · Palma de Mallorca, Spain · September 2026",
+          "url": "https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing",
+          "desc": "A Ron/gm-based methodology for inverter-based dynamic amplifiers, covering RC, large-signal, and small-signal settling. Authors: Nithin Purushothama, Pramoda SR, Suyajnaa, Runpeng Gao, Praveen Kumar Venkatachala, Prof. Madhav Pathak.",
+          "meta": "ESSERC 2026 · Palma de Mallorca, Spain · Poster Presentation",
           "tag": "Upcoming",
           "tagHot": true,
           "links": [
             {
-              "label": "IEEE SSCS Code-a-Chip Travel Grant Award — $5,000",
+              "label": "IEEE SSCS Code-a-Chip Travel Grant — $5,000",
               "url": "https://sscs.ieee.org/membership/young-professionals/ieee-sscs-code-a-chip-travel-grant-award"
+            },
+            {
+              "label": "View Notebook",
+              "url": "https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
             }
           ]
         },
         {
           "title": "Analog CMOS Multiplier Circuits: Design and Comparative Analysis",
           "url": "https://github.com/chennakeshavadasa",
-          "desc": "Design and comparison of analog multiplier circuits for low-power pre-ADC sensor processing, power management, and analog neural networks using translinear and linear MOSFET-based MAC architectures. Authors: Nithin Purushothama, Prof. Madhav Pathak.",
+          "desc": "Comparison of translinear and linear MOSFET-based MAC architectures for low-power analog neural networks.",
           "meta": "IEEE ICEE 2025"
         }
       ]
@@ -31,18 +35,18 @@
         {
           "title": "Sub-5 ppm/°C Piecewise-Compensated Bandgap Reference",
           "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
-          "desc": "Higher-order temperature-compensated voltage reference with piecewise BJT non-ideality compensation and a low-power always-on startup circuit. Designed at LP-CAS Lab, IIT Gandhinagar under Prof. Madhav Pathak. Fabricated through TinyTapeout 10 (SKY130). Co-designers: Kartikay Mani Tripathi, Prof. Madhav Pathak.",
-          "meta": "SKY130 · TinyTapeout 10 · sub-5 ppm/°C TC",
+          "desc": "Fabricated through TinyTapeout 10 (SKY130) at LP-CAS Lab, IIT Gandhinagar.",
+          "meta": "SKY130 · TinyTapeout 10",
           "tag": "Fabricated",
           "tagHot": true
         },
         {
           "title": "Folded-Cascode OTA",
-          "url": "https://github.com/chennakeshavadasa",
-          "desc": "Folded-Cascode OTA submitted through the TinyTapeout GF180 (TTGF0P3) analog shuttle. Full pre-tapeout verification including DRC, LVS, and PEX extraction in GF180MCU-D PDK.",
-          "meta": "GF180MCU-D · TinyTapeout TTGF0P3",
+          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
+          "desc": "Submitted through the TinyTapeout GF180 test shuttle as a hands-on learning exercise in the full tapeout flow.",
+          "meta": "GF180MCU-D · TinyTapeout TTGF0P3 · Test Shuttle",
           "tag": "Fabricated",
-          "tagHot": true
+          "tagHot": false
         }
       ]
     }

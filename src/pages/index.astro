@@ -4,9 +4,7 @@ import WorkList from "../components/WorkList.astro";
 import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
 
-// Data hygiene: star counts and repo totals below are supplied truth that
-// goes stale as the GitHub accounts evolve. Re-verify src/data/*.json when
-// updating content.
+// Data hygiene: re-verify src/data/*.json when updating content.
 import projects from "../data/projects.json";
 import publications from "../data/publications.json";
 import finance from "../data/finance.json";
@@ -15,13 +13,9 @@ const github = "https://github.com/chennakeshavadasa";
 const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
 const email = "nithinpurushothama@gmail.com";
 
-// Resolves a public/ asset path against the configured base ("/") locally,
-// "/repo/" on a GitHub Pages project site).
 const asset = (p) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
 
-// Portrait: drop public/portrait.jpg (or portrait.png) to replace the
-// placeholder frame. It is served at /portrait.jpg (or /portrait.png).
 const portrait = existsSync("public/portrait.jpg")
   ? asset("portrait.jpg")
   : existsSync("public/portrait.png")
@@ -96,38 +90,33 @@ const portrait = existsSync("public/portrait.jpg")
           <span class="k">Omni Design Technologies</span>
           <span>
             <span class="mono" style="font-size:0.76rem">Bengaluru, India · Analog Design Intern · March 2026 – Present</span><br />
-            Designing Bandgap Core and Reference Analog blocks for PVT Monitor and Reference IPs in TSMC 28&nbsp;nm CMOS.
-            Replaced BG CORE opamp with a self-biased folded-cascode OTA and always-on startup circuit, fixing a common-mode latch bug.
-            Owns REF ANALOG: 5 temperature-compensated high-PSRR reference voltages and an 8&times;200&nbsp;&mu;A current reference
-            with trim-based programmability achieving &plusmn;20&nbsp;ppm/&deg;C drift.
+            Designing Bandgap Core and Reference Analog IPs in TSMC 28&nbsp;nm — replaced the BG CORE opamp
+            with a self-biased folded-cascode OTA, fixing a common-mode latch bug; owns five temperature-compensated
+            reference voltages and an 8&times;200&nbsp;&mu;A current reference with &plusmn;20&nbsp;ppm/&deg;C drift.
           </span>
         </li>
         <li>
           <span class="k">PhyTau Semiconductors</span>
           <span>
             <span class="mono" style="font-size:0.76rem">Bengaluru, India · Analog Design Engineer · October 2025 – February 2026</span><br />
-            Worked on a 4-input PWM comparator with hysteresis for a multi-phase DC-DC converter SoC in UMC 55&nbsp;nm CMOS.
-            Redesigned comparator to introduce programmable hysteresis at the first stage, eliminating trip-point glitches and
-            reducing propagation delay; reduced power consumption by 30%.
+            Redesigned a 4-input PWM comparator for a multi-phase DC-DC converter SoC in UMC 55&nbsp;nm —
+            added programmable hysteresis, eliminated trip-point glitches, and cut power by 30%.
           </span>
         </li>
         <li>
           <span class="k">IIT Gandhinagar — LP-CAS Lab</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">Gandhinagar, India · Research Intern (Advisor: Prof. Madhav K. Pathak) · February 2025 – August 2025</span><br />
-            Developed Ron/gm-based design methodology for non-linear dynamic amplifiers; proposed a Ring Amplifier LDO architecture;
-            proposed a translinear MAC architecture for analog neural networks using digitally controlled subthreshold MOSFET cells.
-            Teaching Assistant for graduate course PMIC Design (EE660).
-            Tapeout: sub-5&nbsp;ppm/&deg;C bandgap reference in SKY130 through TinyTapeout 10.
+            <span class="mono" style="font-size:0.76rem">Gandhinagar, India · Research Intern · February 2025 – August 2025</span><br />
+            Developed the Ron/gm design methodology for dynamic amplifiers; proposed Ring Amplifier LDO and
+            translinear MAC architectures; TA for PMIC Design (EE660); taped out a sub-5&nbsp;ppm/&deg;C BGR
+            through TinyTapeout 10.
           </span>
         </li>
         <li>
           <span class="k">ISRO — Master Control Facility</span>
           <span>
             <span class="mono" style="font-size:0.76rem">P Hassan, India · Intern · October 2023 – November 2023</span><br />
-            GeoSat-based satellite communication in the Antenna System for Satellite TTC within C-Band (6&nbsp;GHz)
-            at the Baseband RF Division, Master Control Facility. Calibrated antenna systems to achieve
-            Cross-Polar Discrimination (XPD) during In-Orbit Testing of GSAT-31.
+            Calibrated C-Band antenna systems to achieve XPD compliance during In-Orbit Testing of GSAT-31.
           </span>
         </li>
       </ul>
@@ -163,77 +152,79 @@ const portrait = existsSync("public/portrait.jpg")
         <li>
           <span class="k">IEEE SSCS &ldquo;Code-a-Chip&rdquo; Travel Grant — 2026</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">IEEE Solid-State Circuits Society (SSCS) — Open-Source Ecosystem (TC-OSE)</span><br />
-            Awarded $5,000 travel grant (Young Professional&rsquo;s category) for &ldquo;Ron/gm Based Design Methodology for
-            Dynamic Amplifiers&rdquo; &mdash; a notebook demonstrating a novel design methodology for inverter-based dynamic
-            amplifiers on IHP SG13G2 using open-source EDA tools. Presented at ESSERC 2026, Palma de Mallorca, Spain.
+            <span class="mono" style="font-size:0.76rem">IEEE Solid-State Circuits Society · Open-Source Ecosystem (TC-OSE)</span><br />
+            $5,000 travel grant (Young Professional&rsquo;s category) for the Ron/gm methodology notebook
+            on IHP SG13G2 using open-source EDA tools. Presented at ESSERC 2026, Palma de Mallorca, Spain.
           </span>
-        </li>
-      </ul>
-    </section>
-
-    <section class="section" id="skills" aria-labelledby="skills-h">
-      <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">5</span>
-        <h2 class="section-title" id="skills-h">Skills</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-      </header>
-
-      <ul class="cv-highlights" data-reveal>
-        <li>
-          <span class="k">Core Skills</span>
-          <span>Analog IC Design, Switched-Capacitor Amplifiers, Ring Amplifiers, LDOs, BGRs, OTAs, CMOS Circuit Design, Tapeout (DRC, LVS, PEX), Mixed-Signal Simulation</span>
-        </li>
-        <li>
-          <span class="k">EDA Tools</span>
-          <span>Cadence Virtuoso/Spectre, NGSpice, Xschem, Magic VLSI, KLayout, Netgen, LTspice, Keysight ADS</span>
-        </li>
-        <li>
-          <span class="k">PDKs</span>
-          <span>TSMC 28&nbsp;nm, UMC 55&nbsp;nm, IHP SG13G2 (BiCMOS), SKY130, GF180MCU</span>
-        </li>
-        <li>
-          <span class="k">Languages</span>
-          <span>Python, MATLAB, C/C++, Verilog, SystemVerilog, OCEAN Script, NGSpice Control Language, LaTeX</span>
-        </li>
-        <li>
-          <span class="k">ML &amp; Quant</span>
-          <span>NumPy, Pandas, SciPy, Scikit-learn, PyTorch (basics); Financial modelling, Monte Carlo simulation, Time-series analysis (ARIMA, Holt-Winters), Risk metrics (VaR, CVaR, Sharpe/Sortino)</span>
         </li>
       </ul>
     </section>
 
     <section class="section" id="work" aria-labelledby="work-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">6</span>
+        <span class="section-no" aria-hidden="true">5</span>
         <h2 class="section-title" id="work-h">Selected Work</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        A curated catalogue of what I have designed and built &mdash; tapeouts,
-        analog blocks, and open-source EDA tooling. Every entry is a real artifact.
+        Tapeouts, analog blocks, and open-source EDA tooling &mdash; every entry links to the real artifact.
       </p>
 
       <WorkList groups={projects.groups} />
 
       <p class="section-foot" data-reveal>
-        The full catalogue lives on{" "}
-        <a href={`${github}?tab=repositories`}>GitHub</a>.
+        More on <a href={`${github}?tab=repositories`}>GitHub</a>.
       </p>
     </section>
 
     <section class="section" id="publications" aria-labelledby="publications-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">7</span>
-        <h2 class="section-title" id="publications-h">Publications</h2>
+        <span class="section-no" aria-hidden="true">6</span>
+        <h2 class="section-title" id="publications-h">Publications &amp; Tape-outs</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        Peer-reviewed conference papers. New entries drop in without touching
-        markup &mdash; this section is plain JSON.
+        Conference papers and fabricated silicon.
       </p>
 
       <WorkList groups={publications.groups} />
+    </section>
+
+    <section class="section" id="notebook" aria-labelledby="notebook-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">7</span>
+        <h2 class="section-title" id="notebook-h">Ron/gm Notebook</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <div data-reveal>
+        <p class="notebook-desc">
+          An interactive design notebook accompanying the ESSERC 2026 paper.
+          View it below or open it in Google Colab to run the cells.
+        </p>
+        <div class="notebook-actions">
+          <a
+            href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-colab"
+          >Open in Google Colab ↗</a>
+          <a
+            href="https://nbviewer.org/url/chennakeshavadasa.github.io/nithinpurushothama/ronGm_methodology.ipynb"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-nbviewer"
+          >View static render ↗</a>
+        </div>
+        <div class="notebook-embed-wrap">
+          <iframe
+            src="https://nbviewer.org/url/chennakeshavadasa.github.io/nithinpurushothama/ronGm_methodology.ipynb"
+            class="notebook-embed"
+            title="Ron/gm Design Methodology Notebook"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="finance" aria-labelledby="finance-h">
@@ -243,8 +234,7 @@ const portrait = existsSync("public/portrait.jpg")
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        A parallel interest in quantitative finance drives open-source semiconductor
-        equity analysis tools and methodology work.
+        A parallel interest in quantitative finance drives open-source semiconductor equity analysis tools.
       </p>
 
       <WorkList groups={finance.groups} />
@@ -257,15 +247,19 @@ const portrait = existsSync("public/portrait.jpg")
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <div class="cv-frame" data-reveal>
-        <!-- CV delivery: drop cv.pdf into public/ so it is served at /cv.pdf (this button already targets it). -->
-        <p>
-          A typeset CV, kept current with the work on this page.
-        </p>
-        <a class="btn btn--solid" href={asset("cv.pdf")} target="_blank" rel="noopener noreferrer">
-          <Icon name="down" />
-          Open CV (.pdf)
-        </a>
+      <div class="cv-embed-wrap" data-reveal>
+        <iframe
+          src="https://drive.google.com/file/d/1aR6vUMm0HdG_8t8vji6kfRkIFi19ts4v/preview"
+          class="cv-embed"
+          allow="autoplay"
+          title="Nithin Purushothama — CV"
+        ></iframe>
+        <a
+          href="https://drive.google.com/file/d/1aR6vUMm0HdG_8t8vji6kfRkIFi19ts4v/view?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cv-open-link mono"
+        >Open full CV ↗</a>
       </div>
     </section>
 
