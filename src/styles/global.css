@@ -325,7 +325,7 @@ a {
 
 .masthead__grid {
   display: grid;
-  grid-template-columns: minmax(9rem, 12.5rem) 1fr;
+  grid-template-columns: 360px 1fr;
   grid-template-areas:
     "portrait head"
     "abstract abstract"
