@@ -345,8 +345,7 @@ a {
   grid-area: head;
   align-self: auto;
   text-align: center;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
 }
 .masthead__grid .abstract {
   grid-area: abstract;
