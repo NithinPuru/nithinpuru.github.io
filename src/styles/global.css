@@ -647,13 +647,13 @@ a {
   padding-block: 0.8rem;
   border-top: 1px solid var(--rule);
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.92rem;
 }
 .contact-row .k {
   flex: 0 0 7.5rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.72rem;
+  font-size: 0.84rem;
   color: var(--ink-3);
 }
 .contact-row a {
