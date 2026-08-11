@@ -7794,18 +7794,52 @@ a.anchor-link {
   }
 </style>
 <!-- End of mermaid configuration --><style>
+/* Base table fix */
 .jp-RenderedHTMLCommon table, .jp-OutputArea table, table {
-  border-collapse: collapse !important; display: table !important;
-  width: 100% !important; margin: 1rem 0 !important;
+  border-collapse: collapse !important;
+  display: table !important;
+  width: 100% !important;
+  margin: 1rem 0 !important;
 }
 .jp-RenderedHTMLCommon thead, thead { display: table-header-group !important; }
 .jp-RenderedHTMLCommon tbody, tbody { display: table-row-group !important; }
-.jp-RenderedHTMLCommon tr, tr { display: table-row !important; }
-.jp-RenderedHTMLCommon td, .jp-RenderedHTMLCommon th, td, th {
-  display: table-cell !important; border: 1px solid #ccc !important;
-  padding: 6px 12px !important; text-align: left !important; vertical-align: top !important;
+.jp-RenderedHTMLCommon tr, tr     { display: table-row !important; }
+.jp-RenderedHTMLCommon td,
+.jp-RenderedHTMLCommon th,
+td, th {
+  display: table-cell !important;
+  border: 1px solid #ccc !important;
+  padding: 6px 12px !important;
+  text-align: left !important;
+  vertical-align: top !important;
+  white-space: normal !important;
 }
 th { background: #f0f0f0 !important; font-weight: 600 !important; }
+
+/* Aggressive override for Colab output tables */
+.jp-OutputArea-output tbody tr,
+.jp-RenderedHTML tbody tr,
+.output_html tbody tr,
+div[class*="output"] tbody tr {
+  display: table-row !important;
+}
+.jp-OutputArea-output tbody td,
+.jp-RenderedHTML tbody td,
+.output_html tbody td,
+div[class*="output"] tbody td {
+  display: table-cell !important;
+  border: 1px solid #ccc !important;
+  padding: 6px 12px !important;
+  vertical-align: top !important;
+  white-space: normal !important;
+}
+
+/* Nuclear option — catch anything still breaking */
+* { box-sizing: border-box; }
+table * { max-width: none !important; }
+tbody { display: table-row-group !important; }
+tbody tr { display: table-row !important; }
+tbody tr td { display: table-cell !important; }
 </style>
 </head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light"><div style="position:sticky;top:0;z-index:9999;display:flex;justify-content:space-between;align-items:center;padding:0.65rem 1.5rem;background:#faf9f6;border-bottom:1px solid #ddd;font-family:'Courier New',monospace;font-size:0.78rem;letter-spacing:0.05em;">
