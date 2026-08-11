@@ -118,6 +118,18 @@ const asset = (p) =>
       </ul>
     </section>
 
+    <section class="section" id="publications" aria-labelledby="publications-h">
+      <header class="section-head" data-reveal>
+        <h2 class="section-title" id="publications-h">Publications</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <p class="section-lede" data-reveal>
+        Conference papers.
+      </p>
+
+      <WorkList groups={publications.groups} />
+    </section>
+
     <section class="section" id="awards" aria-labelledby="awards-h">
       <header class="section-head" data-reveal>
         <h2 class="section-title" id="awards-h">Awards</h2>
@@ -136,9 +148,9 @@ const asset = (p) =>
       </ul>
     </section>
 
-    <section class="section" id="work" aria-labelledby="work-h">
+    <section class="section" id="projects" aria-labelledby="projects-h">
       <header class="section-head" data-reveal>
-        <h2 class="section-title" id="work-h">Selected Work</h2>
+        <h2 class="section-title" id="projects-h">Projects</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
@@ -150,18 +162,6 @@ const asset = (p) =>
       <p class="section-foot" data-reveal>
         More on <a href={`${github}?tab=repositories`}>GitHub</a>.
       </p>
-    </section>
-
-    <section class="section" id="publications" aria-labelledby="publications-h">
-      <header class="section-head" data-reveal>
-        <h2 class="section-title" id="publications-h">Publications</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-      </header>
-      <p class="section-lede" data-reveal>
-        Conference papers.
-      </p>
-
-      <WorkList groups={publications.groups} />
     </section>
 
     <section class="section" id="tapeouts" aria-labelledby="tapeouts-h">
