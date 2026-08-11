@@ -51,21 +51,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Build JupyterLite
-        run: |
-          pip install jupyterlite-core jupyterlite-pyodide-kernel
-          mkdir -p jlite-content
-          cp "public/Wrøngm.ipynb" jlite-content/
-          jupyter lite build \
-            --contents jlite-content/ \
-            --output-dir dist/lab \
-            --lite-dir /tmp/jlite-build
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

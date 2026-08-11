@@ -5,6 +5,3 @@ dist/
 .impeccable/mocks/
 npm-debug.log*
 .DS_Store
-public/lab/
-jlite-content/
-/tmp/jlite-build/
