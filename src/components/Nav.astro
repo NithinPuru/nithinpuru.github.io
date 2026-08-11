@@ -21,7 +21,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <nav class="site-nav__links" aria-label="Sections">
       {
         links.map((l) => (
-          <a href={`#${l.id}`} data-nav>
+          <a href={`${base}/#${l.id}`} data-nav>
             {l.label}
           </a>
         ))
