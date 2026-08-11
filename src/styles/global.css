@@ -234,7 +234,9 @@ a {
 }
 
 .masthead {
-  padding-block: clamp(3rem, 8vw, 5.25rem) 2.75rem;
+  padding-top: 1rem;
+  padding-bottom: 2.75rem;
+  margin-top: 0;
   border-bottom: 1px solid var(--rule-strong);
   scroll-margin-top: calc(var(--nav-h) + 1rem);
 }
