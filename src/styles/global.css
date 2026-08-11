@@ -158,7 +158,7 @@ a {
   height: var(--nav-h);
   max-width: calc(var(--content) + 10rem);
   margin-inline: auto;
-  padding-inline: 1.25rem;
+  padding: 0 2rem;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -185,7 +185,7 @@ a {
 }
 .site-nav__links {
   display: flex;
-  gap: 0.1rem;
+  gap: 1.5rem;
   justify-content: flex-end;
   overflow-x: auto;
   scrollbar-width: none;
@@ -346,7 +346,8 @@ a {
   grid-area: head;
   align-self: auto;
   text-align: center;
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 .masthead__grid .abstract {
   grid-area: abstract;
