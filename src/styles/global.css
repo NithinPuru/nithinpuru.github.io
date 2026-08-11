@@ -158,18 +158,14 @@ a {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: var(--nav-h);
   padding: 0 2rem;
 }
 .site-nav__brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   white-space: nowrap;
   text-decoration: none;
-  pointer-events: auto;
 }
 .site-nav__name {
   font-family: var(--font-mono);
@@ -181,11 +177,11 @@ a {
   display: none;
 }
 .site-nav__links {
-  position: absolute;
-  right: 2rem;
   display: flex;
   gap: 1.25rem;
   align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 .site-nav__links::-webkit-scrollbar {
   display: none;
