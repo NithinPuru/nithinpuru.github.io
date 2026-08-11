@@ -7,6 +7,7 @@ import Layout from "../layouts/Layout.astro";
 // Data hygiene: re-verify src/data/*.json when updating content.
 import projects from "../data/projects.json";
 import publications from "../data/publications.json";
+import tapeouts from "../data/tapeouts.json";
 import finance from "../data/finance.json";
 
 const github = "https://github.com/chennakeshavadasa";
@@ -180,19 +181,32 @@ const portrait = existsSync("public/portrait.jpg")
     <section class="section" id="publications" aria-labelledby="publications-h">
       <header class="section-head" data-reveal>
         <span class="section-no" aria-hidden="true">6</span>
-        <h2 class="section-title" id="publications-h">Publications &amp; Tape-outs</h2>
+        <h2 class="section-title" id="publications-h">Publications</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        Conference papers and fabricated silicon.
+        Conference papers.
       </p>
 
-      <a href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/notebook.html`} class="notebook-link">View Ron/gm Methodology Notebook →</a>
+      <WorkList groups={publications.groups} />
+    </section>
+
+    <section class="section" id="tapeouts" aria-labelledby="tapeouts-h">
+      <header class="section-head" data-reveal>
+        <span class="section-no" aria-hidden="true">7</span>
+        <h2 class="section-title" id="tapeouts-h">Tape-outs</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <p class="section-lede" data-reveal>
+        Fabricated silicon.
+      </p>
+
+      <WorkList groups={tapeouts.groups} />
     </section>
 
     <section class="section" id="finance" aria-labelledby="finance-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">7</span>
+        <span class="section-no" aria-hidden="true">8</span>
         <h2 class="section-title" id="finance-h">Quantitative Finance</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -205,7 +219,7 @@ const portrait = existsSync("public/portrait.jpg")
 
     <section class="section" id="cv" aria-labelledby="cv-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">8</span>
+        <span class="section-no" aria-hidden="true">9</span>
         <h2 class="section-title" id="cv-h">Curriculum Vitae</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -228,7 +242,7 @@ const portrait = existsSync("public/portrait.jpg")
 
     <section class="section" id="contact" aria-labelledby="contact-h">
       <header class="section-head" data-reveal>
-        <span class="section-no" aria-hidden="true">9</span>
+        <span class="section-no" aria-hidden="true">10</span>
         <h2 class="section-title" id="contact-h">Contact</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>

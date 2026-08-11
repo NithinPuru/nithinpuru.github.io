@@ -1,0 +1,23 @@
+{
+  "groups": [
+    {
+      "heading": "Tape-outs",
+      "entries": [
+        {
+          "title": "Sub-5 ppm/°C Piecewise-Compensated Bandgap Reference",
+          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
+          "desc": "Nithin Purushothama, Kartikay Mani Tripathi, Prof. Madhav Pathak. Fabricated through TinyTapeout 10, SKY130 PDK, LP-CAS Lab IIT Gandhinagar.",
+          "tag": "Fabricated",
+          "tagHot": true
+        },
+        {
+          "title": "Folded-Cascode OTA",
+          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
+          "desc": "Nithin Purushothama. Submitted through TinyTapeout GF180 (TTGF0P3) test shuttle — a learning exercise in the full tapeout flow.",
+          "tag": "Fabricated",
+          "tagHot": false
+        }
+      ]
+    }
+  ]
+}
