@@ -1,30 +1,67 @@
 ---
-import Layout from '../layouts/Layout.astro';
 import { readFileSync } from 'fs';
 
-let notebookHtml = '';
+let notebookStyles = '';
+let notebookBody = '';
+
 try {
   const raw = readFileSync('public/WrongmNotebook.html', 'utf-8');
-  const match = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-  notebookHtml = match ? match[1] : raw;
+  const headMatch = raw.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+  const bodyMatch = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  notebookStyles = headMatch ? headMatch[1] : '';
+  notebookBody   = bodyMatch ? bodyMatch[1] : raw;
 } catch (e) {
-  notebookHtml = '<p>Notebook not found — run nbconvert first.</p>';
+  notebookBody = '<p style="padding:2rem;">Notebook not found — run nbconvert first.</p>';
 }
 ---
 
-<Layout title="Ron/gm Notebook — Nithin Purushothama">
-  <div class="notebook-page">
-    <div class="notebook-header">
-      <a href="/" class="notebook-back">← Back</a>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ron/gm Notebook — Nithin Purushothama</title>
+    <Fragment set:html={notebookStyles} />
+    <style>
+      .nb-bar {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 1.5rem;
+        background: #faf9f6;
+        border-bottom: 1px solid #ddd;
+        font-family: monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+      }
+      .nb-bar a {
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #111;
+      }
+      .nb-bar .colab {
+        border: 1px solid #111;
+        padding: 0.3rem 0.85rem;
+      }
+      .nb-bar .colab:hover {
+        background: #111;
+        color: #faf9f6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nb-bar">
+      <a href="/">← Back</a>
       <a
         href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
         target="_blank"
         rel="noopener noreferrer"
-        class="notebook-colab-btn"
+        class="colab"
       >Open in Google Colab ↗</a>
     </div>
-    <div class="notebook-body">
-      <Fragment set:html={notebookHtml} />
-    </div>
-  </div>
-</Layout>
+    <Fragment set:html={notebookBody} />
+  </body>
+</html>

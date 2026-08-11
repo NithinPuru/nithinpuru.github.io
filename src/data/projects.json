@@ -25,38 +25,32 @@
         {
           "title": "Process-Invariant Ring Amplifier",
           "url": "https://github.com/chennakeshavadasa/PVT-Invariant-Ring-Amplifier",
-          "desc": "Ring amplifier in IHP SG13G2 with deadzone regulation for robust PVT performance, validated in a switched-capacitor amplifier.",
-          "meta": "IHP SG13G2 · BiCMOS · Ring Amplifier"
+          "desc": "Ring amplifier in IHP SG13G2 with deadzone regulation for robust PVT performance, validated in a switched-capacitor amplifier."
         },
         {
           "title": "Two-Transistor Subthreshold Voltage Reference",
           "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
-          "desc": "An ultra-low power voltage reference using native NMOS subthreshold operation, achieving sub-picoWatt power.",
-          "meta": "SKY130 · Subthreshold · Native NMOS"
+          "desc": "An ultra-low power voltage reference using native NMOS subthreshold operation, achieving sub-picoWatt power."
         },
         {
           "title": "Low Dropout Voltage Regulator",
           "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
-          "desc": "LDO in SKY130 with integrated digital on-chip load for transient testing.",
-          "meta": "SKY130 · LDO"
+          "desc": "LDO in SKY130 with integrated digital on-chip load for transient testing."
         },
         {
           "title": "Rail-to-Rail OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/tree/main/OTAs/Rail_to_Rail_OTA_Inp_IP/without_internal_bias",
-          "desc": "Folded-cascode OTA with complementary PMOS/NMOS differential pair for full rail-to-rail input swing.",
-          "meta": "SKY130 · Folded Cascode"
+          "desc": "Folded-cascode OTA with complementary PMOS/NMOS differential pair for full rail-to-rail input swing."
         },
         {
           "title": "Fully Differential OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
-          "desc": "Two-stage fully differential OTA with buffer-based CM feedback for stable output common-mode level.",
-          "meta": "SKY130 · Fully Differential"
+          "desc": "Two-stage fully differential OTA with buffer-based CM feedback for stable output common-mode level."
         },
         {
           "title": "Power-on Reset Circuit",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
-          "desc": "Current comparator-based POR in SKY130 that asserts Enable at a defined VDD threshold across PVT corners.",
-          "meta": "SKY130 · POR"
+          "desc": "Current comparator-based POR in SKY130 that asserts Enable at a defined VDD threshold across PVT corners."
         }
       ]
     },
@@ -67,7 +61,6 @@
           "title": "PVT Simulation Automation",
           "url": "https://github.com/chennakeshavadasa/Cross_corners_script_Ngspice",
           "desc": "Python framework for automated PVT corner sweeps in NGSpice with metric extraction and comparison plots.",
-          "meta": "Python · NGSpice · Open-Source",
           "tag": "Open Source",
           "tagHot": false,
           "links": [
@@ -81,7 +74,6 @@
           "title": "gm/ID Extraction — SKY130",
           "url": "https://github.com/chennakeshavadasa/gmid_SKY130",
           "desc": "gm/ID lookup tables and extraction scripts for SKY130, enabling structured gm/ID-based design with open-source tools.",
-          "meta": "Python · SKY130 · gm/ID",
           "tag": "Open Source",
           "tagHot": false
         }
