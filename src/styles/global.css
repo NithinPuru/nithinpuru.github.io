@@ -845,3 +845,64 @@ a {
   height: 720px;
   border: 1px solid var(--rule-strong);
 }
+
+/* ── /notebook page ───────────────────────────────────────── */
+.notebook-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+.notebook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.notebook-back {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+}
+.notebook-back:hover {
+  color: var(--accent);
+}
+.notebook-colab-btn {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--rule-strong);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.notebook-colab-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.notebook-body {
+  width: 100%;
+}
+.notebook-body pre {
+  overflow-x: auto;
+}
+.notebook-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+.notebook-link:hover {
+  opacity: 0.75;
+}

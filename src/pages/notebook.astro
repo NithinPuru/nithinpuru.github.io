@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { readFileSync } from 'fs';
+
+let notebookHtml = '';
+try {
+  const raw = readFileSync('public/WrongmNotebook.html', 'utf-8');
+  const match = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  notebookHtml = match ? match[1] : raw;
+} catch (e) {
+  notebookHtml = '<p>Notebook not found — run nbconvert first.</p>';
+}
+---
+
+<Layout title="Ron/gm Notebook — Nithin Purushothama">
+  <div class="notebook-page">
+    <div class="notebook-header">
+      <a href="/" class="notebook-back">← Back</a>
+      <a
+        href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="notebook-colab-btn"
+      >Open in Google Colab ↗</a>
+    </div>
+    <div class="notebook-body">
+      <Fragment set:html={notebookHtml} />
+    </div>
+  </div>
+</Layout>

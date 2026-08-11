@@ -2,6 +2,7 @@
 import Nav from "../components/Nav.astro";
 import "../styles/global.css";
 
+const { title: pageTitle } = Astro.props;
 const canonical = Astro.site?.href ?? Astro.url.href;
 
 // Resolves a public/ asset path against the configured base so it stays
@@ -37,7 +38,7 @@ const jsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nithin Purushothama — Analog IC Designer</title>
+    <title>{pageTitle ?? "Nithin Purushothama — Analog IC Designer"}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Nithin Purushothama" />
     <meta property="og:type" content="website" />
