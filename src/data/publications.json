@@ -13,11 +13,11 @@
           "links": [
             {
               "label": "IEEE SSCS Code-a-Chip Travel Grant — $5,000",
-              "url": "https://sscs.ieee.org/membership/young-professionals/ieee-sscs-code-a-chip-travel-grant-award"
+              "url": "https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io"
             },
             {
               "label": "View Notebook",
-              "url": "https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io"
+              "url": "https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
             }
           ]
         },
