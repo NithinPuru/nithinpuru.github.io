@@ -1,7 +1,6 @@
 (function () {
-  var docEl = document.documentElement;
-  docEl.classList.add("js");
-
+  // The `.js` root class is added synchronously in `<head>` (Layout.astro) so
+  // reveal-hidden content never flashes visible before the script runs.
   var reduce =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -57,7 +56,13 @@
 
   function setActive(id) {
     navLinks.forEach(function (link) {
-      link.classList.toggle("is-active", link.hash === "#" + id);
+      var active = link.hash === "#" + id;
+      link.classList.toggle("is-active", active);
+      if (active) {
+        link.setAttribute("aria-current", "true");
+      } else {
+        link.removeAttribute("aria-current");
+      }
     });
   }
 

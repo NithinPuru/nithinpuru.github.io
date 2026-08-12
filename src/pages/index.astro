@@ -14,16 +14,10 @@ const github = "https://github.com/chennakeshavadasa";
 const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
 const email = "nithinpurushothama@gmail.com";
 
-const asset = (p) =>
-  `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
-
-
 ---
 <Layout>
   <div class="sheet">
-    <header class="masthead" id="about" style="text-align:center; width:100%;">
-
-
+    <header class="masthead" id="about">
       <div class="masthead__grid">
 
 
@@ -67,7 +61,7 @@ const asset = (p) =>
         <li>
           <span class="k">Omni Design Technologies</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">Bengaluru, India · Analog Design Intern · March 2026 – Present</span><br />
+            <span class="mono">Bengaluru, India · Analog Design Intern · March 2026 – Present</span><br />
             Designing Bandgap Core and Reference Analog IPs in TSMC 28&nbsp;nm — replaced the BG CORE opamp
             with a self-biased folded-cascode OTA, fixing a common-mode latch bug; owns five temperature-compensated
             reference voltages and an 8&times;200&nbsp;&mu;A current reference with &plusmn;20&nbsp;ppm/&deg;C drift.
@@ -76,7 +70,7 @@ const asset = (p) =>
         <li>
           <span class="k">PhyTau Semiconductors</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">Bengaluru, India · Analog Design Engineer · October 2025 – February 2026</span><br />
+            <span class="mono">Bengaluru, India · Analog Design Engineer · October 2025 – February 2026</span><br />
             Redesigned a 4-input PWM comparator for a multi-phase DC-DC converter SoC in UMC 55&nbsp;nm —
             added programmable hysteresis, eliminated trip-point glitches, and cut power by 30%.
           </span>
@@ -84,7 +78,7 @@ const asset = (p) =>
         <li>
           <span class="k">IIT Gandhinagar — LP-CAS Lab</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">Gandhinagar, India · Research Intern · February 2025 – August 2025</span><br />
+            <span class="mono">Gandhinagar, India · Research Intern · February 2025 – August 2025</span><br />
             Developed the Ron/gm design methodology for dynamic amplifiers; proposed Ring Amplifier LDO and
             translinear MAC architectures; TA for PMIC Design (EE660); taped out a sub-5&nbsp;ppm/&deg;C BGR
             through TinyTapeout 10.
@@ -93,7 +87,7 @@ const asset = (p) =>
         <li>
           <span class="k">ISRO — Master Control Facility</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">P Hassan, India · Intern · October 2023 – November 2023</span><br />
+            <span class="mono">P Hassan, India · Intern · October 2023 – November 2023</span><br />
             Calibrated C-Band antenna systems to achieve XPD compliance during In-Orbit Testing of GSAT-31.
           </span>
         </li>
@@ -110,7 +104,7 @@ const asset = (p) =>
         <li>
           <span class="k">Visvesvaraya Technological University</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">Bengaluru, India · December 2021 – June 2025</span><br />
+            <span class="mono">Bengaluru, India · December 2021 – June 2025</span><br />
             Bachelor of Engineering — Electronics and Communication Engineering<br />
             CGPA: 8.6 / 10
           </span>
@@ -140,7 +134,7 @@ const asset = (p) =>
         <li>
           <span class="k">IEEE SSCS &ldquo;Code-a-Chip&rdquo; Travel Grant — 2026</span>
           <span>
-            <span class="mono" style="font-size:0.76rem">IEEE Solid-State Circuits Society · Open-Source Ecosystem (TC-OSE)</span><br />
+            <span class="mono">IEEE Solid-State Circuits Society · Open-Source Ecosystem (TC-OSE)</span><br />
             $5,000 travel grant (Young Professional&rsquo;s category) for the Ron/gm methodology notebook
             on IHP SG13G2 using open-source EDA tools. Presented at ESSERC 2026, Palma de Mallorca, Spain.
           </span>
@@ -199,6 +193,8 @@ const asset = (p) =>
           src="https://drive.google.com/file/d/1aR6vUMm0HdG_8t8vji6kfRkIFi19ts4v/preview"
           class="cv-embed"
           allow="autoplay"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
           title="Nithin Purushothama — CV"
         ></iframe>
         <a
@@ -206,7 +202,12 @@ const asset = (p) =>
           target="_blank"
           rel="noopener noreferrer"
           class="cv-open-link mono"
-        >Open full CV ↗</a>
+        >
+          Open full CV
+          <span class="btn__arrow" aria-hidden="true">
+            <Icon name="external" />
+          </span>
+        </a>
       </div>
     </section>
 

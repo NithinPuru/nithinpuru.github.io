@@ -1,25 +1,6 @@
 {
   "groups": [
     {
-      "heading": "Tape-outs",
-      "entries": [
-        {
-          "title": "Sub-5 ppm/°C Bandgap Reference",
-          "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130",
-          "desc": "Piecewise-compensated bandgap reference with a low-power startup circuit, fabricated through TinyTapeout 10 in SKY130.",
-          "tag": "Fabricated",
-          "tagHot": true
-        },
-        {
-          "title": "Folded-Cascode OTA",
-          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
-          "desc": "A learning exercise — submitted through the TinyTapeout GF180 test shuttle to experience the full tapeout flow end-to-end.",
-          "tag": "Fabricated",
-          "tagHot": false
-        }
-      ]
-    },
-    {
       "heading": "Analog IC Design",
       "entries": [
         {
