@@ -1,19 +1,6 @@
 {
   "groups": [
     {
-      "heading": "Quantitative Finance Projects",
-      "entries": [
-        {
-          "title": "Career Semi-Quant Terminal",
-          "url": "https://github.com/chennakeshavadasa/career-semi-quant",
-          "desc": "Zero-backend, single-HTML web application providing institutional-grade quantitative analysis of 40+ semiconductor companies. Pure-JavaScript analytics engine implementing RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, Sharpe/Sortino ratios, and GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.",
-          "meta": "JavaScript · Semiconductor Equities · Monte Carlo · VaR/CVaR · Sharpe/Sortino",
-          "tag": "Live",
-          "tagHot": true
-        }
-      ]
-    },
-    {
       "heading": "Quantitative Methods",
       "entries": [
         {
