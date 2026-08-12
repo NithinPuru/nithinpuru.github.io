@@ -13,7 +13,7 @@ const bodyClose = notebookRaw.indexOf("</body>");
 
 const headContent = notebookRaw.slice(headOpen + 6, headClose).replace(
   /<title>.*?<\/title>/,
-  "<title>Wrøngm — Ron/gm Design Methodology</title>",
+  "<title>Wrøngm - Ron/gm Design Methodology</title>",
 );
 const bodyContent = notebookRaw.slice(bodyTagEnd + 1, bodyClose);
 ---
