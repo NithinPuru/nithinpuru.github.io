@@ -9,9 +9,8 @@ sections, and hairline rules.
 - Publications & tape-outs, including the IIT Gandhinagar LPC group's
   sub-5 ppm/°C voltage-reference tape-out (TinyTapeout 10)
 - A quantitative-finance corner (Career Semi Quant Terminal and more)
-- Framed portrait in the masthead, CV that opens in a new tab, fixed
-  running-head SPA navigation, and elegant reveal animations with full
-  reduced-motion support
+- CV embedded from Google Drive, fixed running-head SPA navigation, and
+  elegant reveal animations with full reduced-motion support
 
 ## Stack
 
@@ -19,6 +18,7 @@ sections, and hairline rules.
   framework, tiny bundle, fast LCP, CLS 0
 - Self-hosted [KaTeX](https://katex.org) Computer Modern fonts (no CDN)
 - Plain CSS custom properties — no UI framework
+- `@astrojs/sitemap` — sitemap + dynamic `robots.txt`
 
 ## Getting started
 
@@ -39,32 +39,45 @@ npm run preview    # serve dist/
 ```
 src/
   pages/index.astro          # masthead + 7 sections (the whole page)
+  pages/notebook.astro       # /notebook route — re-slices the nbconvert export
+  pages/404.astro            # generated 404 page (picks up the site base path)
+  pages/robots.txt.ts        # dynamic robots.txt, points at sitemap-index.xml
   layouts/Layout.astro       # head, meta, JSON-LD, direction contract
   components/
-    Nav.astro                # fixed running-head navigation
     WorkList.astro           # JSON-driven entry list component
     Icon.astro               # 1.5px-stroke SVG line icons
   data/
     projects.json            # Selected Work entries
     publications.json        # Publications & Tape-outs entries
+    tapeouts.json            # Tape-outs (silicon-fabricated work) entries
     finance.json             # Quantitative Finance entries
+    notebook.html            # nbconvert (JupyterLab) export served at /notebook
   styles/global.css          # all tokens and styling
-  scripts/reveal.js          # scroll reveals, stagger, nav scroll-spy
+  scripts/reveal.js          # scroll reveals, stagger, section scroll-spy
 public/
   fonts/                     # self-hosted KaTeX Computer Modern fonts
-  portrait.jpg               # optional portrait; drop here (or .png) to fill the masthead frame
   favicon.svg
 ```
 
-## Portrait
+Navigation is a single scrollable page; `src/scripts/reveal.js` handles the
+scroll-spy on the masthead's in-page anchor links. There is no separate
+`Nav.astro` — the "running head" is part of the masthead, and its links are
+pure fragment anchors.
 
-The masthead shows a framed 4:5 portrait placeholder. Drop `public/portrait.jpg`
-(or `portrait.png`) into the repo to replace it — no code change needed.
+## Notebook
+
+The Ron/gm methodology notebook renders at `/notebook` (nav link "NB"). It is
+an Astro route over a JupyterLab nbconvert export (`src/data/notebook.html`),
+sliced into head + body and themed to the site paper. To refresh it,
+re-export from JupyterLab (notebook: HTML) and overwrite
+`src/data/notebook.html` — no route changes needed.
 
 ## CV
 
-Drop your CV as `public/cv.pdf`; the "Open CV (.pdf)" button already links to
-`/cv.pdf` and opens it in a new tab.
+The CV is embedded from Google Drive in the Curriculum Vitae section (a framed
+A4 preview plus an "Open full CV" link). To change it, replace the two
+`drive.google.com` URLs in `src/pages/index.astro` with the new document's
+embed/link URLs.
 
 ## Adding content
 

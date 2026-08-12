@@ -52,28 +52,20 @@
       "css": ".ds-entry { border-top: 1px solid rgba(25,24,20,0.16); padding-block: 1.05rem; } .ds-entry:first-child { border-top: none; } .ds-entry-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; } .ds-entry-title { margin: 0; font-family: 'KaTeX_Main', Georgia, serif; font-size: 1.16rem; font-weight: 700; line-height: 1.4; } .ds-entry-title a { color: #191814; text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: rgba(25,24,20,0.34); text-underline-offset: 4px; } .ds-entry-title a:hover { color: #2b4863; } .ds-tag { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #6f6a5e; } .ds-tag-hot { color: #8f3526; } .ds-entry-desc { margin: 0.4rem 0 0.55rem; max-width: 40rem; color: #45413a; font-size: 0.98em; text-align: justify; hyphens: auto; } .ds-entry-meta { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.76rem; color: #6f6a5e; }"
     },
     {
-      "name": "Open CV Button",
-      "kind": "button",
-      "refersTo": "cv-btn",
-      "description": "Solid primary document action — ink fill inverting to paper on hover; opens /cv.pdf in a new tab.",
-      "html": "<a class=\"ds-cv-btn\" href=\"/cv.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Open CV (.pdf)</a>",
-      "css": ".ds-cv-btn { display: inline-flex; align-items: center; gap: 0.55rem; font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: #faf9f4; background: #191814; border: 1px solid #191814; padding: 0.78rem 1.15rem; text-decoration: none; transition: color 0.22s cubic-bezier(0.16,1,0.3,1), background-color 0.22s cubic-bezier(0.16,1,0.3,1); } .ds-cv-btn:hover, .ds-cv-btn:focus-visible { color: #191814; background: transparent; outline: 2px solid #2b4863; outline-offset: 3px; }"
+      "name": "CV Embed",
+      "kind": "custom",
+      "refersTo": "cv-embed",
+      "description": "The CV is a framed A4 Google Drive preview (aspect-ratio 210/297, hairline border, max 700px) with a mono uppercase 'Open full CV' accent link below it.",
+      "html": "<div class=\"ds-cv-embed\"><iframe title=\"CV preview\" class=\"ds-cv-embed-frame\"></iframe><a class=\"ds-cv-open\" href=\"https://drive.google.com/\">Open full CV</a></div>",
+      "css": ".ds-cv-embed { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; } .ds-cv-embed-frame { width: 100%; max-width: 700px; aspect-ratio: 210 / 297; border: 1px solid rgba(25,24,20,0.34); } .ds-cv-open { font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: #2b4863; text-decoration: none; } .ds-cv-open:hover { text-decoration: underline; }"
     },
     {
       "name": "Ghost Button (Get in touch)",
       "kind": "button",
-      "refersTo": "cv-btn",
+      "refersTo": "btn-ghost",
       "description": "Outlined masthead action that scrolls to the contact section.",
       "html": "<a class=\"ds-btn-ghost\" href=\"#contact\">Get in touch</a>",
       "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 0.55rem; font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: #191814; background: transparent; border: 1px solid #191814; padding: 0.78rem 1.15rem; text-decoration: none; transition: color 0.22s cubic-bezier(0.16,1,0.3,1), background-color 0.22s cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover, .ds-btn-ghost:focus-visible { color: #faf9f4; background: #191814; outline: 2px solid #2b4863; outline-offset: 3px; }"
-    },
-    {
-      "name": "Portrait Figure",
-      "kind": "custom",
-      "refersTo": "paper",
-      "description": "Framed 4:5 portrait leading the masthead beside the name; hairline border holds the real image or a typewriter placeholder.",
-      "html": "<figure class=\"ds-portrait\"><span class=\"ds-portrait-ph\">portrait</span><figcaption>Fig. 1 — Portrait</figcaption></figure>",
-      "css": ".ds-portrait { margin: 0; width: 100%; max-width: 12.5rem; } .ds-portrait-ph { display: flex; align-items: center; justify-content: center; aspect-ratio: 4 / 5; border: 1px solid rgba(25,24,20,0.34); font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: #6f6a5e; } .ds-portrait figcaption { margin-top: 0.4rem; font-family: 'KaTeX_Typewriter', 'Courier New', monospace; font-size: 0.7rem; color: #6f6a5e; text-align: right; }"
     },
     {
       "name": "Group Rubric",

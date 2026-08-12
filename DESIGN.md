@@ -165,17 +165,17 @@ The reusable, JSON-driven list item (Work / Publications / Finance all feed one 
 ### Group Rubric
 Typewriter 0.74rem uppercase in Ink Three, prefixed by an em-dash in Annotation Soft, preceding each group of entries inside a section.
 
-### CV Button
-1px ink frame, ink fill with paper text, mono uppercase 0.78rem with 0.07em tracking; inverts (transparent fill, ink text) on hover/focus. Square corners.
+### CV Section
+The CV is a framed A4 Google Drive preview (`aspect-ratio: 210 / 297`, hairline border, max 700px) centered in the section, with a mono uppercase "Open full CV" link (0.78rem, accent, hairline underline on hover) below it.
 
 ### Contact Rows / CV Highlights
 Mono small-caps labels (`flex: 0 0 7.5–8.5rem`) followed by the value, separated by 1px top rules; links accent with a hairline underline. On mobile the row stacks to a column.
 
 ### Buttons
-Two faces of one button grammar — a square 1px ink frame, mono uppercase 0.78rem with 0.07em tracking, and an arrow SVG in the accent. **Solid** (`--solid`): ink fill with paper text, inverting on hover — the CV action, which opens `/cv.pdf` in a new tab. **Ghost** (`--ghost`): transparent fill with ink text, filling on hover — the masthead "Get in touch" anchor, which scrolls to the contact section.
+One face of the button grammar — a square 1px ink frame, mono uppercase 0.78rem with 0.07em tracking, and an arrow SVG in the accent. **Ghost** (`--ghost`): transparent fill with ink text, filling on hover — the masthead "Get in touch" anchor (scrolls to contact) and the 404 page's "Back to the home page".
 
 ### Signature: The Masthead (`\maketitle`)
-A framed 4:5 portrait figure (`Fig. 1`) leads the grid at the top beside the name, its hairline border holding either the real image (`public/portrait.jpg|png`) or a typewriter "portrait" placeholder; the name and typewriter role/affiliation line sit beside it, with the small-caps "Abstract" over two justified paragraphs and a "Get in touch" ghost button spanning below. Above it, the authored device: a mechanical 1px hairline that stroke-draws in, then a blur-settle of the whole block.
+The name set huge in Computer Modern over a typewriter role/affiliation line, the small-caps "Abstract" over two justified paragraphs, and a "Get in touch" ghost button spanning below. Above it, the authored device: a mechanical 1px hairline that stroke-draws in, then a blur-settle of the whole block.
 
 ## Do's and Don'ts
 

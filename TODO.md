@@ -22,9 +22,6 @@ assets, or deploy-time configuration.
 
 ## Content blockers
 
-- [ ] Drop `public/cv.pdf` — the "Open CV (.pdf)" button currently links to a
-      file that doesn't exist yet (404).
-- [ ] Drop `public/portrait.jpg` (or `.png`, 4:5) to fill the masthead frame.
 - [ ] Re-verify the GitHub star counts and the "28 repositories" figure in
       `src/data/*.json` and `src/pages/index.astro` — they go stale over time
       and must never be fabricated.
@@ -33,25 +30,26 @@ assets, or deploy-time configuration.
 
 - [ ] Replace the placeholder default `site` (`https://nithinyahu.example`) in
       `astro.config.mjs` — CI overrides it, but local builds still use it.
-- [ ] Add `og:image` / `twitter:image` (1200×630 PNG) to
-      `src/layouts/Layout.astro`; none exists today.
-- [ ] Add a sitemap (`@astrojs/sitemap`) once the domain is final, then add the
-      matching `Sitemap:` line to `public/robots.txt`.
+- [x] `og:image` / `twitter:image` wired to `public/og-image.png` (1200×630
+      name banner) in `src/layouts/Layout.astro`.
+- [x] Add a sitemap (`@astrojs/sitemap`) and wire the matching `Sitemap:` line
+      into `robots.txt` — both are in place; URLs still use the placeholder
+      domain until the item above is resolved.
+- [x] `llms.txt` route added (`src/pages/llms.txt.ts`).
 - [ ] Submit the site to Google Search Console.
 
 ## Performance / Core Web Vitals
 
-- [ ] When a real portrait is added, preload it (`<link rel="preload"
-      as="image" fetchpriority="high">`); width/height and aspect-ratio are
-      already reserved, so CLS stays at 0.
 - [ ] Re-check LCP (< 2.5 s) on the deployed URL with Lighthouse / PageSpeed
       Insights. Lab audit at time of writing: LCP 1.4 s, CLS 0, TBT 0 ms.
 
 ## Security & best practices (deploy-time headers)
 
-- [ ] Add `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`,
-      `Referrer-Policy`, and `Permissions-Policy` headers on the hosting
-      edge/CDN.
+- [x] `public/_headers` carries `X-Content-Type-Options: nosniff`,
+      `Referrer-Policy`, and `Permissions-Policy`. Note: GitHub Pages ignores
+      `_headers`; the headers apply only if hosted on Netlify / Cloudflare
+      Pages, or set manually at the edge. HSTS still needs a custom HTTPS
+      domain.
 - [ ] Add a `Content-Security-Policy` (start in report-only). Note: the reveal
       script is an inline module, so the policy needs a hash/nonce for it.
 - [ ] `npm audit` reports 0 vulnerabilities — re-run on dependency bumps.
