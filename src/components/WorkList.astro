@@ -39,7 +39,7 @@ const { groups } = Astro.props;
               <li class="entry" data-reveal>
                 <div class="entry__top">
                   <h4 class="entry__title">
-                    <a href={entry.url}>
+                    <a href={entry.url} target="_blank" rel="noopener noreferrer">
                       {entry.title}
                       {entry.url && (
                         <span class="entry__arrow" aria-hidden="true">
@@ -66,7 +66,7 @@ const { groups } = Astro.props;
                   {entry.links && (
                     <span class="entry__links">
                       {entry.links.map((link) => (
-                        <a href={link.url}>
+                        <a href={link.url} target="_blank" rel="noopener noreferrer">
                           <Icon name="external" />
                           {link.label}
                         </a>
