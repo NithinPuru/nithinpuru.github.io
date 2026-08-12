@@ -53,7 +53,7 @@ const { groups } = Astro.props;
                     </span>
                   )}
                 </div>
-                {entry.desc && <p class="entry__desc">{entry.desc}</p>}
+                {entry.desc && <p class="entry__desc" set:html={entry.desc}></p>}
                 <div class="entry__meta">
                   {entry.meta && <span>{entry.meta}</span>}
                   {entry.links && (
