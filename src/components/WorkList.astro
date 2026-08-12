@@ -14,6 +14,7 @@ interface Entry {
   tag?: string;
   tagHot?: boolean;
   links?: EntryLink[];
+  abstract?: string;
 }
 
 interface Group {
@@ -54,6 +55,12 @@ const { groups } = Astro.props;
                   )}
                 </div>
                 {entry.desc && <p class="entry__desc" set:html={entry.desc}></p>}
+                {entry.abstract && (
+                  <details class="entry__abstract">
+                    <summary>Abstract</summary>
+                    <div class="abstract-content" set:html={entry.abstract} />
+                  </details>
+                )}
                 <div class="entry__meta">
                   {entry.meta && <span>{entry.meta}</span>}
                   {entry.links && (
@@ -95,5 +102,25 @@ const { groups } = Astro.props;
   }
   .entry__links a svg {
     color: var(--accent);
+  }
+  .entry__abstract {
+    margin-top: 0.5rem;
+  }
+  .entry__abstract summary {
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--accent);
+    user-select: none;
+    font-size: 0.9rem;
+  }
+  .entry__abstract summary:hover {
+    text-decoration: underline;
+  }
+  .abstract-content {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    font-size: 0.9rem;
+    border-left: 2px solid var(--accent);
+    color: var(--ink-2);
   }
 </style>
