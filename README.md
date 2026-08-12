@@ -1,4 +1,4 @@
-# nithinyahu
+# Nithin Purushothama
 
 A single-page portfolio for **Nithin P** ([chennakeshavadasa](https://github.com/chennakeshavadasa)),
 an Analog/Mixed-Signal IC designer — typeset like a freshly-compiled LaTeX
