@@ -4,13 +4,6 @@
       "heading": "Projects",
       "entries": [
         {
-          "title": "Career Semi-Quant Terminal",
-          "url": "https://github.com/chennakeshavadasa/career-semi-quant",
-          "desc": "&bull; Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 40+ semiconductor companies.<br/>&bull; Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine.<br/>&bull; Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.",
-          "tag": "Featured",
-          "tagHot": true
-        },
-        {
           "title": "Design of Power-on Reset Circuit",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
           "desc": "&bull; Designed a POR circuit in SKY130 PDK using a current comparator with PMOS/NMOS current mirrors for supply threshold detection; VPOR asserts Enable at VDD = 1.5 V across PVT corners."
