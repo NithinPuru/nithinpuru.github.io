@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const home = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
+---
+<Layout title="Page not found — Nithin Purushothama" hideNav>
+  <div class="sheet not-found">
+    <p class="not-found__code mono">404</p>
+    <h1>Page not found</h1>
+    <p class="not-found__text">
+      The page you were looking for does not exist on this site.
+    </p>
+    <a class="btn btn--ghost" href={home}>Back to the home page</a>
+  </div>
+</Layout>
+
+<style>
+  .not-found {
+    padding-top: calc(var(--nav-h) + 4rem);
+    padding-bottom: 6rem;
+    text-align: center;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding-inline: 1.4rem;
+  }
+  .not-found__code {
+    margin: 0 0 1.5rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+  }
+  .not-found h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.6rem, 3.6vw, 2.05rem);
+    font-weight: 700;
+  }
+  .not-found__text {
+    margin: 0 auto 2rem;
+    max-width: 34rem;
+    color: var(--ink-2);
+  }
+</style>

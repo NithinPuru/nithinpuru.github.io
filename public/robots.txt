@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-# Note: set the real domain in astro.config.mjs, then add a Sitemap line:
-# Sitemap: https://<your-domain>/sitemap.xml

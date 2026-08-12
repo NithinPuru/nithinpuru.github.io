@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
 
 // SITE_URL and ASTRO_BASE are injected by the GitHub Pages workflow (see
 // .github/workflows/deploy.yml). The fallbacks keep local dev/preview working
@@ -11,6 +12,7 @@ export default defineConfig({
   site,
   base,
   compressHTML: true,
+  integrations: [sitemap()],
   build: {
     inlineStylesheets: "always",
   },
