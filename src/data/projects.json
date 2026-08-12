@@ -26,11 +26,6 @@
           "desc": "&bull; Designed a subthreshold-based Voltage reference current with current matching between a diode-tied NMOS and a native NMOS load transistor for reference generation without a dedicated bias circuit.<br/>&bull; Achieved 60 ppm/°C TC across process corners with total power &le; 2 pW."
         },
         {
-          "title": "Piecewise-Compensated High-PSRR Bandgap Reference",
-          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
-          "desc": "&bull; Implemented higher-order curvature correction using piecewise compensation technique to compensate for BJT non-idealities in Bandgap; achieved 4.4 ppm/°C Temperature Coefficient.<br/>&bull; Improved PSRR via cascode current mirrors; conducted full PVT corner verification across process, voltage, and temperature."
-        },
-        {
           "title": "Low Dropout Voltage Regulator (LDO)",
           "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
           "desc": "&bull; Designed LDO with 1 &mu;s transient settling for a 100 pF, 40 mA load at &minus;60 dB PSRR.<br/>&bull; Integrated a digital on-chip programmable load for transient verification and an enable switch for complete power shutdown.",
@@ -48,13 +43,6 @@
           "title": "2-Stage Fully Differential OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
           "desc": "&bull; Fully differential OTA in SKY130 with PMOS differential pair and NMOS load; buffer-based common-mode sensing stabilizes output common-mode voltage for larger gain."
-        },
-        {
-          "title": "Folded-Cascode OTA Tapeout",
-          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
-          "desc": "&bull; Designed a Folded-Cascode OTA in the GF180MCU-D PDK; submitted for GF180MCU test shuttle via TinyTapeout for silicon fabrication.<br/>&bull; Completed full pre-tapeout signoff: DRC, LVS, and PEX extraction.",
-          "tag": "Featured",
-          "tagHot": true
         }
       ]
     }

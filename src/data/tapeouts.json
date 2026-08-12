@@ -4,18 +4,18 @@
       "heading": "Tape-outs",
       "entries": [
         {
-          "title": "Sub-5 ppm/°C Piecewise-Compensated Bandgap Reference",
+          "title": "Piecewise-Compensated High-PSRR Bandgap Reference",
           "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
-          "desc": "Nithin Purushothama, Kartikay Mani Tripathi, Prof. Madhav Pathak. Fabricated through TinyTapeout 10, SKY130 PDK, LP-CAS Lab IIT Gandhinagar.",
+          "desc": "&bull; Implemented higher-order curvature correction using piecewise compensation technique to compensate for BJT non-idealities in Bandgap; achieved 4.4 ppm/°C Temperature Coefficient.<br/>&bull; Improved PSRR via cascode current mirrors; conducted full PVT corner verification across process, voltage, and temperature.",
           "tag": "Fabricated",
           "tagHot": true
         },
         {
-          "title": "Folded-Cascode OTA",
+          "title": "Folded-Cascode OTA Tapeout",
           "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
-          "desc": "Nithin Purushothama. Submitted through TinyTapeout GF180 (TTGF0P3) test shuttle - a learning exercise in the full tapeout flow.",
-          "tag": "Fabricated",
-          "tagHot": false
+          "desc": "&bull; Designed a Folded-Cascode OTA in the GF180MCU-D PDK; submitted for GF180MCU test shuttle via TinyTapeout for silicon fabrication.<br/>&bull; Completed full pre-tapeout signoff: DRC, LVS, and PEX extraction.",
+          "tag": "Featured",
+          "tagHot": true
         }
       ]
     }
