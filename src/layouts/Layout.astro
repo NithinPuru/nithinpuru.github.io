@@ -1,9 +1,7 @@
 ---
-import Nav from "../components/Nav.astro";
 import "../styles/global.css";
 
-const { title: pageTitle } = Astro.props;
-const canonical = Astro.site?.href ?? Astro.url.href;
+const { title: pageTitle, hideNav = false } = Astro.props;
 
 // Resolves a public/ asset path against the configured base so it stays
 // correct both locally (base "/") and when deployed under a base path such as
@@ -11,14 +9,27 @@ const canonical = Astro.site?.href ?? Astro.url.href;
 const asset = (p) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
 
+// `site` defaults to a placeholder in astro.config.mjs so local builds work
+// without env setup; CI injects the real SITE_URL. Never emit the placeholder
+// into canonical/social URLs — fall back to the request/built URL instead.
+const realSite =
+  Astro.site && !/nithinyahu\.example/i.test(Astro.site.hostname)
+    ? Astro.site
+    : null;
+const canonical = new URL(Astro.url.pathname, realSite ?? Astro.url).href;
+
 const description =
   "Nithin Purushothama — Analog/Mixed-Signal IC Designer. Tapeout experience in SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, TSMC 28 nm. IEEE SSCS Code-a-Chip Travel Grant awardee.";
+
+const ogImage = new URL(asset("og-image.png"), canonical).href;
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Nithin Purushothama",
   alternateName: "chennakeshavadasa",
+  url: canonical,
+  image: ogImage,
   jobTitle: "Analog/Mixed-Signal IC Designer",
   affiliation: {
     "@type": "Organization",
@@ -37,20 +48,38 @@ const jsonLd = {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#faf9f4" />
+    <meta name="color-scheme" content="light" />
     <title>{pageTitle ?? "Nithin Purushothama — Analog IC Designer"}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Nithin Purushothama" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="profile" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Nithin Purushothama" />
     <meta property="og:title" content="Nithin Purushothama — Analog IC Designer" />
     <meta property="og:description" content={description} />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nithin Purushothama — Analog/Mixed-Signal IC Designer" />
+    <meta property="og:profile:first_name" content="Nithin" />
+    <meta property="og:profile:last_name" content="Purushothama" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Nithin Purushothama — Analog IC Designer" />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Nithin Purushothama — Analog/Mixed-Signal IC Designer" />
     <link rel="canonical" href={canonical} />
+    <link rel="icon" href={asset("favicon.ico")} sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href={asset("android-chrome-192x192.png")} />
     <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
+    <link rel="apple-touch-icon" sizes="180x180" href={asset("apple-touch-icon.png")} />
+    <link rel="manifest" href={asset("site.webmanifest")} />
     <link rel="preload" href={asset("fonts/KaTeX_Main-Regular.woff2")} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={asset("fonts/KaTeX_Main-Bold.woff2")} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={asset("fonts/KaTeX_Typewriter-Regular.woff2")} as="font" type="font/woff2" crossorigin />
@@ -59,33 +88,34 @@ const jsonLd = {
   <body>
     <!--
 impeccable:direction contract 568c1d30
-THESIS: A single-page portfolio rendered as a freshly-typeset LaTeX document — Computer Modern serif over typewriter metadata, numbered sections, justified measure, ink on paper — refusing the agency card grid and the hero-metric template for a researcher's body of work.
-OWN-WORLD: warm paper field, near-black ink, one muted oxford-blue accent and a sparing annotation red; KaTeX Computer Modern; numbered \section headers with drawn hairline rules; bibliography-style work entries; no cards, no gradients, no chrome.
-STORY: A visitor lands on a typeset paper, reads the abstract of who Nithin Purushothama is, then moves section to section — Research, Work, Publications, Finance, CV — each list data-driven from editable JSON.
-FIRST VIEWPORT: masthead as \maketitle: a hairline that stroke-draws in, name set huge in Computer Modern beside a framed portrait figure, role and affiliation lines in typewriter, abstract in justified measure, and a "Get in touch" button that scrolls to the contact section; fixed running-head nav above with section links and a hairline.
+THESIS: A single-page portfolio rendered as a freshly-typeset LaTeX document — Computer Modern serif over typewriter metadata, justified measure, ink on paper — refusing the agency card grid and the hero-metric template for a researcher's body of work.
+OWN-WORLD: warm paper field, near-black ink, one muted oxford-blue accent and a sparing annotation red; KaTeX Computer Modern; section headers with drawn hairline rules; bibliography-style work entries; no cards, no gradients, no chrome.
+STORY: A visitor lands on a typeset paper, reads the abstract of who Nithin Purushothama is, then moves section to section — Experience, Education, Publications, Awards, Projects, Tape-outs, Finance, CV, Contact — each list data-driven from editable JSON.
+FIRST VIEWPORT: masthead as \maketitle: name set huge in Computer Modern over a typewriter role line, abstract in justified measure, and a "Get in touch" button that scrolls to the contact section; fixed running-head nav above with section links and a hairline.
 FORM: brief-pinned paper world standing in for assigned grounded direction; seed key 568c1d30.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md.
 -->
     <a class="skip-link" href="#main">Skip to content</a>
-    <nav class="site-nav">
-      <div class="site-nav__bar">
-
-        <a class="site-nav__brand" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/`} aria-label="Nithin Purushothama — back to top">
-          <span class="site-nav__name">Nithin&nbsp;Purushothama</span>
-        </a>
-        <div class="site-nav__links" aria-label="Sections">
-          <a href={`${import.meta.env.BASE_URL}#about`}>ABOUT</a>
-          <a href={`${import.meta.env.BASE_URL}#experience`}>EXP</a>
-          <a href={`${import.meta.env.BASE_URL}#education`}>EDUCATION</a>
-          <a href={`${import.meta.env.BASE_URL}#publications`}>PAPERS</a>
-          <a href={`${import.meta.env.BASE_URL}#awards`}>AWARDS</a>
-          <a href={`${import.meta.env.BASE_URL}#projects`}>PROJECTS</a>
-          <a href={`${import.meta.env.BASE_URL}#tapeouts`}>TAPEOUTS</a>
-          <a href={`${import.meta.env.BASE_URL}#finance`}>FINANCE</a>
-          <a href={`${import.meta.env.BASE_URL}notebook.html`}>NB</a>
+    {!hideNav && (
+      <nav class="site-nav">
+        <div class="site-nav__bar">
+          <a class="site-nav__brand" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/`} aria-label="Nithin Purushothama — back to top">
+            <span class="site-nav__name">Nithin&nbsp;Purushothama</span>
+          </a>
+          <div class="site-nav__links">
+            <a href={`${import.meta.env.BASE_URL}#about`}>ABOUT</a>
+            <a href={`${import.meta.env.BASE_URL}#experience`} aria-label="Experience">EXP</a>
+            <a href={`${import.meta.env.BASE_URL}#education`}>EDUCATION</a>
+            <a href={`${import.meta.env.BASE_URL}#publications`} aria-label="Publications">PAPERS</a>
+            <a href={`${import.meta.env.BASE_URL}#awards`}>AWARDS</a>
+            <a href={`${import.meta.env.BASE_URL}#projects`}>PROJECTS</a>
+            <a href={`${import.meta.env.BASE_URL}#tapeouts`}>TAPEOUTS</a>
+            <a href={`${import.meta.env.BASE_URL}#finance`}>FINANCE</a>
+            <a href={`${import.meta.env.BASE_URL}notebook`} aria-label="Notebook">NB</a>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    )}
     <main id="main">
       <slot />
     </main>

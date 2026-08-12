@@ -1,5 +1,9 @@
+
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#faf9f4"/>
-  <path d="M10 38 H20 C27 38 29 26 36 26 C43 26 45 38 52 38 H58" fill="none" stroke="#191814" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="58" cy="38" r="3" fill="#2b4863"/>
+  <rect width="64" height="64" fill="#faf9f4"/>
+  <text x="32" y="41.28" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-size="28.8" font-weight="bold" fill="#191814">NP</text>
+  <line x1="18.752" y1="49.408" x2="41.472" y2="49.408"
+        stroke="rgba(25,24,20,0.34)" stroke-width="0.64"/>
+  <circle cx="43.776" cy="49.408" r="1.344" fill="#2b4863"/>
 </svg>
