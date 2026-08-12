@@ -1,5 +1,5 @@
 ---
-name: nithinyahu
+name: nithinpuru.github.io
 description: Portfolio of Nithin P, typeset like a freshly-compiled LaTeX document — Computer Modern serif, typewriter metadata, ink on paper.
 colors:
   paper: "#faf9f4"
@@ -81,7 +81,7 @@ components:
     textColor: "{colors.ink}"
 ---
 
-# Design System: nithinyahu
+# Design System: nithinpuru.github.io
 
 ## Overview
 

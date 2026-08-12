@@ -9,14 +9,9 @@ const { title: pageTitle, hideNav = false } = Astro.props;
 const asset = (p) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
 
-// `site` defaults to a placeholder in astro.config.mjs so local builds work
-// without env setup; CI injects the real SITE_URL. Never emit the placeholder
-// into canonical/social URLs — fall back to the request/built URL instead.
-const realSite =
-  Astro.site && !/nithinyahu\.example/i.test(Astro.site.hostname)
-    ? Astro.site
-    : null;
-const canonical = new URL(Astro.url.pathname, realSite ?? Astro.url).href;
+// `site` is set in astro.config.mjs; CI can override it via SITE_URL. Use it
+// for canonical/social URLs, falling back to the request URL if unset.
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 
 const description =
   "Nithin Purushothama — Analog/Mixed-Signal IC Designer. Tapeout experience in SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, TSMC 28 nm. IEEE SSCS Code-a-Chip Travel Grant awardee.";

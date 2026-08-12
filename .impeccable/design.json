@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-08-10T00:00:00Z",
-  "title": "Design System: nithinyahu",
+  "title": "Design System: nithinpuru.github.io",
   "extensions": {
     "colorMeta": {
       "paper": { "role": "neutral", "displayName": "Paper", "canonical": "oklch(98% 0.004 90)", "tonalRamp": ["oklch(90% 0.01 90)", "oklch(93% 0.008 90)", "oklch(95% 0.006 90)", "oklch(97% 0.005 90)", "oklch(98% 0.004 90)", "oklch(99% 0.003 90)", "oklch(99.5% 0.002 90)", "oklch(100% 0 90)"] },

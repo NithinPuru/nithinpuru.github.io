@@ -12,7 +12,7 @@ Astro (static site generation). Confirmed by the user for excellent SEO and reac
 
 ## Users
 
-Primary user: someone discovering the person/brand behind "nithinyahu" — e.g. a visitor arriving from search, a link, or social, evaluating who this person is and whether to engage. The visitor's exact context and job are inferred, not yet confirmed: what they want to learn, and what action constitutes success, still need the owner's input.
+Primary user: someone discovering the person/brand behind "nithinpuru.github.io" — e.g. a visitor arriving from search, a link, or social, evaluating who this person is and whether to engage. The visitor's exact context and job are inferred, not yet confirmed: what they want to learn, and what action constitutes success, still need the owner's input.
 
 ## Product Purpose
 
@@ -33,7 +33,7 @@ Discovery on the web: search engines (hence SSG + SEO), mobile and desktop brows
 
 ## Brand Commitments
 
-The site's name is "nithinyahu" (as given by the repo and user). Visual theme and style are deliberately undecided — the user will specify them later; do not invent or commit a visual direction during init.
+The site's name is "nithinpuru.github.io" (as given by the repo and user). Visual theme and style are deliberately undecided — the user will specify them later; do not invent or commit a visual direction during init.
 
 ## Evidence on Hand
 
@@ -45,7 +45,7 @@ None yet. No real content, imagery, copy, testimonials, credentials, or links ha
 - Accessibility is a hard requirement: the site must meet accessible standards, not approximate them.
 - Reach comes from being findable: semantic, SSG-friendly markup and SEO fundamentals are core to the product, not garnish.
 - Nothing invented: all biographical, professional, and proof claims must come from the owner.
-- The name is the brand: identity work centers the "nithinyahu" name as given.
+- The name is the brand: identity work centers the "nithinpuru.github.io" name as given.
 
 ## Accessibility & Inclusion
 

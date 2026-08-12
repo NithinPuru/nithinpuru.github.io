@@ -28,13 +28,12 @@ assets, or deploy-time configuration.
 
 ## SEO
 
-- [ ] Replace the placeholder default `site` (`https://nithinyahu.example`) in
-      `astro.config.mjs` — CI overrides it, but local builds still use it.
+- [x] Default `site` points at the real domain (`https://nithinpuru.github.io`)
+      in `astro.config.mjs` — CI overrides it, and local builds use it too.
 - [x] `og:image` / `twitter:image` wired to `public/og-image.png` (1200×630
       name banner) in `src/layouts/Layout.astro`.
 - [x] Add a sitemap (`@astrojs/sitemap`) and wire the matching `Sitemap:` line
-      into `robots.txt` — both are in place; URLs still use the placeholder
-      domain until the item above is resolved.
+      into `robots.txt` — both are in place; URLs carry the real domain.
 - [x] `llms.txt` route added (`src/pages/llms.txt.ts`).
 - [ ] Submit the site to Google Search Console.
 

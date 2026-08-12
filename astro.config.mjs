@@ -2,9 +2,9 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
 // SITE_URL and ASTRO_BASE are injected by the GitHub Pages workflow (see
-// .github/workflows/deploy.yml). The fallbacks keep local dev/preview working
-// without any environment setup; CI always passes the real values.
-const site = process.env.SITE_URL || "https://nithinyahu.example";
+// .github/workflows/deploy.yml). The defaults mirror the production site so
+// local dev/preview builds carry the real URL without any environment setup.
+const site = process.env.SITE_URL || "https://nithinpuru.github.io";
 const base = process.env.ASTRO_BASE || "/";
 
 export default defineConfig({
