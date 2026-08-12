@@ -304,6 +304,15 @@ a {
 .abstract p + p {
   margin-top: 0.9rem;
 }
+.abstract-list {
+  margin: 0.9rem 0 1.5rem;
+  padding-left: 1.5rem;
+  text-align: left;
+  line-height: 1.6;
+}
+.abstract-list li {
+  margin-bottom: 0.5rem;
+}
 
 .masthead__grid {
   display: grid;
