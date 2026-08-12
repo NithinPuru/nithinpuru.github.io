@@ -52,7 +52,7 @@
         {
           "title": "Folded-Cascode OTA Tapeout",
           "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
-          "desc": "&bull; Designed a Folded-Cascode OTA in the GF180MCU-D PDK; submitted through the TinyTapeout GF180 (TTGF0P3) analog shuttle for silicon fabrication.<br/>&bull; Completed full pre-tapeout signoff: DRC, LVS, and PEX extraction.",
+          "desc": "&bull; Designed a Folded-Cascode OTA in the GF180MCU-D PDK; submitted for GF180MCU test shuttle via TinyTapeout for silicon fabrication.<br/>&bull; Completed full pre-tapeout signoff: DRC, LVS, and PEX extraction.",
           "tag": "Featured",
           "tagHot": true
         }
