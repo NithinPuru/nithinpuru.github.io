@@ -7,8 +7,6 @@ import Layout from "../layouts/Layout.astro";
 // Data hygiene: re-verify src/data/*.json when updating content.
 import projects from "../data/projects.json";
 import publications from "../data/publications.json";
-import tapeouts from "../data/tapeouts.json";
-import finance from "../data/finance.json";
 
 const github = "https://github.com/chennakeshavadasa";
 const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
@@ -232,29 +230,6 @@ const email = "nithinpurushothama@gmail.com";
       </p>
     </section>
 
-    <section class="section" id="tapeouts" aria-labelledby="tapeouts-h">
-      <header class="section-head" data-reveal>
-        <h2 class="section-title" id="tapeouts-h">Tape-outs</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-      </header>
-      <p class="section-lede" data-reveal>
-        Fabricated silicon.
-      </p>
-
-      <WorkList groups={tapeouts.groups} />
-    </section>
-
-    <section class="section" id="finance" aria-labelledby="finance-h">
-      <header class="section-head" data-reveal>
-        <h2 class="section-title" id="finance-h">Quantitative Finance</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-      </header>
-      <p class="section-lede" data-reveal>
-        A parallel interest in quantitative finance drives open-source semiconductor equity analysis tools.
-      </p>
-
-      <WorkList groups={finance.groups} />
-    </section>
 
     <section class="section" id="cv" aria-labelledby="cv-h">
       <header class="section-head" data-reveal>

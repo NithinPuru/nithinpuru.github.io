@@ -1,62 +1,67 @@
 {
   "groups": [
     {
-      "heading": "Analog IC Design",
+      "heading": "Projects",
       "entries": [
         {
-          "title": "Process-Invariant Ring Amplifier",
-          "url": "https://github.com/chennakeshavadasa/PVT-Invariant-Ring-Amplifier",
-          "desc": "Ring amplifier in IHP SG13G2 with deadzone regulation for robust PVT performance, validated in a switched-capacitor amplifier."
+          "title": "Career Semi-Quant Terminal",
+          "url": "https://github.com/chennakeshavadasa/career-semi-quant",
+          "desc": "&bull; Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 40+ semiconductor companies.<br/>&bull; Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine.<br/>&bull; Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.",
+          "tag": "Featured",
+          "tagHot": true
         },
         {
-          "title": "Two-Transistor Subthreshold Voltage Reference",
-          "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
-          "desc": "An ultra-low power voltage reference using native NMOS subthreshold operation, achieving sub-picoWatt power."
-        },
-        {
-          "title": "Low Dropout Voltage Regulator",
-          "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
-          "desc": "LDO in SKY130 with integrated digital on-chip load for transient testing."
-        },
-        {
-          "title": "Rail-to-Rail OTA",
-          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/tree/main/OTAs/Rail_to_Rail_OTA_Inp_IP/without_internal_bias",
-          "desc": "Folded-cascode OTA with complementary PMOS/NMOS differential pair for full rail-to-rail input swing."
-        },
-        {
-          "title": "Fully Differential OTA",
-          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
-          "desc": "Two-stage fully differential OTA with buffer-based CM feedback for stable output common-mode level."
-        },
-        {
-          "title": "Power-on Reset Circuit",
+          "title": "Design of Power-on Reset Circuit",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
-          "desc": "Current comparator-based POR in SKY130 that asserts Enable at a defined VDD threshold across PVT corners."
-        }
-      ]
-    },
-    {
-      "heading": "Open-Source EDA",
-      "entries": [
-        {
-          "title": "PVT Simulation Automation",
-          "url": "https://github.com/chennakeshavadasa/Cross_corners_script_Ngspice",
-          "desc": "Python framework for automated PVT corner sweeps in NGSpice with metric extraction and comparison plots.",
-          "tag": "Open Source",
-          "tagHot": false,
-          "links": [
-            {
-              "label": "Schematic Area Estimator",
-              "url": "https://github.com/chennakeshavadasa/SCH_AREA_ESTIMATOR"
-            }
-          ]
+          "desc": "&bull; Designed a POR circuit in SKY130 PDK using a current comparator with PMOS/NMOS current mirrors for supply threshold detection; VPOR asserts Enable at VDD = 1.5 V across PVT corners."
         },
         {
-          "title": "gm/ID Extraction — SKY130",
-          "url": "https://github.com/chennakeshavadasa/gmid_SKY130",
-          "desc": "gm/ID lookup tables and extraction scripts for SKY130 enabling structured design methodology with open-source tools.",
-          "tag": "Open Source",
-          "tagHot": false
+          "title": "Automation of PVT and SPICE Simulation Framework for Analog Design",
+          "url": "https://github.com/chennakeshavadasa/Cross_corners_script_Ngspice",
+          "desc": "&bull; Open-source Python tools for analog IC design automation: PVT sweep framework for NGSpice: automated metric extraction, comparison plots across corners.<br/>&bull; SPICE-to-area estimation tool using Magic VLSI for pre-layout floorplanning.",
+          "tag": "Featured",
+          "tagHot": true
+        },
+        {
+          "title": "Process-Invariant Ring Amplifier using Deadzone Regulation",
+          "url": "https://github.com/chennakeshavadasa/PVT-Invariant-Ring-Amplifier",
+          "desc": "&bull; Designed a PVT-robust Ring Amplifier in IHP SG13G2(BiCMOS); Deadzone regulation circuit where negative feedback controls third-stage quiescent current across process corners.<br/>&bull; Dynamic error analysis covering RC, large-signal, and small-signal settling regimes. Validated performance in a switched-capacitor amplifier testbench."
+        },
+        {
+          "title": "Ultra-Low Power Two-Transistor Subthreshold Voltage Reference",
+          "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
+          "desc": "&bull; Designed a subthreshold-based Voltage reference current with current matching between a diode-tied NMOS and a native NMOS load transistor for reference generation without a dedicated bias circuit.<br/>&bull; Achieved 60 ppm/°C TC across process corners with total power &le; 2 pW."
+        },
+        {
+          "title": "Piecewise-Compensated High-PSRR Bandgap Reference",
+          "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
+          "desc": "&bull; Implemented higher-order curvature correction using piecewise compensation technique to compensate for BJT non-idealities in Bandgap; achieved 4.4 ppm/°C Temperature Coefficient.<br/>&bull; Improved PSRR via cascode current mirrors; conducted full PVT corner verification across process, voltage, and temperature."
+        },
+        {
+          "title": "Low Dropout Voltage Regulator (LDO)",
+          "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
+          "desc": "&bull; Designed LDO with 1 &mu;s transient settling for a 100 pF, 40 mA load at &minus;60 dB PSRR.<br/>&bull; Integrated a digital on-chip programmable load for transient verification and an enable switch for complete power shutdown.",
+          "tag": "Featured",
+          "tagHot": true
+        },
+        {
+          "title": "Rail-to-Rail Input Swing OTA",
+          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/tree/main/OTAs/Rail_to_Rail_OTA_Inp_IP/without_internal_bias",
+          "desc": "&bull; Implemented complementary PMOS/NMOS differential pair folding in a folded-cascode topology for full rail-to-rail input swing.<br/>&bull; Achieved 63&ndash;64 dB DC gain, 2 MHz UGF, and 85&deg; phase margin across all PVT corners.<br/>&bull; Monte Carlo mismatch analysis: input-referred offset &mu; = 0.11 mV, &sigma; = 1.54 mV.",
+          "tag": "Featured",
+          "tagHot": true
+        },
+        {
+          "title": "2-Stage Fully Differential OTA",
+          "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
+          "desc": "&bull; Fully differential OTA in SKY130 with PMOS differential pair and NMOS load; buffer-based common-mode sensing stabilizes output common-mode voltage."
+        },
+        {
+          "title": "Folded-Cascode OTA Tapeout",
+          "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
+          "desc": "&bull; Designed a Folded-Cascode OTA in the GF180MCU-D PDK; submitted through the TinyTapeout GF180 (TTGF0P3) analog shuttle for silicon fabrication.<br/>&bull; Completed full pre-tapeout signoff: DRC, LVS, and PEX extraction.",
+          "tag": "Featured",
+          "tagHot": true
         }
       ]
     }
