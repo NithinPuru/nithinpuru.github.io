@@ -47,7 +47,7 @@
         {
           "title": "2-Stage Fully Differential OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
-          "desc": "&bull; Fully differential OTA in SKY130 with PMOS differential pair and NMOS load; buffer-based common-mode sensing stabilizes output common-mode voltage."
+          "desc": "&bull; Fully differential OTA in SKY130 with PMOS differential pair and NMOS load; buffer-based common-mode sensing stabilizes output common-mode voltage for larger gain."
         },
         {
           "title": "Folded-Cascode OTA Tapeout",
