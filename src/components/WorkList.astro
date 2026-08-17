@@ -118,7 +118,7 @@ const { groups } = Astro.props;
                     <div class="abstract-content">
                       <div class="entry__images">
                         {entry.images.map((img) => (
-                          <div class="entry__image-block">
+                          <div class="entry__image-block" id={"block-" + img.id}>
                             <p class="entry__image-label">{img.label ?? "Image"}</p>
                             <a href={"#lb-" + img.id} class="entry__thumb">
                               <img
@@ -131,7 +131,7 @@ const { groups } = Astro.props;
                             </a>
                             {/* Pure CSS lightbox */}
                             <div class="lb-overlay" id={"lb-" + img.id}>
-                              <a href="#" class="lb-close" aria-label="Close">&#x2715;</a>
+                              <a href={"#block-" + img.id} class="lb-close" aria-label="Close">&#x2715;</a>
                               <img
                                 src={img.url}
                                 alt={img.label ?? entry.title}
