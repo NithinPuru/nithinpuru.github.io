@@ -703,3 +703,114 @@ a {
   padding-bottom: 0.4rem;
   border-bottom: 1px solid var(--rule);
 }
+
+/* ── Award GIF — larger display + expand button ───────── */
+.award-gif-figure {
+  margin: 0 0 1.4rem;
+}
+.award-gif-wrap {
+  position: relative;
+  border: 1px solid var(--rule);
+  cursor: zoom-in;
+  display: block;
+  /* Break slightly out of the text column for visual weight */
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+.award-gif-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.award-gif-expand-btn {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background: rgba(4, 8, 20, 0.82);
+  color: #b8d4f0;
+  border: 1px solid rgba(80,130,200,0.5);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  pointer-events: all;
+}
+.award-gif-expand-btn:hover {
+  background: rgba(4, 8, 20, 0.97);
+  color: #d8eaff;
+}
+.award-gif-caption {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  text-align: center;
+  padding: 0.4rem 0.6rem;
+  border-top: 1px solid var(--rule);
+  line-height: 1.6;
+}
+
+/* ── GIF lightbox overlay ─────────────────────────────── */
+.gif-lb {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 5, 14, 0.95);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.gif-lb[hidden] {
+  display: none;
+}
+.gif-lb-img {
+  display: block;
+  max-width: 96vw;
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid rgba(80,120,180,0.3);
+}
+.gif-lb-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.4rem;
+  background: none;
+  border: none;
+  color: #c8d8f0;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.7;
+  font-family: var(--font-mono);
+  padding: 0.2rem 0.4rem;
+}
+.gif-lb-close:hover { opacity: 1; }
+.gif-lb-caption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #607888;
+  text-align: center;
+  margin-top: 0.8rem;
+  max-width: 860px;
+  line-height: 1.6;
+}
+.gif-lb-caption kbd {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  border: 1px solid #445566;
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+  color: #8aaabb;
+}
+
+@media (max-width: 600px) {
+  .award-gif-wrap {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

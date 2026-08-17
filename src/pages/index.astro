@@ -246,12 +246,40 @@ const email = "nithinpurushothama@gmail.com";
                   The resulting <i>R<sub>on</sub>/g<sub>m</sub></i> metric provides a <strong>pre-simulation design and corner-verification framework</strong> for dynamic amplifiers, exposing slow-corner settling mechanisms that can remain hidden in a conventional <i>g<sub>m</sub>/I<sub>D</sub></i>-only design flow.
                 </p>
 
-                <figure style="margin: 1.5rem 0; border: 1px solid var(--rule);">
-                  <img src={`${import.meta.env.BASE_URL}img/iba_transient_animation.gif`} alt="Transient response animation" style="display: block; width: 100%; height: auto;" loading="lazy" decoding="async" />
-                  <figcaption style="font-size: 0.78rem; color: var(--ink-3); text-align: center; padding: 0.4rem 0.6rem; border-top: 1px solid var(--rule); font-family: var(--font-mono);">
-                    IBA transient response: Non-linear settling (red) → Linear settling (blue) · IHP SG13G2 130 nm BiCMOS
+                <figure class="award-gif-figure">
+                  <div class="award-gif-wrap">
+                    <img
+                      src={`${import.meta.env.BASE_URL}img/iba_transient_animation.gif`}
+                      alt="IBA transient response — Non-linear to Linear settling · IHP SG13G2 130 nm BiCMOS"
+                      class="award-gif-img"
+                      loading="lazy"
+                      decoding="async"
+                      width="900"
+                      height="450"
+                    />
+                    <button class="award-gif-expand-btn" aria-label="Expand animation">
+                      &#x2922; expand
+                    </button>
+                  </div>
+                  <figcaption class="award-gif-caption">
+                    IBA transient response: Non-linear settling (red) &rarr; Linear settling (blue) &nbsp;&middot;&nbsp;
+                    IHP SG13G2 130&nbsp;nm BiCMOS &nbsp;&middot;&nbsp;
+                    <i>R<sub>on</sub>/g<sub>m</sub></i> methodology &nbsp;&middot;&nbsp;
+                    <span style="font-style:italic; opacity:0.7;">click image to expand</span>
                   </figcaption>
                 </figure>
+
+                <!-- GIF lightbox — rendered once, toggled by script below -->
+                <div class="gif-lb" id="gif-lb" hidden>
+                  <button class="gif-lb-close" id="gif-lb-close" aria-label="Close">&#x2715;</button>
+                  <img src="" alt="IBA transient response — full view" class="gif-lb-img" id="gif-lb-img" />
+                  <p class="gif-lb-caption">
+                    IBA transient response &nbsp;&middot;&nbsp; Non-linear settling (red) &rarr; Linear settling (blue)
+                    &nbsp;&middot;&nbsp; IHP SG13G2 130&nbsp;nm BiCMOS &nbsp;&middot;&nbsp;
+                    <i>R<sub>on</sub>/g<sub>m</sub></i> methodology &nbsp;&middot;&nbsp;
+                    press <kbd>Esc</kbd> or click outside to close
+                  </p>
+                </div>
 
                 <h3 style="margin: 2rem 0 0.5rem 0; font-size: 1rem; text-transform: uppercase;">Performance Summary and Comparison with State-of-the-Art</h3>
                 <div style="overflow-x:auto; width:100%; margin-bottom: 1rem;">
@@ -438,19 +466,60 @@ const email = "nithinpurushothama@gmail.com";
                 </div>
               </div>
               <script>
-                {/* Pause GIF animation when details closes to free memory */}
                 (function () {
                   const det = document.currentScript.closest('details');
                   if (!det) return;
-                  const gif = det.querySelector('img[src$=".gif"]');
-                  if (!gif) return;
-                  const src = gif.src;
+
+                  const thumb   = det.querySelector('.award-gif-img');
+                  const lb      = document.getElementById('gif-lb');
+                  const lbImg   = document.getElementById('gif-lb-img');
+                  const lbClose = document.getElementById('gif-lb-close');
+
+                  if (!thumb || !lb || !lbImg) return;
+                  const gifSrc = thumb.getAttribute('src') || `${location.origin}/img/iba_transient_animation.gif`;
+
+                  /* ── Pause GIF when details closes ───────────────────────── */
                   det.addEventListener('toggle', () => {
                     if (det.open) {
-                      gif.src = src;          // restore → browser restarts animation
+                      if (!thumb.src || thumb.src === location.href) thumb.src = gifSrc;
                     } else {
-                      gif.src = '';           // blank → browser stops decoding frames
+                      thumb.src = '';
+                      closeLb();          // also close lightbox if open
                     }
+                  });
+
+                  /* ── Lightbox helpers ─────────────────────────────────────── */
+                  function openLb() {
+                    lbImg.src = gifSrc;
+                    lb.hidden = false;
+                    document.body.style.overflow = 'hidden';
+                    if (lbClose) lbClose.focus();
+                  }
+
+                  function closeLb() {
+                    if (lb.hidden) return;
+                    lb.hidden = true;
+                    lbImg.src = '';
+                    document.body.style.overflow = '';
+                  }
+
+                  /* ── Click handlers ───────────────────────────────────────── */
+                  thumb.addEventListener('click', openLb);
+
+                  const expandBtn = det.querySelector('.award-gif-expand-btn');
+                  if (expandBtn) expandBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openLb();
+                  });
+
+                  if (lbClose) lbClose.addEventListener('click', closeLb);
+
+                  lb.addEventListener('click', (e) => {
+                    if (e.target === lb) closeLb();
+                  });
+
+                  document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') closeLb();
                   });
                 })();
               </script>
