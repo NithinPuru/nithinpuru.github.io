@@ -216,31 +216,20 @@ const email = "nithinpurushothama@gmail.com";
       </ul>
     </section>
 
-    <section class="section" id="projects" aria-labelledby="projects-h">
+    <section class="section" id="work" aria-labelledby="work-h">
       <header class="section-head" data-reveal>
-        <h2 class="section-title" id="projects-h">Projects</h2>
+        <h2 class="section-title" id="work-h">Work</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
-      <p class="section-lede" data-reveal>
-        Tapeouts, analog blocks, and open-source EDA tooling - every entry links to the real artifact.
-      </p>
 
+      <h3 class="subsection-title" data-reveal>Projects</h3>
       <WorkList groups={projects.groups} />
 
       <p class="section-foot" data-reveal>
         More on <a href={`${github}?tab=repositories`} target="_blank" rel="noopener noreferrer">GitHub</a>.
       </p>
-    </section>
 
-    <section class="section" id="tapeouts" aria-labelledby="tapeouts-h">
-      <header class="section-head" data-reveal>
-        <h2 class="section-title" id="tapeouts-h">Tape-outs</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-      </header>
-      <p class="section-lede" data-reveal>
-        Fabricated silicon.
-      </p>
-
+      <h3 class="subsection-title" data-reveal>Tape-outs</h3>
       <WorkList groups={tapeouts.groups} />
     </section>
 
