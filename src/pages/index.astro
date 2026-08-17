@@ -619,4 +619,29 @@ const email = "nithinpurushothama@gmail.com";
       <a href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </div>
   </div>
+
+  <script>
+    // Auto-collapse open <details> when their parent section scrolls out of view
+    (function () {
+      const sections = document.querySelectorAll('#publications, #awards');
+      if (!sections.length || !('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              // Section has left the viewport — collapse any open details inside it
+              entry.target.querySelectorAll('details[open]').forEach((det) => {
+                det.removeAttribute('open');
+                det.dispatchEvent(new Event('toggle')); // triggers existing pause-GIF logic
+              });
+            }
+          });
+        },
+        { threshold: 0 } // fires when section is completely off-screen
+      );
+
+      sections.forEach((s) => observer.observe(s));
+    })();
+  </script>
 </Layout>
