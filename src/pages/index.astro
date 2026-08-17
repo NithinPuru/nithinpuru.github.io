@@ -211,6 +211,233 @@ const email = "nithinpurushothama@gmail.com";
             <span>
               Awarded $5,000 travel grant (Young Professional&rsquo;s category) for &ldquo;Ron/gm Based Design Methodology for Dynamic Amplifiers&rdquo; a notebook demonstrating a novel design methodology for Inverter-based dynamic amplifiers on IHP SG13G2 using open-source EDA tools. Award ceremony at ESSERC 2026, Palma de Mallorca, Spain.
             </span>
+            
+            <details class="entry__abstract" style="margin-top: 0.5rem;">
+              <summary style="cursor: pointer; font-weight: 500; color: var(--accent); user-select: none; font-size: 0.9rem;">View Methodology &amp; Results</summary>
+              <div class="abstract-content" style="margin-top: 0.5rem; padding-left: 1rem; font-size: 0.9rem; border-left: 2px solid var(--accent); color: var(--ink-2);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem;"><i>R<sub>on</sub>/g<sub>m</sub></i>-Based Design Methodology</h3>
+                <p style="margin-top:0;">
+                  Dynamic amplifiers exhibit two distinct settling regimes: an initial <strong>non-linear, large-signal phase</strong> dominated by the transistor on-resistance (<i>R<sub>on</sub></i>), followed by a <strong>linear, small-signal phase</strong> governed by <i>g<sub>m</sub></i>. During the first phase, the output rapidly moves toward its final value with an effective time constant
+                </p>
+                <div style="text-align: center; margin: 1rem 0;"><i>&tau;<sub>LS</sub> &approx; R<sub>on</sub>C<sub>load</sub></i>,</div>
+                <p>
+                  while the final settling and small-signal bandwidth are determined by
+                </p>
+                <div style="text-align: center; margin: 1rem 0;"><i>&tau;<sub>SS</sub> &approx; C<sub>load</sub> / g<sub>m</sub></i>.</div>
+                <p>
+                  Conventional (<i>g<sub>m</sub>/I<sub>D</sub></i>)-based design methods are effective for small-signal optimization, but do not directly constrain signal-dependent <i>R<sub>on</sub></i>, required voltage swing, or the resulting large-signal settling behavior. Consequently, a design with sufficient <i>g<sub>m</sub></i> at nominal conditions can still exhibit slow settling at process corners where <i>R<sub>on</sub></i> increases.
+                </p>
+                <p>
+                  We therefore propose a <strong>(<i>R<sub>on</sub>/g<sub>m</sub></i>)-based design methodology</strong> that explicitly allocates the settling-time budget between the two regimes. For a target settling time (<i>T<sub>settle</sub></i>), a fraction (<i>&alpha;</i>) is assigned to small-signal settling and (1-<i>&alpha;</i>) to large-signal settling:
+                </p>
+                <div style="text-align: center; margin: 1rem 0;"><i>R<sub>on</sub> = (1-&alpha;)T<sub>settle</sub> / 5C<sub>load</sub></i> &emsp;,&emsp; <i>g<sub>m,min</sub> = 5C<sub>load</sub> / &alpha; T<sub>settle</sub></i>.</div>
+                <p>
+                  The required <i>g<sub>m</sub></i> is then selected as the larger of the settling requirement and the application bandwidth requirement,
+                </p>
+                <div style="text-align: center; margin: 1rem 0;"><i>g<sub>m</sub> = max( g<sub>m,min</sub> , 2&pi; f<sub>BW</sub>C<sub>load</sub> )</i>.</div>
+                <p>
+                  This provides a direct connection between <strong><i>R<sub>on</sub></i>, <i>g<sub>m</sub></i>, <i>C<sub>load</sub></i>, bandwidth, and settling time</strong>, allowing the unit cell to be sized independently of the final load and subsequently scaled by a multiplier (<i>M</i>):
+                </p>
+                <div style="text-align: center; margin: 1rem 0;"><i>R<sub>on</sub> &rarr; R<sub>unit</sub> / M</i> &emsp;,&emsp; <i>g<sub>m</sub> &rarr; M g<sub>m,unit</sub></i> &emsp;,&emsp; <i>I<sub>D</sub> &rarr; M I<sub>D,unit</sub></i>.</div>
+                <p>
+                  Importantly, the proposed approach separates the two design knobs. The signal-path transistor width is primarily fixed by the required <i>R<sub>on</sub></i>, while <i>g<sub>m</sub></i> can be further tuned through a <strong>replica bias path</strong> by adjusting its current and device sizing across process corners. This allows small-signal bandwidth to be corrected without altering the signal-path <i>R<sub>on</sub></i> and therefore without compromising large-signal settling.
+                </p>
+                <p>
+                  The resulting (<i>R<sub>on</sub>/g<sub>m</sub></i>) metric provides a <strong>pre-simulation design and corner-verification framework</strong> for dynamic amplifiers, exposing slow-corner settling mechanisms that can remain hidden in a conventional (<i>g<sub>m</sub>/I<sub>D</sub></i>)-only design flow.
+                </p>
+
+                <figure style="margin: 1.5rem 0; border: 1px solid var(--rule);">
+                  <img src={`${import.meta.env.BASE_URL}img/iba_transient_animation.gif`} alt="Transient response animation" style="display: block; width: 100%; height: auto;" loading="lazy" decoding="async" />
+                  <figcaption style="font-size: 0.78rem; color: var(--ink-3); text-align: center; padding: 0.4rem 0.6rem; border-top: 1px solid var(--rule); font-family: var(--font-mono);">
+                    IBA transient response: Non-linear settling (red) → Linear settling (blue) · IHP SG13G2 130 nm BiCMOS
+                  </figcaption>
+                </figure>
+
+                <h3 style="margin: 2rem 0 0.5rem 0; font-size: 1rem; text-transform: uppercase;">Performance Summary and Comparison with State-of-the-Art</h3>
+                <div style="overflow-x:auto; width:100%; margin-bottom: 1rem;">
+                  <table style="width:100%; border-collapse:collapse; border-top:2px solid #000; border-bottom:2px solid #000; table-layout:fixed; font-family:var(--font-serif); font-size:0.8rem; line-height:1.4;">
+                    <colgroup><col style="width:28%;"><col style="width:24%;"><col style="width:24%;"><col style="width:24%;"></colgroup>
+                    <thead>
+                    <tr>
+                      <th style="text-align:left; padding:6px 7px; border-bottom:1px solid #000; font-weight:bold; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Design Criterion</th>
+                      <th style="text-align:center; padding:6px 7px; border-bottom:1px solid #000; font-weight:bold; background:rgba(0,0,0,0.02); word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><i>R<sub>on</sub>/g<sub>m</sub></i> <b>(This Work)</b></th>
+                      <th style="text-align:center; padding:6px 7px; border-bottom:1px solid #000; font-weight:bold; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><i>g<sub>m</sub>/I<sub>D</sub></i> Methodology</th>
+                      <th style="text-align:center; padding:6px 7px; border-bottom:1px solid #000; font-weight:bold; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Conrad <i>et al.</i> [TCAS-I 2020]</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ── I ── -->
+                    <tr><td colspan="4" style="background:#000; color:#fff; font-weight:bold; font-size:0.75rem; letter-spacing:.06em; padding:3px 8px;">I. &nbsp;METHODOLOGY</td></tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Design paradigm</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);">Analytical LUT<br><small><i>Physics-based; pre-characterised</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Analytical LUT<br><small><i>Small-signal only</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Simulation-based numerical optimizer<br><small><i>Cadence ADE XL</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Primary design parameter</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><i>R<sub>on</sub>/g<sub>m</sub></i><br><small><i>Couples large-signal + small-signal</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><i>g<sub>m</sub>/I<sub>D</sub></i><br><small><i>Small-signal only</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><i>m<sub>a1</sub>, m<sub>a2</sub>, m<sub>a3</sub>, I<sub>bias</sub>, R, C<sub>az</sub></i><br><small><i>6 numerical params; no physical link</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Design entry stage</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);">Pre-simulation</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Pre-simulation<br><small><i>Partial — no large-signal info</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Requires full transient simulation per iteration</td>
+                    </tr>
+                    <!-- ── II ── -->
+                    <tr><td colspan="4" style="background:#000; color:#fff; font-weight:bold; font-size:0.75rem; letter-spacing:.06em; padding:3px 8px;">II. &nbsp;SETTLING PHASE COVERAGE</td></tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Non-linear (large-signal / RC) settling characterized</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Via R<sub>on</sub> in LUT; &tau;<sub>ls</sub> = R<sub>on</sub>C<sub>L</sub></i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>R<sub>on</sub> absent from g<sub>m</sub>/I<sub>D</sub> framework</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Acknowledged as "not practical" [4]†</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Small-signal (g<sub>m</sub> C) settling characterized</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Via g<sub>m,bias</sub> in LUT; BW = g<sub>m</sub>/(2&pi; C<sub>L</sub>)</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Primary strength of g<sub>m</sub>/I<sub>D</sub> methodology</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Via rms error cost function</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Unified two-phase settling model</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>R<sub>on</sub>/g<sub>m</sub> co-constrains both &tau;<sub>LS</sub> and &tau;<sub>SS</sub></i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Small-signal-phase only</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>No time-budget allocation between phases</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Peak slew current I<sub>peak</sub> predicted pre-simulation</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>I<sub>peak</sub> &prop; 1/(R<sub>on</sub>/g<sub>m</sub>); log-log scale slope = -1</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Post-optimization verification only</i></small></td>
+                    </tr>
+                    <!-- ── III ── -->
+                    <tr><td colspan="4" style="background:#000; color:#fff; font-weight:bold; font-size:0.75rem; letter-spacing:.06em; padding:3px 8px;">III. &nbsp;PROCESS CORNER ROBUSTNESS</td></tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">TT / SS / FF corners visible at design entry</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>All 3 corners in LUT; SS worst-case directly readable</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>LUT can be corner-swept but R<sub>on</sub> not extracted</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>PVT excluded from optimizer loop‡</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Deadzone bias (<i>V<sub>DZN</sub></i>, <i>V<sub>DZP</sub></i>) determined pre-simulation</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Per-corner, from V<sub>bias</sub> vs R<sub>on</sub>/g<sub>m</sub> plot§</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Unknown without iterative transient corner sweeps</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>V<sub>os</sub> is one of 6 optimized params; corner sensitivity unknown a priori</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">SS-corner R<sub>on</sub> degradation visible a priori</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                    </tr>
+                    <!-- ── IV ── -->
+                    <tr><td colspan="4" style="background:#000; color:#fff; font-weight:bold; font-size:0.75rem; letter-spacing:.06em; padding:3px 8px;">IV. &nbsp;DESIGN EQUATIONS AND PHYSICAL INSIGHT</td></tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Closed-form design equations available</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>V<sub>bias</sub> = V<sub>TH</sub> + 2I<sub>D</sub>/g<sub>m</sub>;<br>g<sub>m,bias</sub> &prop; (R<sub>on</sub>/g<sub>m</sub>)<sup>-1/3</sup>;<br>R<sub>on</sub>/g<sub>m</sub> &prop; L<sup>2</sup>/(W I<sub>D</sub>)</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>For small-signal: G<sub>m</sub> = 2&pi; f C<sub>L</sub>;<br>W = I<sub>D</sub> / (I<sub>D</sub>/W)|<sub>LUT</sub></i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Stability criterion exists but "not realizable" as design equation†</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Physical insight preserved throughout design</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Every plot axis maps to a physical quantity</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>For small-signal operating point only</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Optimizer returns numbers; no physical link retained</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Subsumes <i>g<sub>m</sub>/I<sub>D</sub></i> methodology</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>g<sub>m</sub>/I<sub>D</sub> readable from g<sub>m</sub>/I<sub>D</sub> vs R<sub>on</sub>/g<sub>m</sub> plot; reverse not possible</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">—</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                    </tr>
+                    <!-- ── V ── -->
+                    <tr><td colspan="4" style="background:#000; color:#fff; font-weight:bold; font-size:0.75rem; letter-spacing:.06em; padding:3px 8px;">V. &nbsp;PRACTICAL DESIGN FLOW</td></tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">EDA tool requirement</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);">Open-source and Commercial tools<br><small><i>Any spice + Python/Matlab</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Spectre (LUT gen.)<br><small><i>Helper usable standalone</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Cadence Virtuoso + Spectre + ADE XL<br><small><i>Full commercial license stack</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Application-specific redesign required</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>LUT generated once per technology node</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>LUT reusable across applications</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>New testbench + cost function per application</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Cost function calibration required</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Manual &times;4 adjustment applied in paper&para;</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">PVT robustness in design loop</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>SS/FF corner LUTs included by design</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Corner LUT possible; dynamic behavior not covered</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Excluded from optimizer; post-hoc Monte Carlo only‡</i></small></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;">Technology portability</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>15 ngspice sims re-characterize any PDK (~1 min)</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>New Spectre LUT per node</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Full optimizer rerun needed; 180 nm fails power target by 13&times;**</i></small></td>
+                    </tr>
+                    <!-- ── VI ── -->
+                    <tr><td colspan="4" style="background:#000; color:#fff; font-weight:bold; font-size:0.75rem; letter-spacing:.06em; padding:3px 8px;">VI. &nbsp;DESIGN EXAMPLE RESULTS (IBA, T<sub>settle</sub> = 250 ns, UGB = 9.55 MHz (60 Mrad/s), C<sub>L,eff</sub> = 667 fF, IHP SG13G2 130 nm)</td></tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule);">G<sub>m</sub> target met (UGB = 9.55 MHz)</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/> &approx; 40 &mu;S</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/> &approx; 40 &mu;S</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/> 15-bit ENOB</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule);">I<sub>peak</sub> range</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>14 &mu;A (pos edge), -13.86 &mu;A (neg edge)</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule);">R<sub>on</sub> known before transient simulation</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>4 k&Omega; unit; 1 k&Omega; after &times;4 multiplier</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Post-simulation discovery only</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule);">V<sub>DZN</sub> (NMOS deadzone) pre-simulation</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>FF: 0.355 V | TT: 0.390 V | SS: 0.425 V</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule);">V<sub>DZP</sub> (PMOS deadzone) pre-simulation</td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>FF: 0.970 V | TT: 1.110 V | SS: 1.204 V</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/></td>
+                    </tr>
+                    <tr>
+                      <td style="text-align:left; padding:5px 7px; border-bottom:1px solid var(--rule);">Extra transient sims needed to obtain V<sub>DZ</sub> and R<sub>on</sub></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule); background:rgba(0,0,0,0.02);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="20" height="20" style="vertical-align: middle;"/> <b>Zero</b></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Multiple corner sweeps required</i></small></td>
+                      <td style="text-align:center; padding:5px 7px; border-bottom:1px solid var(--rule);"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="20" height="20" style="vertical-align: middle;"/><br><small><i>Full optimizer run per corner</i></small></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style="font-size:0.75rem; line-height:1.7; margin-top:0.5rem;">
+                  Pre-simulation V<sub>bias</sub> predictions were within <b>&plusmn;75 mV</b> of post-simulation values; I<sub>peak</sub> predicted within ~15%.
+                </div>
+                <div style="font-size:0.75rem; line-height:1.5; color:var(--ink-3); margin-top:0.5rem;">
+                  <p style="margin:0;">† J. Conrad <i>et al.</i>: <i>"Unfortunately, Section II-B is not really practical for designing a RAMP… This makes a design-by-equation cumbersome and not realizable."</i> [TCAS-I 2020, Sec. II-C]</p>
+                  <p style="margin:0;">‡ J. Conrad <i>et al.</i>: <i>"PVT variations are not encountered during the circuit optimization, because this would require many transient simulations to evaluate one iteration of the optimizer."</i> [TCAS-I 2020, Sec. V-E]</p>
+                  <p style="margin:0;">§ Deadzone bias values read from the V<sub>bias</sub> vs. log(R<sub>on</sub>/g<sub>m</sub>) LUT plot at R<sub>on</sub>/g<sub>m</sub> = 50 &times; 10<sup>6</sup> (per device, post-multiplier), I<sub>bias</sub> = 0.5 &mu;A (unit cell), I<sub>bias</sub> = 2 &mu;A (Overall IBA).</p>
+                  <p style="margin:0;">&para; J. Conrad <i>et al.</i>: <i>"the optimizer goal for the accuracy was readjusted &times;4 smaller, i.e. 0.25 for the cost function."</i> [TCAS-I 2020, Sec. IV-B.3]</p>
+                  <p style="margin:0;">** J. Conrad <i>et al.</i>, Table II: 180 nm power cost function = 12.99 (target: 1.0), failing the power constraint by 13&times;.</p>
+                </div>
+              </div>
+            </details>
           </span>
         </li>
       </ul>
