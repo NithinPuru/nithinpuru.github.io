@@ -25,8 +25,7 @@
               "url": "/img/bgr_pcb_2.jpg",
               "label": "PCB — Lab testbench 2"
             }
-          ],
-          "siliconStatus": "Die photo — not yet available"
+          ]
         },
         {
           "title": "Folded-Cascode OTA Tapeout",
@@ -40,8 +39,7 @@
               "url": "https://github.com/user-attachments/assets/53cf05fc-8fbf-4d8f-a5aa-2e8ceaeac1ca",
               "label": "Layout — GF180MCU-D · TinyTapeout shuttle"
             }
-          ],
-          "siliconStatus": "Die photo — not yet available"
+          ]
         }
       ]
     }
