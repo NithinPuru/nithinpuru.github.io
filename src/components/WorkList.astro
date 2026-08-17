@@ -118,9 +118,9 @@ const { groups } = Astro.props;
                     <div class="abstract-content">
                       <div class="entry__images">
                         {entry.images.map((img) => (
-                          <div class="entry__image-block" id={"block-" + img.id}>
+                          <div class="entry__image-block">
                             <p class="entry__image-label">{img.label ?? "Image"}</p>
-                            <a href={"#lb-" + img.id} class="entry__thumb">
+                            <label for={"lb-toggle-" + img.id} class="entry__thumb">
                               <img
                                 src={img.url}
                                 alt={img.label ?? entry.title}
@@ -128,10 +128,11 @@ const { groups } = Astro.props;
                                 decoding="async"
                               />
                               <span class="entry__thumb-hint">click to expand</span>
-                            </a>
-                            {/* Pure CSS lightbox */}
-                            <div class="lb-overlay" id={"lb-" + img.id}>
-                              <a href={"#block-" + img.id} class="lb-close" aria-label="Close">&#x2715;</a>
+                            </label>
+                            {/* Pure CSS lightbox via checkbox */}
+                            <input type="checkbox" id={"lb-toggle-" + img.id} class="lb-toggle" hidden />
+                            <div class="lb-overlay">
+                              <label for={"lb-toggle-" + img.id} class="lb-close" aria-label="Close">&#x2715;</label>
                               <img
                                 src={img.url}
                                 alt={img.label ?? entry.title}
@@ -310,6 +311,9 @@ const { groups } = Astro.props;
   .entry__thumb:hover .entry__thumb-hint { opacity: 1; }
 
   /* ── Pure-CSS lightbox ────────────────────────────────── */
+  .lb-toggle {
+    display: none;
+  }
   .lb-overlay {
     display: none;
     position: fixed;
@@ -318,9 +322,8 @@ const { groups } = Astro.props;
     z-index: 9999;
     align-items: center;
     justify-content: center;
-    cursor: zoom-out;
   }
-  .lb-overlay:target {
+  .lb-toggle:checked + .lb-overlay {
     display: flex;
   }
   .lb-overlay img {
@@ -339,6 +342,7 @@ const { groups } = Astro.props;
     line-height: 1;
     opacity: 0.75;
     font-family: var(--font-mono);
+    cursor: pointer;
   }
   .lb-close:hover { opacity: 1; }
 
