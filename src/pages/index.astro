@@ -465,32 +465,21 @@ const email = "nithinpurushothama@gmail.com";
                   <p style="margin:0;">** J. Conrad <i>et al.</i>, Table II: 180 nm power cost function = 12.99 (target: 1.0), failing the power constraint by 13&times;.</p>
                 </div>
               </div>
-              <script>
-                (function () {
-                  const det = document.currentScript.closest('details');
-                  if (!det) return;
-
-                  const thumb   = det.querySelector('.award-gif-img');
+              <script is:inline>
+              (function () {
+                function init() {
                   const lb      = document.getElementById('gif-lb');
                   const lbImg   = document.getElementById('gif-lb-img');
                   const lbClose = document.getElementById('gif-lb-close');
+                  const thumb   = document.querySelector('.award-gif-img');
+                  const expandBtn = document.querySelector('.award-gif-expand-btn');
 
-                  if (!thumb || !lb || !lbImg) return;
-                  const gifSrc = thumb.getAttribute('src') || `${location.origin}/img/iba_transient_animation.gif`;
+                  if (!lb || !lbImg || !thumb) return;
 
-                  /* ── Pause GIF when details closes ───────────────────────── */
-                  det.addEventListener('toggle', () => {
-                    if (det.open) {
-                      if (!thumb.src || thumb.src === location.href) thumb.src = gifSrc;
-                    } else {
-                      thumb.src = '';
-                      closeLb();          // also close lightbox if open
-                    }
-                  });
+                  const GIF = '/img/iba_transient_animation.gif';
 
-                  /* ── Lightbox helpers ─────────────────────────────────────── */
                   function openLb() {
-                    lbImg.src = gifSrc;
+                    lbImg.src = GIF;
                     lb.hidden = false;
                     document.body.style.overflow = 'hidden';
                     if (lbClose) lbClose.focus();
@@ -503,25 +492,43 @@ const email = "nithinpurushothama@gmail.com";
                     document.body.style.overflow = '';
                   }
 
-                  /* ── Click handlers ───────────────────────────────────────── */
+                  // Click thumbnail or expand button → open lightbox
+                  thumb.style.cursor = 'zoom-in';
                   thumb.addEventListener('click', openLb);
 
-                  const expandBtn = det.querySelector('.award-gif-expand-btn');
-                  if (expandBtn) expandBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    openLb();
-                  });
+                  if (expandBtn) {
+                    expandBtn.addEventListener('click', function (e) {
+                      e.stopPropagation();
+                      openLb();
+                    });
+                  }
 
+                  // Close lightbox
                   if (lbClose) lbClose.addEventListener('click', closeLb);
+                  lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+                  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLb(); });
 
-                  lb.addEventListener('click', (e) => {
-                    if (e.target === lb) closeLb();
-                  });
+                  // Pause GIF when the awards details closes
+                  const det = document.querySelector('#awards details');
+                  if (det) {
+                    det.addEventListener('toggle', function () {
+                      if (det.open) {
+                        if (!thumb.src || thumb.src === location.href) thumb.src = GIF;
+                      } else {
+                        thumb.src = '';
+                        closeLb();
+                      }
+                    });
+                  }
+                }
 
-                  document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') closeLb();
-                  });
-                })();
+                // Run after DOM is ready (is:inline scripts can fire before DOMContentLoaded)
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', init);
+                } else {
+                  init();
+                }
+              })();
               </script>
             </details>
           </span>
