@@ -113,30 +113,35 @@ const { groups } = Astro.props;
 
                 {/* Layout / PCB / silicon images */}
                 {entry.images && entry.images.length > 0 && (
-                  <div class="entry__images">
-                    {entry.images.map((img) => (
-                      <div class="entry__image-block">
-                        <p class="entry__image-label">{img.label ?? "Image"}</p>
-                        <a href={"#lb-" + img.id} class="entry__thumb">
-                          <img
-                            src={img.url}
-                            alt={img.label ?? entry.title}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                          <span class="entry__thumb-hint">click to expand</span>
-                        </a>
-                        {/* Pure CSS lightbox */}
-                        <div class="lb-overlay" id={"lb-" + img.id}>
-                          <a href="#" class="lb-close" aria-label="Close">&#x2715;</a>
-                          <img
-                            src={img.url}
-                            alt={img.label ?? entry.title}
-                          />
-                        </div>
+                  <details class="entry__abstract">
+                    <summary>Layout &amp; PCB Images</summary>
+                    <div class="abstract-content">
+                      <div class="entry__images">
+                        {entry.images.map((img) => (
+                          <div class="entry__image-block">
+                            <p class="entry__image-label">{img.label ?? "Image"}</p>
+                            <a href={"#lb-" + img.id} class="entry__thumb">
+                              <img
+                                src={img.url}
+                                alt={img.label ?? entry.title}
+                                loading="lazy"
+                                decoding="async"
+                              />
+                              <span class="entry__thumb-hint">click to expand</span>
+                            </a>
+                            {/* Pure CSS lightbox */}
+                            <div class="lb-overlay" id={"lb-" + img.id}>
+                              <a href="#" class="lb-close" aria-label="Close">&#x2715;</a>
+                              <img
+                                src={img.url}
+                                alt={img.label ?? entry.title}
+                              />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  </details>
                 )}
 
                 {/* Silicon status badge */}
