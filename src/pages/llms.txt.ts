@@ -9,7 +9,7 @@ export const GET: APIRoute = ({ site }) => {
 > Analog/Mixed-Signal IC designer with tapeout experience in SKY130, GF180MCU,
 > IHP SG13G2, UMC 55 nm, and TSMC 28 nm. Research from the LP-CAS Lab at IIT
 > Gandhinagar; industry work on PVT Monitor and Reference IPs at Omni Design
-> Technologies. IEEE SSCS Code-a-Chip Travel Grant awardee (ESSERC 2026).
+> Technologies. IEEE SSCS Code-a-Chip Travel Grant recipient (ESSERC 2026).
 
 ## The site
 
