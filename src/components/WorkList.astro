@@ -6,6 +6,17 @@ interface EntryLink {
   url: string;
 }
 
+interface EntryImage {
+  url: string;
+  label?: string;
+  id: string;
+}
+
+interface EntryPlot {
+  url: string;
+  caption?: string;
+}
+
 interface Entry {
   title: string;
   url?: string;
@@ -15,6 +26,10 @@ interface Entry {
   tagHot?: boolean;
   links?: EntryLink[];
   abstract?: string;
+  gif?: string;
+  images?: EntryImage[];
+  plots?: EntryPlot[];
+  siliconStatus?: string;
 }
 
 interface Group {
@@ -54,13 +69,81 @@ const { groups } = Astro.props;
                     </span>
                   )}
                 </div>
+
                 {entry.desc && <p class="entry__desc" set:html={entry.desc}></p>}
+
+                {/* GIF animation */}
+                {entry.gif && (
+                  <figure class="entry__gif">
+                    <img
+                      src={entry.gif}
+                      alt={entry.title + " — animation"}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <figcaption>
+                      IBA transient response: Non-linear settling (red) → Linear settling (blue) · IHP SG13G2 130&nbsp;nm BiCMOS
+                    </figcaption>
+                  </figure>
+                )}
+
+                {/* Notebook plots */}
+                {entry.plots && entry.plots.length > 0 && (
+                  <div class="entry__plots">
+                    {entry.plots.map((plot) => (
+                      <figure class="entry__plot-item">
+                        <img
+                          src={plot.url}
+                          alt={plot.caption ?? "Notebook plot"}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        {plot.caption && <figcaption>{plot.caption}</figcaption>}
+                      </figure>
+                    ))}
+                  </div>
+                )}
+
                 {entry.abstract && (
                   <details class="entry__abstract">
                     <summary>Abstract</summary>
                     <div class="abstract-content" set:html={entry.abstract} />
                   </details>
                 )}
+
+                {/* Layout / PCB / silicon images */}
+                {entry.images && entry.images.length > 0 && (
+                  <div class="entry__images">
+                    {entry.images.map((img) => (
+                      <div class="entry__image-block">
+                        <p class="entry__image-label">{img.label ?? "Image"}</p>
+                        <a href={"#lb-" + img.id} class="entry__thumb">
+                          <img
+                            src={img.url}
+                            alt={img.label ?? entry.title}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <span class="entry__thumb-hint">click to expand</span>
+                        </a>
+                        {/* Pure CSS lightbox */}
+                        <div class="lb-overlay" id={"lb-" + img.id}>
+                          <a href="#" class="lb-close" aria-label="Close">&#x2715;</a>
+                          <img
+                            src={img.url}
+                            alt={img.label ?? entry.title}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Silicon status badge */}
+                {entry.siliconStatus && (
+                  <p class="entry__silicon-status">{entry.siliconStatus}</p>
+                )}
+
                 <div class="entry__meta">
                   {entry.meta && <span>{entry.meta}</span>}
                   {entry.links && (
@@ -100,12 +183,8 @@ const { groups } = Astro.props;
     align-items: center;
     gap: 0.3rem;
   }
-  .entry__links a svg {
-    color: var(--accent);
-  }
-  .entry__abstract {
-    margin-top: 0.5rem;
-  }
+  .entry__links a svg { color: var(--accent); }
+  .entry__abstract { margin-top: 0.5rem; }
   .entry__abstract summary {
     cursor: pointer;
     font-weight: 500;
@@ -113,14 +192,153 @@ const { groups } = Astro.props;
     user-select: none;
     font-size: 0.9rem;
   }
-  .entry__abstract summary:hover {
-    text-decoration: underline;
-  }
+  .entry__abstract summary:hover { text-decoration: underline; }
   .abstract-content {
     margin-top: 0.5rem;
     padding-left: 1rem;
     font-size: 0.9rem;
     border-left: 2px solid var(--accent);
     color: var(--ink-2);
+  }
+
+  /* ── GIF ──────────────────────────────────────────────── */
+  .entry__gif {
+    margin: 1rem 0;
+    border: 1px solid var(--rule);
+  }
+  .entry__gif img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .entry__gif figcaption {
+    font-size: 0.78rem;
+    color: var(--ink-3);
+    text-align: center;
+    padding: 0.4rem 0.6rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Notebook plots ───────────────────────────────────── */
+  .entry__plots {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin: 0.8rem 0;
+  }
+  .entry__plot-item {
+    flex: 1;
+    min-width: 240px;
+    margin: 0;
+    border: 1px solid var(--rule);
+  }
+  .entry__plot-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .entry__plot-item figcaption {
+    font-size: 0.75rem;
+    color: var(--ink-3);
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Layout / PCB images ──────────────────────────────── */
+  .entry__images {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    margin: 0.8rem 0;
+  }
+  .entry__image-block {
+    flex: 1;
+    min-width: 180px;
+    max-width: 280px;
+  }
+  .entry__image-label {
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+  }
+  .entry__thumb {
+    display: block;
+    position: relative;
+    border: 1px solid var(--rule);
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+  .entry__thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.15s;
+  }
+  .entry__thumb:hover img { opacity: 0.88; }
+  .entry__thumb-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    text-align: center;
+    padding: 0.2rem 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .entry__thumb:hover .entry__thumb-hint { opacity: 1; }
+
+  /* ── Pure-CSS lightbox ────────────────────────────────── */
+  .lb-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 5, 0.92);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .lb-overlay:target {
+    display: flex;
+  }
+  .lb-overlay img {
+    max-width: 92vw;
+    max-height: 90vh;
+    object-fit: contain;
+    display: block;
+  }
+  .lb-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.4rem;
+    color: #e8e0d0;
+    font-size: 1.6rem;
+    text-decoration: none;
+    line-height: 1;
+    opacity: 0.75;
+    font-family: var(--font-mono);
+  }
+  .lb-close:hover { opacity: 1; }
+
+  /* ── Silicon status ───────────────────────────────────── */
+  .entry__silicon-status {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+    border: 1px solid var(--rule);
+    padding: 0.2rem 0.7rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.04em;
   }
 </style>

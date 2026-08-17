@@ -8,14 +8,40 @@
           "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
           "desc": "&bull; Implemented higher-order curvature correction using piecewise compensation technique to compensate for BJT non-idealities in Bandgap; achieved 4.4 ppm/°C Temperature Coefficient.<br/>&bull; Improved PSRR via cascode current mirrors; conducted full PVT corner verification across process, voltage, and temperature.",
           "tag": "Fabricated",
-          "tagHot": true
+          "tagHot": true,
+          "images": [
+            {
+              "id": "bgr-layout",
+              "url": "https://github.com/user-attachments/assets/9319ca57-f48a-4ab2-83e8-1058df587f7c",
+              "label": "Layout — SKY130 · TinyTapeout shuttle"
+            },
+            {
+              "id": "bgr-pcb1",
+              "url": "/img/bgr_pcb_1.jpg",
+              "label": "PCB — Lab testbench 1"
+            },
+            {
+              "id": "bgr-pcb2",
+              "url": "/img/bgr_pcb_2.jpg",
+              "label": "PCB — Lab testbench 2"
+            }
+          ],
+          "siliconStatus": "⏳ Die photo — not yet available"
         },
         {
           "title": "Folded-Cascode OTA Tapeout",
           "url": "https://github.com/chennakeshavadasa/LPCAS_TTGF0P3_TP1",
           "desc": "&bull; Designed a Folded-Cascode OTA in the GF180MCU-D PDK; submitted for GF180MCU test shuttle via TinyTapeout for silicon fabrication.<br/>&bull; Completed full pre-tapeout signoff: DRC, LVS, and PEX extraction.",
           "tag": "Featured",
-          "tagHot": true
+          "tagHot": true,
+          "images": [
+            {
+              "id": "ota-layout",
+              "url": "https://github.com/user-attachments/assets/53cf05fc-8fbf-4d8f-a5aa-2e8ceaeac1ca",
+              "label": "Layout — GF180MCU-D · TinyTapeout shuttle"
+            }
+          ],
+          "siliconStatus": "⏳ Die photo — not yet available"
         }
       ]
     }
