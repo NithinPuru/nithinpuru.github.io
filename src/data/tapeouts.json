@@ -13,17 +13,17 @@
             {
               "id": "bgr-layout",
               "url": "https://github.com/user-attachments/assets/9319ca57-f48a-4ab2-83e8-1058df587f7c",
-              "label": "Layout — SKY130 · TinyTapeout shuttle"
+              "label": "Layout - SKY130 · TinyTapeout shuttle"
             },
             {
               "id": "bgr-pcb1",
               "url": "/img/bgr_pcb_1.jpg",
-              "label": "PCB — Lab testbench 1"
+              "label": "PCB - Lab testbench 1"
             },
             {
               "id": "bgr-pcb2",
               "url": "/img/bgr_pcb_2.jpg",
-              "label": "PCB — Lab testbench 2"
+              "label": "PCB - Lab testbench 2"
             }
           ]
         },
@@ -37,7 +37,7 @@
             {
               "id": "ota-layout",
               "url": "https://github.com/user-attachments/assets/53cf05fc-8fbf-4d8f-a5aa-2e8ceaeac1ca",
-              "label": "Layout — GF180MCU-D · TinyTapeout shuttle"
+              "label": "Layout - GF180MCU-D · TinyTapeout shuttle"
             }
           ]
         }

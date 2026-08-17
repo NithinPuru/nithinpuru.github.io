@@ -1,6 +1,6 @@
 # nithinpuru.github.io
 
-Personal portfolio — [nithinpuru.github.io](https://nithinpuru.github.io)
+Personal portfolio - [nithinpuru.github.io](https://nithinpuru.github.io)
 
 Analog/Mixed-Signal IC Designer. Tapeout experience in SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, TSMC 28 nm. IEEE SSCS Code-a-Chip Travel Grant awardee, ESSERC 2026.
 
