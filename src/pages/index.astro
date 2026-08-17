@@ -627,28 +627,42 @@ const email = "nithinpurushothama@gmail.com";
     </div>
   </div>
 
-  <script>
-    // Auto-collapse open <details> when their parent section scrolls out of view
-    (function () {
-      const sections = document.querySelectorAll('#publications, #awards');
-      if (!sections.length || !('IntersectionObserver' in window)) return;
+  <script is:inline>
+  (function () {
+    const sections = document.querySelectorAll('#publications, #awards');
+    if (!sections.length || !('IntersectionObserver' in window)) return;
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) {
-              // Section has left the viewport — collapse any open details inside it
-              entry.target.querySelectorAll('details[open]').forEach((det) => {
-                det.removeAttribute('open');
-                det.dispatchEvent(new Event('toggle')); // triggers existing pause-GIF logic
-              });
-            }
-          });
-        },
-        { threshold: 0 } // fires when section is completely off-screen
-      );
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) {
+            var openDetails = entry.target.querySelectorAll('details[open]');
+            if (!openDetails.length) return;
 
-      sections.forEach((s) => observer.observe(s));
-    })();
+            var scrollY      = window.scrollY;
+            var heightBefore = document.body.scrollHeight;
+
+            openDetails.forEach(function (det) {
+              det.removeAttribute('open');
+              det.dispatchEvent(new Event('toggle')); // fires GIF pause handler
+            });
+
+            // After browser repaints, measure how much the page shrank
+            // and shift scrollY up by exactly that amount so the viewport
+            // doesn't move relative to the content below the collapsed section
+            requestAnimationFrame(function () {
+              var collapsed = heightBefore - document.body.scrollHeight;
+              if (collapsed > 0) {
+                window.scrollTo({ top: scrollY - collapsed, behavior: 'instant' });
+              }
+            });
+          }
+        });
+      },
+      { threshold: 0 }
+    );
+
+    sections.forEach(function (s) { observer.observe(s); });
+  })();
   </script>
 </Layout>
