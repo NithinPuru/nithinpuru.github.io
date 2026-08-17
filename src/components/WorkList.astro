@@ -254,15 +254,14 @@ const { groups } = Astro.props;
 
   /* ── Layout / PCB images ──────────────────────────────── */
   .entry__images {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.2rem;
-    flex-wrap: wrap;
-    margin: 0.8rem 0;
+    margin: 1rem 0;
   }
   .entry__image-block {
-    flex: 1;
-    min-width: 180px;
-    max-width: 280px;
+    display: flex;
+    flex-direction: column;
   }
   .entry__image-label {
     font-size: 0.78rem;
@@ -270,7 +269,8 @@ const { groups } = Astro.props;
     color: var(--ink-3);
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
+    min-height: 2.8em;
   }
   .entry__thumb {
     display: block;
@@ -278,11 +278,15 @@ const { groups } = Astro.props;
     border: 1px solid var(--rule);
     cursor: zoom-in;
     overflow: hidden;
+    height: 200px;
+    width: 100%;
   }
   .entry__thumb img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     transition: opacity 0.15s;
   }
   .entry__thumb:hover img { opacity: 0.88; }
