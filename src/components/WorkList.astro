@@ -262,6 +262,7 @@ const { groups } = Astro.props;
   .entry__image-block {
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
   .entry__image-label {
     font-size: 0.78rem;
@@ -270,7 +271,6 @@ const { groups } = Astro.props;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     margin-bottom: 0.5rem;
-    min-height: 2.8em;
   }
   .entry__thumb {
     display: block;
@@ -280,6 +280,7 @@ const { groups } = Astro.props;
     overflow: hidden;
     height: 200px;
     width: 100%;
+    margin-top: auto;
   }
   .entry__thumb img {
     display: block;
