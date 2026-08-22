@@ -1149,7 +1149,7 @@ a {
 
 /* Expanded detail content */
 .exp-detail {
-  padding: 0.8rem 0.75rem 1.4rem 0.75rem;
+  padding: 0.8rem 0.75rem 1.4rem 2.5rem;
   border-top: 1px solid var(--rule);
   color: var(--ink-2);
   line-height: 1.5;
