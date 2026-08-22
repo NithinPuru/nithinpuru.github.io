@@ -1173,3 +1173,14 @@ a {
   margin-top: 0.75rem;
   border: 1px solid var(--rule);
 }
+
+/* ── Publication conference logos ────────────────── */
+.entry__conf-logo {
+  display: block;
+  height: 48px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 0.6rem;
+}

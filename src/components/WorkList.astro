@@ -24,6 +24,7 @@ interface Entry {
   meta?: string;
   tag?: string;
   tagHot?: boolean;
+  logo?: string;
   links?: EntryLink[];
   abstract?: string;
   gif?: string;
@@ -53,6 +54,14 @@ const { groups } = Astro.props;
             group.entries.map((entry) => (
               <li class="entry" data-reveal>
                 <div class="entry__top">
+                  {entry.logo && (
+                    <img
+                      src={entry.logo}
+                      alt=""
+                      class="entry__conf-logo"
+                      loading="lazy"
+                    />
+                  )}
                   <h4 class="entry__title">
                     <a href={entry.url} target="_blank" rel="noopener noreferrer">
                       {entry.title}

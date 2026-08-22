@@ -11,6 +11,7 @@
           "meta": "ESSERC 2026 · September 2026",
           "tag": "Upcoming",
           "tagHot": true,
+          "logo": "/img/sscs.jpg",
           "links": [
             {
               "label": "IEEE SSCS Code-a-Chip Travel Grant - $5,000",
@@ -27,7 +28,8 @@
           "url": "https://ieeexplore.ieee.org/abstract/document/11409824",
           "desc": "Nithin P, Prof. Madhav Pathak<br/>Design and comparison of analog multiplier circuits for low-power pre-ADC sensor processing, power management, and analog neural networks using translinear and linear MOSFET-based MAC architectures.",
           "abstract": "Multiplication is a key computational step in analog signal processing circuits used in various low-power applications such as pre-ADC sensor data processing, controllers for power management circuits, and analog neural networks. This paper compares two analog multiplication approaches: a Trans-linear Loop based design and a Linear MOSFET based design. The operating principles, voltage and current ranges, and design trade-offs of both circuits are analyzed. Implementations are carried out in the open-source SKY130nm CMOS process and verified through simulations. The trans-linear circuit consumes less than 21.53 µW, while the Linear-MOSFET based circuit consumes 39.78 µW. Guidelines for circuit optimization are provided, highlighting trade-offs in accuracy, power consumption, and area overhead. Impact of device mismatches in the multiplier circuits is evaluated using Monte Carlo simulations. Simulation results demonstrate the performance and limitations of each approach, providing a reference for the design of analog multipliers.",
-          "meta": "IEEE ICEE 2025"
+          "meta": "IEEE ICEE 2025",
+          "logo": "/img/icee.jpg"
         }
       ]
     }
