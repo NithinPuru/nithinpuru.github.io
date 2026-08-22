@@ -1164,3 +1164,10 @@ a {
   list-style-type: '\2666  ';
 }
 .exp-detail strong { color: var(--ink); font-weight: 600; }
+
+.award-logo {
+  display: block;
+  width: 120px;
+  height: auto;
+  border: 1px solid var(--rule);
+}
