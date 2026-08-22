@@ -1177,8 +1177,8 @@ a {
 /* ── Publication conference logos ────────────────── */
 .entry--has-logo {
   display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 160px 1fr;
+  gap: 2rem;
   align-items: start;
 }
 .entry__logo-col {
@@ -1188,11 +1188,20 @@ a {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 90px;
+  max-height: 140px;
   object-fit: contain;
   object-position: top left;
   border: 1px solid var(--rule);
+  padding: 0.4rem;
 }
 .entry__body {
   min-width: 0;
+}
+@media (max-width: 560px) {
+  .entry--has-logo {
+    grid-template-columns: 1fr;
+  }
+  .entry__conf-logo {
+    max-width: 160px;
+  }
 }
