@@ -1175,12 +1175,24 @@ a {
 }
 
 /* ── Publication conference logos ────────────────── */
+.entry--has-logo {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.entry__logo-col {
+  padding-top: 0.15rem;
+}
 .entry__conf-logo {
   display: block;
-  height: 48px;
-  width: auto;
-  max-width: 140px;
+  width: 100%;
+  height: auto;
+  max-height: 90px;
   object-fit: contain;
-  object-position: left center;
-  margin-bottom: 0.6rem;
+  object-position: top left;
+  border: 1px solid var(--rule);
+}
+.entry__body {
+  min-width: 0;
 }

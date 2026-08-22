@@ -52,16 +52,19 @@ const { groups } = Astro.props;
         <ul class="entries">
           {
             group.entries.map((entry) => (
-              <li class="entry" data-reveal>
-                <div class="entry__top">
-                  {entry.logo && (
+              <li class={`entry${entry.logo ? ' entry--has-logo' : ''}`} data-reveal>
+                {entry.logo && (
+                  <div class="entry__logo-col">
                     <img
                       src={entry.logo}
                       alt=""
                       class="entry__conf-logo"
                       loading="lazy"
                     />
-                  )}
+                  </div>
+                )}
+                <div class="entry__body">
+                <div class="entry__top">
                   <h4 class="entry__title">
                     <a href={entry.url} target="_blank" rel="noopener noreferrer">
                       {entry.title}
@@ -171,6 +174,7 @@ const { groups } = Astro.props;
                       ))}
                     </span>
                   )}
+                </div>
                 </div>
               </li>
             ))
