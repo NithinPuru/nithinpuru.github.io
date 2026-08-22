@@ -1167,7 +1167,9 @@ a {
 
 .award-logo {
   display: block;
-  width: 120px;
+  width: 100%;
+  max-width: 140px;
   height: auto;
+  margin-top: 0.75rem;
   border: 1px solid var(--rule);
 }
