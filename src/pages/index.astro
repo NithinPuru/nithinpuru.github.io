@@ -27,6 +27,24 @@ const email = "nithinpurushothama@gmail.com";
           <p class="doc-meta">
             <span>Analog &middot; Mixed-Signal IC Designer</span>
           </p>
+
+          <div class="hero-stats" data-reveal>
+            <div class="hstat">
+              <span class="hstat__n" data-count="5">5</span>
+              <span class="hstat__l">Process Nodes</span>
+              <span class="hstat__sub">SKY130 · GF180 · IHP SG13G2 · UMC 55&nbsp;nm · TSMC 28&nbsp;nm</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat__n" data-count="3">3</span>
+              <span class="hstat__l">Open PDK Tapeouts</span>
+              <span class="hstat__sub">Fabricated silicon via TinyTapeout shuttle</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat__n">$5K</span>
+              <span class="hstat__l">IEEE SSCS Grant</span>
+              <span class="hstat__sub">Code-a-Chip Travel Award · ESSERC 2026</span>
+            </div>
+          </div>
         </div>
 
         <div class="abstract">
@@ -66,6 +84,10 @@ const email = "nithinpurushothama@gmail.com";
           <p>
             I am also an IEEE SSCS Code-a-Chip Travel Grant Recipient for ESSERC 2026, where I will be presenting my work on <i>R<sub>on</sub>/G<sub>m</sub></i> based design methodology for dynamic amplifiers.
           </p>
+
+          <p class="phd-hero-signal">
+            Seeking PhD positions &middot; <strong>Fall 2027</strong>
+          </p>
         </div>
 
         <a class="btn btn--ghost" href="#contact">
@@ -79,6 +101,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="experience" aria-labelledby="experience-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">01</span>
         <h2 class="section-title" id="experience-h">Experience</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -161,6 +184,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="education" aria-labelledby="education-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">02</span>
         <h2 class="section-title" id="education-h">Education</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -186,6 +210,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="publications" aria-labelledby="publications-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">03</span>
         <h2 class="section-title" id="publications-h">Publications</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -198,6 +223,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="awards" aria-labelledby="awards-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">04</span>
         <h2 class="section-title" id="awards-h">Awards</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -536,8 +562,16 @@ const email = "nithinpurushothama@gmail.com";
       </ul>
     </section>
 
+    <!-- Achievements marquee -->
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee-track" id="marqueeTrack">
+        <!-- items duplicated in JS for seamless loop -->
+      </div>
+    </div>
+
     <section class="section" id="work" aria-labelledby="work-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">05</span>
         <h2 class="section-title" id="work-h">Work</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -555,6 +589,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="finance" aria-labelledby="finance-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">06</span>
         <h2 class="section-title" id="finance-h">Quantitative Finance</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -567,6 +602,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="cv" aria-labelledby="cv-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">07</span>
         <h2 class="section-title" id="cv-h">Curriculum Vitae</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -596,23 +632,51 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="contact" aria-labelledby="contact-h">
       <header class="section-head" data-reveal>
+        <span class="sec-num">08</span>
         <h2 class="section-title" id="contact-h">Contact</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
       <div data-reveal>
-        <div class="contact-row">
-          <span class="k">Email (preferred)</span>
-          <a href={`mailto:${email}`}>{email}</a>
+
+        <p class="phd-signal">
+          Seeking PhD positions for <strong>Fall 2027</strong> in energy-efficient
+          analog and mixed-signal IC design. Open to opportunities at European and
+          international research groups.
+        </p>
+
+        <div class="contact-grid">
+          <a href={`mailto:${email}`} class="contact-card">
+            <span class="contact-card__k">Email</span>
+            <span class="contact-card__v">{email}</span>
+          </a>
+          <a href={github} target="_blank" rel="noopener noreferrer" class="contact-card">
+            <span class="contact-card__k">GitHub</span>
+            <span class="contact-card__v">chennakeshavadasa</span>
+          </a>
+          <a href={linkedin} target="_blank" rel="noopener noreferrer" class="contact-card">
+            <span class="contact-card__k">LinkedIn</span>
+            <span class="contact-card__v">Nithin Purushothama</span>
+          </a>
+          <a href="https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io"
+             target="_blank" rel="noopener noreferrer"
+             class="contact-card contact-card--accent">
+            <span class="contact-card__k">IEEE SSCS Award</span>
+            <span class="contact-card__v">Code-a-Chip Travel Grant &middot; $5,000 &middot; ESSERC 2026</span>
+          </a>
+          <a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
+             target="_blank" rel="noopener noreferrer"
+             class="contact-card">
+            <span class="contact-card__k">Research Notebook</span>
+            <span class="contact-card__v">R<sub>on</sub>/g<sub>m</sub> Methodology &middot; IHP SG13G2 &middot; Open source</span>
+          </a>
+          <a href="https://nithinpuru.github.io/notebook"
+             class="contact-card">
+            <span class="contact-card__k">Notes</span>
+            <span class="contact-card__v">Interactive notebook &middot; Ron/gm Design Methodology</span>
+          </a>
         </div>
-        <div class="contact-row">
-          <span class="k">GitHub</span>
-          <a href={github} target="_blank" rel="noopener noreferrer">github.com/chennakeshavadasa</a>
-        </div>
-        <div class="contact-row">
-          <span class="k">LinkedIn</span>
-          <a href={linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/nithin-purushothama-70664727b</a>
-        </div>
+
       </div>
     </section>
 
@@ -626,6 +690,69 @@ const email = "nithinpurushothama@gmail.com";
       <a href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </div>
   </div>
+
+  <script is:inline>
+  /* ── Stat counter animation ───────────────────────── */
+  (function () {
+    function animateCount(el) {
+      if (el._done) return;
+      el._done = true;
+      var target = parseFloat(el.dataset.count);
+      if (isNaN(target)) return;
+      var start = performance.now();
+      var dur = 1200;
+      function ease(t) { return 1 - Math.pow(1 - t, 3); }
+      function tick(now) {
+        var t = Math.min((now - start) / dur, 1);
+        el.textContent = Math.floor(target * ease(t));
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(tick);
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('[data-count]').forEach(animateCount);
+        }
+      });
+    }, { threshold: 0.4 });
+    var strip = document.querySelector('.hero-stats');
+    if (strip) obs.observe(strip);
+  })();
+  </script>
+
+  <script is:inline>
+  /* ── Achievements marquee ─────────────────────────── */
+  (function () {
+    var items = [
+      { text: "ESSERC 2026 · Accepted",             sub: "Palma de Mallorca, Spain" },
+      { text: "IEEE SSCS Code-a-Chip Travel Grant", sub: "$5,000 · Young Professional" },
+      { text: "SKY130 Tapeout",                     sub: "Piecewise-Compensated BGR · TinyTapeout" },
+      { text: "GF180MCU Tapeout",                   sub: "Folded-Cascode OTA · TinyTapeout" },
+      { text: "IHP SG13G2 · 130 nm BiCMOS",         sub: "Ron/gm Methodology · ESSERC 2026" },
+      { text: "UMC 55 nm CMOS",                     sub: "PWM Comparator · PhyTau Semiconductors" },
+      { text: "TSMC 28 nm CMOS",                    sub: "PVT Monitor & Reference IPs · Omni Design" },
+      { text: "Omni Design Technologies",           sub: "Bandgap Core · REF ANALOG" },
+      { text: "IIT Gandhinagar · LP-CAS Lab",       sub: "Advisor: Prof. Madhav K. Pathak" },
+      { text: "ISRO · SAC Hassan",                  sub: "C-Band Antenna Calibration · GSAT-31" },
+      { text: "Seeking PhD · Fall 2027",            sub: "Energy-efficient AMS design" },
+    ];
+    var track = document.getElementById('marqueeTrack');
+    if (!track) return;
+    // Double the items for seamless loop
+    var all = items.concat(items);
+    all.forEach(function (a) {
+      var el = document.createElement('div');
+      el.className = 'marquee-item';
+      el.innerHTML =
+        '<span class="marquee-text">' + a.text + '</span>' +
+        '<span class="marquee-sep" aria-hidden="true">&middot;</span>' +
+        '<span class="marquee-sub">' + a.sub + '</span>';
+      track.appendChild(el);
+    });
+  })();
+  </script>
 
   <script is:inline>
   (function () {

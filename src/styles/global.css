@@ -814,3 +814,172 @@ a {
     margin-right: 0;
   }
 }
+
+/* ── Section numbers ─────────────────────────────── */
+.sec-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.sec-num::before { content: "§"; margin-right: 0.3em; }
+
+/* ── Hero stats strip ────────────────────────────── */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin: 1.6rem 0 0;
+  border: 1px solid var(--rule);
+}
+.hstat {
+  flex: 1;
+  padding: 0.9rem 1rem;
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.hstat:last-child { border-right: none; }
+.hstat__n {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.hstat__l {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.hstat__sub {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+@media (max-width: 560px) {
+  .hero-stats { flex-direction: column; }
+  .hstat { border-right: none; border-bottom: 1px solid var(--rule); }
+  .hstat:last-child { border-bottom: none; }
+}
+
+/* ── Achievements marquee ────────────────────────── */
+.marquee-wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.65rem 0;
+  background: var(--paper);
+}
+.marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marquee-scroll 55s linear infinite;
+}
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 2.5rem;
+  border-right: 1px solid var(--rule);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.marquee-text {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+.marquee-sep { color: var(--rule); }
+.marquee-sub {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* ── PhD signal ──────────────────────────────────── */
+.phd-signal {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--ink-2);
+  line-height: 1.7;
+  border-left: 2px solid var(--ink);
+  padding: 0.6rem 1rem;
+  margin-bottom: 2rem;
+}
+.phd-signal strong { color: var(--ink); }
+
+/* ── Contact grid ────────────────────────────────── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border: 1px solid var(--rule);
+}
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.contact-card:hover { background: rgba(25, 24, 20, 0.03); }
+.contact-card:nth-child(2n) { border-right: none; }
+.contact-card:nth-last-child(-n+2) { border-bottom: none; }
+.contact-card__k {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.contact-card__v {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.contact-card--accent .contact-card__k { color: var(--ink-2); }
+.contact-card--accent .contact-card__v { font-weight: 600; }
+@media (max-width: 560px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .contact-card { border-right: none; }
+  .contact-card:last-child { border-bottom: none; }
+}
+
+/* ── PhD signal in hero ──────────────────────────── */
+.phd-hero-signal {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border: 1px solid var(--rule);
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  margin-top: 0.5rem;
+}
+.phd-hero-signal strong {
+  color: var(--ink);
+  font-weight: 600;
+}
