@@ -1160,18 +1160,18 @@ a {
 
 /* Open indicator — small arrow */
 .exp-summary::after {
-  content: '\2193';
+  content: '▾';
   position: absolute;
   right: 0.5rem;
   top: 1.2rem;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--ink-3);
-  transition: transform 0.2s;
+  font-size: 0.8rem;
+  color: var(--accent);
+  transition: content 0s, transform 0.2s ease;
 }
 .exp-item[open] > .exp-summary::after {
-  transform: rotate(180deg);
-  color: var(--ink-2);
+  content: '▴';
+  color: var(--accent);
 }
 
 /* Expanded detail content */
