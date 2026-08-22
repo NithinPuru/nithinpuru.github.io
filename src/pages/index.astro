@@ -22,11 +22,22 @@ const email = "nithinpurushothama@gmail.com";
 
 
         <div class="masthead__head">
-          <h1>Nithin Purushothama</h1>
-
-          <p class="doc-meta">
-            <span>Analog &middot; Mixed-Signal IC Designer</span>
-          </p>
+          <div class="masthead__name-row">
+            <div>
+              <h1>Nithin Purushothama</h1>
+              <p class="doc-meta">
+                <span>Analog &middot; Mixed-Signal IC Designer</span>
+              </p>
+            </div>
+            <img
+              src={`${import.meta.env.BASE_URL}img/nithin_headshot.jpg`}
+              alt="Nithin Purushothama"
+              class="masthead__photo"
+              width="120"
+              height="120"
+              loading="eager"
+            />
+          </div>
 
           <div class="hero-stats" data-reveal>
             <div class="hstat">
@@ -88,6 +99,58 @@ const email = "nithinpurushothama@gmail.com";
           <p class="phd-hero-signal">
             Seeking PhD positions &middot; <strong>Fall 2027</strong>
           </p>
+
+          <div class="journey">
+
+            <div class="journey-item journey-item--active">
+              <div class="journey-dot"></div>
+              <span class="journey-year">Sep 2026 &ndash; Present</span>
+              <span class="journey-role">Analog Design Engineer</span>
+              <span class="journey-org">Omni Design Technologies &middot; Bengaluru</span>
+              <span class="journey-detail">PVT Monitor &amp; Reference IPs &middot; Bandgap Core &middot; REF ANALOG &middot; TSMC 28&nbsp;nm CMOS</span>
+            </div>
+
+            <div class="journey-item">
+              <div class="journey-dot"></div>
+              <span class="journey-year">Mar 2026 &ndash; Aug 2026</span>
+              <span class="journey-role">Analog Design Intern</span>
+              <span class="journey-org">Omni Design Technologies &middot; Bengaluru</span>
+              <span class="journey-detail">Bandgap Core &middot; self-biased folded-cascode OTA &middot; TSMC 28&nbsp;nm CMOS</span>
+            </div>
+
+            <div class="journey-item">
+              <div class="journey-dot"></div>
+              <span class="journey-year">Oct 2025 &ndash; Feb 2026</span>
+              <span class="journey-role">Analog Design Engineer</span>
+              <span class="journey-org">PhyTau Semiconductors &middot; Bengaluru</span>
+              <span class="journey-detail">PWM comparator for multi-phase DC-DC converter &middot; UMC 55&nbsp;nm CMOS</span>
+            </div>
+
+            <div class="journey-item">
+              <div class="journey-dot"></div>
+              <span class="journey-year">Aug 2024 &ndash; Aug 2025</span>
+              <span class="journey-role">Research Intern</span>
+              <span class="journey-org">LP-CAS Lab &middot; IIT Gandhinagar</span>
+              <span class="journey-detail">Advisor: Prof. Madhav K. Pathak &middot; Ron/gm methodology &middot; SKY130 tapeout &middot; ESSERC 2026</span>
+            </div>
+
+            <div class="journey-item">
+              <div class="journey-dot"></div>
+              <span class="journey-year">Oct 2023 &ndash; Nov 2023</span>
+              <span class="journey-role">Intern</span>
+              <span class="journey-org">ISRO &middot; SAC, Hassan</span>
+              <span class="journey-detail">C-Band antenna calibration &middot; GSAT-31 In-Orbit Testing</span>
+            </div>
+
+            <div class="journey-item">
+              <div class="journey-dot"></div>
+              <span class="journey-year">Dec 2021 &ndash; Jun 2025</span>
+              <span class="journey-role">B.E. Electronics &amp; Communication Engineering</span>
+              <span class="journey-org">Visvesvaraya Technological University</span>
+              <span class="journey-detail">CGPA 8.6 &middot; Bengaluru, India</span>
+            </div>
+
+          </div>
         </div>
 
         <a class="btn btn--ghost" href="#contact">
