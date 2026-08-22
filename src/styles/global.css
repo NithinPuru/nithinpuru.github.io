@@ -1152,20 +1152,18 @@ a {
 
 /* Expanded detail content */
 .exp-detail {
-  padding: 0 0.75rem 1.4rem 0.75rem;
-  font-size: 0.88rem;
-  color: var(--ink-2);
-  line-height: 1.65;
+  padding: 0.8rem 0.75rem 1.4rem 0.75rem;
   border-top: 1px solid var(--rule);
-  margin-top: 0;
+  color: var(--ink-2);
+  line-height: 1.5;
 }
-.exp-detail p { margin: 0.6rem 0; }
+.exp-detail p { margin: 0.4rem 0; }
 .exp-detail ul {
-  margin: 0.4rem 0 0.6rem 1rem;
+  margin: 0.3rem 0 0.4rem 1rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  padding: 0;
+  gap: 0.25rem;
+  list-style-type: '\2666  ';
 }
-.exp-detail ul li { list-style-type: '\25e6  '; }
-.exp-detail strong { color: var(--ink); }
+.exp-detail strong { color: var(--ink); font-weight: 600; }
