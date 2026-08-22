@@ -770,4 +770,18 @@ const email = "nithinpurushothama@gmail.com";
     sections.forEach(function (s) { observer.observe(s); });
   })();
   </script>
+
+  <script is:inline>
+  (function () {
+    var bar = document.getElementById('read-line');
+    if (!bar) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    window.addEventListener('scroll', function () {
+      var scrolled = window.scrollY;
+      var total = document.body.scrollHeight - window.innerHeight;
+      if (total <= 0) return;
+      bar.style.width = Math.min((scrolled / total) * 100, 100) + '%';
+    }, { passive: true });
+  })();
+  </script>
 </Layout>

@@ -1232,3 +1232,82 @@ a {
     max-width: 160px;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Slide-in when details opens */
+  @keyframes detail-slide-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  details[open] .exp-detail {
+    animation: detail-slide-in 0.25s ease forwards;
+  }
+
+  /* Active dot — faint pulse, shows role is current */
+  @keyframes dot-live {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(17,17,17,0.06); }
+    50%       { box-shadow: 0 0 0 6px rgba(17,17,17,0.03); }
+  }
+  .exp-item--active .journey-dot {
+    animation: dot-live 2.8s ease-in-out infinite;
+  }
+
+  /* Nav hover — underline grows from left */
+  .site-nav__links a {
+    position: relative;
+  }
+  .site-nav__links a::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--ink-1);
+    transition: width 0.2s ease;
+  }
+  .site-nav__links a:hover::after,
+  .site-nav__links a.is-active::after {
+    width: 100%;
+  }
+
+  /* Upcoming tag — very slow breath, signals live status */
+  @keyframes tag-breath {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.55; }
+  }
+  .entry__tag.is-hot {
+    animation: tag-breath 3.5s ease-in-out infinite;
+  }
+
+  /* Section number — stagger slightly behind the heading */
+  .sec-num {
+    transition: opacity 0.5s ease 0s, transform 0.5s ease 0s;
+  }
+  .js .sec-num {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  .js .section.is-in .sec-num {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .js .section.is-in .section-title {
+    transition-delay: 0.08s;
+  }
+
+}
+
+/* Reading progress — 1px hairline at top */
+#read-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 1px;
+  width: 0%;
+  background: var(--ink-1);
+  z-index: 9000;
+  pointer-events: none;
+}
