@@ -635,45 +635,18 @@ const email = "nithinpurushothama@gmail.com";
       </header>
 
       <div data-reveal>
-
-        <p class="phd-signal">
-          Seeking PhD positions for <strong>Fall 2027</strong> in energy-efficient
-          analog and mixed-signal IC design. Open to opportunities at European and
-          international research groups.
-        </p>
-
-        <div class="contact-grid">
-          <a href={`mailto:${email}`} class="contact-card">
-            <span class="contact-card__k">Email</span>
-            <span class="contact-card__v">{email}</span>
-          </a>
-          <a href={github} target="_blank" rel="noopener noreferrer" class="contact-card">
-            <span class="contact-card__k">GitHub</span>
-            <span class="contact-card__v">chennakeshavadasa</span>
-          </a>
-          <a href={linkedin} target="_blank" rel="noopener noreferrer" class="contact-card">
-            <span class="contact-card__k">LinkedIn</span>
-            <span class="contact-card__v">Nithin Purushothama</span>
-          </a>
-          <a href="https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io"
-             target="_blank" rel="noopener noreferrer"
-             class="contact-card contact-card--accent">
-            <span class="contact-card__k">IEEE SSCS Award</span>
-            <span class="contact-card__v">Code-a-Chip Travel Grant &middot; $5,000 &middot; ESSERC 2026</span>
-          </a>
-          <a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing"
-             target="_blank" rel="noopener noreferrer"
-             class="contact-card">
-            <span class="contact-card__k">Research Notebook</span>
-            <span class="contact-card__v">R<sub>on</sub>/g<sub>m</sub> Methodology &middot; IHP SG13G2 &middot; Open source</span>
-          </a>
-          <a href="https://nithinpuru.github.io/notebook"
-             class="contact-card">
-            <span class="contact-card__k">Notes</span>
-            <span class="contact-card__v">Interactive notebook &middot; Ron/gm Design Methodology</span>
-          </a>
+        <div class="contact-row">
+          <span class="k">Email (preferred)</span>
+          <a href={`mailto:${email}`}>{email}</a>
         </div>
-
+        <div class="contact-row">
+          <span class="k">GitHub</span>
+          <a href={github} target="_blank" rel="noopener noreferrer">github.com/chennakeshavadasa</a>
+        </div>
+        <div class="contact-row">
+          <span class="k">LinkedIn</span>
+          <a href={linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/nithin-purushothama-70664727b</a>
+        </div>
       </div>
     </section>
 
