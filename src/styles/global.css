@@ -1084,3 +1084,88 @@ a {
   .journey-org  { grid-column: 1; grid-row: auto; }
   .journey-detail { grid-column: 1; }
 }
+
+/* ── Experience timeline ─────────────────────────── */
+.exp-timeline {
+  position: relative;
+  padding-left: 1.4rem;
+  display: flex;
+  flex-direction: column;
+}
+.exp-timeline::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--rule);
+}
+
+.exp-item {
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+}
+.exp-item:last-child { border-bottom: none; }
+
+.exp-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 0.1rem;
+  padding: 1.1rem 0 1.1rem 0.75rem;
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  transition: background 0.15s;
+}
+.exp-summary::-webkit-details-marker { display: none; }
+.exp-summary:hover {
+  background: rgba(25, 24, 20, 0.03);
+}
+
+/* Dot reuse from journey */
+.exp-summary .journey-dot {
+  position: absolute;
+  left: -1.4rem;
+  top: 1.4rem;
+}
+.exp-item--active .exp-summary .journey-dot {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+/* Open indicator — small arrow */
+.exp-summary::after {
+  content: '\2193';
+  position: absolute;
+  right: 0.5rem;
+  top: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-3);
+  transition: transform 0.2s;
+}
+.exp-item[open] > .exp-summary::after {
+  transform: rotate(180deg);
+  color: var(--ink-2);
+}
+
+/* Expanded detail content */
+.exp-detail {
+  padding: 0 0.75rem 1.4rem 0.75rem;
+  font-size: 0.88rem;
+  color: var(--ink-2);
+  line-height: 1.65;
+  border-top: 1px solid var(--rule);
+  margin-top: 0;
+}
+.exp-detail p { margin: 0.6rem 0; }
+.exp-detail ul {
+  margin: 0.4rem 0 0.6rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0;
+}
+.exp-detail ul li { list-style-type: '\25e6  '; }
+.exp-detail strong { color: var(--ink); }
