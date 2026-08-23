@@ -98,16 +98,14 @@
     <circle id="sfg-dot" r="5" fill="#111" opacity="0" pointer-events="none"/>
   </svg>
 
-  <!-- Mason's formula rendered by KaTeX -->
-  <div class="sfg-mason" id="sfg-mason"></div>
 
   <!-- Skills panel -->
   <div class="sfg-panel" id="sfg-panel">
     <p class="sfg-empty" id="sfg-empty">hover a node to explore its sub-skills</p>
     <div id="sfg-content" style="display:none">
       <div class="sfg-ph">
-        <span id="sfg-xvar" class="sfg-xvar"></span>
-        <span class="sfg-arrow">&rarr;</span>
+        <span id="sfg-abbr" class="sfg-abbr"></span>
+        <span class="sfg-arrow">&thinsp;&middot;&thinsp;</span>
         <span id="sfg-cat" class="sfg-cat"></span>
       </div>
       <div id="sfg-skills" class="sfg-skills"></div>
@@ -152,21 +150,16 @@
   padding: 0.9rem 0 0.4rem;
   min-height: 90px;
 }
-.sfg-empty {
-  font-family: var(--font-serif);
-  font-size: 1rem;
-  font-style: italic;
-  color: var(--ink-3);
-}
+
 .sfg-ph {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-.sfg-xvar  { font-family: var(--font-serif); font-size: 1.1rem; font-style: italic; color: var(--ink-2); }
-.sfg-arrow { font-family: var(--font-serif); font-size: 1.3rem; color: var(--ink-3); }
-.sfg-cat   { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--ink-1); }
+.sfg-abbr  { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; align-self: center; }
+.sfg-arrow { font-family: var(--font-serif); font-size: 1rem; color: var(--ink-3); }
+.sfg-cat   { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; color: var(--ink-1); line-height: 1; }
 .sfg-skills {
   display: flex;
   flex-wrap: wrap;
@@ -178,7 +171,8 @@
   font-size: 0.76rem;
   color: var(--ink-2);
   border: 1px solid var(--rule);
-  padding: 0.22rem 0.65rem;
+  padding: 0.24rem 0.7rem;
+  line-height: 1;
 }
 .sfg-skill.accent {
   border: 1.5px solid var(--ink-1);
@@ -190,15 +184,14 @@
   font-size: 1rem;
   font-style: italic;
   color: var(--ink-2);
-  line-height: 1.6;
+  line-height: 1.65;
+  margin-top: 0.5rem;
 }
-.sfg-mason {
+.sfg-empty {
   font-family: var(--font-serif);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-style: italic;
   color: var(--ink-3);
-  text-align: center;
-  margin-top: 0.3rem;
 }
 .sfg-legend {
   display: flex;
@@ -229,13 +222,18 @@
   }
 
   function init() {
-    ['1','2','3','4','5','6','7'].forEach(function(i) {
-      kt('x_' + i, document.getElementById('sfg-fo' + i));
+    var foLabels = {
+      1: '\\Sigma',
+      2: 'x_{\\text{AD}}',
+      3: 'x_{\\text{RM}}',
+      4: 'x_{\\text{EDA}}',
+      5: 'x_{\\text{PN}}',
+      6: 'x_{\\text{RO}}',
+      7: '\\Sigma',
+    };
+    Object.keys(foLabels).forEach(function(i) {
+      kt(foLabels[i], document.getElementById('sfg-fo' + i));
     });
-    kt(
-      'H(s)=\\dfrac{\\sum_k P_k\\,\\Delta_k}{\\Delta}\\quad\\text{\u2014 Mason\'s Gain Formula}',
-      document.getElementById('sfg-mason')
-    );
   }
 
   if (document.readyState === 'loading') {
@@ -245,23 +243,118 @@
   }
 
   var ND = {
-    1: { xvar: 'x_1', label: 'Background',      desc: 'BSc ECE VTU (CGPA 8.6) \u00b7 ISRO SAC Hassan \u00b7 LP-CAS Lab IIT Gandhinagar', skills: [], accent: [] },
-    2: { xvar: 'x_2', label: 'Analog Design',    desc: 'Core IC design skills across IIT Gandhinagar LP-CAS Lab, PhyTau Semiconductors, and Omni Design Technologies.',
-         skills: ['Bandgap Reference','OTA / OPAMP','Dynamic Amplifiers','Ring Amplifiers','LDO Design','PWM Comparators','Current Mirrors','Startup Circuits','Self-biased Cascode OTA','PVT Corner Analysis','Monte Carlo Simulation'],
-         accent: ['Bandgap Reference','OTA / OPAMP','Dynamic Amplifiers','Ring Amplifiers'] },
-    3: { xvar: 'x_3', label: 'Research Methods', desc: 'Design methodologies for dynamic amplifiers \u2014 accepted at ESSERC 2026, awarded IEEE SSCS Code-a-Chip Travel Grant.',
-         skills: ['R\u2092\u2099/g\u2098 Methodology','g\u2098/I_D Methodology','LUT-based Design','Design-Space Exploration','Process Corner Verification','Open-Source IC Design','Parametric SPICE Simulation'],
-         accent: ['R\u2092\u2099/g\u2098 Methodology','g\u2098/I_D Methodology'] },
-    4: { xvar: 'x_4', label: 'EDA & Tools',      desc: 'Full open-source and commercial toolchain for schematic, simulation, layout, and verification across PDKs.',
-         skills: ['Cadence Virtuoso','Ngspice','Xschem','Magic VLSI','KLayout','Spectre','Python','MATLAB','LaTeX','Git / GitHub','Jupyter'],
-         accent: ['Cadence Virtuoso','Ngspice','Xschem'] },
-    5: { xvar: 'x_5', label: 'Process Nodes',    desc: 'Fabricated or taped-out silicon across 5 distinct process technologies \u2014 3 open-source PDK and 2 industrial commercial nodes.',
-         skills: ['TSMC 28\u00a0nm','UMC 55\u00a0nm','IHP SG13G2 \u2014 130\u00a0nm BiCMOS','GF180MCU-D','SKY130 (SkyWater)'],
-         accent: ['TSMC 28\u00a0nm','UMC 55\u00a0nm','IHP SG13G2 \u2014 130\u00a0nm BiCMOS','GF180MCU-D','SKY130 (SkyWater)'] },
-    6: { xvar: 'x_6', label: 'Research Output',  desc: 'Peer-reviewed publications, IEEE award, and fabricated silicon demonstrating end-to-end research impact.',
-         skills: ['ESSERC 2026 \u2014 accepted','IEEE SSCS Travel Grant \u00b7 $5,000','IEEE ICEE 2025 \u2014 published','3 Open-PDK Tapeouts','2 Industry Tapeouts (TSMC \u00b7 UMC)','Seeking PhD \u00b7 Fall 2027'],
-         accent: ['ESSERC 2026 \u2014 accepted','IEEE SSCS Travel Grant \u00b7 $5,000','Seeking PhD \u00b7 Fall 2027'] },
-    7: { xvar: 'x_7', label: 'Output',            desc: 'Aggregate: education \u2192 skills \u2192 research output \u2192 fabricated silicon \u2192 PhD trajectory.', skills: [], accent: [] },
+    1: {
+      abbr: 'SRC',
+      label: 'Background',
+      desc: 'BSc ECE, VTU (CGPA 8.6) \u00b7 ISRO SAC Hassan \u00b7 LP-CAS Lab, IIT Gandhinagar \u00b7 PhyTau Semiconductors \u00b7 Omni Design Technologies.',
+      skills: [], accent: []
+    },
+    2: {
+      abbr: 'AD',
+      label: 'Analog Design',
+      desc: 'Hands-on IC design across open-source PDKs and industrial processes at IIT Gandhinagar, PhyTau Semiconductors, and Omni Design Technologies.',
+      skills: [
+        'Switched Capacitor Circuits',
+        'Ring Amplifiers',
+        'PVT Monitors',
+        'LDO Design',
+        'Bandgap References',
+        'OTAs / OPAMPs',
+        'Dynamic Amplifiers',
+        'Current Mirrors',
+        'Startup Circuits',
+        'Self-biased Cascode OTA',
+        'Tapeout Flow (DRC \u00b7 LVS \u00b7 PEX)',
+        'DSP Circuits',
+      ],
+      accent: ['Ring Amplifiers', 'Bandgap References', 'OTAs / OPAMPs', 'Dynamic Amplifiers', 'Tapeout Flow (DRC \u00b7 LVS \u00b7 PEX)']
+    },
+    3: {
+      abbr: 'RM',
+      label: 'Research Methods',
+      desc: 'Developed the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers at LP-CAS Lab, IIT Gandhinagar. The methodology co-designs both non-linear (R\u2092\u2099 \u00b7 RC settling) and linear (g\u2098 \u00b7 small-signal) phases via pre-characterised look-up tables derived from parametric SPICE simulations, exposing process-corner worst-case behaviour at design entry \u2014 eliminating iterative transient simulation cycles.',
+      skills: [
+        'R\u2092\u2099/g\u2098 Design Methodology',
+        'g\u2098/I_D Methodology',
+        'LUT-based Pre-simulation Design',
+        'Two-phase Settling Model (NL + LS)',
+        'Deadzone Bias Characterisation',
+        'Peak Slew Current Prediction',
+        'Process Corner Analysis',
+        'Monte Carlo Simulation',
+        'Open-Source IC Design',
+        'Parametric SPICE Simulation',
+      ],
+      accent: ['R\u2092\u2099/g\u2098 Design Methodology', 'g\u2098/I_D Methodology', 'Two-phase Settling Model (NL + LS)']
+    },
+    4: {
+      abbr: 'EDA',
+      label: 'EDA & Tools',
+      desc: 'Proficient in both open-source and commercial EDA toolchains. Experienced in automating design, simulation, and verification flows using Python scripting across multiple PDKs.',
+      skills: [
+        'Cadence Virtuoso / Spectre',
+        'Ngspice',
+        'Xschem',
+        'Magic VLSI',
+        'KLayout',
+        'Netgen',
+        'LTspice',
+        'Keysight ADS',
+        'EDA Automation (Python)',
+        'MATLAB',
+        'LaTeX',
+        'Git / GitHub',
+      ],
+      accent: ['Cadence Virtuoso / Spectre', 'Ngspice', 'Xschem', 'Magic VLSI', 'EDA Automation (Python)']
+    },
+    5: {
+      abbr: 'PN',
+      label: 'Process Nodes',
+      desc: 'Fabricated or taped-out silicon in 5 distinct process technologies \u2014 3 open-source PDK shuttles and 2 industrial commercial nodes. Each node involved full design, simulation, layout, and pre-tapeout verification.',
+      skills: [
+        'TSMC 28\u00a0nm CMOS',
+        'UMC 55\u00a0nm CMOS',
+        'IHP SG13G2 \u2014 130\u00a0nm BiCMOS',
+        'SKY130 (SkyWater 130\u00a0nm)',
+        'GF180MCU-D (GlobalFoundries 180\u00a0nm)',
+      ],
+      accent: ['TSMC 28\u00a0nm CMOS', 'UMC 55\u00a0nm CMOS', 'IHP SG13G2 \u2014 130\u00a0nm BiCMOS', 'SKY130 (SkyWater 130\u00a0nm)', 'GF180MCU-D (GlobalFoundries 180\u00a0nm)']
+    },
+    6: {
+      abbr: 'RO',
+      label: 'Research Output',
+      desc: 'Two peer-reviewed papers, a $5,000 IEEE SSCS award, and silicon fabricated in 5 process nodes. The R\u2092\u2099/g\u2098 paper was accepted at ESSERC 2026 (Palma de Mallorca, Spain, September 2026) and demonstrated open-source analog IC design methodology validated on IHP SG13G2 130\u00a0nm BiCMOS. ICEE 2025 paper presented a translinear analog CMOS multiplier architecture for low-power pre-ADC sensor processing.',
+      skills: [
+        'ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Methodology (accepted, poster)',
+        'IEEE SSCS Code-a-Chip Travel Grant \u00b7 $5,000',
+        'IEEE ICEE 2025 \u2014 Analog CMOS Multiplier (published)',
+        'SKY130 Tapeout \u2014 Piecewise-Compensated BGR',
+        'GF180MCU Tapeout \u2014 Folded-Cascode OTA',
+        'IHP SG13G2 Tapeout \u2014 Inverter-based Dynamic Amp.',
+        'UMC 55\u00a0nm \u2014 PWM Comparator (industry)',
+        'TSMC 28\u00a0nm \u2014 PVT Monitor & Reference IPs (industry)',
+        'ISRO \u2014 C-Band antenna calibration, GSAT-31',
+        'TA \u2014 PMIC Design (EE660), IIT Gandhinagar',
+        'Seeking PhD \u00b7 Fall 2027',
+      ],
+      accent: ['ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Methodology (accepted, poster)', 'IEEE SSCS Code-a-Chip Travel Grant \u00b7 $5,000', 'IEEE ICEE 2025 \u2014 Analog CMOS Multiplier (published)', 'Seeking PhD \u00b7 Fall 2027']
+    },
+    7: {
+      abbr: 'OUT',
+      label: 'Summary',
+      desc: 'Analog / Mixed-Signal IC designer with end-to-end experience: from circuit design and simulation through layout, DRC/LVS/PEX sign-off, and tapeout across 5 process nodes. Research published at IEEE ESSERC 2026 and ICEE 2025. Awarded the IEEE SSCS Code-a-Chip Travel Grant ($5,000). Open-source IC design advocate. Seeking PhD for Fall 2027 in energy-efficient AMS design.',
+      skills: [
+        '5 Process Nodes (3 open-source + 2 industrial)',
+        '5 Fabricated Tapeouts',
+        '2 Peer-reviewed Publications',
+        '$5,000 IEEE SSCS Award',
+        '3+ years industry & research experience',
+        'Full tapeout flow (DRC \u00b7 LVS \u00b7 PEX)',
+        'Open-source & commercial EDA',
+        'Seeking PhD \u00b7 Fall 2027',
+      ],
+      accent: ['5 Process Nodes (3 open-source + 2 industrial)', '5 Fabricated Tapeouts', '2 Peer-reviewed Publications', '$5,000 IEEE SSCS Award', 'Seeking PhD \u00b7 Fall 2027']
+    },
   };
 
   var BR = {
@@ -307,7 +400,7 @@
     var d = ND[id]; if (!d) return;
     document.getElementById('sfg-empty').style.display = 'none';
     document.getElementById('sfg-content').style.display = 'block';
-    var xvEl = document.getElementById('sfg-xvar'); xvEl.textContent = d.xvar.replace('_','');
+    document.getElementById('sfg-abbr').textContent = d.abbr || '';
     document.getElementById('sfg-cat').textContent = d.label;
     var se = document.getElementById('sfg-skills'); se.innerHTML = '';
     if (!d.skills.length) {
