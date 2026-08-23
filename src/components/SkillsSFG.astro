@@ -1,0 +1,352 @@
+---
+// SkillsSFG.astro — Signal Flow Graph skills visualisation
+---
+
+<div class="sfg-outer">
+
+  <svg viewBox="0 0 700 400" id="sfg" class="sfg-svg" aria-label="Signal flow graph of Nithin's skills">
+    <defs>
+      <marker id="ar0" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,1 L8,4 L0,7 L1.5,4Z" fill="#bbb"/>
+      </marker>
+      <marker id="ar1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,1 L8,4 L0,7 L1.5,4Z" fill="#111"/>
+      </marker>
+    </defs>
+
+    <!-- BRANCHES -->
+    <path id="b12" class="sfg-br" d="M74,188 C122,188 155,108 202,100" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b13" class="sfg-br" d="M74,200 L202,200" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b14" class="sfg-br" d="M74,212 C122,214 155,298 202,308" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b25" class="sfg-br" d="M282,90 C335,78 385,92 420,104" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b35" class="sfg-br" d="M280,192 C325,162 378,138 420,120" stroke="#ccc" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#ar0)"/>
+    <path id="b26" class="sfg-br" d="M280,112 C328,148 375,212 420,238" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b36" class="sfg-br" d="M282,210 L420,250" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b46" class="sfg-br" d="M282,312 C328,300 375,276 420,264" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b57" class="sfg-br" d="M502,112 C545,124 572,160 604,184" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="b67" class="sfg-br" d="M502,252 C546,248 572,230 604,216" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
+    <path id="bloop" class="sfg-br" d="M228,163 C226,132 256,128 250,158" stroke="#ddd" stroke-width="1.1" stroke-dasharray="3,3" fill="none" marker-end="url(#ar0)"/>
+
+    <!-- Branch labels — EB Garamond italic, dark -->
+    <text x="122" y="131" class="sfg-bl">analog circuits</text>
+    <text x="118" y="196" class="sfg-bl">methodology</text>
+    <text x="120" y="268" class="sfg-bl">EDA &amp; tools</text>
+    <text x="352" y="68"  class="sfg-bl">process technology</text>
+    <text x="338" y="234" class="sfg-bl">publications &amp; awards</text>
+    <text x="345" y="320" class="sfg-bl">open PDK tapeouts</text>
+    <text x="560" y="138" class="sfg-bl">silicon</text>
+    <text x="560" y="246" class="sfg-bl">impact</text>
+    <text x="218" y="127" class="sfg-bl" style="font-size:9px">iteration</text>
+
+    <!-- Variable labels via foreignObject (KaTeX rendered by JS) -->
+    <foreignObject x="20"  y="147" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo1" class="sfg-fo"></div></foreignObject>
+    <foreignObject x="188" y="50"  width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo2" class="sfg-fo"></div></foreignObject>
+    <foreignObject x="188" y="150" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo3" class="sfg-fo"></div></foreignObject>
+    <foreignObject x="188" y="260" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo4" class="sfg-fo"></div></foreignObject>
+    <foreignObject x="416" y="58"  width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo5" class="sfg-fo"></div></foreignObject>
+    <foreignObject x="416" y="208" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo6" class="sfg-fo"></div></foreignObject>
+    <foreignObject x="606" y="152" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo7" class="sfg-fo"></div></foreignObject>
+
+    <!-- Nodes -->
+    <g id="sfg-n1" class="sfg-nd" data-id="1">
+      <circle cx="52" cy="200" r="22" fill="var(--bg-1,#faf9f4)" stroke="#888" stroke-width="1.8" class="sfg-nc"/>
+      <text x="52" y="200" class="sfg-sigma">&#x3A3;</text>
+    </g>
+    <text x="52" y="234" class="sfg-nsub">source</text>
+
+    <g id="sfg-n2" class="sfg-nd" data-id="2">
+      <circle cx="242" cy="100" r="40" fill="var(--bg-1,#faf9f4)" stroke="#555" stroke-width="1.5" class="sfg-nc"/>
+      <circle cx="242" cy="100" r="35" fill="none" stroke="#ccc" stroke-width="1"/>
+      <text x="242" y="94"  class="sfg-nl">Analog</text>
+      <text x="242" y="112" class="sfg-nl">Design</text>
+    </g>
+
+    <g id="sfg-n3" class="sfg-nd" data-id="3">
+      <circle cx="242" cy="202" r="40" fill="var(--bg-1,#faf9f4)" stroke="#555" stroke-width="1.5" class="sfg-nc"/>
+      <circle cx="242" cy="202" r="35" fill="none" stroke="#ccc" stroke-width="1"/>
+      <text x="242" y="196" class="sfg-nl">Research</text>
+      <text x="242" y="214" class="sfg-nl">Methods</text>
+    </g>
+
+    <g id="sfg-n4" class="sfg-nd" data-id="4">
+      <circle cx="242" cy="310" r="40" fill="var(--bg-1,#faf9f4)" stroke="#555" stroke-width="1.5" class="sfg-nc"/>
+      <circle cx="242" cy="310" r="35" fill="none" stroke="#ccc" stroke-width="1"/>
+      <text x="242" y="304" class="sfg-nl">EDA &amp;</text>
+      <text x="242" y="322" class="sfg-nl">Tools</text>
+    </g>
+
+    <g id="sfg-n5" class="sfg-nd" data-id="5">
+      <circle cx="462" cy="114" r="42" fill="var(--bg-1,#faf9f4)" stroke="#111" stroke-width="2.2" class="sfg-nc"/>
+      <circle cx="462" cy="114" r="36" fill="none" stroke="#888" stroke-width=".8"/>
+      <text x="462" y="108" class="sfg-nl">Process</text>
+      <text x="462" y="126" class="sfg-nl">Nodes</text>
+    </g>
+
+    <g id="sfg-n6" class="sfg-nd" data-id="6">
+      <circle cx="462" cy="256" r="42" fill="var(--bg-1,#faf9f4)" stroke="#111" stroke-width="2.2" class="sfg-nc"/>
+      <circle cx="462" cy="256" r="36" fill="none" stroke="#888" stroke-width=".8"/>
+      <text x="462" y="249" class="sfg-nl">Research</text>
+      <text x="462" y="267" class="sfg-nl">Output</text>
+    </g>
+
+    <g id="sfg-n7" class="sfg-nd" data-id="7">
+      <circle cx="634" cy="200" r="28" fill="#111" stroke="#111" stroke-width="1.5" class="sfg-nc"/>
+      <text x="634" y="200" class="sfg-sigma" style="fill:var(--bg-1,#faf9f4)">&#x3A3;</text>
+    </g>
+    <text x="634" y="240" class="sfg-nsub">output</text>
+
+    <circle id="sfg-dot" r="5" fill="#111" opacity="0" pointer-events="none"/>
+  </svg>
+
+  <!-- Mason's formula rendered by KaTeX -->
+  <div class="sfg-mason" id="sfg-mason"></div>
+
+  <!-- Skills panel -->
+  <div class="sfg-panel" id="sfg-panel">
+    <p class="sfg-empty" id="sfg-empty">hover a node to explore its sub-skills</p>
+    <div id="sfg-content" style="display:none">
+      <div class="sfg-ph">
+        <span id="sfg-xvar" class="sfg-xvar"></span>
+        <span class="sfg-arrow">&rarr;</span>
+        <span id="sfg-cat" class="sfg-cat"></span>
+      </div>
+      <div id="sfg-skills" class="sfg-skills"></div>
+      <p id="sfg-desc" class="sfg-desc"></p>
+    </div>
+  </div>
+
+  <div class="sfg-legend">
+    <span><code>○</code> domain node</span>
+    <span><code>⊙</code> key credential</span>
+    <span><code>●</code> output</span>
+    <span><code>- -</code> feedback</span>
+  </div>
+
+</div>
+
+<style>
+.sfg-outer { margin-top: 1rem; }
+.sfg-svg   { width: 100%; display: block; }
+
+.sfg-nl    { font-family: var(--font-serif); font-size: 15px; font-weight: 700; fill: var(--ink-1); text-anchor: middle; dominant-baseline: middle; }
+.sfg-bl    { font-family: var(--font-serif); font-size: 13px; font-style: italic; fill: var(--ink-1); text-anchor: middle; }
+.sfg-sigma { font-family: var(--font-serif); font-size: 24px; fill: var(--ink-1); text-anchor: middle; dominant-baseline: middle; }
+.sfg-nsub  { font-family: var(--font-mono); font-size: 10px; fill: var(--ink-3); text-anchor: middle; }
+
+.sfg-fo {
+  font-size: 13px;
+  color: var(--ink-1);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.sfg-nd { cursor: pointer; }
+
+/* Panel */
+.sfg-panel {
+  border-top: 1px solid var(--rule);
+  margin-top: 0.6rem;
+  padding: 0.9rem 0 0.4rem;
+  min-height: 90px;
+}
+.sfg-empty {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ink-3);
+}
+.sfg-ph {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.sfg-xvar  { font-family: var(--font-serif); font-size: 1.1rem; font-style: italic; color: var(--ink-2); }
+.sfg-arrow { font-family: var(--font-serif); font-size: 1.3rem; color: var(--ink-3); }
+.sfg-cat   { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--ink-1); }
+.sfg-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+.sfg-skill {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-2);
+  border: 1px solid var(--rule);
+  padding: 0.22rem 0.65rem;
+}
+.sfg-skill.accent {
+  border: 1.5px solid var(--ink-1);
+  color: var(--ink-1);
+  font-weight: 700;
+}
+.sfg-desc {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+.sfg-mason {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-3);
+  text-align: center;
+  margin-top: 0.3rem;
+}
+.sfg-legend {
+  display: flex;
+  gap: 1.4rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--ink-3);
+}
+.sfg-legend code {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--ink-2);
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" is:inline></script>
+
+<script is:inline>
+(function () {
+  function kt(expr, el) {
+    if (typeof katex === 'undefined' || !el) return;
+    try { katex.render(expr, el, { throwOnError: false }); } catch (e) {}
+  }
+
+  function init() {
+    ['1','2','3','4','5','6','7'].forEach(function(i) {
+      kt('x_' + i, document.getElementById('sfg-fo' + i));
+    });
+    kt(
+      'H(s)=\\dfrac{\\sum_k P_k\\,\\Delta_k}{\\Delta}\\quad\\text{\u2014 Mason\'s Gain Formula}',
+      document.getElementById('sfg-mason')
+    );
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  var ND = {
+    1: { xvar: 'x_1', label: 'Background',      desc: 'BSc ECE VTU (CGPA 8.6) \u00b7 ISRO SAC Hassan \u00b7 LP-CAS Lab IIT Gandhinagar', skills: [], accent: [] },
+    2: { xvar: 'x_2', label: 'Analog Design',    desc: 'Core IC design skills across IIT Gandhinagar LP-CAS Lab, PhyTau Semiconductors, and Omni Design Technologies.',
+         skills: ['Bandgap Reference','OTA / OPAMP','Dynamic Amplifiers','Ring Amplifiers','LDO Design','PWM Comparators','Current Mirrors','Startup Circuits','Self-biased Cascode OTA','PVT Corner Analysis','Monte Carlo Simulation'],
+         accent: ['Bandgap Reference','OTA / OPAMP','Dynamic Amplifiers','Ring Amplifiers'] },
+    3: { xvar: 'x_3', label: 'Research Methods', desc: 'Design methodologies for dynamic amplifiers \u2014 accepted at ESSERC 2026, awarded IEEE SSCS Code-a-Chip Travel Grant.',
+         skills: ['R\u2092\u2099/g\u2098 Methodology','g\u2098/I_D Methodology','LUT-based Design','Design-Space Exploration','Process Corner Verification','Open-Source IC Design','Parametric SPICE Simulation'],
+         accent: ['R\u2092\u2099/g\u2098 Methodology','g\u2098/I_D Methodology'] },
+    4: { xvar: 'x_4', label: 'EDA & Tools',      desc: 'Full open-source and commercial toolchain for schematic, simulation, layout, and verification across PDKs.',
+         skills: ['Cadence Virtuoso','Ngspice','Xschem','Magic VLSI','KLayout','Spectre','Python','MATLAB','LaTeX','Git / GitHub','Jupyter'],
+         accent: ['Cadence Virtuoso','Ngspice','Xschem'] },
+    5: { xvar: 'x_5', label: 'Process Nodes',    desc: 'Fabricated or taped-out silicon across 5 distinct process technologies \u2014 3 open-source PDK and 2 industrial commercial nodes.',
+         skills: ['TSMC 28\u00a0nm','UMC 55\u00a0nm','IHP SG13G2 \u2014 130\u00a0nm BiCMOS','GF180MCU-D','SKY130 (SkyWater)'],
+         accent: ['TSMC 28\u00a0nm','UMC 55\u00a0nm','IHP SG13G2 \u2014 130\u00a0nm BiCMOS','GF180MCU-D','SKY130 (SkyWater)'] },
+    6: { xvar: 'x_6', label: 'Research Output',  desc: 'Peer-reviewed publications, IEEE award, and fabricated silicon demonstrating end-to-end research impact.',
+         skills: ['ESSERC 2026 \u2014 accepted','IEEE SSCS Travel Grant \u00b7 $5,000','IEEE ICEE 2025 \u2014 published','3 Open-PDK Tapeouts','2 Industry Tapeouts (TSMC \u00b7 UMC)','Seeking PhD \u00b7 Fall 2027'],
+         accent: ['ESSERC 2026 \u2014 accepted','IEEE SSCS Travel Grant \u00b7 $5,000','Seeking PhD \u00b7 Fall 2027'] },
+    7: { xvar: 'x_7', label: 'Output',            desc: 'Aggregate: education \u2192 skills \u2192 research output \u2192 fabricated silicon \u2192 PhD trajectory.', skills: [], accent: [] },
+  };
+
+  var BR = {
+    1: ['b12','b13','b14'],
+    2: ['b12','b25','b26'],
+    3: ['b13','b35','b36','bloop'],
+    4: ['b14','b46'],
+    5: ['b25','b35','b57'],
+    6: ['b26','b36','b46','b67'],
+    7: ['b57','b67'],
+  };
+
+  var active = null, afs = [];
+  var dot = document.getElementById('sfg-dot');
+
+  function clrAF() { afs.forEach(cancelAnimationFrame); afs = []; }
+
+  function activate(id) {
+    if (active === id) return;
+    deactivate(true);
+    active = id;
+    (BR[id] || []).forEach(function (bid) {
+      var el = document.getElementById(bid);
+      if (el) { el.setAttribute('stroke','#111'); el.setAttribute('stroke-width','2.5'); el.setAttribute('marker-end','url(#ar1)'); }
+    });
+    var nd = document.getElementById('sfg-n' + id);
+    if (nd && id !== 7) {
+      var c = nd.querySelector('circle');
+      c.setAttribute('stroke','#111');
+      c.setAttribute('stroke-width', id === 5 || id === 6 ? '3.5' : '3');
+    }
+    var pe = document.getElementById((BR[id] || [])[0]);
+    if (pe && pe.getTotalLength) {
+      var len = pe.getTotalLength(), dur = 460, st = performance.now();
+      function step(now) {
+        var t = Math.min((now - st) / dur, 1), e = 1 - Math.exp(-4.5 * t), pt = pe.getPointAtLength(e * len);
+        dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
+        dot.setAttribute('opacity', t < 0.92 ? '0.9' : '0');
+        if (t < 1) { var f = requestAnimationFrame(step); afs.push(f); }
+      }
+      dot.setAttribute('opacity','0.9'); requestAnimationFrame(step);
+    }
+    var d = ND[id]; if (!d) return;
+    document.getElementById('sfg-empty').style.display = 'none';
+    document.getElementById('sfg-content').style.display = 'block';
+    var xvEl = document.getElementById('sfg-xvar'); xvEl.textContent = d.xvar.replace('_','');
+    document.getElementById('sfg-cat').textContent = d.label;
+    var se = document.getElementById('sfg-skills'); se.innerHTML = '';
+    if (!d.skills.length) {
+      se.innerHTML = '<span style="font-style:italic;color:var(--ink-3);font-size:.95rem">signal source / sink node</span>';
+    } else {
+      d.skills.forEach(function (s) {
+        var sp = document.createElement('span');
+        sp.className = 'sfg-skill' + (d.accent.includes(s) ? ' accent' : '');
+        sp.textContent = s; se.appendChild(sp);
+      });
+    }
+    document.getElementById('sfg-desc').textContent = d.desc;
+  }
+
+  function deactivate(skip) {
+    clrAF();
+    document.querySelectorAll('.sfg-br').forEach(function (el) {
+      var dash = el.getAttribute('stroke-dasharray');
+      el.setAttribute('stroke', dash ? '#ddd' : '#ccc');
+      el.setAttribute('stroke-width','1.5');
+      el.setAttribute('marker-end','url(#ar0)');
+    });
+    document.querySelectorAll('.sfg-nd').forEach(function (nd) {
+      var id = parseInt(nd.dataset.id), c = nd.querySelector('circle'); if (!c) return;
+      if (id === 7) { c.setAttribute('stroke','#111'); c.setAttribute('stroke-width','1.5'); }
+      else if (id === 5 || id === 6) { c.setAttribute('stroke','#111'); c.setAttribute('stroke-width','2.2'); }
+      else { c.setAttribute('stroke','#555'); c.setAttribute('stroke-width','1.5'); }
+    });
+    dot.setAttribute('opacity','0');
+    if (!skip) {
+      active = null;
+      document.getElementById('sfg-empty').style.display = 'block';
+      document.getElementById('sfg-content').style.display = 'none';
+    }
+  }
+
+  document.querySelectorAll('.sfg-nd').forEach(function (nd) {
+    nd.addEventListener('mouseenter', function () { activate(parseInt(nd.dataset.id)); });
+    nd.addEventListener('mouseleave', function () { deactivate(false); });
+  });
+})();
+</script>

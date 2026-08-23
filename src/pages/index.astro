@@ -3,6 +3,7 @@
 import WorkList from "../components/WorkList.astro";
 import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
+import SkillsSFG from "../components/SkillsSFG.astro";
 
 // Data hygiene: re-verify src/data/*.json when updating content.
 import projects from "../data/projects.json";
@@ -207,9 +208,20 @@ const email = "nithinpurushothama@gmail.com";
       </ul>
     </section>
 
-    <section class="section" id="publications" aria-labelledby="publications-h">
+    <section class="section" id="skills" aria-labelledby="skills-h">
       <header class="section-head" data-reveal>
         <span class="sec-num">03</span>
+        <h2 class="section-title" id="skills-h">Skills</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+      <div data-reveal>
+        <SkillsSFG />
+      </div>
+    </section>
+
+    <section class="section" id="publications" aria-labelledby="publications-h">
+      <header class="section-head" data-reveal>
+        <span class="sec-num">04</span>
         <h2 class="section-title" id="publications-h">Publications</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -222,7 +234,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="awards" aria-labelledby="awards-h">
       <header class="section-head" data-reveal>
-        <span class="sec-num">04</span>
+        <span class="sec-num">05</span>
         <h2 class="section-title" id="awards-h">Awards</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -578,7 +590,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="work" aria-labelledby="work-h">
       <header class="section-head" data-reveal>
-        <span class="sec-num">05</span>
+        <span class="sec-num">06</span>
         <h2 class="section-title" id="work-h">Work</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -596,7 +608,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="finance" aria-labelledby="finance-h">
       <header class="section-head" data-reveal>
-        <span class="sec-num">06</span>
+        <span class="sec-num">07</span>
         <h2 class="section-title" id="finance-h">Quantitative Finance</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -609,7 +621,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="cv" aria-labelledby="cv-h">
       <header class="section-head" data-reveal>
-        <span class="sec-num">07</span>
+        <span class="sec-num">08</span>
         <h2 class="section-title" id="cv-h">Curriculum Vitae</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -639,7 +651,7 @@ const email = "nithinpurushothama@gmail.com";
 
     <section class="section" id="contact" aria-labelledby="contact-h">
       <header class="section-head" data-reveal>
-        <span class="sec-num">08</span>
+        <span class="sec-num">09</span>
         <h2 class="section-title" id="contact-h">Contact</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
