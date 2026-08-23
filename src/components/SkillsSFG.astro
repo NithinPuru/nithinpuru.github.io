@@ -200,15 +200,37 @@
   color: var(--ink-3);
   margin-bottom: 0.3rem;
 }
-.sfg-group-line {
-  font-family: var(--font-serif);
-  font-size: 0.95rem;
-  color: var(--ink-2);
-  line-height: 1.6;
+.sfg-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  margin-top: 0.25rem;
 }
-.sfg-group-line .hi {
+.sfg-item {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  line-height: 1.45;
+  padding-left: 1rem;
+  position: relative;
+}
+.sfg-item::before {
+  content: '\25E6';
+  position: absolute;
+  left: 0;
+  color: var(--ink-3);
+  font-size: 0.7rem;
+  top: 0.18rem;
+}
+.sfg-item.hi {
   color: var(--ink-1);
   font-weight: 600;
+}
+.sfg-item.hi::before {
+  content: '\25C6';
+  color: var(--ink-2);
+  font-size: 0.55rem;
+  top: 0.22rem;
 }
 .sfg-desc {
   font-family: var(--font-serif);
@@ -462,16 +484,16 @@
         title.className = 'sfg-group-title';
         title.textContent = g.title;
         div.appendChild(title);
-        var line = document.createElement('div');
-        line.className = 'sfg-group-line';
-        var html = g.items.map(function (item) {
+        var itemsWrap = document.createElement('div');
+        itemsWrap.className = 'sfg-group-items';
+        g.items.forEach(function (item) {
+          var row = document.createElement('div');
           var isHi = g.accent && g.accent.includes(item);
-          return isHi
-            ? '<span class="hi">' + item + '</span>'
-            : item;
-        }).join(' &thinsp;&middot;&thinsp; ');
-        line.innerHTML = html;
-        div.appendChild(line);
+          row.className = 'sfg-item' + (isHi ? ' hi' : '');
+          row.textContent = item;
+          itemsWrap.appendChild(row);
+        });
+        div.appendChild(itemsWrap);
         ge.appendChild(div);
       });
     }
