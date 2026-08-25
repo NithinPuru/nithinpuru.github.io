@@ -122,7 +122,7 @@
 
 </div>
 
-<style>
+<style is:global>
 .sfg-outer { margin-top: 1rem; }
 .sfg-svg   { width: 100%; display: block; }
 
@@ -143,11 +143,11 @@
 
 .sfg-nd { cursor: pointer; }
 
-/* ── Skills panel ──────────────────────────────────── */
+/* ── SFG Panel ─────────────────────────────── */
 .sfg-panel {
   border-top: 1px solid var(--rule);
   margin-top: 0.6rem;
-  padding: 1rem 0 0.6rem;
+  padding: 1rem 0 0.5rem;
   min-height: 110px;
 }
 .sfg-empty {
@@ -158,25 +158,22 @@
 }
 .sfg-ph {
   display: flex;
-  align-items: baseline;
-  gap: 0.3rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--rule);
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
   padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--rule);
 }
 .sfg-abbr {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
-  padding: 0.15rem 0.5rem;
   border: 1px solid var(--rule);
+  padding: 0.12rem 0.45rem;
 }
-.sfg-dot {
-  color: var(--ink-3);
-  font-family: var(--font-serif);
-}
+.sfg-dot { color: var(--ink-3); font-size: 0.9rem; }
 .sfg-cat {
   font-family: var(--font-serif);
   font-size: 1.35rem;
@@ -184,63 +181,59 @@
   color: var(--ink-1);
   line-height: 1;
 }
-/* Groups */
 .sfg-groups {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  margin-bottom: 0.8rem;
+  gap: 0.9rem;
+  margin-bottom: 0.75rem;
 }
-.sfg-group {}
 .sfg-group-title {
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-bottom: 0.3rem;
+  font-family: var(--font-mono) !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: var(--ink-3) !important;
+  margin-bottom: 0.35rem !important;
+  font-style: normal !important;
 }
 .sfg-group-items {
-  display: flex;
-  flex-direction: column;
-  gap: 0.18rem;
-  margin-top: 0.25rem;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+  gap: 0.15rem 1rem !important;
 }
 .sfg-item {
-  font-family: var(--font-serif);
-  font-size: 0.9rem;
-  color: var(--ink-2);
-  line-height: 1.45;
-  padding-left: 1rem;
-  position: relative;
+  font-family: var(--font-serif) !important;
+  font-size: 0.88rem !important;
+  color: var(--ink-2) !important;
+  line-height: 1.5 !important;
+  padding-left: 0.85rem !important;
+  position: relative !important;
 }
 .sfg-item::before {
-  content: '\25E6';
-  position: absolute;
-  left: 0;
-  color: var(--ink-3);
-  font-size: 0.7rem;
-  top: 0.18rem;
+  content: '◦' !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: var(--ink-3) !important;
+  font-size: 0.75rem !important;
 }
 .sfg-item.hi {
-  color: var(--ink-1);
-  font-weight: 600;
+  color: var(--ink-1) !important;
+  font-weight: 600 !important;
 }
 .sfg-item.hi::before {
-  content: '\25C6';
-  color: var(--ink-2);
-  font-size: 0.55rem;
-  top: 0.22rem;
+  content: '◆' !important;
+  color: var(--ink-2) !important;
+  font-size: 0.5rem !important;
+  top: 0.25rem !important;
 }
 .sfg-desc {
-  font-family: var(--font-serif);
-  font-size: 0.9rem;
-  font-style: italic;
-  color: var(--ink-3);
-  line-height: 1.65;
-  border-top: 1px solid var(--rule);
-  padding-top: 0.6rem;
-  margin-top: 0.2rem;
+  font-family: var(--font-serif) !important;
+  font-size: 0.88rem !important;
+  font-style: italic !important;
+  color: var(--ink-3) !important;
+  line-height: 1.65 !important;
+  border-top: 1px solid var(--rule) !important;
+  padding-top: 0.55rem !important;
 }
 .sfg-legend {
   display: flex;
