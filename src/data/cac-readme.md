@@ -275,7 +275,7 @@ $$\boxed{I_{out} = 0, \quad R_{out} \to \text{max} \quad \Longleftrightarrow \qu
 
 Outside the deadzone (during the large-signal phase), both transistors are driven hard by the large input overdrive and deliver maximum charging current to $C_L$. Once $V_{out}$ enters the deadzone, the circuit self-quenches into small-signal mode and precision settling begins. The width of the deadzone therefore directly controls the **accuracy–speed trade-off**: a narrower deadzone gives higher output impedance and better accuracy but less margin for process variation.
 
-> In the IBA(Inverter based amplifier), the deadzone arises implicitly from the inverter trip point, the same node sets both the large-signal drive and the small-signal bias, leaving no independent handle on $V_{DZP}$/$V_{DZN}$. The Ring Amplifier resolves this by using dedicated driver stages to set the deadzone voltages explicitly and independently.
+> In the IBA(Inverter based amplifier), the deadzone arises implicitly from the inverter trip point, the same node sets both the large-signal drive and the small-signal bias, leaving no independent handle on $V_{DZP}/V_{DZN}$. The Ring Amplifier resolves this by using dedicated driver stages to set the deadzone voltages explicitly and independently.
 
 ---
 
@@ -290,7 +290,7 @@ Outside the deadzone (during the large-signal phase), both transistors are drive
 
 
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/anim_008_0.gif)
+![](assets/anim_008_0.gif)
 
 *Figure 4: Animation of the transient response of the Inverter-Based Amplifier (IBA) with step input $V_X$ and deadzone voltages $V_{DZP}$ (0.4 V) and $V_{DZN}$ (0.4 V). $V_{out}$ and $I_{out}$ are shown during the linear and nonlinear settling phases of the dynamic amplifier (behavioral model).*
 
@@ -340,7 +340,7 @@ As shown in **Fig. 5a**, the dynamic amplifier achieves significantly faster set
 Overall, this hybrid settling mechanism allows dynamic amplifiers to combine speed and precision more effectively than traditional linear OTAs.
 
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/anim_011_0.gif)
+![](assets/anim_011_0.gif)
 
 <div align="center">
 
@@ -514,7 +514,7 @@ $$g_m = \max\,(g_{m,min},\; g_{m,BW})$$
 - The *replica path* which is used to Bias the signal path devices uses:
   - $R_{unit}$, $I_{unit}$, $W_{unit}$
   - Provides *replica tuning flexibility* through $I_{unit}$
-  - *$g_m$ tuning* can be achieved by adjusting $I_{unit}$ and $W_{unit}$ across corners, without changing the main signal path device width $W \times M$
+  - $g_m$ tuning can be achieved by adjusting $I_{unit}$ and $W_{unit}$ across corners, without changing the main signal path device width $W \times M$
 
 This decouples $g_m$ tuning from the fixed $R_{on}$ constraint, preserving large-signal settling while correcting small-signal bandwidth.
 
@@ -668,10 +668,12 @@ XMN_GM_B net1 Vbias GND GND sg13_lv_nmos w={wx} l={lx} ng=1 m=1
 ### `.control` Block - Visual Flow Diagram
 ---
 
+The table above describes each command; this diagram shows how they connect sequentially:
+
 <table align="center">
   <tr>
     <td align="center">
-      <img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/control_block_annotated_flow_v3.png" width="500"/>
+      <img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/control_block_annotated_flow_v3.svg" width="500"/>
       <br>
       <h4 style="margin:4px 0; font-weight:normal;">
         <em>Fig. 8: .control block execution flow for the CAC on-resistance sweep</em>
@@ -679,8 +681,6 @@ XMN_GM_B net1 Vbias GND GND sg13_lv_nmos w={wx} l={lx} ng=1 m=1
     </td>
   </tr>
 </table>
-
-The table above describes each command; this diagram shows how they connect sequentially:
 
 > **Each (L, corner) combination produces one CSV file** 15 files total (5 lengths × 3 corners).  
 > Each file contains 13 W × 6 VDS × 24 (Ibias × VG) = **1872 data rows**.
@@ -796,7 +796,7 @@ the verified local template and run with ngspice in batch mode.
 
 The cell above generated **15 SPICE netlists** (5 channel lengths x 3 process corners: TT, SS, FF), saved to `/content/spice_generated/`. Each netlist sweeps transistor width (W = 1-10 um) and V_DS across 6 values over a DC bias current range (5-30 uA).
 
-**Connection to the design flow:** These netlists are the simulation inputs that produce the look-up table (LUT) data for the Ron/gm methodology plots in the next section. Without this sweep, there is no data to read off $R_{on}$/$g_m$ vs $V_{bias}$, $g_m$/$I_d$, or voltage swing. Each resulting CSV represents one (L, corner) characterisation point in the design space.
+**Connection to the design flow:** These netlists are the simulation inputs that produce the look-up table (LUT) data for the Ron/gm methodology plots in the next section. Without this sweep, there is no data to read off $R_{on}/g_m$ vs $V_{bias}$, $g_m/I_d$, or voltage swing. Each resulting CSV represents one (L, corner) characterisation point in the design space.
 
 
 ### Simulations Complete - CSV Data Extracted
@@ -845,7 +845,7 @@ Each plot is generated by `plot_data()` using data from the simulation CSVs. The
 | 5 | **$g_m/I_D$ vs $R_{on}/g_m$** | $R_{on}/g_m$ (log) | Efficiency $g_m/I_D$ | What power efficiency am I operating at for this $R_{on}/g_m$ choice? | Bridges the $R_{on}/g_m$ and $g_m/I_D$ methodologies - shows the efficiency cost of a given $R_{on}$ target. |
 | 6 | **$V_{swing}$ vs $R_{on}/g_m$** | $R_{on}/g_m$ (log) | Output voltage swing $V_{swing}$ | What output swing is achievable at this operating point? | Confirms the chosen bias allows the required signal swing without clipping. |
 
-**Colour coding:** Each trace is coloured by process corner (TT/SS/FF). The spread between corner traces shows how robust the chosen operating point is across process variation - this is information the $g_m$/$I_d$ methodology cannot provide pre-simulation.
+**Colour coding:** Each trace is coloured by process corner (TT/SS/FF). The spread between corner traces shows how robust the chosen operating point is across process variation - this is information the $g_m/I_d$ methodology cannot provide pre-simulation.
 
 ---
 
@@ -859,7 +859,7 @@ Each of the 6 cells below calls `plot_data()`, which:
 
 **How to use the plots in the design flow:**
 
-- **Hover** over any trace to read exact ($R_{on}$/$g_m$, $V_{bias}$, width, $g_m$/$I_d$) values at any point
+- **Hover** over any trace to read exact ($R_{on}/g_m$, $V_{bias}$, width, $g_m/I_d$) values at any point
 - **Legend** entries can be clicked to isolate individual corners or lengths
 - All X-axes are $R_{on}/g_m$ (log scale), your design target goes on this axis first
 - Work left-to-right through the plots: start at Plot 1 to pick $R_{on}/g_m$, then use Plots 2–6 to confirm width, current, and swing requirements
@@ -903,13 +903,13 @@ dependencies are immediately readable:
 
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_046_0.jpg)
+![](assets/fig_046_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_047_0.jpg)
+![](assets/fig_047_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_048_0.jpg)
+![](assets/fig_048_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_049_0.jpg)
+![](assets/fig_049_0.jpg)
 
 ---
 
@@ -918,7 +918,7 @@ dependencies are immediately readable:
 > **Reading the plot:**
 > - **Top → Bottom** at fixed $R_{on}/g_m$: $I_{sweep}$ **decreases**
 >   (lower current → lower overdrive required → lower $V_{bias}$)
-> - **Left → Right** along a fixed-$I_{sweep}$ trace: $L$ **increases**
+> - **Left → Right** along a fixed $I_{sweep}$ trace: $L$ **increases**
 >   (larger $R_{on}/g_m$ directly raises $V_{bias}$ through the linear relationship above)
 
 As expected, the **SS corner** sits highest at any given $L$ and $I_{sweep}$: a slow-corner device has a larger $V_{TH}$ and lower $\mu C_{ox}$, both of which demand a higher gate voltage to source the same current. The FF corner sits lowest.
@@ -950,11 +950,11 @@ This $1/\sqrt{W}$ decay is the dominant feature of the plot, the rapid drop at s
 - **Multiple $V_{DS}$ values overlaid** → the spread between $V_{DS}$ traces is small, confirming that $V_{bias}$ is primarily set by the diode-connected replica (which operates at $V_{DS} = V_{GS}$) and is relatively insensitive to the drain voltage of the main-path device
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_051_0.jpg)
+![](assets/fig_051_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_052_0.jpg)
+![](assets/fig_052_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_053_0.jpg)
+![](assets/fig_053_0.jpg)
 
 ---
 
@@ -994,13 +994,13 @@ which is approximately a **straight line with slope $-1$** seen in the plot. The
 
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_055_0.jpg)
+![](assets/fig_055_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_056_0.jpg)
+![](assets/fig_056_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_057_0.jpg)
+![](assets/fig_057_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_058_0.jpg)
+![](assets/fig_058_0.jpg)
 
 ---
 ### Trends
@@ -1009,7 +1009,7 @@ which is approximately a **straight line with slope $-1$** seen in the plot. The
 > - **Top → Bottom** at fixed $R_{on}/g_m$: $I_{sweep}$ **decreases**  
 >   (lower current → lower $I_{peak}$)
 >
-> - **Left → Right** along a fixed-$I_{sweep}$ trace: $R_{on}/g_m$ **increases**  
+> - **Left → Right** along a fixed $I_{sweep}$ trace: $R_{on}/g_m$ **increases**  
 >   ($L \uparrow$ or $W \downarrow$ → $R_{on} \uparrow$ → $I_{peak} = V_{swing}/R_{on} \downarrow$ → slower initial charging)
 
 ---
@@ -1054,15 +1054,15 @@ $$g_{m,\text{bias}} \propto \left(\frac{R_{on}}{g_m}\right)^{-1/3}$$
 This is a power law with exponent $-1/3$: on a log-log axis (Plot 4.4b) it appears as a **straight line of slope $-1/3$**, while on the semilog axis (Plot 4.4a) it produces a concave falling curve, the logarithmic x-axis compresses the right side, making the decay appear steeper than the underlying exponent.
 
 - **Higher $I_{sweep}$** → curve shifts upward: more bias current raises $g_{m,\text{bias}} = 2I_D/V_{ov}$ at every $R_{on}/g_m$ value ($g_{m,\text{bias}} \propto \sqrt{I_D}$, so doubling $I_{sweep}$ lifts the curve by $\sqrt{2}$)
-- **Left → Right** along a fixed-$I_{sweep}$ trace: $L$ increases ($R_{on}/g_m \propto L^{3/2}$ pushes the operating point rightward while $g_{m,\text{bias}} \propto L^{-1/2}$ pulls it downward)
-- **Corner spread** → process corners shift $\mu C_{ox}$ and $V_{TH}$, vertically separating the constant-$I_D$ curves; the SS corner sits highest at any given $(W, L, I_D)$
+- **Left → Right** along a fixed $I_{sweep}$ trace: $L$ increases ($R_{on}/g_m \propto L^{3/2}$ pushes the operating point rightward while $g_{m,\text{bias}} \propto L^{-1/2}$ pulls it downward)
+- **Corner spread** → process corners shift $\mu C_{ox}$ and $V_{TH}$, vertically separating the constant $I_D$ curves; the SS corner sits highest at any given $(W, L, I_D)$
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_060_0.jpg)
+![](assets/fig_060_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_061_0.jpg)
+![](assets/fig_061_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_062_0.jpg)
+![](assets/fig_062_0.jpg)
 
 ---
 
@@ -1073,7 +1073,7 @@ The same $-1/3$ exponent holds whether $W$ or $L$ is varied any $(W, L)$ pair ma
 > **Reading the plot:**
 > - **Top → Bottom** at fixed $R_{on}/g_m$: $I_{sweep}$ **decreases**
 >   (lower bias current → lower $g_{m,\text{bias}} = 2I_D/V_{ov,\text{bias}}$)
-> - **Left → Right** along a fixed-$I_{sweep}$ trace: $L$ **increases**
+> - **Left → Right** along a fixed $I_{sweep}$ trace: $L$ **increases**
 >   ($R_{on}/g_m \propto L^{3/2}$ grows rapidly, extending the trace rightward and downward along the same universal curve)
 
 ---
@@ -1117,13 +1117,13 @@ Entering from $R_{on}/g_m$ subsumes the $g_m/I_D$ design entirely: once $R_{on}/
 
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_064_0.jpg)
+![](assets/fig_064_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_065_0.jpg)
+![](assets/fig_065_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_066_0.jpg)
+![](assets/fig_066_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_067_0.jpg)
+![](assets/fig_067_0.jpg)
 
 ---
 
@@ -1166,13 +1166,13 @@ This plot therefore answers: **for a given $R_{on}/g_m$ target, what input swing
 
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_069_0.jpg)
+![](assets/fig_069_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_070_0.jpg)
+![](assets/fig_070_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_071_0.jpg)
+![](assets/fig_071_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_072_0.jpg)
+![](assets/fig_072_0.jpg)
 
 ---
 
@@ -1182,7 +1182,7 @@ This plot therefore answers: **for a given $R_{on}/g_m$ target, what input swing
 > - **Top → Bottom** at fixed $R_{on}/g_m$: $I_{sweep}$ **increases**  
 >   (more bias current → higher $v(Vbias)$ → less headroom → smaller $V_{swing}$)
 >
-> - **Left → Right** along a fixed-$I_{sweep}$ trace: $R_{on}/g_m$ **increases**  
+> - **Left → Right** along a fixed $I_{sweep}$ trace: $R_{on}/g_m$ **increases**  
 >   ($L \uparrow$ or $W \downarrow$ → $R_{on} \uparrow$ → device driven less hard → $V_{swing} \downarrow$)
 
 ---
@@ -1357,19 +1357,19 @@ Each plot below captures a fundamental design trade-off used to bias the IBA cor
 > LUTs from Section 3 instead, which additionally capture $R_{on}$, deadzone bias ranges,
 > and process-corner sensitivity.
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_0.jpg)
+![](assets/fig_081_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_1.jpg)
+![](assets/fig_081_1.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_2.jpg)
+![](assets/fig_081_2.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_3.jpg)
+![](assets/fig_081_3.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_4.jpg)
+![](assets/fig_081_4.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_5.jpg)
+![](assets/fig_081_5.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_6.jpg)
+![](assets/fig_081_6.jpg)
 
 ---
 ## 5.2 $G_m/I_D$ Design Helper
@@ -1453,7 +1453,7 @@ The highlighted green lines show the most important results: the **best matching
 
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/widget_091.jpg)
+![](assets/widget_091.jpg)
 
 ---
 
@@ -1526,9 +1526,9 @@ The four figures below are generated from `INV_OTA_gmid.txt`, a transient simula
 > $R_{on}$, the deadzone bias ranges, or the SS-corner worst case
 > all of which are characterised pre-simulation in the $R_{on}/g_m$ section that follows.
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_098_0.jpg)
+![](assets/fig_098_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_099_1.jpg)
+![](assets/fig_099_1.jpg)
 
 It is observed that the error envelope exhibits **two distinct settling regimes**: an initial rapid decay with a **steep negative slope (500–550 ns)** attributable to **large-signal nonlinear operation**, followed by a gradual exponential decay with a **comparatively smaller slope**, characteristic of **small-signal linear settling**. It is worth noting that the boundary between
 these two regimes, and consequently the proportion of the settling window occupied by the nonlinear phase, **cannot be determined beforehand from conventional design methodologies including both the $g_m/I_D$ method and the approach presented by Conrad et al [4].** This information becomes available only upon post-simulation analysis. This constitutes a
@@ -1536,11 +1536,11 @@ these two regimes, and consequently the proportion of the settling window occupi
 small-signal settling contributions **cannot be independently budgeted or optimized** at the
 transistor sizing stage.
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_101_0.jpg)
+![](assets/fig_101_0.jpg)
 
 It is observed that the output charging current $I_{out}$ exhibits **two distinct regimes**: an initial **large nonlinear peak current** measured at **+12 µA** on the positive edge and **−10 µA** on the negative edge that rapidly charges/discharges the output load capacitance toward the final value, followed by a progressively decreasing small-signal current with $I_{out} \rightarrow 0$ as the output converges. This behavior is characteristic of dynamic amplifiers: **the bulk of the charge transfer occurs in the initial nonlinear phase**, with the small-signal tail contributing only the final fine settling. Critically, **neither the magnitude of the peak nonlinear current nor the asymmetry between positive and negative edges can be determined beforehand from the $g_m/I_D$ methodology or the approach of Conrad et al. [4]**. Furthermore, this **peak current varies across process corners**, introducing additional uncertainty in the settling budget that remains entirely uncharacterized until post-simulation analysis. This represents a compounded limitation of conventional methodologies: not only is the nonlinear settling duration unknown at the sizing stage, but so is the **magnitude, polarity asymmetry, and corner dependence** of the dominant charging current.
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_103_0.jpg)
+![](assets/fig_103_0.jpg)
 
 ---
 
@@ -1755,7 +1755,7 @@ We design it for **SS corner** (worst-case $R_{on}$):
 
 ---
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/widget_115.jpg)
+![](assets/widget_115.jpg)
 
 ---
 
@@ -1818,22 +1818,22 @@ The four figures below are generated from `INV_OTA_rongm.txt`, a transient simul
 
 (LV_NMOS: $W = 0.5\,\mu\text{m}$, $L = 3.0\,\mu\text{m}$, $m = 4$; LV_PMOS: $W = 0.15\,\mu\text{m}$, $L = 0.2\,\mu\text{m}$, $m = 4$; $I_{q,replica} = 0.5\,\mu\text{A}$, $I_{q,signal} = 2.0\,\mu\text{A}$)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_120_0.jpg)
+![](assets/fig_120_0.jpg)
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_121_1.jpg)
+![](assets/fig_121_1.jpg)
 
 It is observed that the error envelope exhibits **two distinct settling regimes**: an initial rapid decay with a **steep negative slope (500–550 ns)** attributable to **large-signal nonlinear operation**, followed by a gradual exponential decay with a **comparatively smaller slope**, characteristic of **small-signal linear settling**. It is worth noting that the boundary between
-these two regimes, and consequently the proportion of the settling window occupied by the nonlinear phase, **determined beforehand from $R_{on}$/$g_m$ design methodology.** This information was ready with users before simulation analysis. This constitutes a
+these two regimes, and consequently the proportion of the settling window occupied by the nonlinear phase, **determined beforehand from $R_{on}/g_m$ design methodology.** This information was ready with users before simulation analysis. This constitutes a
 **fundamental difference and improvement over conventional design methodology**: the large-signal and
 small-signal settling contributions **can be independently budgeted or optimized** at the
 transistor sizing stage.
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_123_0.jpg)
+![](assets/fig_123_0.jpg)
 
 It is observed that the output charging current $I_{out}$ exhibits **two distinct regimes**: an initial **large nonlinear peak current** measured at **+14 µA**(positive edge) on the positive edge and **−13.86 µA**(negative edge) on the negative edge that rapidly charges/discharges the output load capacitance toward the final value, followed by a progressively decreasing small-signal current with $I_{out} \rightarrow 0$ as the output converges. This behavior is characteristic of dynamic amplifiers: **the bulk of the charge transfer occurs in the initial nonlinear phase**, with the small-signal tail contributing only the final fine settling. This was **determined beforehand by the $R_{on}/g_m$ methodology where $g_m/I_d$ or the approach of Conrad et al [4] failed to do so.**. Furthermore, this **peak current varies across process corners**, introducing additional uncertainty in the settling budget is now predictable pre-simulation. This represents a great improvement over conventional methodologies: not only is the nonlinear settling duration known at the sizing stage, but so is the **magnitude, polarity asymmetry, and corner dependence** of the dominant charging current.
 
 
-![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_125_0.jpg)
+![](assets/fig_125_0.jpg)
 
 <hr>
 
@@ -1889,14 +1889,14 @@ A structured comparison of the $R_{on}/g_m$ methodology against the $g_m/I_D$ me
 <tr>
   <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Non-linear (large-signal / RC) settling characterized</td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Via R<sub>on</sub> in LUT; τ<sub>ls</sub> = R<sub>on</sub>C<sub>L</sub></i></small></td>
-  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>$R_{on}$ absent from $g_m/I_D$ framework</i></small></td>
+  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>R<sub>on</sub> absent from g<sub>m</sub>/I<sub>D</sub> framework</i></small></td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>Acknowledged as "not practical" [4]†</i></small></td>
 </tr>
 
 <tr>
   <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Small-signal (<i>g</i><sub>m</sub>C) settling characterized</td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Via g<sub>m,bias</sub> in LUT; BW = g<sub>m</sub>/(2π C<sub>L</sub>)</i></small></td>
-  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Primary strength of $g_m/I_D$ methodology</i></small></td>
+  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Primary strength of g<sub>m</sub>/I<sub>D</sub> methodology</i></small></td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Via rms error cost function</i></small></td>
 </tr>
 
@@ -1920,13 +1920,13 @@ A structured comparison of the $R_{on}/g_m$ methodology against the $g_m/I_D$ me
 <tr>
   <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">TT / SS / FF corners visible at design entry</td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>All 3 corners in LUT; SS worst-case directly readable</i></small></td>
-  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>LUT can be corner-swept but $R_{on}$ not extracted</i></small></td>
+  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>LUT can be corner-swept but R<sub>on</sub> not extracted</i></small></td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>PVT excluded from optimizer loop‡</i></small></td>
 </tr>
 
 <tr>
   <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Deadzone bias (<i>V</i><sub>DZN</sub>, <i>V</i><sub>DZP</sub>) determined pre-simulation</td>
-  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Per-corner, from $V_{bias}$ vs $R_{on}/g_m$ plot§</i></small></td>
+  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>Per-corner, from V<sub>bias</sub> vs R<sub>on</sub>/g<sub>m</sub> plot§</i></small></td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>Unknown without iterative transient corner sweeps</i></small></td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/><br><small><i>V<sub>os</sub> is one of 6 optimized params; corner sensitivity unknown a priori</i></small></td>
 </tr>
@@ -2107,3 +2107,47 @@ This distinction becomes especially significant for dynamic amplifier design, wh
  [8] Y. Chae and G. Han, "Low Voltage, Low Power, Inverter-Based Switched-Capacitor Delta-Sigma Modulator," in IEEE Journal of Solid-State Circuits, vol. 44, no. 2, pp. 458-472, Feb. 2009, doi: [10.1109/JSSC.2008.2010973](https://ieeexplore.ieee.org/document/4768910).
 
  ---
+
+
+## About the Authors
+
+<p>
+<a href="https://www.linkedin.com/in/nithin-purushothama-5b236113b" target="_blank"><img src="assets/NithinPurushothama_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<strong>Nithin Purushothama</strong> received the B.Tech. degree in electronics and communication engineering from Visvesvaraya Technological University (VTU), India, in 2025. He is currently working as an Analog Design Engineer at Omni Design Technologies, Bengaluru, India. He previously worked as a Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under the guidance of Prof. Madhav K. Pathak, where he worked on ring amplifiers and their applications in low-power LDOs. His research interests include high-speed and low-power data converters, dynamic and ring amplifiers, biomedical and wearable circuits, energy-efficient circuits for sensing and computation, algorithm–circuit co-design and emerging computing architectures. He is currently seeking Ph.D. opportunities for Fall 2027 in analog and mixed-signal integrated circuits and related areas.
+<br clear="all" />
+</p>
+<br>
+
+<p>
+<a href="https://www.linkedin.com/in/pramoda-s-r-9946891a2" target="_blank"><img src="assets/Pramoda_SR_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<strong>Pramoda S R</strong> is currently working as an AI Engineer, with experience in machine learning, deep learning, computer vision, and AI-based application development. His research interests include artificial intelligence and deep learning, with an emphasis on computer vision, real-time inference systems, generative AI, and intelligent applications.
+<br clear="all" />
+</p>
+<br>
+
+<p>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Suyajnaa%20Jagannath%20Gowda" target="_blank"><img src="assets/Suyajnaa_Pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
+<strong>Suyajnaa Jagannath Gowda</strong> is currently pursuing the B.E. degree in electronics and communication engineering at The National Institute of Engineering, Mysore, India. Her research interests include analog and mixed-signal circuits, silicon photonics, optical sensing, embedded systems, machine learning, and signal processing. Her work includes silicon photonics-based micro-ring resonator gyroscopes, satellite telemetry analysis, MATLAB-based underwater acoustic systems, and ESP32-based intelligent IC testing.
+<br clear="all" />
+</p>
+<br>
+
+<p>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="assets/Runpeng_Gao_pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
+<strong>Runpeng Gao</strong> received the M.S. degree from Nanjing University, Nanjing, China, in 2023. He is currently pursuing the Ph.D. degree in electrical and computer engineering at Oregon State University, Corvallis, OR, USA. His research interests include high-performance analog and mixed-signal integrated circuits, with an emphasis on high-resolution and high-speed analog-to-digital converters (ADCs) and low-dropout regulators (LDOs).
+<br clear="all" />
+</p>
+<br>
+
+<p>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="assets/Praveen_Kumar_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<strong>Praveen Kumar Venkatachala</strong> I am a PhD Graduate student from Oregon State University. I am presently working as a part of analog integrated circuits design group in AIS (Artificial Intelligence Solutions) division of Skyworks Solutions Inc. in Hillsboro, Oregon. We work on innovative and challenging analog system on chips (ASoCs) for smart speakers/microphones, gaming controllers, wired/wireless headsets and many more products involving audio and voice technology.
+<br clear="all" />
+</p>
+<br>
+
+<p>
+<a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank"><img src="assets/Madhav_K_Pathak_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<strong>Madhav K. Pathak</strong> received the B.Tech. degree in electrical engineering from the Indian Institute of Technology Roorkee, Roorkee, India, in 2016, and the Ph.D. degree in microelectronics from Iowa State University, Ames, IA, USA, in 2022. He is currently an Assistant Professor in the Department of Electrical Engineering at the Indian Institute of Technology Gandhinagar, Gandhinagar, India. His research interests include power management integrated circuits, analog and mixed-signal integrated circuits, ambient micro-power energy harvesting, and IoT sensor systems, with an emphasis on low-power circuit design and energy-efficient power management for batteryless and low-power applications.
+<br clear="all" />
+</p>
