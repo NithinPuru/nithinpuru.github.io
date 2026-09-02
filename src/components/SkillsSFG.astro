@@ -1,105 +1,15 @@
 ---
-// SkillsSFG.astro — Signal Flow Graph skills visualisation
+// SkillsSFG.astro — Neural-network skills visualisation
+// Four layers: Source (1) → Skills (12) → Projects/Places (7) → Domains (4)
+// SVG and all edges rendered programmatically by inline JavaScript.
 ---
 
 <div class="sfg-outer">
 
-  <svg viewBox="0 0 700 400" id="sfg" class="sfg-svg" aria-label="Signal flow graph of Nithin's skills">
-    <defs>
-      <marker id="ar0" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-        <path d="M0,1 L8,4 L0,7 L1.5,4Z" fill="#bbb"/>
-      </marker>
-      <marker id="ar1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-        <path d="M0,1 L8,4 L0,7 L1.5,4Z" fill="#111"/>
-      </marker>
-    </defs>
+  <svg viewBox="0 0 800 800" id="sfg" class="sfg-svg"
+       aria-label="Neural network of Nithin P's skills, projects, and output domains"></svg>
 
-    <!-- BRANCHES -->
-    <path id="b12" class="sfg-br" d="M74,188 C122,188 155,108 202,100" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b13" class="sfg-br" d="M74,200 L202,200" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b14" class="sfg-br" d="M74,212 C122,214 155,298 202,308" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b25" class="sfg-br" d="M282,90 C335,78 385,92 420,104" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b35" class="sfg-br" d="M280,192 C325,162 378,138 420,120" stroke="#ccc" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#ar0)"/>
-    <path id="b26" class="sfg-br" d="M280,112 C328,148 375,212 420,238" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b36" class="sfg-br" d="M282,210 L420,250" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b46" class="sfg-br" d="M282,312 C328,300 375,276 420,264" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b57" class="sfg-br" d="M502,112 C545,124 572,160 604,184" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="b67" class="sfg-br" d="M502,252 C546,248 572,230 604,216" stroke="#ccc" stroke-width="1.5" fill="none" marker-end="url(#ar0)"/>
-    <path id="bloop" class="sfg-br" d="M228,163 C226,132 256,128 250,158" stroke="#ddd" stroke-width="1.1" stroke-dasharray="3,3" fill="none" marker-end="url(#ar0)"/>
-
-    <!-- Branch labels — EB Garamond italic, dark -->
-    <text x="122" y="131" class="sfg-bl">analog circuits</text>
-    <text x="118" y="196" class="sfg-bl">methodology</text>
-    <text x="120" y="268" class="sfg-bl">EDA &amp; tools</text>
-    <text x="352" y="68"  class="sfg-bl">process technology</text>
-    <text x="338" y="234" class="sfg-bl">publications &amp; awards</text>
-    <text x="345" y="320" class="sfg-bl">open PDK tapeouts</text>
-    <text x="560" y="138" class="sfg-bl">silicon</text>
-    <text x="560" y="246" class="sfg-bl">impact</text>
-    <text x="218" y="127" class="sfg-bl" style="font-size:9px">iteration</text>
-
-    <!-- Variable labels via foreignObject (KaTeX rendered by JS) -->
-    <foreignObject x="20"  y="147" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo1" class="sfg-fo"></div></foreignObject>
-    <foreignObject x="188" y="50"  width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo2" class="sfg-fo"></div></foreignObject>
-    <foreignObject x="188" y="150" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo3" class="sfg-fo"></div></foreignObject>
-    <foreignObject x="188" y="260" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo4" class="sfg-fo"></div></foreignObject>
-    <foreignObject x="416" y="58"  width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo5" class="sfg-fo"></div></foreignObject>
-    <foreignObject x="416" y="208" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo6" class="sfg-fo"></div></foreignObject>
-    <foreignObject x="606" y="152" width="56" height="24"><div xmlns="http://www.w3.org/1999/xhtml" id="sfg-fo7" class="sfg-fo"></div></foreignObject>
-
-    <!-- Nodes -->
-    <g id="sfg-n1" class="sfg-nd" data-id="1">
-      <circle cx="52" cy="200" r="22" fill="var(--bg-1,#faf9f4)" stroke="#888" stroke-width="1.8" class="sfg-nc"/>
-      <text x="52" y="200" class="sfg-sigma">&#x3A3;</text>
-    </g>
-    <text x="52" y="234" class="sfg-nsub">source</text>
-
-    <g id="sfg-n2" class="sfg-nd" data-id="2">
-      <circle cx="242" cy="100" r="40" fill="var(--bg-1,#faf9f4)" stroke="#555" stroke-width="1.5" class="sfg-nc"/>
-      <circle cx="242" cy="100" r="35" fill="none" stroke="#ccc" stroke-width="1"/>
-      <text x="242" y="94"  class="sfg-nl">Analog</text>
-      <text x="242" y="112" class="sfg-nl">Design</text>
-    </g>
-
-    <g id="sfg-n3" class="sfg-nd" data-id="3">
-      <circle cx="242" cy="202" r="40" fill="var(--bg-1,#faf9f4)" stroke="#555" stroke-width="1.5" class="sfg-nc"/>
-      <circle cx="242" cy="202" r="35" fill="none" stroke="#ccc" stroke-width="1"/>
-      <text x="242" y="196" class="sfg-nl">Research</text>
-      <text x="242" y="214" class="sfg-nl">Methods</text>
-    </g>
-
-    <g id="sfg-n4" class="sfg-nd" data-id="4">
-      <circle cx="242" cy="310" r="40" fill="var(--bg-1,#faf9f4)" stroke="#555" stroke-width="1.5" class="sfg-nc"/>
-      <circle cx="242" cy="310" r="35" fill="none" stroke="#ccc" stroke-width="1"/>
-      <text x="242" y="304" class="sfg-nl">EDA &amp;</text>
-      <text x="242" y="322" class="sfg-nl">Tools</text>
-    </g>
-
-    <g id="sfg-n5" class="sfg-nd" data-id="5">
-      <circle cx="462" cy="114" r="42" fill="var(--bg-1,#faf9f4)" stroke="#111" stroke-width="2.2" class="sfg-nc"/>
-      <circle cx="462" cy="114" r="36" fill="none" stroke="#888" stroke-width=".8"/>
-      <text x="462" y="108" class="sfg-nl">Process</text>
-      <text x="462" y="126" class="sfg-nl">Nodes</text>
-    </g>
-
-    <g id="sfg-n6" class="sfg-nd" data-id="6">
-      <circle cx="462" cy="256" r="42" fill="var(--bg-1,#faf9f4)" stroke="#111" stroke-width="2.2" class="sfg-nc"/>
-      <circle cx="462" cy="256" r="36" fill="none" stroke="#888" stroke-width=".8"/>
-      <text x="462" y="249" class="sfg-nl">Research</text>
-      <text x="462" y="267" class="sfg-nl">Output</text>
-    </g>
-
-    <g id="sfg-n7" class="sfg-nd" data-id="7">
-      <circle cx="634" cy="200" r="28" fill="#111" stroke="#111" stroke-width="1.5" class="sfg-nc"/>
-      <text x="634" y="200" class="sfg-sigma" style="fill:var(--bg-1,#faf9f4)">&#x3A3;</text>
-    </g>
-    <text x="634" y="240" class="sfg-nsub">output</text>
-
-    <circle id="sfg-dot" r="5" fill="#111" opacity="0" pointer-events="none"/>
-  </svg>
-
-
-  <!-- Skills panel -->
+  <!-- Skills detail panel -->
   <div class="sfg-panel" id="sfg-panel">
     <p class="sfg-empty" id="sfg-empty">hover a node to explore</p>
     <div id="sfg-content" style="display:none">
@@ -114,10 +24,10 @@
   </div>
 
   <div class="sfg-legend">
-    <span><code>○</code> domain node</span>
-    <span><code>⊙</code> key credential</span>
-    <span><code>●</code> output</span>
-    <span><code>- -</code> feedback</span>
+    <span><code>○</code> skill</span>
+    <span><code>⊙</code> project / place</span>
+    <span><code>◉</code> domain output</span>
+    <span><code>—</code> applied in</span>
   </div>
 
 </div>
@@ -126,24 +36,7 @@
 .sfg-outer { margin-top: 1rem; }
 .sfg-svg   { width: 100%; display: block; }
 
-.sfg-nl    { font-family: var(--font-serif); font-size: 15px; font-weight: 700; fill: var(--ink-1); text-anchor: middle; dominant-baseline: middle; }
-.sfg-bl    { font-family: var(--font-serif); font-size: 13px; font-style: italic; fill: var(--ink-1); text-anchor: middle; }
-.sfg-sigma { font-family: var(--font-serif); font-size: 24px; fill: var(--ink-1); text-anchor: middle; dominant-baseline: middle; }
-.sfg-nsub  { font-family: var(--font-mono); font-size: 10px; fill: var(--ink-3); text-anchor: middle; }
-
-.sfg-fo {
-  font-size: 13px;
-  color: var(--ink-1);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-}
-
-.sfg-nd { cursor: pointer; }
-
-/* ── SFG Panel ─────────────────────────────── */
+/* ── Panel ─────────────────────────────────── */
 .sfg-panel {
   border-top: 1px solid var(--rule);
   margin-top: 0.6rem;
@@ -216,10 +109,7 @@
   color: var(--ink-3) !important;
   font-size: 0.75rem !important;
 }
-.sfg-item.hi {
-  color: var(--ink-1) !important;
-  font-weight: 600 !important;
-}
+.sfg-item.hi { color: var(--ink-1) !important; font-weight: 600 !important; }
 .sfg-item.hi::before {
   content: '◆' !important;
   color: var(--ink-2) !important;
@@ -254,273 +144,447 @@
   font-size: 0.7rem;
   color: var(--ink-2);
 }
+.sfg-nd { cursor: pointer; }
 </style>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" is:inline></script>
 
 <script is:inline>
 (function () {
-  function kt(expr, el) {
-    if (typeof katex === 'undefined' || !el) return;
-    try { katex.render(expr, el, { throwOnError: false }); } catch (e) {}
+  // ── Layout constants ──────────────────────────────────────────────
+  var W = 800, H = 800;
+  var LX  = [60,  200, 470, 715];   // x centre per layer
+  var LR  = [22,  28,  34,  38];    // node radius per layer
+  var LFS = [18,  8.5, 10,  10.5];  // label font-size per layer
+
+  // Layer node ID lists (order = top to bottom)
+  var LAYERS = [
+    ['src'],
+    ['s_dynamp','s_ldo','s_ota','s_scamp','s_tape',
+     's_cad','s_oseda','s_pdk','s_python','s_matlab','s_ml','s_quant'],
+    ['p_omni','p_phytau','p_iitgn','p_isro','p_oss','p_squant','p_spice'],
+    ['d_ams','d_oss','d_research','d_ml']
+  ];
+  var STEPS = [0, 63, 95, 152];  // vertical step per layer
+
+  // Compute y positions centred at H/2
+  function centredYs(n, step) {
+    if (n === 1) return [H / 2];
+    var start = H / 2 - ((n - 1) / 2) * step;
+    return Array.from({length: n}, function(_, i) { return +(start + i * step).toFixed(1); });
   }
 
-  function init() {
-    var foLabels = {
-      1: '\\Sigma',
-      2: 'x_{\\text{AD}}',
-      3: 'x_{\\text{RM}}',
-      4: 'x_{\\text{EDA}}',
-      5: 'x_{\\text{PN}}',
-      6: 'x_{\\text{RO}}',
-      7: '\\Sigma',
-    };
-    Object.keys(foLabels).forEach(function(i) {
-      kt(foLabels[i], document.getElementById('sfg-fo' + i));
+  // NODE_POS: id -> {x, y, r, layer}
+  var NODE_POS = {};
+  LAYERS.forEach(function(ids, li) {
+    var ys = centredYs(ids.length, STEPS[li]);
+    ids.forEach(function(id, i) {
+      NODE_POS[id] = { x: LX[li], y: ys[i], r: LR[li], layer: li };
+    });
+  });
+
+  // ── Panel data ────────────────────────────────────────────────────
+  var ND = {
+
+    // ─ Layer 0: source ────────────────────────────────────
+    'src': {
+      abbr: 'SRC', label: 'Background',
+      line1: '\u03a3', line2: '', sigma: true,
+      desc: '<p>B.E. in Electronics and Communication Engineering from Visvesvaraya Technological University (CGPA\u00a08.6). Research Intern at LP-CAS Lab, IIT Gandhinagar under Prof. Madhav K. Pathak. Analog Design Engineer at PhyTau Semiconductors (UMC\u00a055\u00a0nm) and Omni Design Technologies (TSMC\u00a028\u00a0nm). Interned at ISRO SAC, Hassan. Teaching Assistant, PMIC Design (EE660), IIT Gandhinagar.</p>',
+      groups: []
+    },
+
+    // ─ Layer 1: Skills ────────────────────────────────────
+    's_dynamp': {
+      abbr: 'AMP', label: 'Ring / Dynamic Amplifiers',
+      line1: 'Dynamic', line2: 'Amplifiers',
+      desc: '<p>Ring Amplifiers (RAMPs) and Inverter-Based Amplifiers (IBAs) \u2014 dynamic topologies that exploit full large-signal drive for high-speed, energy-efficient settling. Primary focus of the R\u2092\u2099/g\u2098 methodology work at IIT Gandhinagar.</p><p>Designed a Ring Amplifier-based LDO where the final RAMP stage doubles as the pass transistor with adaptive biasing and deadzone regulation for PVT-robust performance. Designed an IBA in IHP SG13G2 BiCMOS as the R\u2092\u2099/g\u2098 methodology silicon test vehicle. Also designed a Process-Invariant Ring Amplifier via deadzone regulation in IHP SG13G2.</p>',
+      groups: [{ title: 'Topologies', items: ['Inverter-Based Amplifier (IBA)', 'Ring Amplifier (RAMP)', 'Dynamic Amplifier in LDO pass stage', 'Process-Invariant Ring Amp \u2014 Deadzone Regulation'], accent: ['Inverter-Based Amplifier (IBA)', 'Ring Amplifier (RAMP)'] }]
+    },
+    's_ldo': {
+      abbr: 'LDO', label: 'LDO / Bandgap Reference',
+      line1: 'LDO', line2: 'BGR',
+      desc: '<p>At Omni Design Technologies (TSMC\u00a028\u00a0nm): owned the Bandgap Core (self-biased folded-cascode OTA fixing a common-mode latch bug) and REF ANALOG (5 temperature-compensated high-PSRR references + 8\u00d7200\u00a0\u00b5A current references with trim-based programmability for \u00b13% accuracy).</p><p>At IIT Gandhinagar (SKY130): designed a piecewise-compensated BGR with higher-order curvature correction achieving sub-5\u00a0ppm/\u00b0C TC. Low-power always-on startup circuit. Fabricated via TinyTapeout SKY130 shuttle. Separate LDO design in SKY130: 1\u00b5s transient settling, \u221260\u00a0dB PSRR, 100\u00a0pF/40\u00a0mA load.</p>',
+      groups: [{ title: 'Designs', items: ['Piecewise-Compensated BGR \u2014 SKY130 (sub-5 ppm/\u00b0C)', 'Self-biased Folded-Cascode OTA \u2014 TSMC 28\u00a0nm', 'REF ANALOG \u2014 5\u00d7 Vref, 8\u00d7 200\u00a0\u00b5A Iref, \u00b13%', 'LDO \u2014 SKY130 (1\u00b5s settling, \u221260\u00a0dB PSRR)'], accent: ['Piecewise-Compensated BGR \u2014 SKY130 (sub-5 ppm/\u00b0C)', 'Self-biased Folded-Cascode OTA \u2014 TSMC 28\u00a0nm'] }]
+    },
+    's_ota': {
+      abbr: 'OTA', label: 'OTA / OpAmp Design',
+      line1: 'OTA', line2: 'Design',
+      desc: '<p>At Omni (TSMC\u00a028\u00a0nm): replaced the BG CORE opamp with a self-biased folded-cascode OTA to fix a common-mode latch bug. Open-source tapeout: Folded-Cascode OTA in GF180MCU-D (TinyTapeout, full DRC/LVS/PEX).</p><p>Rail-to-Rail Input OTA in SKY130: 63\u201364\u00a0dB DC gain, 2\u00a0MHz UGF, 85\u00b0 PM, Monte Carlo offset \u03c3\u00a0=\u00a01.54\u00a0mV. 2-Stage Fully Differential OTA in SKY130 with buffer-based common-mode sensing. Power-on Reset in SKY130 with PMOS/NMOS current-mirror comparator.</p>',
+      groups: [{ title: 'Topologies', items: ['Self-biased Folded-Cascode OTA (TSMC 28\u00a0nm)', 'Folded-Cascode OTA (GF180MCU tapeout)', 'Rail-to-Rail Input OTA (SKY130)', '2-Stage Fully Differential OTA (SKY130)', 'Power-on Reset (SKY130)'], accent: ['Self-biased Folded-Cascode OTA (TSMC 28\u00a0nm)', 'Folded-Cascode OTA (GF180MCU tapeout)'] }]
+    },
+    's_scamp': {
+      abbr: 'SCA', label: 'Switched-Capacitor Amplifiers',
+      line1: 'SC', line2: 'Amplifiers',
+      desc: '<p>Switched-capacitor amplifier design and analysis, used as the primary testbench topology in the R\u2092\u2099/g\u2098 methodology work. The IBA-based SC amplifier at IIT Gandhinagar validated both the non-linear RC settling phase and the linear g\u2098 settling phase of the dynamic amplifier model.</p><p>Also interfaces downstream with the PVT Monitor at Omni Design \u2014 8-bit I-DAC current mismatch requirements to the downstream SC-amp block drove the BG CORE OTA redesign.</p>',
+      groups: [{ title: 'Applications', items: ['IBA SC testbench for R\u2092\u2099/g\u2098 validation (IITGN)', 'Downstream SC-amp interface \u2014 Omni PVT Monitor'], accent: ['IBA SC testbench for R\u2092\u2099/g\u2098 validation (IITGN)'] }]
+    },
+    's_tape': {
+      abbr: 'TO', label: 'Tapeout Flow \u2014 DRC / LVS / PEX',
+      line1: 'Tapeout', line2: 'DRC\u00b7LVS\u00b7PEX',
+      desc: '<p>Pre-tapeout sign-off across 5 process nodes. Open-source (SKY130, GF180MCU, IHP SG13G2) via TinyTapeout: DRC/LVS with Magic VLSI + Netgen, PEX and corner simulation with Ngspice. Industrial (UMC\u00a055\u00a0nm at PhyTau, TSMC\u00a028\u00a0nm at Omni): Cadence Virtuoso with Calibre sign-off, plus Monte Carlo, trim programmability verification, and integration checks against downstream blocks.</p>',
+      groups: [
+        { title: 'Open-Source (TinyTapeout)', items: ['SKY130 \u2014 Piecewise-Compensated BGR', 'GF180MCU-D \u2014 Folded-Cascode OTA', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'], accent: ['SKY130 \u2014 Piecewise-Compensated BGR', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'] },
+        { title: 'Industrial', items: ['UMC 55\u00a0nm \u2014 PWM Comparator (PhyTau)', 'TSMC 28\u00a0nm \u2014 PVT Monitor (Omni Design)'], accent: ['TSMC 28\u00a0nm \u2014 PVT Monitor (Omni Design)'] }
+      ]
+    },
+    's_cad': {
+      abbr: 'CAD', label: 'Cadence Virtuoso / Spectre',
+      line1: 'Cadence', line2: 'Virtuoso',
+      desc: '<p>Primary commercial EDA tool for all industrial tapeout work. Used at PhyTau Semiconductors (UMC\u00a055\u00a0nm) for PWM comparator design, parametric corner sweeps, and full Monte Carlo verification. Used at Omni Design Technologies (TSMC\u00a028\u00a0nm) for Bandgap Core and REF ANALOG design, mismatch analysis, and IP-level integration sign-off. Also Keysight ADS and LTspice.</p>',
+      groups: [{ title: 'Used At', items: ['PhyTau \u2014 UMC 55\u00a0nm, PWM comparator', 'Omni Design \u2014 TSMC 28\u00a0nm, Bandgap + REF', 'Also: Keysight ADS, LTspice'], accent: ['Omni Design \u2014 TSMC 28\u00a0nm, Bandgap + REF'] }]
+    },
+    's_oseda': {
+      abbr: 'OSE', label: 'Open-Source EDA',
+      line1: 'Open-Src', line2: 'EDA',
+      desc: '<p>Full open-source IC design flow: Xschem (schematic), Ngspice (simulation), Magic VLSI (layout), KLayout (GDS/DRC), Netgen (LVS). Used across SKY130, GF180MCU-D, and IHP SG13G2 for all LP-CAS Lab and TinyTapeout work.</p><p>Also used for the SPICE Automation Framework \u2014 Python tooling for automated Ngspice PVT sweeps, metric extraction, cross-corner comparison plots, and LUT generation for the R\u2092\u2099/g\u2098 methodology.</p>',
+      groups: [{ title: 'Tools', items: ['Ngspice \u2014 simulation', 'Xschem \u2014 schematic', 'Magic VLSI \u2014 layout', 'KLayout \u2014 GDS / DRC', 'Netgen \u2014 LVS'], accent: ['Ngspice \u2014 simulation', 'Xschem \u2014 schematic', 'Magic VLSI \u2014 layout'] }]
+    },
+    's_pdk': {
+      abbr: 'PDK', label: 'Process Design Kits \u2014 5 Nodes',
+      line1: 'PDKs', line2: '5 Nodes',
+      desc: '<p>Worked across 5 distinct process technologies: TSMC\u00a028\u00a0nm CMOS (Omni Design), UMC\u00a055\u00a0nm CMOS (PhyTau), IHP SG13G2 130\u00a0nm BiCMOS (LP-CAS Lab/TinyTapeout), SkyWater SKY130 130\u00a0nm (TinyTapeout), GlobalFoundries GF180MCU-D 180\u00a0nm (TinyTapeout). Each with full design, layout, and pre-tapeout sign-off.</p>',
+      groups: [
+        { title: 'Industrial', items: ['TSMC 28\u00a0nm CMOS \u2014 Omni Design Technologies', 'UMC 55\u00a0nm CMOS \u2014 PhyTau Semiconductors'], accent: ['TSMC 28\u00a0nm CMOS \u2014 Omni Design Technologies', 'UMC 55\u00a0nm CMOS \u2014 PhyTau Semiconductors'] },
+        { title: 'Open-Source', items: ['IHP SG13G2 \u2014 130\u00a0nm BiCMOS', 'SKY130 \u2014 SkyWater 130\u00a0nm', 'GF180MCU-D \u2014 GlobalFoundries 180\u00a0nm'], accent: ['IHP SG13G2 \u2014 130\u00a0nm BiCMOS'] }
+      ]
+    },
+    's_python': {
+      abbr: 'PY', label: 'Python \u0026 Automation',
+      line1: 'Python', line2: 'Automation',
+      desc: '<p>Python used for EDA automation (parametric Ngspice scripting, LUT generation for R\u2092\u2099/g\u2098 methodology, batch-mode sweep control, metric extraction and cross-corner comparison plots) and financial data analysis (NumPy, Pandas, SciPy, Matplotlib, Scikit-learn, GBM-based Monte Carlo). Also developed the JavaScript analytics engine for the Semi-Quant Terminal.</p>',
+      groups: [{ title: 'Applications', items: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation \u2014 R\u2092\u2099/g\u2098 methodology', 'SPICE-to-area estimation (Magic VLSI)', 'Semi-Quant Terminal analytics engine', 'Financial data modelling \u2014 GBM Monte Carlo'], accent: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation \u2014 R\u2092\u2099/g\u2098 methodology'] }]
+    },
+    's_matlab': {
+      abbr: 'MAT', label: 'MATLAB / C++ / Verilog',
+      line1: 'MATLAB', line2: 'C++\u00b7Verilog',
+      desc: '<p>MATLAB for signal processing, antenna radiation pattern analysis (ISRO internship), and system-level modelling. C/C++ for embedded and low-level applications. Verilog and SystemVerilog for digital design and verification. OCEAN Script for Cadence batch simulation control. NGSpice Control Language for parametric sweep automation. LaTeX for technical document preparation.</p>',
+      groups: [{ title: 'Languages', items: ['MATLAB', 'C / C++', 'Verilog / SystemVerilog', 'OCEAN Script (Cadence)', 'NGSpice Control Language', 'LaTeX'], accent: ['Verilog / SystemVerilog', 'MATLAB'] }]
+    },
+    's_ml': {
+      abbr: 'ML', label: 'Machine Learning \u0026 Statistics',
+      line1: 'ML \u0026', line2: 'Statistics',
+      desc: '<p>Machine learning and statistical analysis using NumPy, Pandas, SciPy, Scikit-learn, and PyTorch (basics). Applied to financial data analysis in the Semi-Quant Terminal and to Monte Carlo simulation of process variation and mismatch at LP-CAS Lab. Statistical analysis of parametric SPICE sweep data in the R\u2092\u2099/g\u2098 LUT generation flow.</p>',
+      groups: [{ title: 'Libraries', items: ['NumPy / Pandas / SciPy', 'Scikit-learn', 'PyTorch (basics)', 'Matplotlib'], accent: ['NumPy / Pandas / SciPy', 'Scikit-learn'] }]
+    },
+    's_quant': {
+      abbr: 'QF', label: 'Quantitative Finance',
+      line1: 'Quant', line2: 'Finance',
+      desc: '<p>Developed the Semi-Quant Terminal \u2014 a zero-backend single-page web application providing institutional-grade quantitative analysis of 40+ semiconductor company stock portfolios. Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine. Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.</p>',
+      groups: [{ title: 'Methods', items: ['Monte Carlo \u2014 GBM-based', 'VaR / CVaR', 'Sharpe / Sortino ratios', 'RSI, MACD, Bollinger Bands', 'ARIMA / Holt-Winters time-series', 'Beta / correlation analysis'], accent: ['Monte Carlo \u2014 GBM-based', 'VaR / CVaR'] }]
+    },
+
+    // ─ Layer 2: Projects / Places ─────────────────────────
+    'p_omni': {
+      abbr: 'OMNI', label: 'Omni Design Technologies',
+      line1: 'Omni Design', line2: 'TSMC 28nm',
+      desc: '<p>Analog Design Intern \u2192 Engineer at Omni Design Technologies, Bengaluru (March 2026 \u2013 present), TSMC\u00a028\u00a0nm CMOS. Owned the <strong>Bandgap Core</strong>: replaced the conventional opamp with a self-biased folded-cascode OTA and a new always-on startup circuit, fixing a common-mode latch bug that caused the loop to lock at VDD; reduced 8-bit I-DAC current mismatch to downstream SC-amp and ADC blocks.</p><p>Owned <strong>REF ANALOG</strong>: 5 temperature-compensated high-PSRR reference voltages and 8\u00d7200\u00a0\u00b5A current references with trim-based programmability to meet \u00b13% output accuracy. Mapped digital infrastructure from a 16\u00a0nm reference IP onto the 28\u00a0nm blocks, enabling block-level reuse.</p>',
+      groups: [{ title: 'Blocks Owned', items: ['Bandgap Core \u2014 self-biased folded-cascode OTA', 'REF ANALOG \u2014 5\u00d7 Vref, 8\u00d7 200\u00b5A Iref, \u00b13%', 'Digital infrastructure mapping (16\u00a0nm \u2192 28\u00a0nm)'], accent: ['Bandgap Core \u2014 self-biased folded-cascode OTA', 'REF ANALOG \u2014 5\u00d7 Vref, 8\u00d7 200\u00b5A Iref, \u00b13%'] }]
+    },
+    'p_phytau': {
+      abbr: 'PHY', label: 'PhyTau Semiconductors',
+      line1: 'PhyTau', line2: 'UMC 55nm',
+      desc: '<p>Analog Design Engineer at PhyTau Semiconductors, Bengaluru (Oct 2025 \u2013 Feb 2026), UMC\u00a055\u00a0nm CMOS. Designed a 4-input PWM comparator with programmable hysteresis for a multi-phase DC\u2013DC converter SoC. Redesign introduced programmable hysteresis at the first comparator stage, eliminating trip-point glitches and reducing propagation delay \u2014 approximately 30% power reduction over the prior implementation.</p><p>Debugged digital-induced glitches in the control path by characterising delay contributions from hysteresis control and de-glitching logic. Full PVT corner and Monte Carlo verification in Cadence Virtuoso / Spectre.</p>',
+      groups: [{ title: 'Block', items: ['4-input PWM Comparator with programmable hysteresis', 'Multi-phase DC\u2013DC converter SoC \u2014 UMC 55\u00a0nm', '~30% power reduction over prior design'], accent: ['4-input PWM Comparator with programmable hysteresis'] }]
+    },
+    'p_iitgn': {
+      abbr: 'IITGN', label: 'LP-CAS Lab, IIT Gandhinagar',
+      line1: 'LP-CAS Lab', line2: 'IITGN',
+      desc: '<p>Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under Prof. Madhav K. Pathak (Feb\u2013Aug 2025). Primary contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers \u2014 pre-characterises device LUTs from parametric SPICE simulations in IHP SG13G2, exposing worst-case corner settling at design entry. Accepted at ESSERC 2026. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000).</p><p>Also designed a Ring Amplifier-based LDO with deadzone regulation, proposed a translinear MAC for analog neural networks, taped out a piecewise-compensated BGR (SKY130) and an IBA (IHP SG13G2) via TinyTapeout. Teaching Assistant for PMIC Design (EE660).</p>',
+      groups: [{ title: 'Projects', items: ['R\u2092\u2099/g\u2098 Design Methodology (ESSERC 2026)', 'Ring Amp\u2013based LDO with deadzone regulation', 'Translinear MAC for analog neural networks', 'BGR tapeout (SKY130, TinyTapeout)', 'IBA tapeout (IHP SG13G2, TinyTapeout)', 'TA \u2014 PMIC Design (EE660)'], accent: ['R\u2092\u2099/g\u2098 Design Methodology (ESSERC 2026)', 'BGR tapeout (SKY130, TinyTapeout)'] }]
+    },
+    'p_isro': {
+      abbr: 'ISRO', label: 'ISRO Space Applications Centre',
+      line1: 'ISRO SAC', line2: 'C-Band/RF',
+      desc: '<p>Internship at the Space Applications Centre (SAC), Hassan, Baseband RF Division, Master Control Facility (Oct\u2013Nov 2023). Calibrated C-Band (6\u00a0GHz) ground station antenna systems to achieve specified Cross-Polar Discrimination (XPD) levels during the In-Orbit Testing of GSAT-31, a geostationary communication satellite.</p><p>Involved operating precision RF test equipment, interpreting antenna radiation patterns, and adjusting mechanical and electrical parameters to meet ITU cross-polarisation isolation specifications.</p>',
+      groups: [{ title: 'Project', items: ['C-Band antenna calibration (6\u00a0GHz)', 'Cross-Polar Discrimination (XPD) verification', 'GSAT-31 In-Orbit Testing, Master Control Facility'], accent: ['GSAT-31 In-Orbit Testing, Master Control Facility'] }]
+    },
+    'p_oss': {
+      abbr: 'OSS', label: 'Open-Source Tapeouts \u00d73',
+      line1: 'Open-Src', line2: 'Tapeouts\u00d73',
+      desc: '<p>Three silicon tapeouts via the TinyTapeout open-source shuttle program, using entirely open-source EDA tools across three distinct PDKs. <strong>SKY130:</strong> Piecewise-compensated BGR, sub-5\u00a0ppm/\u00b0C TC. <strong>GF180MCU-D:</strong> Folded-Cascode OTA, full DRC/LVS/PEX. <strong>IHP SG13G2 130\u00a0nm BiCMOS:</strong> Inverter-Based Amplifier silicon test vehicle for the R\u2092\u2099/g\u2098 methodology.</p>',
+      groups: [{ title: 'Tapeouts', items: ['SKY130 \u2014 Piecewise-Compensated BGR (sub-5 ppm/\u00b0C TC)', 'GF180MCU-D \u2014 Folded-Cascode OTA', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'], accent: ['SKY130 \u2014 Piecewise-Compensated BGR (sub-5 ppm/\u00b0C TC)', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'] }]
+    },
+    'p_squant': {
+      abbr: 'SQT', label: 'Semi-Quant Terminal',
+      line1: 'Semi-Quant', line2: 'Terminal',
+      desc: '<p>Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 40+ semiconductor companies. Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine. Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.</p>',
+      groups: [{ title: 'Features', items: ['RSI, MACD, Bollinger Bands', 'VaR / CVaR, Beta, Sharpe / Sortino', 'GBM-based Monte Carlo simulation', '40+ semiconductor company portfolios', 'Zero-backend pure-JS analytics engine'], accent: ['GBM-based Monte Carlo simulation', 'Zero-backend pure-JS analytics engine'] }]
+    },
+    'p_spice': {
+      abbr: 'SPY', label: 'SPICE Automation Framework',
+      line1: 'SPICE', line2: 'Automation',
+      desc: '<p>Open-source Python tools for analog IC design automation developed at IIT Gandhinagar. PVT sweep framework for Ngspice: automated metric extraction, cross-corner comparison plots, and structured data export. SPICE-to-area estimation tool using Magic VLSI for pre-layout floorplanning. Used extensively during R\u2092\u2099/g\u2098 methodology development to sweep device geometry and bias conditions across process corners and extract LUTs.</p>',
+      groups: [{ title: 'Tools', items: ['Ngspice PVT sweep automation', 'Automated metric extraction \u0026 comparison plots', 'SPICE-to-area estimation (Magic VLSI)', 'LUT generation for R\u2092\u2099/g\u2098 methodology'], accent: ['LUT generation for R\u2092\u2099/g\u2098 methodology', 'Ngspice PVT sweep automation'] }]
+    },
+
+    // ─ Layer 3: Domain outputs ────────────────────────────
+    'd_ams': {
+      abbr: 'AMS', label: 'Analog / Mixed-Signal IC Design',
+      line1: 'Analog/MS', line2: 'IC Design',
+      strong: true,
+      desc: '<p>End-to-end analog and mixed-signal IC design across 5 process nodes. Core strengths: dynamic amplifiers, OTAs, LDOs, bandgap references, PVT monitors, SC circuits. Full tapeout experience from schematic through DRC/LVS/PEX in both open-source and commercial flows.</p><p>Industry: Omni Design Technologies (TSMC\u00a028\u00a0nm) and PhyTau Semiconductors (UMC\u00a055\u00a0nm). Research: LP-CAS Lab, IIT Gandhinagar. Publications: ESSERC 2026 + IEEE ICEE 2025. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000).</p>',
+      groups: [{ title: 'Key Credentials', items: ['5 Fabricated Tapeouts across 5 PDKs', 'ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Methodology (poster)', 'IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000', 'TSMC 28nm \u00b7 UMC 55nm \u00b7 IHP \u00b7 SKY130 \u00b7 GF180'], accent: ['IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000', 'ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Methodology (poster)'] }]
+    },
+    'd_oss': {
+      abbr: 'OSS', label: 'Open-Source EDA \u0026 Tapeout',
+      line1: 'Open-Source', line2: 'EDA \u0026 Tapeout',
+      strong: true,
+      desc: '<p>Proficient in the complete open-source IC design flow: Xschem, Ngspice, Magic VLSI, KLayout, Netgen \u2014 used across SKY130, GF180MCU-D, and IHP SG13G2. Three TinyTapeout silicon tapeouts with full DRC/LVS/PEX sign-off. Developed the SPICE Automation Framework \u2014 open-source Python tooling for PVT sweep automation and LUT generation for the R\u2092\u2099/g\u2098 methodology.</p>',
+      groups: [{ title: 'Stack', items: ['Ngspice \u00b7 Xschem \u00b7 Magic VLSI \u00b7 KLayout \u00b7 Netgen', 'SKY130 \u00b7 GF180MCU-D \u00b7 IHP SG13G2', 'Python SPICE automation \u00b7 LUT generation'], accent: ['Ngspice \u00b7 Xschem \u00b7 Magic VLSI \u00b7 KLayout \u00b7 Netgen'] }]
+    },
+    'd_research': {
+      abbr: 'RES', label: 'Research \u0026 Methodology',
+      line1: 'Research \u0026', line2: 'Methodology',
+      strong: true,
+      desc: '<p>Primary research contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers \u2014 a pre-simulation framework co-designing the non-linear RC settling phase (R\u2092\u2099) and the linear small-signal phase (g\u2098) via pre-characterised LUTs, exposing worst-case corner behaviour at design entry. Accepted at ESSERC 2026, Palma de Mallorca. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000). Also published at IEEE ICEE 2025.</p>',
+      groups: [{ title: 'Publications', items: ['ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Based Design Methodology (poster)', 'IEEE ICEE 2025 \u2014 CMOS Multiplier Circuits (published)'], accent: ['ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Based Design Methodology (poster)'] }]
+    },
+    'd_ml': {
+      abbr: 'ML', label: 'ML \u0026 Quantitative Finance',
+      line1: 'ML \u0026 Quant', line2: 'Finance',
+      strong: true,
+      desc: '<p>Machine learning and quantitative finance skills applied in the Semi-Quant Terminal: institutional-grade portfolio analysis of 40+ semiconductor companies, GBM-based Monte Carlo simulation, RSI/MACD/Bollinger Band technical analysis, VaR/CVaR/Sharpe/Sortino risk metrics, all in a zero-backend pure-JavaScript analytics engine. ML stack: NumPy, Pandas, SciPy, Scikit-learn, PyTorch (basics).</p>',
+      groups: [{ title: 'Stack', items: ['NumPy / Pandas / SciPy / Scikit-learn', 'PyTorch (basics)', 'Monte Carlo (GBM-based)', 'VaR / CVaR, Sharpe / Sortino', 'ARIMA / Holt-Winters'], accent: ['Monte Carlo (GBM-based)', 'NumPy / Pandas / SciPy / Scikit-learn'] }]
+    }
+  };
+
+  // ── Edges ─────────────────────────────────────────────────────────
+  var EDGES = [
+    // L0 → L1: source to all 12 skills
+    ['src','s_dynamp'],['src','s_ldo'],['src','s_ota'],['src','s_scamp'],
+    ['src','s_tape'],['src','s_cad'],['src','s_oseda'],['src','s_pdk'],
+    ['src','s_python'],['src','s_matlab'],['src','s_ml'],['src','s_quant'],
+    // L1 → L2: skills to projects/places
+    ['s_dynamp','p_iitgn'],['s_dynamp','p_omni'],['s_dynamp','p_oss'],
+    ['s_ldo','p_iitgn'],['s_ldo','p_omni'],['s_ldo','p_oss'],
+    ['s_ota','p_iitgn'],['s_ota','p_phytau'],['s_ota','p_omni'],['s_ota','p_oss'],
+    ['s_scamp','p_iitgn'],['s_scamp','p_omni'],
+    ['s_tape','p_oss'],['s_tape','p_omni'],['s_tape','p_phytau'],
+    ['s_cad','p_phytau'],['s_cad','p_omni'],
+    ['s_oseda','p_iitgn'],['s_oseda','p_oss'],['s_oseda','p_spice'],
+    ['s_pdk','p_oss'],['s_pdk','p_phytau'],['s_pdk','p_omni'],
+    ['s_python','p_spice'],['s_python','p_squant'],['s_python','p_iitgn'],
+    ['s_matlab','p_iitgn'],['s_matlab','p_isro'],
+    ['s_ml','p_squant'],['s_ml','p_iitgn'],
+    ['s_quant','p_squant'],
+    // L2 → L3: projects/places to output domains
+    ['p_omni','d_ams'],
+    ['p_phytau','d_ams'],
+    ['p_iitgn','d_ams'],['p_iitgn','d_research'],['p_iitgn','d_oss'],
+    ['p_isro','d_ams'],
+    ['p_oss','d_oss'],['p_oss','d_ams'],
+    ['p_squant','d_ml'],
+    ['p_spice','d_oss'],['p_spice','d_research']
+  ];
+
+  // ── Adjacency map ─────────────────────────────────────────────────
+  var ADJ = {};
+  Object.keys(ND).forEach(function(id) { ADJ[id] = []; });
+  EDGES.forEach(function(e, i) {
+    if (ADJ[e[0]]) ADJ[e[0]].push(i);
+    if (ADJ[e[1]]) ADJ[e[1]].push(i);
+  });
+
+  // ── SVG rendering ─────────────────────────────────────────────────
+  var svg = document.getElementById('sfg');
+  var NS  = 'http://www.w3.org/2000/svg';
+
+  function svgEl(tag, attrs) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+
+  // Arrowhead markers
+  var defs = svgEl('defs', {});
+  function mkMarker(id, fill) {
+    var m = svgEl('marker', { id: id, markerWidth: '7', markerHeight: '7',
+                              refX: '6', refY: '3.5', orient: 'auto' });
+    m.appendChild(svgEl('path', { d: 'M0,1 L7,3.5 L0,6 L1.2,3.5Z', fill: fill }));
+    return m;
+  }
+  defs.appendChild(mkMarker('ar0', '#bbb'));
+  defs.appendChild(mkMarker('ar1', '#191814'));
+  svg.appendChild(defs);
+
+  // Edge group (behind nodes)
+  var edgeG = svgEl('g', {});
+  svg.appendChild(edgeG);
+  var edgeEls = [];
+  EDGES.forEach(function(edge) {
+    var a = NODE_POS[edge[0]], b = NODE_POS[edge[1]];
+    if (!a || !b) { edgeEls.push(null); return; }
+    var dx = b.x - a.x, cx = dx * 0.42;
+    var el = svgEl('path', {
+      d: 'M ' + a.x + ' ' + a.y + ' C ' + (a.x + cx) + ' ' + a.y +
+         ', ' + (b.x - cx) + ' ' + b.y + ', ' + b.x + ' ' + b.y,
+      fill: 'none', stroke: '#ccc', 'stroke-width': '0.9',
+      'marker-end': 'url(#ar0)', 'class': 'sfg-br'
+    });
+    edgeG.appendChild(el);
+    edgeEls.push(el);
+  });
+
+  // Node group (in front)
+  var nodeG = svgEl('g', {});
+  svg.appendChild(nodeG);
+  var nodeEls = {};
+
+  Object.keys(ND).forEach(function(id) {
+    var d = ND[id], p = NODE_POS[id];
+    if (!p) return;
+    var g  = svgEl('g', { 'class': 'sfg-nd', 'data-id': id });
+    var fs = LFS[p.layer] + '';
+
+    if (d.sigma) {
+      g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
+        fill: 'var(--bg-1,#faf9f4)', stroke: '#888', 'stroke-width': '1.6', 'class': 'sfg-nc' }));
+      var st = svgEl('text', { x: p.x, y: p.y,
+        'font-family': 'var(--font-serif)', 'font-size': '20', fill: 'var(--ink-1,#191814)',
+        'text-anchor': 'middle', 'dominant-baseline': 'middle' });
+      st.textContent = '\u03a3';
+      g.appendChild(st);
+      var sub = svgEl('text', { x: p.x, y: p.y + p.r + 11,
+        'font-family': 'var(--font-mono)', 'font-size': '9', fill: '#6f6a5e', 'text-anchor': 'middle' });
+      sub.textContent = 'source';
+      g.appendChild(sub);
+
+    } else if (d.strong) {
+      g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
+        fill: 'var(--bg-1,#faf9f4)', stroke: '#111', 'stroke-width': '2.2', 'class': 'sfg-nc' }));
+      g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r - 6,
+        fill: 'none', stroke: '#888', 'stroke-width': '0.8' }));
+
+    } else if (p.layer === 2) {
+      g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
+        fill: 'var(--bg-1,#faf9f4)', stroke: '#555', 'stroke-width': '1.8', 'class': 'sfg-nc' }));
+      g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r - 5,
+        fill: 'none', stroke: '#ccc', 'stroke-width': '0.7' }));
+
+    } else {
+      g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
+        fill: 'var(--bg-1,#faf9f4)', stroke: '#999', 'stroke-width': '1.2', 'class': 'sfg-nc' }));
+    }
+
+    // Text labels (2 lines)
+    if (d.line1 && !d.sigma) {
+      var dy1 = d.line2 ? '-5.5' : '0';
+      var t1 = svgEl('text', { x: p.x, y: p.y, dy: dy1,
+        'font-family': 'var(--font-serif)', 'font-size': fs, 'font-weight': '700',
+        fill: 'var(--ink-1,#191814)', 'text-anchor': 'middle', 'dominant-baseline': 'middle' });
+      t1.textContent = d.line1;
+      g.appendChild(t1);
+      if (d.line2) {
+        var t2 = svgEl('text', { x: p.x, y: p.y, dy: '5.5',
+          'font-family': 'var(--font-serif)', 'font-size': fs,
+          'font-weight': d.strong ? '700' : '400',
+          fill: d.strong ? 'var(--ink-1,#191814)' : '#666',
+          'text-anchor': 'middle', 'dominant-baseline': 'middle' });
+        t2.textContent = d.line2;
+        g.appendChild(t2);
+      }
+    }
+
+    nodeG.appendChild(g);
+    nodeEls[id] = g;
+  });
+
+  // ── Interaction ───────────────────────────────────────────────────
+  var active = null;
+
+  function resetEdges() {
+    edgeEls.forEach(function(el) {
+      if (!el) return;
+      el.setAttribute('stroke', '#ccc');
+      el.setAttribute('stroke-width', '0.9');
+      el.setAttribute('marker-end', 'url(#ar0)');
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  function resetNodes() {
+    Object.keys(nodeEls).forEach(function(id) {
+      var nc = nodeEls[id].querySelector('.sfg-nc');
+      var d  = ND[id], p = NODE_POS[id];
+      if (!nc || !d || !p) return;
+      if (d.sigma)       { nc.setAttribute('stroke','#888'); nc.setAttribute('stroke-width','1.6'); }
+      else if (d.strong) { nc.setAttribute('stroke','#111'); nc.setAttribute('stroke-width','2.2'); }
+      else if (p.layer === 2) { nc.setAttribute('stroke','#555'); nc.setAttribute('stroke-width','1.8'); }
+      else               { nc.setAttribute('stroke','#999'); nc.setAttribute('stroke-width','1.2'); }
+    });
   }
-
-  var ND = {
-    1: {
-      abbr: 'SRC', label: 'Background',
-      desc: '<p>B.E. in Electronics and Communication Engineering from Visvesvaraya Technological University (CGPA\u00a08.6). Interned at ISRO Space Applications Centre (SAC), Hassan under the Baseband RF Division \u2014 calibrating C-Band ground station antenna systems to meet ITU cross-polarisation isolation specifications during the in-orbit testing of GSAT-31, a geostationary communication satellite.</p><p>Research Intern at LP-CAS Lab, IIT Gandhinagar under Prof. Madhav K. Pathak, where the R\u2092\u2099/g\u2098 methodology for dynamic amplifiers was developed. Industry: Analog Design Engineer at PhyTau Semiconductors (UMC\u00a055\u00a0nm, PWM comparator for DC\u2013DC SoC) and Omni Design Technologies (TSMC\u00a028\u00a0nm, PVT Monitor and Reference IP blocks). Teaching Assistant, PMIC Design (EE660), IIT Gandhinagar.</p>',
-      groups: []
-    },
-    2: {
-      abbr: 'AD', label: 'Analog Design',
-      desc: '<p>Core analog IC design skills developed across IIT Gandhinagar LP-CAS Lab, PhyTau Semiconductors, and Omni Design Technologies. Covers the full design cycle from topology selection and hand analysis through SPICE simulation, layout, and post-layout verification across multiple process nodes.</p><p>Primary strengths: amplifier topologies (OTAs, dynamic amplifiers, ring amplifiers), precision voltage references (bandgap, piecewise-compensated), and regulator design (LDOs, PVT monitors). At Omni (TSMC\u00a028\u00a0nm), replaced the BG CORE opamp with a self-biased folded-cascode OTA to fix a common-mode latch bug that caused the bandgap loop to lock at VDD. At IIT Gandhinagar (SKY130), designed a piecewise-compensated BGR achieving sub-5\u00a0ppm/\u00b0C TC, fabricated via TinyTapeout.</p>',
-      groups: [
-        {
-          title: 'Core Circuits',
-          items: ['Ring Amplifiers', 'Dynamic Amplifiers', 'OTAs / OPAMPs', 'Bandgap References', 'LDO Design', 'PVT Monitors', 'Current Mirrors', 'Startup Circuits', 'Self-biased Cascode OTA'],
-          accent: ['Ring Amplifiers', 'Dynamic Amplifiers', 'OTAs / OPAMPs', 'Bandgap References']
-        },
-        {
-          title: 'Design & Verification Flow',
-          items: ['Tapeout Flow (DRC \u00b7 LVS \u00b7 PEX)', 'Switched Capacitor Circuits', 'DSP Circuits'],
-          accent: ['Tapeout Flow (DRC \u00b7 LVS \u00b7 PEX)']
-        }
-      ]
-    },
-    3: {
-      abbr: 'RM', label: 'Research Methods',
-      desc: '<p>Primary contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers, developed at LP-CAS Lab, IIT Gandhinagar. Dynamic amplifiers exhibit two settling regimes \u2014 a non-linear large-signal phase dominated by transistor R\u2092\u2099, and a linear small-signal phase governed by g\u2098. Existing g\u2098/I\u1D30 approaches characterise only the second phase, leaving the large-signal RC settling uncharacterised until post-simulation.</p><p>The R\u2092\u2099/g\u2098 methodology pre-characterises device look-up tables from parametric SPICE simulations \u2014 covering R\u2092\u2099, g\u2098, bias deadzone boundaries (V<sub>DZN</sub>, V<sub>DZP</sub>), and process corners \u2014 making worst-case corner behaviour readable at design entry without iterative transient simulation. Validated on IHP SG13G2 130\u00a0nm BiCMOS. Accepted at ESSERC 2026, Palma de Mallorca; awarded the IEEE SSCS Code-a-Chip Travel Grant ($5,000).</p>',
-      groups: [
-        {
-          title: 'Novel Methodology (ESSERC 2026)',
-          items: ['R\u2092\u2099/g\u2098 Design Methodology', 'Two-phase Settling Model (NL + LS)', 'LUT-based Pre-simulation Design', 'Deadzone Bias Characterisation', 'Peak Slew Current Prediction'],
-          accent: ['R\u2092\u2099/g\u2098 Design Methodology', 'Two-phase Settling Model (NL + LS)']
-        },
-        {
-          title: 'Established Methods & Analysis',
-          items: ['g\u2098/I_D Methodology', 'Process Corner Analysis', 'Monte Carlo Simulation', 'Open-Source IC Design', 'Parametric SPICE Simulation'],
-          accent: ['g\u2098/I_D Methodology']
-        }
-      ]
-    },
-    4: {
-      abbr: 'EDA', label: 'EDA & Tools',
-      desc: '<p>Experienced with both open-source and commercial EDA toolchains covering the full IC design flow from schematic entry and SPICE simulation through physical layout and pre-tapeout sign-off.</p><p>Open-source stack: Ngspice (simulation), Xschem (schematic), Magic VLSI and KLayout (layout), Netgen (LVS) \u2014 used across SKY130, GF180MCU, and IHP SG13G2 PDKs. Commercial stack: Cadence Virtuoso and Spectre \u2014 used at PhyTau (UMC\u00a055\u00a0nm) and Omni Design (TSMC\u00a028\u00a0nm). Python scripting automates parametric simulation, LUT generation, and result post-processing \u2014 used extensively during R\u2092\u2099/g\u2098 methodology development to sweep device geometry and bias across process corners.</p>',
-      groups: [
-        {
-          title: 'Commercial Tools',
-          items: ['Cadence Virtuoso / Spectre', 'Keysight ADS', 'LTspice'],
-          accent: ['Cadence Virtuoso / Spectre']
-        },
-        {
-          title: 'Open-Source Tools',
-          items: ['Ngspice', 'Xschem', 'Magic VLSI', 'KLayout', 'Netgen'],
-          accent: ['Ngspice', 'Xschem', 'Magic VLSI']
-        },
-        {
-          title: 'Programming & Automation',
-          items: ['Python (EDA Automation)', 'MATLAB', 'LaTeX', 'Git / GitHub'],
-          accent: ['Python (EDA Automation)']
-        }
-      ]
-    },
-    5: {
-      abbr: 'PN', label: 'Process Nodes',
-      desc: '<p>Silicon fabricated or taped out across 5 distinct process technologies \u2014 3 open-source PDK (SKY130, GF180MCU-D, IHP SG13G2) via TinyTapeout shuttles, and 2 industrial commercial nodes (UMC\u00a055\u00a0nm at PhyTau, TSMC\u00a028\u00a0nm at Omni). Open-source tapeouts used Magic VLSI + Netgen for DRC/LVS and Ngspice for post-layout corner simulation. Industrial tapeouts used Cadence Virtuoso / Spectre with full Calibre sign-off.</p><p>Each tapeout involved layout from scratch, DRC and LVS clean, parasitic extraction (PEX), and post-layout simulation across all required PVT corners. Industrial tapeouts additionally required Monte Carlo across process and mismatch, trim programmability verification, and integration-level checks against downstream SC-amp and ADC blocks.</p>',
-      groups: [
-        {
-          title: 'Industrial (Commercial)',
-          items: ['TSMC 28\u00a0nm CMOS \u2014 Omni Design Technologies', 'UMC 55\u00a0nm CMOS \u2014 PhyTau Semiconductors'],
-          accent: ['TSMC 28\u00a0nm CMOS \u2014 Omni Design Technologies', 'UMC 55\u00a0nm CMOS \u2014 PhyTau Semiconductors']
-        },
-        {
-          title: 'Open-Source PDK (Fabricated via Shuttle)',
-          items: ['IHP SG13G2 \u2014 130\u00a0nm BiCMOS', 'SKY130 \u2014 SkyWater 130\u00a0nm', 'GF180MCU-D \u2014 GlobalFoundries 180\u00a0nm'],
-          accent: ['IHP SG13G2 \u2014 130\u00a0nm BiCMOS', 'SKY130 \u2014 SkyWater 130\u00a0nm', 'GF180MCU-D \u2014 GlobalFoundries 180\u00a0nm']
-        }
-      ]
-    },
-    6: {
-      abbr: 'RO', label: 'Research Output',
-      desc: '<p>Two peer-reviewed IEEE publications, a $5,000 SSCS travel grant, and fabricated silicon across 5 process nodes. The R\u2092\u2099/g\u2098 paper \u2014 accepted at ESSERC 2026 (Palma de Mallorca, Spain, September 2026) \u2014 presents a pre-simulation design framework for dynamic amplifiers validated on IHP SG13G2 130\u00a0nm BiCMOS using open-source EDA tools. The IEEE ICEE 2025 paper covers analog CMOS multiplier circuit design and comparative analysis.</p><p>Fabricated silicon: piecewise-compensated BGR in SKY130 (sub-5\u00a0ppm/\u00b0C TC, TinyTapeout); IBA in IHP SG13G2 (R\u2092\u2099/g\u2098 test vehicle, TinyTapeout); PWM comparator in UMC\u00a055\u00a0nm (PhyTau Semiconductors); PVT Monitor and Reference IPs in TSMC\u00a028\u00a0nm (Omni Design Technologies). Additional: ISRO GSAT-31 C-Band antenna calibration; Teaching Assistant, PMIC Design (EE660), IIT Gandhinagar.</p>',
-      groups: [
-        {
-          title: 'Publications',
-          items: [
-            'ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Based Design Methodology for Dynamic Amplifiers (accepted, poster)',
-            'IEEE ICEE 2025 \u2014 Analog CMOS Multiplier Circuits: Design and Comparative Analysis (published)'
-          ],
-          accent: ['ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Based Design Methodology for Dynamic Amplifiers (accepted, poster)']
-        },
-        {
-          title: 'Award',
-          items: ['IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000 (Young Professional category)'],
-          accent: ['IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000 (Young Professional category)']
-        },
-        {
-          title: 'Fabricated Silicon',
-          items: [
-            'SKY130 \u2014 Piecewise-Compensated BGR (sub-5\u202fppm/\u00b0C TC)',
-            'GF180MCU \u2014 Folded-Cascode OTA',
-            'IHP SG13G2 \u2014 Inverter-based Dynamic Amplifier',
-            'UMC 55\u00a0nm \u2014 PWM Comparator for DC\u2013DC converter (PhyTau)',
-            'TSMC 28\u00a0nm \u2014 PVT Monitor & Reference IPs (Omni Design)'
-          ],
-          accent: ['SKY130 \u2014 Piecewise-Compensated BGR (sub-5\u202fppm/\u00b0C TC)', 'TSMC 28\u00a0nm \u2014 PVT Monitor & Reference IPs (Omni Design)']
-        },
-        {
-          title: 'Other',
-          items: [
-            'ISRO \u2014 C-Band antenna calibration, GSAT-31 in-orbit testing',
-            'Teaching Assistant \u2014 PMIC Design (EE660), IIT Gandhinagar'
-          ],
-          accent: []
-        }
-      ]
-    },
-    7: {
-      abbr: 'OUT', label: 'Summary',
-      desc: '<p>Analog / Mixed-Signal IC designer with end-to-end experience from circuit design through tapeout sign-off across 5 process nodes. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000). Published at ESSERC 2026 (poster) and IEEE ICEE 2025.</p>',
-      groups: [
-        {
-          title: 'Research & Publications',
-          items: ['2 Peer-reviewed IEEE Publications', 'IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000', 'ESSERC 2026 \u00b7 IEEE ICEE 2025'],
-          accent: ['IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000']
-        },
-        {
-          title: 'Silicon & Process',
-          items: ['5 Fabricated Tapeouts', '5 Process Nodes (3 open-source + 2 industrial)', 'Full DRC \u00b7 LVS \u00b7 PEX sign-off'],
-          accent: ['5 Fabricated Tapeouts', '5 Process Nodes (3 open-source + 2 industrial)']
-        },
-        {
-          title: 'Experience',
-          items: ['3+ years industry & research experience', 'Open-source IC design advocate'],
-          accent: []
-        }
-      ]
-    },
-  };
-
-  var BR = {
-    1: ['b12','b13','b14'],
-    2: ['b12','b25','b26'],
-    3: ['b13','b35','b36','bloop'],
-    4: ['b14','b46'],
-    5: ['b25','b35','b57'],
-    6: ['b26','b36','b46','b67'],
-    7: ['b57','b67'],
-  };
-
-  var active = null, afs = [];
-  var dot = document.getElementById('sfg-dot');
-
-  function clrAF() { afs.forEach(cancelAnimationFrame); afs = []; }
 
   function activate(id) {
     if (active === id) return;
     deactivate(true);
     active = id;
-    (BR[id] || []).forEach(function (bid) {
-      var el = document.getElementById(bid);
-      if (el) { el.setAttribute('stroke','#111'); el.setAttribute('stroke-width','2.5'); el.setAttribute('marker-end','url(#ar1)'); }
+
+    // Highlight connected edges
+    (ADJ[id] || []).forEach(function(i) {
+      var el = edgeEls[i];
+      if (!el) return;
+      el.setAttribute('stroke', '#191814');
+      el.setAttribute('stroke-width', '2');
+      el.setAttribute('marker-end', 'url(#ar1)');
     });
-    var nd = document.getElementById('sfg-n' + id);
-    if (nd && id !== 7) {
-      var c = nd.querySelector('circle');
-      c.setAttribute('stroke','#111');
-      c.setAttribute('stroke-width', id === 5 || id === 6 ? '3.5' : '3');
+
+    // Highlight this node
+    var nc = nodeEls[id] && nodeEls[id].querySelector('.sfg-nc');
+    var d  = ND[id], p = NODE_POS[id];
+    if (nc) {
+      var sw = (d && d.strong) ? '3.5' : (p && p.layer === 2) ? '3' : '2.5';
+      nc.setAttribute('stroke', '#191814');
+      nc.setAttribute('stroke-width', sw);
     }
-    var pe = document.getElementById((BR[id] || [])[0]);
-    if (pe && pe.getTotalLength) {
-      var len = pe.getTotalLength(), dur = 460, st = performance.now();
-      function step(now) {
-        var t = Math.min((now - st) / dur, 1), e = 1 - Math.exp(-4.5 * t), pt = pe.getPointAtLength(e * len);
-        dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
-        dot.setAttribute('opacity', t < 0.92 ? '0.9' : '0');
-        if (t < 1) { var f = requestAnimationFrame(step); afs.push(f); }
-      }
-      dot.setAttribute('opacity','0.9'); requestAnimationFrame(step);
-    }
-    var d = ND[id]; if (!d) return;
-    document.getElementById('sfg-empty').style.display = 'none';
+
+    // Populate panel
+    if (!d) return;
+    document.getElementById('sfg-empty').style.display   = 'none';
     document.getElementById('sfg-content').style.display = 'block';
-    document.getElementById('sfg-abbr').textContent = d.abbr || '';
-    document.getElementById('sfg-cat').textContent = d.label;
+    document.getElementById('sfg-abbr').textContent = d.abbr  || '';
+    document.getElementById('sfg-cat').textContent  = d.label || '';
+
     var ge = document.getElementById('sfg-groups');
     ge.innerHTML = '';
     if (!d.groups || !d.groups.length) {
-      ge.innerHTML = '<span style="font-family:var(--font-serif);font-style:italic;color:var(--ink-3)">signal source / sink node</span>';
+      ge.innerHTML = '<span style="font-family:var(--font-serif);font-style:italic;color:var(--ink-3)">signal source node</span>';
     } else {
-      d.groups.forEach(function (g) {
-        var div = document.createElement('div');
-        div.className = 'sfg-group';
+      d.groups.forEach(function(g) {
+        var wrap  = document.createElement('div');
         var title = document.createElement('div');
-        title.className = 'sfg-group-title';
+        title.className   = 'sfg-group-title';
         title.textContent = g.title;
-        div.appendChild(title);
-        var itemsWrap = document.createElement('div');
-        itemsWrap.className = 'sfg-group-items';
-        g.items.forEach(function (item) {
+        wrap.appendChild(title);
+        var grid = document.createElement('div');
+        grid.className = 'sfg-group-items';
+        g.items.forEach(function(item) {
           var row = document.createElement('div');
-          var isHi = g.accent && g.accent.includes(item);
-          row.className = 'sfg-item' + (isHi ? ' hi' : '');
+          row.className = 'sfg-item' + (g.accent && g.accent.includes(item) ? ' hi' : '');
           row.textContent = item;
-          itemsWrap.appendChild(row);
+          grid.appendChild(row);
         });
-        div.appendChild(itemsWrap);
-        ge.appendChild(div);
+        wrap.appendChild(grid);
+        ge.appendChild(wrap);
       });
     }
     document.getElementById('sfg-desc').innerHTML = d.desc || '';
   }
 
   function deactivate(skip) {
-    clrAF();
-    document.querySelectorAll('.sfg-br').forEach(function (el) {
-      var dash = el.getAttribute('stroke-dasharray');
-      el.setAttribute('stroke', dash ? '#ddd' : '#ccc');
-      el.setAttribute('stroke-width','1.5');
-      el.setAttribute('marker-end','url(#ar0)');
-    });
-    document.querySelectorAll('.sfg-nd').forEach(function (nd) {
-      var id = parseInt(nd.dataset.id), c = nd.querySelector('circle'); if (!c) return;
-      if (id === 7) { c.setAttribute('stroke','#111'); c.setAttribute('stroke-width','1.5'); }
-      else if (id === 5 || id === 6) { c.setAttribute('stroke','#111'); c.setAttribute('stroke-width','2.2'); }
-      else { c.setAttribute('stroke','#555'); c.setAttribute('stroke-width','1.5'); }
-    });
-    dot.setAttribute('opacity','0');
+    resetEdges();
+    resetNodes();
     if (!skip) {
       active = null;
-      document.getElementById('sfg-empty').style.display = 'block';
+      document.getElementById('sfg-empty').style.display   = 'block';
       document.getElementById('sfg-content').style.display = 'none';
     }
   }
 
-  document.querySelectorAll('.sfg-nd').forEach(function (nd) {
-    nd.addEventListener('mouseenter', function () { activate(parseInt(nd.dataset.id)); });
-    nd.addEventListener('mouseleave', function () { deactivate(false); });
+  // Attach events to nodes
+  Object.keys(nodeEls).forEach(function(id) {
+    var el = nodeEls[id];
+    el.addEventListener('mouseenter', function() { activate(id); });
+    el.addEventListener('mouseleave', function() { deactivate(false); });
+    el.addEventListener('touchstart', function(e) { e.preventDefault(); activate(id); }, { passive: false });
   });
+
 })();
 </script>
