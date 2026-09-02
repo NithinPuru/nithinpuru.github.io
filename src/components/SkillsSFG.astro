@@ -228,13 +228,16 @@
 }
 .sfg-desc {
   font-family: var(--font-serif) !important;
-  font-size: 0.88rem !important;
-  font-style: italic !important;
-  color: var(--ink-3) !important;
-  line-height: 1.65 !important;
+  font-size: 0.92rem !important;
+  font-style: normal !important;
+  color: var(--ink-2) !important;
+  line-height: 1.72 !important;
   border-top: 1px solid var(--rule) !important;
-  padding-top: 0.55rem !important;
+  padding-top: 0.65rem !important;
+  margin-top: 0.5rem !important;
 }
+.sfg-desc p { margin-bottom: 0.5rem !important; }
+.sfg-desc p:last-child { margin-bottom: 0 !important; }
 .sfg-legend {
   display: flex;
   gap: 1.4rem;
@@ -287,12 +290,12 @@
   var ND = {
     1: {
       abbr: 'SRC', label: 'Background',
-      desc: 'BSc ECE, VTU (CGPA 8.6) \u00b7 ISRO SAC Hassan \u00b7 LP-CAS Lab IIT Gandhinagar \u00b7 PhyTau Semiconductors \u00b7 Omni Design Technologies.',
+      desc: '<p>B.E. in Electronics and Communication Engineering from Visvesvaraya Technological University (CGPA\u00a08.6). Interned at ISRO Space Applications Centre (SAC), Hassan under the Baseband RF Division \u2014 calibrating C-Band ground station antenna systems to meet ITU cross-polarisation isolation specifications during the in-orbit testing of GSAT-31, a geostationary communication satellite.</p><p>Research Intern at LP-CAS Lab, IIT Gandhinagar under Prof. Madhav K. Pathak, where the R\u2092\u2099/g\u2098 methodology for dynamic amplifiers was developed. Industry: Analog Design Engineer at PhyTau Semiconductors (UMC\u00a055\u00a0nm, PWM comparator for DC\u2013DC SoC) and Omni Design Technologies (TSMC\u00a028\u00a0nm, PVT Monitor and Reference IP blocks). Teaching Assistant, PMIC Design (EE660), IIT Gandhinagar.</p>',
       groups: []
     },
     2: {
       abbr: 'AD', label: 'Analog Design',
-      desc: 'Hands-on IC design at IIT Gandhinagar LP-CAS Lab, PhyTau Semiconductors, and Omni Design Technologies across open-source PDKs and industrial processes.',
+      desc: '<p>Core analog IC design skills developed across IIT Gandhinagar LP-CAS Lab, PhyTau Semiconductors, and Omni Design Technologies. Covers the full design cycle from topology selection and hand analysis through SPICE simulation, layout, and post-layout verification across multiple process nodes.</p><p>Primary strengths: amplifier topologies (OTAs, dynamic amplifiers, ring amplifiers), precision voltage references (bandgap, piecewise-compensated), and regulator design (LDOs, PVT monitors). At Omni (TSMC\u00a028\u00a0nm), replaced the BG CORE opamp with a self-biased folded-cascode OTA to fix a common-mode latch bug that caused the bandgap loop to lock at VDD. At IIT Gandhinagar (SKY130), designed a piecewise-compensated BGR achieving sub-5\u00a0ppm/\u00b0C TC, fabricated via TinyTapeout.</p>',
       groups: [
         {
           title: 'Core Circuits',
@@ -308,7 +311,7 @@
     },
     3: {
       abbr: 'RM', label: 'Research Methods',
-      desc: 'Developed the R\u2092\u2099/g\u2098 methodology at LP-CAS Lab, IIT Gandhinagar \u2014 co-designs both non-linear RC settling and linear g\u2098 settling phases via pre-characterised LUTs, exposing process-corner worst-case behaviour at design entry without iterative transient simulation.',
+      desc: '<p>Primary contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers, developed at LP-CAS Lab, IIT Gandhinagar. Dynamic amplifiers exhibit two settling regimes \u2014 a non-linear large-signal phase dominated by transistor R\u2092\u2099, and a linear small-signal phase governed by g\u2098. Existing g\u2098/I\u1D30 approaches characterise only the second phase, leaving the large-signal RC settling uncharacterised until post-simulation.</p><p>The R\u2092\u2099/g\u2098 methodology pre-characterises device look-up tables from parametric SPICE simulations \u2014 covering R\u2092\u2099, g\u2098, bias deadzone boundaries (V<sub>DZN</sub>, V<sub>DZP</sub>), and process corners \u2014 making worst-case corner behaviour readable at design entry without iterative transient simulation. Validated on IHP SG13G2 130\u00a0nm BiCMOS. Accepted at ESSERC 2026, Palma de Mallorca; awarded the IEEE SSCS Code-a-Chip Travel Grant ($5,000).</p>',
       groups: [
         {
           title: 'Novel Methodology (ESSERC 2026)',
@@ -324,7 +327,7 @@
     },
     4: {
       abbr: 'EDA', label: 'EDA & Tools',
-      desc: 'Experienced in both open-source and commercial EDA toolchains. Automates design, simulation, and verification flows using Python scripting across multiple PDKs.',
+      desc: '<p>Experienced with both open-source and commercial EDA toolchains covering the full IC design flow from schematic entry and SPICE simulation through physical layout and pre-tapeout sign-off.</p><p>Open-source stack: Ngspice (simulation), Xschem (schematic), Magic VLSI and KLayout (layout), Netgen (LVS) \u2014 used across SKY130, GF180MCU, and IHP SG13G2 PDKs. Commercial stack: Cadence Virtuoso and Spectre \u2014 used at PhyTau (UMC\u00a055\u00a0nm) and Omni Design (TSMC\u00a028\u00a0nm). Python scripting automates parametric simulation, LUT generation, and result post-processing \u2014 used extensively during R\u2092\u2099/g\u2098 methodology development to sweep device geometry and bias across process corners.</p>',
       groups: [
         {
           title: 'Commercial Tools',
@@ -345,7 +348,7 @@
     },
     5: {
       abbr: 'PN', label: 'Process Nodes',
-      desc: 'Silicon fabricated or taped-out across 5 distinct process technologies \u2014 3 open-source PDK shuttles and 2 industrial commercial nodes, each with full design, layout, and pre-tapeout sign-off.',
+      desc: '<p>Silicon fabricated or taped out across 5 distinct process technologies \u2014 3 open-source PDK (SKY130, GF180MCU-D, IHP SG13G2) via TinyTapeout shuttles, and 2 industrial commercial nodes (UMC\u00a055\u00a0nm at PhyTau, TSMC\u00a028\u00a0nm at Omni). Open-source tapeouts used Magic VLSI + Netgen for DRC/LVS and Ngspice for post-layout corner simulation. Industrial tapeouts used Cadence Virtuoso / Spectre with full Calibre sign-off.</p><p>Each tapeout involved layout from scratch, DRC and LVS clean, parasitic extraction (PEX), and post-layout simulation across all required PVT corners. Industrial tapeouts additionally required Monte Carlo across process and mismatch, trim programmability verification, and integration-level checks against downstream SC-amp and ADC blocks.</p>',
       groups: [
         {
           title: 'Industrial (Commercial)',
@@ -361,7 +364,7 @@
     },
     6: {
       abbr: 'RO', label: 'Research Output',
-      desc: 'Two peer-reviewed IEEE papers, a $5,000 SSCS award, and fabricated silicon across 5 process nodes. R\u2092\u2099/g\u2098 paper accepted at ESSERC 2026 (Palma de Mallorca, September 2026) and validated on IHP SG13G2 BiCMOS using open-source EDA tools.',
+      desc: '<p>Two peer-reviewed IEEE publications, a $5,000 SSCS travel grant, and fabricated silicon across 5 process nodes. The R\u2092\u2099/g\u2098 paper \u2014 accepted at ESSERC 2026 (Palma de Mallorca, Spain, September 2026) \u2014 presents a pre-simulation design framework for dynamic amplifiers validated on IHP SG13G2 130\u00a0nm BiCMOS using open-source EDA tools. The IEEE ICEE 2025 paper covers analog CMOS multiplier circuit design and comparative analysis.</p><p>Fabricated silicon: piecewise-compensated BGR in SKY130 (sub-5\u00a0ppm/\u00b0C TC, TinyTapeout); IBA in IHP SG13G2 (R\u2092\u2099/g\u2098 test vehicle, TinyTapeout); PWM comparator in UMC\u00a055\u00a0nm (PhyTau Semiconductors); PVT Monitor and Reference IPs in TSMC\u00a028\u00a0nm (Omni Design Technologies). Additional: ISRO GSAT-31 C-Band antenna calibration; Teaching Assistant, PMIC Design (EE660), IIT Gandhinagar.</p>',
       groups: [
         {
           title: 'Publications',
@@ -399,7 +402,7 @@
     },
     7: {
       abbr: 'OUT', label: 'Summary',
-      desc: 'Analog / Mixed-Signal IC designer with end-to-end experience from circuit design through tapeout sign-off across 5 process nodes. IEEE SSCS awardee. Published at ESSERC 2026 and ICEE 2025. Seeking PhD for Fall 2027 in energy-efficient AMS design.',
+      desc: '<p>Analog / Mixed-Signal IC designer with end-to-end experience from circuit design through tapeout sign-off across 5 process nodes. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000). Published at ESSERC 2026 (poster) and IEEE ICEE 2025.</p>',
       groups: [
         {
           title: 'Research & Publications',
@@ -412,9 +415,9 @@
           accent: ['5 Fabricated Tapeouts', '5 Process Nodes (3 open-source + 2 industrial)']
         },
         {
-          title: 'Experience & Goal',
-          items: ['3+ years industry & research experience', 'Open-source IC design advocate', 'Seeking PhD \u00b7 Fall 2027'],
-          accent: ['Seeking PhD \u00b7 Fall 2027']
+          title: 'Experience',
+          items: ['3+ years industry & research experience', 'Open-source IC design advocate'],
+          accent: []
         }
       ]
     },
@@ -490,7 +493,7 @@
         ge.appendChild(div);
       });
     }
-    document.getElementById('sfg-desc').textContent = d.desc || '';
+    document.getElementById('sfg-desc').innerHTML = d.desc || '';
   }
 
   function deactivate(skip) {
