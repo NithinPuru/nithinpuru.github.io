@@ -2138,7 +2138,7 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <br>
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" style="width: 120px; height: auto; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Runpeng Gao</strong> received the M.S. degree from Nanjing University, Nanjing, China, in 2023. He is currently pursuing the Ph.D. degree in electrical and computer engineering at Oregon State University, Corvallis, OR, USA. His research interests include high-performance analog and mixed-signal integrated circuits, with an emphasis on high-resolution and high-speed analog-to-digital converters (ADCs) and low-dropout regulators (LDOs).
 <br clear="all" />
 </p>
