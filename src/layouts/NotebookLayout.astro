@@ -231,10 +231,16 @@ const title = frontmatter?.title ?? "Rₒₙ/gₘ Design Methodology — CAC 202
         max-width: 100% !important;
         height: auto !important;
         display: block;
-        margin: 8px auto;
+        margin: 8px 0;
         border-style: none;
         box-sizing: content-box;
         background: #ffffff;
+      }
+
+      /* Centre only images that are explicitly wrapped in align="center" divs */
+      .markdown-body [align="center"] img,
+      .markdown-body div[align="center"] img {
+        margin: 8px auto;
       }
 
       /* ── KaTeX math ───────────────────────────────────────────────── */
