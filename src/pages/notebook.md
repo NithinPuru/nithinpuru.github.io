@@ -2117,42 +2117,42 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 ## About the Authors
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/in/nithin-purushothama-5b236113b" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/NithinPurushothama_pic.jpg" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/in/nithin-purushothama-5b236113b" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/NithinPurushothama_pic.jpg?v=2" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Nithin Purushothama</strong> received the B.Tech. degree in electronics and communication engineering from Visvesvaraya Technological University (VTU), India, in 2025. He is currently working as an Analog Design Engineer at Omni Design Technologies, Bengaluru, India. He previously worked as a Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under the guidance of Prof. Madhav K. Pathak, where he worked on ring amplifiers and their applications in low-power LDOs. His research interests include high-speed and low-power data converters, dynamic and ring amplifiers, biomedical and wearable circuits, energy-efficient circuits for sensing and computation, algorithm–circuit co-design and emerging computing architectures. He is currently seeking Ph.D. opportunities for Fall 2027 in analog and mixed-signal integrated circuits and related areas.
 <br clear="all" />
 </p>
 <br>
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/in/pramoda-s-r-9946891a2" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Pramoda_SR_pic.jpg" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/in/pramoda-s-r-9946891a2" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Pramoda_SR_pic.jpg?v=2" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Pramoda S R</strong> is currently working as an AI Engineer, with experience in machine learning, deep learning, computer vision, and AI-based application development. His research interests include artificial intelligence and deep learning, with an emphasis on computer vision, real-time inference systems, generative AI, and intelligent applications.
 <br clear="all" />
 </p>
 <br>
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/search/results/all/?keywords=Suyajnaa%20Jagannath%20Gowda" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Suyajnaa%20Jagannath%20Gowda" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg?v=2" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Suyajnaa Jagannath Gowda</strong> is currently pursuing the B.E. degree in electronics and communication engineering at The National Institute of Engineering, Mysore, India. Her research interests include analog and mixed-signal circuits, silicon photonics, optical sensing, embedded systems, machine learning, and signal processing. Her work includes silicon photonics-based micro-ring resonator gyroscopes, satellite telemetry analysis, MATLAB-based underwater acoustic systems, and ESP32-based intelligent IC testing.
 <br clear="all" />
 </p>
 <br>
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" style="width: 120px; height: auto; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg?v=2" align="left" style="width: 120px; height: auto; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Runpeng Gao</strong> received the M.S. degree from Nanjing University, Nanjing, China, in 2023. He is currently pursuing the Ph.D. degree in electrical and computer engineering at Oregon State University, Corvallis, OR, USA. His research interests include high-performance analog and mixed-signal integrated circuits, with an emphasis on high-resolution and high-speed analog-to-digital converters (ADCs) and low-dropout regulators (LDOs).
 <br clear="all" />
 </p>
 <br>
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg?v=2" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Praveen Kumar Venkatachala</strong> I am a PhD Graduate student from Oregon State University. I am presently working as a part of analog integrated circuits design group in AIS (Artificial Intelligence Solutions) division of Skyworks Solutions Inc. in Hillsboro, Oregon. We work on innovative and challenging analog system on chips (ASoCs) for smart speakers/microphones, gaming controllers, wired/wireless headsets and many more products involving audio and voice technology.
 <br clear="all" />
 </p>
 <br>
 
 <p style="text-align: justify; margin-bottom: 20px;">
-<a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Madhav_K_Pathak_pic.jpg" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Madhav_K_Pathak_pic.jpg?v=2" align="left" style="width: 120px; height: 150px; object-fit: cover; object-position: top; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Madhav K. Pathak</strong> received the B.Tech. degree in electrical engineering from the Indian Institute of Technology Roorkee, Roorkee, India, in 2016, and the Ph.D. degree in microelectronics from Iowa State University, Ames, IA, USA, in 2022. He is currently an Assistant Professor in the Department of Electrical Engineering at the Indian Institute of Technology Gandhinagar, Gandhinagar, India. His research interests include power management integrated circuits, analog and mixed-signal integrated circuits, ambient micro-power energy harvesting, and IoT sensor systems, with an emphasis on low-power circuit design and energy-efficient power management for batteryless and low-power applications.
 <br clear="all" />
 </p>
