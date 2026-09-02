@@ -3,7 +3,7 @@ layout: ../layouts/NotebookLayout.astro
 title: "Rₒₙ/gₘ Design Methodology — CAC 2026"
 ---
 
-<a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+<a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing" target="_parent"><img src="https://colab.research.google.com/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 ---
 # **VLSI 2026 Code-a-Chip Competition**  
@@ -295,7 +295,7 @@ Outside the deadzone (during the large-signal phase), both transistors are drive
 
 
 
-![](assets/anim_008_0.gif)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/anim_008_0.gif)
 
 *Figure 4: Animation of the transient response of the Inverter-Based Amplifier (IBA) with step input $V_X$ and deadzone voltages $V_{DZP}$ (0.4 V) and $V_{DZN}$ (0.4 V). $V_{out}$ and $I_{out}$ are shown during the linear and nonlinear settling phases of the dynamic amplifier (behavioral model).*
 
@@ -345,7 +345,7 @@ As shown in **Fig. 5a**, the dynamic amplifier achieves significantly faster set
 Overall, this hybrid settling mechanism allows dynamic amplifiers to combine speed and precision more effectively than traditional linear OTAs.
 
 
-![](assets/anim_011_0.gif)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/anim_011_0.gif)
 
 <div align="center">
 
@@ -908,13 +908,13 @@ dependencies are immediately readable:
 
 ---
 
-![](assets/fig_046_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_046_0.jpg)
 
-![](assets/fig_047_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_047_0.jpg)
 
-![](assets/fig_048_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_048_0.jpg)
 
-![](assets/fig_049_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_049_0.jpg)
 
 ---
 
@@ -955,11 +955,11 @@ This $1/\sqrt{W}$ decay is the dominant feature of the plot, the rapid drop at s
 - **Multiple $V_{DS}$ values overlaid** → the spread between $V_{DS}$ traces is small, confirming that $V_{bias}$ is primarily set by the diode-connected replica (which operates at $V_{DS} = V_{GS}$) and is relatively insensitive to the drain voltage of the main-path device
 ---
 
-![](assets/fig_051_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_051_0.jpg)
 
-![](assets/fig_052_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_052_0.jpg)
 
-![](assets/fig_053_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_053_0.jpg)
 
 ---
 
@@ -999,13 +999,13 @@ which is approximately a **straight line with slope $-1$** seen in the plot. The
 
 ---
 
-![](assets/fig_055_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_055_0.jpg)
 
-![](assets/fig_056_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_056_0.jpg)
 
-![](assets/fig_057_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_057_0.jpg)
 
-![](assets/fig_058_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_058_0.jpg)
 
 ---
 ### Trends
@@ -1063,11 +1063,11 @@ This is a power law with exponent $-1/3$: on a log-log axis (Plot 4.4b) it appea
 - **Corner spread** → process corners shift $\mu C_{ox}$ and $V_{TH}$, vertically separating the constant $I_D$ curves; the SS corner sits highest at any given $(W, L, I_D)$
 ---
 
-![](assets/fig_060_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_060_0.jpg)
 
-![](assets/fig_061_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_061_0.jpg)
 
-![](assets/fig_062_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_062_0.jpg)
 
 ---
 
@@ -1122,13 +1122,13 @@ Entering from $R_{on}/g_m$ subsumes the $g_m/I_D$ design entirely: once $R_{on}/
 
 ---
 
-![](assets/fig_064_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_064_0.jpg)
 
-![](assets/fig_065_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_065_0.jpg)
 
-![](assets/fig_066_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_066_0.jpg)
 
-![](assets/fig_067_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_067_0.jpg)
 
 ---
 
@@ -1171,13 +1171,13 @@ This plot therefore answers: **for a given $R_{on}/g_m$ target, what input swing
 
 ---
 
-![](assets/fig_069_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_069_0.jpg)
 
-![](assets/fig_070_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_070_0.jpg)
 
-![](assets/fig_071_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_071_0.jpg)
 
-![](assets/fig_072_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_072_0.jpg)
 
 ---
 
@@ -1362,19 +1362,19 @@ Each plot below captures a fundamental design trade-off used to bias the IBA cor
 > LUTs from Section 3 instead, which additionally capture $R_{on}$, deadzone bias ranges,
 > and process-corner sensitivity.
 
-![](assets/fig_081_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_0.jpg)
 
-![](assets/fig_081_1.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_1.jpg)
 
-![](assets/fig_081_2.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_2.jpg)
 
-![](assets/fig_081_3.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_3.jpg)
 
-![](assets/fig_081_4.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_4.jpg)
 
-![](assets/fig_081_5.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_5.jpg)
 
-![](assets/fig_081_6.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_081_6.jpg)
 
 ---
 ## 5.2 $G_m/I_D$ Design Helper
@@ -1458,7 +1458,7 @@ The highlighted green lines show the most important results: the **best matching
 
 ---
 
-![](assets/widget_091.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/widget_091.jpg)
 
 ---
 
@@ -1531,9 +1531,9 @@ The four figures below are generated from `INV_OTA_gmid.txt`, a transient simula
 > $R_{on}$, the deadzone bias ranges, or the SS-corner worst case
 > all of which are characterised pre-simulation in the $R_{on}/g_m$ section that follows.
 
-![](assets/fig_098_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_098_0.jpg)
 
-![](assets/fig_099_1.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_099_1.jpg)
 
 It is observed that the error envelope exhibits **two distinct settling regimes**: an initial rapid decay with a **steep negative slope (500–550 ns)** attributable to **large-signal nonlinear operation**, followed by a gradual exponential decay with a **comparatively smaller slope**, characteristic of **small-signal linear settling**. It is worth noting that the boundary between
 these two regimes, and consequently the proportion of the settling window occupied by the nonlinear phase, **cannot be determined beforehand from conventional design methodologies including both the $g_m/I_D$ method and the approach presented by Conrad et al [4].** This information becomes available only upon post-simulation analysis. This constitutes a
@@ -1541,11 +1541,11 @@ these two regimes, and consequently the proportion of the settling window occupi
 small-signal settling contributions **cannot be independently budgeted or optimized** at the
 transistor sizing stage.
 
-![](assets/fig_101_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_101_0.jpg)
 
 It is observed that the output charging current $I_{out}$ exhibits **two distinct regimes**: an initial **large nonlinear peak current** measured at **+12 µA** on the positive edge and **−10 µA** on the negative edge that rapidly charges/discharges the output load capacitance toward the final value, followed by a progressively decreasing small-signal current with $I_{out} \rightarrow 0$ as the output converges. This behavior is characteristic of dynamic amplifiers: **the bulk of the charge transfer occurs in the initial nonlinear phase**, with the small-signal tail contributing only the final fine settling. Critically, **neither the magnitude of the peak nonlinear current nor the asymmetry between positive and negative edges can be determined beforehand from the $g_m/I_D$ methodology or the approach of Conrad et al. [4]**. Furthermore, this **peak current varies across process corners**, introducing additional uncertainty in the settling budget that remains entirely uncharacterized until post-simulation analysis. This represents a compounded limitation of conventional methodologies: not only is the nonlinear settling duration unknown at the sizing stage, but so is the **magnitude, polarity asymmetry, and corner dependence** of the dominant charging current.
 
-![](assets/fig_103_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_103_0.jpg)
 
 ---
 
@@ -1760,7 +1760,7 @@ We design it for **SS corner** (worst-case $R_{on}$):
 
 ---
 
-![](assets/widget_115.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/widget_115.jpg)
 
 ---
 
@@ -1823,9 +1823,9 @@ The four figures below are generated from `INV_OTA_rongm.txt`, a transient simul
 
 (LV_NMOS: $W = 0.5\,\mu\text{m}$, $L = 3.0\,\mu\text{m}$, $m = 4$; LV_PMOS: $W = 0.15\,\mu\text{m}$, $L = 0.2\,\mu\text{m}$, $m = 4$; $I_{q,replica} = 0.5\,\mu\text{A}$, $I_{q,signal} = 2.0\,\mu\text{A}$)
 
-![](assets/fig_120_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_120_0.jpg)
 
-![](assets/fig_121_1.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_121_1.jpg)
 
 It is observed that the error envelope exhibits **two distinct settling regimes**: an initial rapid decay with a **steep negative slope (500–550 ns)** attributable to **large-signal nonlinear operation**, followed by a gradual exponential decay with a **comparatively smaller slope**, characteristic of **small-signal linear settling**. It is worth noting that the boundary between
 these two regimes, and consequently the proportion of the settling window occupied by the nonlinear phase, **determined beforehand from $R_{on}/g_m$ design methodology.** This information was ready with users before simulation analysis. This constitutes a
@@ -1833,12 +1833,12 @@ these two regimes, and consequently the proportion of the settling window occupi
 small-signal settling contributions **can be independently budgeted or optimized** at the
 transistor sizing stage.
 
-![](assets/fig_123_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_123_0.jpg)
 
 It is observed that the output charging current $I_{out}$ exhibits **two distinct regimes**: an initial **large nonlinear peak current** measured at **+14 µA**(positive edge) on the positive edge and **−13.86 µA**(negative edge) on the negative edge that rapidly charges/discharges the output load capacitance toward the final value, followed by a progressively decreasing small-signal current with $I_{out} \rightarrow 0$ as the output converges. This behavior is characteristic of dynamic amplifiers: **the bulk of the charge transfer occurs in the initial nonlinear phase**, with the small-signal tail contributing only the final fine settling. This was **determined beforehand by the $R_{on}/g_m$ methodology where $g_m/I_d$ or the approach of Conrad et al [4] failed to do so.**. Furthermore, this **peak current varies across process corners**, introducing additional uncertainty in the settling budget is now predictable pre-simulation. This represents a great improvement over conventional methodologies: not only is the nonlinear settling duration known at the sizing stage, but so is the **magnitude, polarity asymmetry, and corner dependence** of the dominant charging current.
 
 
-![](assets/fig_125_0.jpg)
+![](https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/fig_125_0.jpg)
 
 <hr>
 
@@ -2117,42 +2117,42 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 ## About the Authors
 
 <p>
-<a href="https://www.linkedin.com/in/nithin-purushothama-5b236113b" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/NithinPurushothama_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/in/nithin-purushothama-5b236113b" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/NithinPurushothama_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Nithin Purushothama</strong> received the B.Tech. degree in electronics and communication engineering from Visvesvaraya Technological University (VTU), India, in 2025. He is currently working as an Analog Design Engineer at Omni Design Technologies, Bengaluru, India. He previously worked as a Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under the guidance of Prof. Madhav K. Pathak, where he worked on ring amplifiers and their applications in low-power LDOs. His research interests include high-speed and low-power data converters, dynamic and ring amplifiers, biomedical and wearable circuits, energy-efficient circuits for sensing and computation, algorithm–circuit co-design and emerging computing architectures. He is currently seeking Ph.D. opportunities for Fall 2027 in analog and mixed-signal integrated circuits and related areas.
 <br clear="all" />
 </p>
 <br>
 
 <p>
-<a href="https://www.linkedin.com/in/pramoda-s-r-9946891a2" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Pramoda_SR_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/in/pramoda-s-r-9946891a2" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Pramoda_SR_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Pramoda S R</strong> is currently working as an AI Engineer, with experience in machine learning, deep learning, computer vision, and AI-based application development. His research interests include artificial intelligence and deep learning, with an emphasis on computer vision, real-time inference systems, generative AI, and intelligent applications.
 <br clear="all" />
 </p>
 <br>
 
 <p>
-<a href="https://www.linkedin.com/search/results/all/?keywords=Suyajnaa%20Jagannath%20Gowda" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Suyajnaa%20Jagannath%20Gowda" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Suyajnaa Jagannath Gowda</strong> is currently pursuing the B.E. degree in electronics and communication engineering at The National Institute of Engineering, Mysore, India. Her research interests include analog and mixed-signal circuits, silicon photonics, optical sensing, embedded systems, machine learning, and signal processing. Her work includes silicon photonics-based micro-ring resonator gyroscopes, satellite telemetry analysis, MATLAB-based underwater acoustic systems, and ESP32-based intelligent IC testing.
 <br clear="all" />
 </p>
 <br>
 
 <p>
-<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Runpeng Gao</strong> received the M.S. degree from Nanjing University, Nanjing, China, in 2023. He is currently pursuing the Ph.D. degree in electrical and computer engineering at Oregon State University, Corvallis, OR, USA. His research interests include high-performance analog and mixed-signal integrated circuits, with an emphasis on high-resolution and high-speed analog-to-digital converters (ADCs) and low-dropout regulators (LDOs).
 <br clear="all" />
 </p>
 <br>
 
 <p>
-<a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Praveen Kumar Venkatachala</strong> I am a PhD Graduate student from Oregon State University. I am presently working as a part of analog integrated circuits design group in AIS (Artificial Intelligence Solutions) division of Skyworks Solutions Inc. in Hillsboro, Oregon. We work on innovative and challenging analog system on chips (ASoCs) for smart speakers/microphones, gaming controllers, wired/wireless headsets and many more products involving audio and voice technology.
 <br clear="all" />
 </p>
 <br>
 
 <p>
-<a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Madhav_K_Pathak_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Madhav_K_Pathak_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Madhav K. Pathak</strong> received the B.Tech. degree in electrical engineering from the Indian Institute of Technology Roorkee, Roorkee, India, in 2016, and the Ph.D. degree in microelectronics from Iowa State University, Ames, IA, USA, in 2022. He is currently an Assistant Professor in the Department of Electrical Engineering at the Indian Institute of Technology Gandhinagar, Gandhinagar, India. His research interests include power management integrated circuits, analog and mixed-signal integrated circuits, ambient micro-power energy harvesting, and IoT sensor systems, with an emphasis on low-power circuit design and energy-efficient power management for batteryless and low-power applications.
 <br clear="all" />
 </p>
