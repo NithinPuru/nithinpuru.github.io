@@ -152,8 +152,8 @@
   // ── Layout constants ──────────────────────────────────────────────
   var W = 800, H = 800;
   var LX  = [60,  200, 470, 715];   // x centre per layer
-  var LR  = [22,  28,  34,  38];    // node radius per layer
-  var LFS = [18,  8.5, 10,  10.5];  // label font-size per layer
+  var LR  = [26,  33,  40,  44];    // node radius per layer
+  var LFS = [20,  10.5, 12,  12.5];  // label font-size per layer
 
   // Layer node ID lists (order = top to bottom)
   var LAYERS = [
@@ -467,17 +467,17 @@
 
     // Text labels (2 lines)
     if (d.line1 && !d.sigma) {
-      var dy1 = d.line2 ? '-5.5' : '0';
+      var dy1 = d.line2 ? '-6.5' : '0';
       var t1 = svgEl('text', { x: p.x, y: p.y, dy: dy1,
         'font-family': 'var(--font-serif)', 'font-size': fs, 'font-weight': '700',
         fill: 'var(--ink-1,#191814)', 'text-anchor': 'middle', 'dominant-baseline': 'middle' });
       t1.textContent = d.line1;
       g.appendChild(t1);
       if (d.line2) {
-        var t2 = svgEl('text', { x: p.x, y: p.y, dy: '5.5',
+        var t2 = svgEl('text', { x: p.x, y: p.y, dy: '6.5',
           'font-family': 'var(--font-serif)', 'font-size': fs,
-          'font-weight': d.strong ? '700' : '400',
-          fill: d.strong ? 'var(--ink-1,#191814)' : '#666',
+          'font-weight': d.strong ? '700' : '600',
+          fill: d.strong ? 'var(--ink-1,#191814)' : 'var(--ink-2,#45413a)',
           'text-anchor': 'middle', 'dominant-baseline': 'middle' });
         t2.textContent = d.line2;
         g.appendChild(t2);
