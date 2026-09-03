@@ -2122,7 +2122,6 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <strong>Contact:</strong> <a href="mailto:nithinpurushothama@gmail.com">nithinpurushothama@gmail.com</a>
 <br clear="all" />
 </p>
-<br>
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
 <a href="https://www.linkedin.com/in/pramoda-s-r-9946891a2" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Pramoda_SR_pic.jpg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
@@ -2130,7 +2129,6 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <strong>Contact:</strong> <a href="mailto:pramoda9.2.2004@gmail.com">pramoda9.2.2004@gmail.com</a>
 <br clear="all" />
 </p>
-<br>
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
 <a href="https://www.linkedin.com/in/suyajnaa-jagannath-13915032b/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
@@ -2138,7 +2136,6 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <strong>Contact:</strong> <a href="mailto:suyajnaa@gmail.com">suyajnaa@gmail.com</a>
 <br clear="all" />
 </p>
-<br>
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
 <a href="https://www.linkedin.com/in/runpeng-gao-842a44263/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
@@ -2146,7 +2143,6 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <strong>Contact:</strong> <a href="mailto:rppgao@gmail.com">rppgao@gmail.com</a>
 <br clear="all" />
 </p>
-<br>
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
 <a href="https://www.linkedin.com/in/praveen-kumar-venkatachala-5b816b36/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
@@ -2154,7 +2150,6 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <strong>Contact:</strong> <a href="mailto:vpravin.8@gmail.com">vpravin.8@gmail.com</a>
 <br clear="all" />
 </p>
-<br>
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
 <a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Madhav_K_Pathak_pic.jpg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
