@@ -1059,16 +1059,16 @@ a {
 .journey-org {
   grid-column: 2;
   grid-row: 2;
-  font-family: var(--font-mono);
-  letter-spacing: 0.03em;
+  font-family: var(--font-serif);
+  font-size: 1rem;
   color: var(--ink-2);
 }
 .journey-detail {
   grid-column: 1 / -1;
-  font-family: var(--font-mono);
-  color: var(--ink-3);
-  letter-spacing: 0.03em;
-  margin-top: 0.25rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--ink-2);
+  margin-top: 0.35rem;
   line-height: 1.5;
 }
 @media (max-width: 560px) {
