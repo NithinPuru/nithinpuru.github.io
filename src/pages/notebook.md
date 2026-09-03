@@ -1,6 +1,6 @@
 ---
 layout: ../layouts/NotebookLayout.astro
-title: "Rₒₙ/gₘ Design Methodology — CAC 2026"
+title: "Rₒₙ/gₘ Design Methodology - CAC 2026"
 ---
 
 <a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
@@ -39,15 +39,15 @@ title: "Rₒₙ/gₘ Design Methodology — CAC 2026"
     <tr>
       <td><strong>Pramoda S R</strong></td>
       <td>B.Tech, VTU</td>
-      <td align="center">—</td>
-      <td align="center">—</td>
+      <td align="center">-</td>
+      <td align="center">-</td>
       <td><a href="mailto:pramoda9.2.2004@gmail.com">pramoda9.2.2004@gmail.com</a></td>
     </tr>
     <tr>
       <td><strong>S Suyajnaa Jagannath Gowda</strong></td>
       <td>B.Tech, VTU</td>
-      <td align="center">—</td>
-      <td align="center">—</td>
+      <td align="center">-</td>
+      <td align="center">-</td>
       <td><a href="mailto:suyajnaa@gmail.com">suyajnaa@gmail.com</a></td>
     </tr>
     <tr>
@@ -487,7 +487,7 @@ $$R_{on} = \frac{(1-\alpha) \cdot T_{settle}}{5 \cdot C_{load}}$$
 
   where $(1-\alpha)$ is the time fraction allocated to non-linear settling (factor of 5 for ~99% settling in that phase). The required $R_{on}$ for a given $C_{load}$ then determines the **width scaling multiplier $M$**.
 
-- **Size $g_m$** to satisfy **both** constraints — take the larger of the two:
+- **Size $g_m$** to satisfy **both** constraints - take the larger of the two:
   - From small-signal BW spec (application requirement): $g_{m,BW} = 2\pi\,f_{BW}\,C_{load}$
   - From settling budget (hyper-optimized lower bound): $g_{m,min} = \dfrac{5\,C_{load}}{\alpha \cdot T_{settle}}$
 
@@ -890,7 +890,7 @@ $$\Rightarrow \quad V_{ov} = \frac{2I_D}{g_m} \qquad \therefore \quad V_{bias} =
 > $g_m \approx I_D/nV_T$ and the formula above underestimates $V_{bias}$. At lower
 > $g_m/I_D < 5\,\text{V}^{-1}$ (deep strong inversion, **largest $R_{on}/g_m$**, right
 > extreme of plot), the approximation is most accurate. In all cases, $V_{bias}$ is read
-> directly from the LUT plot — the formula is for physical intuition only.
+> directly from the LUT plot - the formula is for physical intuition only.
 
 Multiplying and dividing by $R_{on}$:
 
@@ -1297,7 +1297,7 @@ Let's compare the performance of an inverter-based amplifier (IBA), which is inh
   \frac{g_{m,unit}}{I_q} = \frac{5\,\mu\text{S}}{0.5\,\mu\text{A}} = 10\,\frac{\text{S}}{\text{A}}
   $$
 
-- Target $g_m/I_D = 10\,\text{V}^{-1}$ for both LV_NMOS and LV_PMOS — corresponding to **moderate inversion**, where large-signal and small-signal settling contributions are both significant.
+- Target $g_m/I_D = 10\,\text{V}^{-1}$ for both LV_NMOS and LV_PMOS - corresponding to **moderate inversion**, where large-signal and small-signal settling contributions are both significant.
 
 - Assume $g_m/g_{ds} = 50$ (intrinsic gain limit of lv\_nmos in IHP SG13G2)
 
@@ -1467,7 +1467,7 @@ The helper returned the following best-match operating points:
 | Device | L | $I_D/W$ (µA/µm) | $I_D$ (µA) | $W_{unit}$ (µm) | $f_T$ (GHz) |
 |:--|:--|:--|:--|:--|:--|
 | **LV_NMOS** | 3.0 µm | 1.8725 µA/µm | 0.5 µA | 0.3 µm | ~0.14 |
-| **LV_PMOS** | 0.25 µm | 5.000 µA/µm | 0.5 µA | 0.15 µm | — |
+| **LV_PMOS** | 0.25 µm | 5.000 µA/µm | 0.5 µA | 0.15 µm | - |
 
 **Width calculation** with unit quiescent current $I_q = 0.5\,\mu\text{A}$:
 
@@ -1524,8 +1524,8 @@ The four figures below are generated from `INV_OTA_gmid.txt`, a transient simula
 |:--|:--|:--|:--|
 | **Fig 11** : $V_{out}$ | `sv_g` = Vout(t) from file | Direct read from transient file | Whether RC phase completes in time |
 | **Fig 12** : Log error | `err_g = (Vout − Vfinal)/Vfinal` | Relative error on log scale; `curve_fit` extracts τ | τ of the RC phase (driven by $R_{on}$) - unknown to gm/Id |
-| **Fig 13** : $I_{out}$ | `sm_g` = branch current × 1e6 | Raw current waveform in µA | $I_{peak}$ magnitude — set by $R_{on}$, invisible to gm/Id |
-| **Fig 14** : $dV_{out}/dt$ | `dvdt_g = np.gradient(sv_g, st_us_g)` | Numerical derivative = slew rate | Slew rate peak = $I_{peak}/C_L$ — depends on $R_{on}$ |
+| **Fig 13** : $I_{out}$ | `sm_g` = branch current × 1e6 | Raw current waveform in µA | $I_{peak}$ magnitude - set by $R_{on}$, invisible to gm/Id |
+| **Fig 14** : $dV_{out}/dt$ | `dvdt_g = np.gradient(sv_g, st_us_g)` | Numerical derivative = slew rate | Slew rate peak = $I_{peak}/C_L$ - depends on $R_{on}$ |
 
 > The gm/Id design settles correctly, but the designer had no pre-simulation visibility into
 > $R_{on}$, the deadzone bias ranges, or the SS-corner worst case
@@ -1639,8 +1639,8 @@ To design an inverter-based amplifier targeting a **$T_{settle} = 250\,\text{ns}
   → within **~15% accuracy**
 
 - The predicted **deadzone bias voltages**:
-  - $V_{DZN}$: Pre-simulation $\approx 0.39\,\text{V}$ (TT) — Post-simulation within $\pm50\,\text{mV}$
-  - $V_{DZP}$: Pre-simulation $\approx 1.11\,\text{V}$ (TT) — Post-simulation within $\pm50\,\text{mV}$  
+  - $V_{DZN}$: Pre-simulation $\approx 0.39\,\text{V}$ (TT) - Post-simulation within $\pm50\,\text{mV}$
+  - $V_{DZP}$: Pre-simulation $\approx 1.11\,\text{V}$ (TT) - Post-simulation within $\pm50\,\text{mV}$  
   → corner spread (FF→SS) directly readable from LUT without any transient simulation
 
 - This reveals a **fundamental one-way asymmetry** between the two methodologies:
@@ -1884,7 +1884,7 @@ A structured comparison of the $R_{on}/g_m$ methodology against the $g_m/I_D$ me
 <tr>
   <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Design entry stage</td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;">Pre-simulation</td>
-  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Pre-simulation<br><small><i>Partial — no large-signal info</i></small></td>
+  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Pre-simulation<br><small><i>Partial - no large-signal info</i></small></td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Requires full transient simulation per iteration</td>
 </tr>
 
@@ -1963,7 +1963,7 @@ A structured comparison of the $R_{on}/g_m$ methodology against the $g_m/I_D$ me
 <tr>
   <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Subsumes <i>g</i><sub>m</sub>/<i>I</i><sub>D</sub> methodology</td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/happy.svg" width="22" height="22"/><br><small><i>g<sub>m</sub>/I<sub>D</sub> readable from g<sub>m</sub>/I<sub>D</sub> vs R<sub>on</sub>/g<sub>m</sub> plot; reverse not possible</i></small></td>
-  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">—</td>
+  <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">-</td>
   <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><img src="https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/refs/heads/main/Plots_Images/Notebook_Figs/sad.svg" width="22" height="22"/></td>
 </tr>
 

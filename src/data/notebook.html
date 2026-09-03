@@ -7853,15 +7853,15 @@ a.anchor-link {
 <tr>
 <td><strong>Pramoda S R</strong></td>
 <td>B.Tech, VTU</td>
-<td align="center">—</td>
-<td align="center">—</td>
+<td align="center">-</td>
+<td align="center">-</td>
 <td><a href="mailto:pramoda9.2.2004@gmail.com">pramoda9.2.2004@gmail.com</a></td>
 </tr>
 <tr>
 <td><strong>S Suyajnaa Jagannath Gowda</strong></td>
 <td>B.Tech, VTU</td>
-<td align="center">—</td>
-<td align="center">—</td>
+<td align="center">-</td>
+<td align="center">-</td>
 <td><a href="mailto:suyajnaa@gmail.com">suyajnaa@gmail.com</a></td>
 </tr>
 <tr>
@@ -8404,7 +8404,7 @@ $$</p>
 <p>$$R_{on} = \frac{(1-\alpha) \cdot T_{settle}}{5 \cdot C_{load}}$$</p>
 <p>where $(1-\alpha)$ is the time fraction allocated to non-linear settling (factor of 5 for ~99% settling in that phase). The required $R_{on}$ for a given $C_{load}$ then determines the <strong>width scaling multiplier $M$</strong>.</p>
 <ul>
-<li><strong>Size $g_m$</strong> to satisfy <strong>both</strong> constraints — take the larger of the two:<ul>
+<li><strong>Size $g_m$</strong> to satisfy <strong>both</strong> constraints - take the larger of the two:<ul>
 <li>From small-signal BW spec (application requirement): $g_{m,BW} = 2\pi\,f_{BW}\,C_{load}$</li>
 <li>From settling budget (hyper-optimized lower bound): $g_{m,min} = \dfrac{5\,C_{load}}{\alpha \cdot T_{settle}}$</li>
 </ul>
@@ -8806,7 +8806,7 @@ We download the 45.2 source tarball from SourceForge and compile with three crit
 
 <span class="c1"># Download ngspice 45.2 source from our repo</span>
 <span class="c1"># The tarball is committed at the repo root as ngspice-ngspice-45.2.tar.gz.</span>
-<span class="c1"># raw.githubusercontent.com serves it directly — no CDN, no mirrors, 100% reliable.</span>
+<span class="c1"># raw.githubusercontent.com serves it directly - no CDN, no mirrors, 100% reliable.</span>
 <span class="c1"># Note: GitHub source archives use the "reponame-tagname" naming convention,</span>
 <span class="c1"># hence the double "ngspice-ngspice-" prefix.</span>
 <span class="n">TARBALL</span> <span class="o">=</span> <span class="s2">"/content/ngspice-ngspice-45.2.tar.gz"</span>
@@ -8851,7 +8851,7 @@ We download the 45.2 source tarball from SourceForge and compile with three crit
 
 <span class="c1"># Bootstrap ./configure (GitHub source archives omit it)</span>
 <span class="c1"># The SourceForge release tarball ships a pre-generated ./configure.</span>
-<span class="c1"># GitHub source archives do not — autoreconf generates it from configure.ac.</span>
+<span class="c1"># GitHub source archives do not - autoreconf generates it from configure.ac.</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">SRC_DIR</span><span class="si">}</span><span class="s2">/configure"</span><span class="p">):</span>
     <span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cd </span><span class="si">{</span><span class="n">SRC_DIR</span><span class="si">}</span><span class="s2"> &amp;&amp; autoreconf -fi &gt; /content/ngspice_autoreconf.log 2&gt;&amp;1"</span><span class="p">,</span>
         <span class="s2">"bootstrap (autoreconf)"</span><span class="p">)</span>
@@ -8859,7 +8859,7 @@ We download the 45.2 source tarball from SourceForge and compile with three crit
 <span class="c1"># Configure with OSDI support</span>
 <span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cd </span><span class="si">{</span><span class="n">SRC_DIR</span><span class="si">}</span><span class="s2"> &amp;&amp; ./configure "</span>
     <span class="s2">"--enable-xspice "</span>        <span class="c1"># Extra SPICE elements used by IHP models</span>
-    <span class="s2">"--enable-osdi "</span>          <span class="c1"># THE KEY FLAG — enables .osdi runtime loading</span>
+    <span class="s2">"--enable-osdi "</span>          <span class="c1"># THE KEY FLAG - enables .osdi runtime loading</span>
     <span class="s2">"--enable-predictor "</span>     <span class="c1"># Required companion flag for --enable-osdi</span>
     <span class="s2">"--with-readline=no "</span>     <span class="c1"># No readline needed in batch/Colab</span>
     <span class="s2">"--disable-debug "</span>        <span class="c1"># Faster build, smaller binary</span>
@@ -8932,7 +8932,7 @@ all relative cross-includes inside the corner files resolve correctly.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">requests</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="c1"># All 29 model files land flat in /content/ — NOT a subdirectory.</span>
+<span class="c1"># All 29 model files land flat in /content/ - NOT a subdirectory.</span>
 <span class="c1"># This is critical: cornerMOSlv.lib does .include "sg13g2_moslv_mod.lib"</span>
 <span class="c1"># (relative, no path prefix). ngspice resolves this from CWD = /content/.</span>
 <span class="n">CONTENT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content"</span><span class="p">)</span>
@@ -8952,7 +8952,7 @@ all relative cross-includes inside the corner files resolve correctly.</p>
     <span class="s2">"sg13g2_svaricaphv_mod_mismatch.lib"</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="c1"># Raw GitHub URL base — files served directly without git LFS complications</span>
+<span class="c1"># Raw GitHub URL base - files served directly without git LFS complications</span>
 <span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/chennakeshavadasa/gmid_IHP130/main/model_files"</span>
 
 <span class="n">ok</span><span class="p">,</span> <span class="n">fail</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
@@ -9055,7 +9055,7 @@ If conda's glibc isn't found the binary is tried as-is, it works either way.</p>
 
 <span class="c1"># A: Get OpenVAF</span>
 <span class="c1"># OpenVAF is the compiler that turns Verilog-A (.va) into OSDI (.osdi) shared libs.</span>
-<span class="c1"># We use the osdi_0.3 release — compatible with ngspice 45.2's OSDI 0.3 API.</span>
+<span class="c1"># We use the osdi_0.3 release - compatible with ngspice 45.2's OSDI 0.3 API.</span>
 <span class="c1"># The old DigitalOcean CDN (openva.fra1.cdn.digitaloceanspaces.com) returns 403.</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"=== A: Installing OpenVAF ==="</span><span class="p">)</span>
 
@@ -9094,7 +9094,7 @@ If conda's glibc isn't found the binary is tried as-is, it works either way.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"FAILED HTTP </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Attempt to patch the ELF interpreter to use conda's glibc.</span>
-<span class="c1"># If conda's ld/libc aren't found, skip — the binary may still work as-is.</span>
+<span class="c1"># If conda's ld/libc aren't found, skip - the binary may still work as-is.</span>
 <span class="n">r2</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">r</span><span class="s2">"""</span>
 <span class="s2">    export PATH=/opt/conda/bin:$PATH</span>
 <span class="s2">    CONDA_LD=$(find /opt/conda -name "ld-linux-x86-64.so.2" 2&gt;/dev/null | head -1)</span>
@@ -9118,7 +9118,7 @@ If conda's glibc isn't found the binary is tried as-is, it works either way.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"OpenVAF ready: </span><span class="si">{</span><span class="n">openvaf_ok</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># B: Download PSP 103.6 NQS Verilog-A source</span>
-<span class="c1"># Source: dwarning/VA-Models — a curated collection of open Verilog-A models.</span>
+<span class="c1"># Source: dwarning/VA-Models - a curated collection of open Verilog-A models.</span>
 <span class="c1"># We use the GitHub API download_url to get direct file URLs, which bypasses</span>
 <span class="c1"># git LFS (raw.githubusercontent.com would return an LFS pointer, not the file).</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== B: Downloading psp103_nqs.va ==="</span><span class="p">)</span>
@@ -9128,7 +9128,7 @@ If conda's glibc isn't found the binary is tried as-is, it works either way.</p>
 <span class="k">try</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span> <span class="k">as</span> <span class="n">resp</span><span class="p">:</span>
         <span class="n">items</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-    <span class="c1"># Download all files in the directory — psp103_nqs.va plus all its .include deps</span>
+    <span class="c1"># Download all files in the directory - psp103_nqs.va plus all its .include deps</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"file"</span><span class="p">:</span>
             <span class="n">dest</span> <span class="o">=</span> <span class="n">VA_DIR</span> <span class="o">/</span> <span class="n">item</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
@@ -9230,7 +9230,7 @@ before proceeding to simulations.</p>
 <span class="c1"># Path to the compiled PSP OSDI library produced in Step 3</span>
 <span class="n">OSDI_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/psp103_nqs.osdi"</span><span class="p">)</span>
 
-<span class="c1"># Build the .spiceinit lines — these apply to every ngspice session</span>
+<span class="c1"># Build the .spiceinit lines - these apply to every ngspice session</span>
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">"* Ngspice init file -- IHP SG13G2 Colab"</span><span class="p">,</span>
     <span class="s2">"set ngbehavior=hsa"</span><span class="p">,</span>       <span class="c1"># HSA mode: required for correct IHP model behaviour</span>
@@ -9242,7 +9242,7 @@ before proceeding to simulations.</p>
     <span class="s2">"set searchpath = ( /content )"</span><span class="p">,</span>  <span class="c1"># Where ngspice resolves .include statements</span>
 <span class="p">]</span>
 
-<span class="c1"># Add the OSDI load directive — this is what actually loads the PSP model.</span>
+<span class="c1"># Add the OSDI load directive - this is what actually loads the PSP model.</span>
 <span class="c1"># Without this line ngspice sees "pspnqs103va: unknown model type".</span>
 <span class="k">if</span> <span class="n">OSDI_PATH</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"osdi </span><span class="si">{</span><span class="n">OSDI_PATH</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -9333,7 +9333,7 @@ over a DC bias current sweep (5-30 µA in 5 µA steps)</li>
 
 <span class="n">CONTENT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content"</span><span class="p">)</span>
 
-<span class="c1"># Output directories — created here if they don't already exist</span>
+<span class="c1"># Output directories - created here if they don't already exist</span>
 <span class="n">OUT_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/spice_generated"</span><span class="p">)</span>     <span class="c1"># Generated .spice netlist files</span>
 <span class="n">CSV_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/simulation_results"</span><span class="p">)</span>  <span class="c1"># wrdata CSV output files</span>
 <span class="n">LOG_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/logs"</span><span class="p">)</span>                <span class="c1"># Full ngspice stdout/stderr logs</span>
@@ -9341,7 +9341,7 @@ over a DC bias current sweep (5-30 µA in 5 µA steps)</li>
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">OUT_DIR</span><span class="p">,</span> <span class="n">CSV_DIR</span><span class="p">,</span> <span class="n">LOG_DIR</span><span class="p">]:</span>
     <span class="n">d</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Absolute paths to corner library files — used in .lib statements in each netlist</span>
+<span class="c1"># Absolute paths to corner library files - used in .lib statements in each netlist</span>
 <span class="n">LIB</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"moslv"</span> <span class="p">:</span> <span class="n">CONTENT</span> <span class="o">/</span> <span class="s2">"cornerMOSlv.lib"</span><span class="p">,</span>  <span class="c1"># LV MOSFET corners (sg13_lv_nmos)</span>
     <span class="s2">"moshv"</span> <span class="p">:</span> <span class="n">CONTENT</span> <span class="o">/</span> <span class="s2">"cornerMOShv.lib"</span><span class="p">,</span>  <span class="c1"># HV MOSFET corners</span>
@@ -9406,14 +9406,14 @@ and relative <code>.include</code> statements inside the <code>.lib</code> files
 <span class="c1">#</span>
 <span class="c1"># len_to_tag(v):</span>
 <span class="c1">#   Converts float length (e.g. 0.5) to a filename-safe string ('0_50').</span>
-<span class="c1">#   Format: f'{v:.2f}'.replace('.','_') — ensures consistent 2 decimal places.</span>
+<span class="c1">#   Format: f'{v:.2f}'.replace('.','_') - ensures consistent 2 decimal places.</span>
 <span class="c1">#</span>
 <span class="c1"># make_netlist(lx_val, corner):</span>
 <span class="c1">#   Generates the complete SPICE netlist for one (L, corner) combination.</span>
 <span class="c1">#   THREE sg13_lv_nmos instances:</span>
-<span class="c1">#     XMN_B      — diode-connected, biased by I0 (1µA). Sets Vbias.</span>
-<span class="c1">#     XMN_RON_B  — gate at VDD (fully on), VDS swept. Ron = VDS/IDS.</span>
-<span class="c1">#     XMN_GM_B   — gate at Vbias, drain at Vout=0.825V. IDS → gm.</span>
+<span class="c1">#     XMN_B      - diode-connected, biased by I0 (1µA). Sets Vbias.</span>
+<span class="c1">#     XMN_RON_B  - gate at VDD (fully on), VDS swept. Ron = VDS/IDS.</span>
+<span class="c1">#     XMN_GM_B   - gate at Vbias, drain at Vout=0.825V. IDS → gm.</span>
 <span class="c1">#   .control block:</span>
 <span class="c1">#     OUTER foreach: wx in {1u..10u}  (10 device widths)</span>
 <span class="c1">#     INNER foreach: vds in {1.65, 1.6, 1.2375, 0.825, 0.4125, 0.05}  (6 bias pts)</span>
@@ -9459,12 +9459,12 @@ and relative <code>.include</code> statements inside the <code>.lib</code> files
 <span class="sd">    This is the verified local netlist with two minimal changes for Colab:</span>
 <span class="sd">      1. .lib paths are absolute (/content/cornerMOSlv.lib not relative)</span>
 <span class="sd">      2. wrdata path points to /content/simulation_results/ not local FOSS path</span>
-<span class="sd">    Everything else — circuit, .control block, sweep structure — is unchanged.</span>
+<span class="sd">    Everything else - circuit, .control block, sweep structure - is unchanged.</span>
 <span class="sd">    """</span>
     <span class="n">len_tag</span>  <span class="o">=</span> <span class="n">len_to_tag</span><span class="p">(</span><span class="n">lx_val</span><span class="p">)</span>
     <span class="n">csv_path</span> <span class="o">=</span> <span class="n">CSV_DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"CAC_ONRES_LV_NMOS_L_</span><span class="si">{</span><span class="n">len_tag</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">corner</span><span class="si">}</span><span class="s2">.csv"</span>
 
-    <span class="c1"># Identical to the verified local netlist — only wrdata path changed</span>
+    <span class="c1"># Identical to the verified local netlist - only wrdata path changed</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">"""** sch_path: /foss/designs/cac/stg3/new_plots/CAC_ONRES_PAPER_Ibias_try1.sch</span>
 <span class="s2">**.subckt CAC_ONRES_PAPER_Ibias_try1</span>
 <span class="s2">V2 VG GND 1.65</span>
@@ -9538,7 +9538,7 @@ and relative <code>.include</code> statements inside the <code>.lib</code> files
 <span class="sd">    Returns a dict: {status, elapsed, csv_kb} on success,</span>
 <span class="sd">                    {status, elapsed, errors, log} on failure.</span>
 
-<span class="sd">    cwd="/content/" is critical — ngspice reads .spiceinit from its CWD,</span>
+<span class="sd">    cwd="/content/" is critical - ngspice reads .spiceinit from its CWD,</span>
 <span class="sd">    and all .lib files live there.</span>
 <span class="sd">    """</span>
     <span class="n">netlist</span><span class="p">,</span> <span class="n">csv_path</span> <span class="o">=</span> <span class="n">make_netlist</span><span class="p">(</span><span class="n">lx_val</span><span class="p">,</span> <span class="n">corner</span><span class="p">)</span>
@@ -9768,7 +9768,7 @@ The device characterization data used for these plots was generated during the p
 <span class="c1"># data : pd.DataFrame</span>
 <span class="c1">#   Master in-memory table of all loaded simulation data.</span>
 <span class="c1">#   Starts empty; populated by load_data().  All plot_data() calls</span>
-<span class="c1">#   read from this global — avoids re-loading between plot cells.</span>
+<span class="c1">#   read from this global - avoids re-loading between plot cells.</span>
 <span class="c1">#</span>
 <span class="c1"># file_cache : dict[str, dict]</span>
 <span class="c1">#   Mtime-based incremental cache keyed by filename.</span>
@@ -9804,17 +9804,17 @@ The device characterization data used for these plots was generated during the p
 <span class="c1"># FILENAME EXAMPLE:  CAC_MULVARY_LV_NMOS_L_0_50_Ibias_ff.csv</span>
 <span class="c1">#                                            └len┘        └cor┘</span>
 <span class="c1">#</span>
-<span class="c1"># REGEX 1 — LENGTH:  r'L_(\d+)_(\d+)'</span>
+<span class="c1"># REGEX 1 - LENGTH:  r'L_(\d+)_(\d+)'</span>
 <span class="c1">#   L_0_50  → major=0, minor=50  → (0 + 50/100) × 1e-6 = 0.5 µm</span>
 <span class="c1">#   L_1_00  → major=1, minor=0   → 1.0 µm</span>
 <span class="c1">#   L_10_00 → major=10, minor=0  → 10.0 µm</span>
 <span class="c1">#   Minor ÷ 100 because the encoding uses two digits (50 → 0.50).</span>
 <span class="c1">#</span>
-<span class="c1"># REGEX 2 — CORNER:  r'_([fsht]{2})\.csv$'</span>
+<span class="c1"># REGEX 2 - CORNER:  r'_([fsht]{2})\.csv$'</span>
 <span class="c1">#   _ff.csv → 'FF', _ss.csv → 'SS', _tt.csv → 'TT'</span>
 <span class="c1">#   Upper-cased for consistent filter comparisons downstream.</span>
 <span class="c1">#</span>
-<span class="c1"># RETURNS: (length_metres, corner_str)  — either may be None if no match.</span>
+<span class="c1"># RETURNS: (length_metres, corner_str)  - either may be None if no match.</span>
 <span class="c1">#</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_length_corner</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""</span>
@@ -9854,10 +9854,10 @@ The device characterization data used for these plots was generated during the p
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Reads a single simulation CSV and prepares it for concatenation.</span>
-<span class="c1">#   1. pd.read_csv() — parses header + numeric rows.</span>
-<span class="c1">#   2. columns.str.strip() — removes leading/trailing whitespace from</span>
+<span class="c1">#   1. pd.read_csv() - parses header + numeric rows.</span>
+<span class="c1">#   2. columns.str.strip() - removes leading/trailing whitespace from</span>
 <span class="c1">#      column names (ngspice sometimes writes ' v(VG)' with a leading space).</span>
-<span class="c1">#   3. df['corner'] = corner — injects the process corner label ('TT','SS','FF')</span>
+<span class="c1">#   3. df['corner'] = corner - injects the process corner label ('TT','SS','FF')</span>
 <span class="c1">#      since the CSV itself does not record which corner it came from.</span>
 <span class="c1"># RETURNS: pd.DataFrame with all CSV columns + 'corner' column.</span>
 <span class="c1">#</span>
@@ -9883,7 +9883,7 @@ The device characterization data used for these plots was generated during the p
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Incrementally loads all valid TT/SS/FF CSV files from data_path into the</span>
-<span class="c1"># global `data` DataFrame.  Safe to call multiple times — only re-reads</span>
+<span class="c1"># global `data` DataFrame.  Safe to call multiple times - only re-reads</span>
 <span class="c1"># changed or new files and evicts deleted ones from the cache.</span>
 <span class="c1">#</span>
 <span class="c1"># ALGORITHM:</span>
@@ -10131,7 +10131,7 @@ The device characterization data used for these plots was generated during the p
     <span class="k">global</span> <span class="n">data</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️  No data loaded yet — run the download and load_data() cells first."</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️  No data loaded yet - run the download and load_data() cells first."</span><span class="p">)</span>
         <span class="k">return</span>
     <span class="k">if</span> <span class="n">x_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="n">y_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"⚠️  Column not found. Available: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -10514,7 +10514,7 @@ $g_m/I_D &gt; 20\,\text{V}^{-1}$ (subthreshold, <strong>smaller $R_{on}/g_m$</st
 $g_m \approx I_D/nV_T$ and the formula above underestimates $V_{bias}$. At lower
 $g_m/I_D &lt; 5\,\text{V}^{-1}$ (deep strong inversion, <strong>largest $R_{on}/g_m$</strong>, right
 extreme of plot), the approximation is most accurate. In all cases, $V_{bias}$ is read
-directly from the LUT plot — the formula is for physical intuition only.</p>
+directly from the LUT plot - the formula is for physical intuition only.</p>
 </blockquote>
 <p>Multiplying and dividing by $R_{on}$:</p>
 <p>$$\boxed{V_{bias} = V_{TH} + \frac{2I_D}{V_{swing}} \cdot I_{peak} \cdot \frac{R_{on}}{g_m}}$$</p>
@@ -11673,7 +11673,7 @@ $$
 \frac{g_{m,unit}}{I_q} = \frac{5\,\mu\text{S}}{0.5\,\mu\text{A}} = 10\,\frac{\text{S}}{\text{A}}
 $$</p>
 </li>
-<li><p>Target $g_m/I_D = 10\,\text{V}^{-1}$ for both LV_NMOS and LV_PMOS — corresponding to <strong>moderate inversion</strong>, where large-signal and small-signal settling contributions are both significant.</p>
+<li><p>Target $g_m/I_D = 10\,\text{V}^{-1}$ for both LV_NMOS and LV_PMOS - corresponding to <strong>moderate inversion</strong>, where large-signal and small-signal settling contributions are both significant.</p>
 </li>
 <li><p>Assume $g_m/g_{ds} = 50$ (intrinsic gain limit of lv_nmos in IHP SG13G2)</p>
 </li>
@@ -11753,7 +11753,7 @@ Here is the sequence and what each part contributes:</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># DOWNLOAD gm/ID MODEL DATA — ZIP from Google Drive</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># DOWNLOAD gm/ID MODEL DATA - ZIP from Google Drive</span>
 <span class="c1"># Downloads a ZIP archive of pre-extracted gm/ID characterisation data</span>
 <span class="c1"># (HV_NMOS, HV_PMOS, LV_NMOS, LV_PMOS) and unpacks to /content/gmid_Data/.</span>
 <span class="c1"># IDEMPOTENCY: if /content/gmid_Data/ exists and is non-empty, skip download.</span>
@@ -11778,7 +11778,7 @@ Here is the sequence and what each part contributes:</p>
 <span class="n">gmid_file_id</span> <span class="o">=</span> <span class="s1">'1Gd_mxW6A0DBHGzFmbQJ1NT2dvuKrFsCy'</span>
 
 <span class="c1"># The name you want to give to the downloaded ZIP file once it’s saved locally.</span>
-<span class="n">output_zip</span> <span class="o">=</span> <span class="s1">'/content/mydata.zip'</span>  <span class="c1"># absolute path — safe regardless of CWD</span>
+<span class="n">output_zip</span> <span class="o">=</span> <span class="s1">'/content/mydata.zip'</span>  <span class="c1"># absolute path - safe regardless of CWD</span>
 
 <span class="c1"># Step 2: Download the File from Google Drive</span>
 <span class="c1"># gdown.download() downloads files from Google Drive using a direct link format.</span>
@@ -11787,7 +11787,7 @@ Here is the sequence and what each part contributes:</p>
 <span class="c1"># Idempotency: skip download if already extracted</span>
 <span class="n">extract_path</span> <span class="o">=</span> <span class="s1">'/content/gmid_Data'</span>
 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">extract_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">extract_path</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'✅ </span><span class="si">{</span><span class="n">extract_path</span><span class="si">}</span><span class="s1"> already exists — skipping download.'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'✅ </span><span class="si">{</span><span class="n">extract_path</span><span class="si">}</span><span class="s1"> already exists - skipping download.'</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">gdown</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
         <span class="sa">f</span><span class="s1">'https://drive.google.com/uc?id=</span><span class="si">{</span><span class="n">gmid_file_id</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
@@ -11797,7 +11797,7 @@ Here is the sequence and what each part contributes:</p>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s1">'gdown.download() returned None — download failed.</span><span class="se">\n</span><span class="s1">'</span>
+            <span class="s1">'gdown.download() returned None - download failed.</span><span class="se">\n</span><span class="s1">'</span>
             <span class="s1">'Check the file ID or share permissions on Google Drive.'</span>
         <span class="p">)</span>
 
@@ -11891,7 +11891,7 @@ and process-corner sensitivity.</p>
 <span class="c1"># Step 1: Define Base Directory Containing All Model Data</span>
 
 <span class="c1"># Folder where the ZIP file was extracted previously.</span>
-<span class="c1"># Inside this directory, there are likely multiple subfolders — one for each device type.</span>
+<span class="c1"># Inside this directory, there are likely multiple subfolders - one for each device type.</span>
 <span class="c1"># Example folder structure:</span>
 <span class="c1">#   ./gmid_Data/</span>
 <span class="c1">#       ├── NMOS/</span>
@@ -11903,7 +11903,7 @@ and process-corner sensitivity.</p>
 <span class="c1">#       │     ├── ...</span>
 <span class="c1">#       └── etc.</span>
 
-<span class="n">gmid_data</span> <span class="o">=</span> <span class="s2">"/content/gmid_Data"</span>  <span class="c1"># absolute path — safe regardless of CWD</span>
+<span class="n">gmid_data</span> <span class="o">=</span> <span class="s2">"/content/gmid_Data"</span>  <span class="c1"># absolute path - safe regardless of CWD</span>
 
 <span class="c1"># Step 2: Function to Parse and Structure Raw Data Files</span>
 
@@ -11916,7 +11916,7 @@ and process-corner sensitivity.</p>
 <span class="sd">    data : list</span>
 <span class="sd">        List of filenames (e.g., ['L_0p13u.txt', 'L_0p25u.txt', ...]) corresponding to one device type.</span>
 <span class="sd">    key : str</span>
-<span class="sd">        The name of the device folder (e.g., 'NMOS', 'PMOS') — used for labeling each row.</span>
+<span class="sd">        The name of the device folder (e.g., 'NMOS', 'PMOS') - used for labeling each row.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -12025,7 +12025,7 @@ and process-corner sensitivity.</p>
 <span class="n">df</span><span class="p">[</span><span class="s1">'Vov'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'Vgs'</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">'Vth'</span><span class="p">]</span>
 
 <span class="c1"># 2️. Transconductance efficiency (gm/ID)</span>
-<span class="c1"># Key analog design figure of merit — measures how much gm is achieved per unit bias current.</span>
+<span class="c1"># Key analog design figure of merit - measures how much gm is achieved per unit bias current.</span>
 <span class="c1"># High gm/ID → higher gain and better power efficiency.</span>
 <span class="n">df</span><span class="p">[</span><span class="s1">'gm/id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm'</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s1">'id_val'</span><span class="p">]</span>
 
@@ -12046,7 +12046,7 @@ and process-corner sensitivity.</p>
 
 <span class="c1"># 6️. Transit frequency (fT)</span>
 <span class="c1"># fT = gm / (2πCgg)</span>
-<span class="c1"># This is the frequency where current gain drops to unity — indicator of transistor speed.</span>
+<span class="c1"># This is the frequency where current gain drops to unity - indicator of transistor speed.</span>
 <span class="n">df</span><span class="p">[</span><span class="s1">'ft'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm'</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">'Cgg'</span><span class="p">])</span>
 
 <span class="c1"># 7️. Capacitance ratio: Cgd/Cgg</span>
@@ -12190,34 +12190,34 @@ and process-corner sensitivity.</p>
 <span class="c1"># Each call below produces an important transistor design curve.</span>
 <span class="c1"># These relationships are critical for analog/RF design benchmarking.</span>
 
-<span class="c1"># 1️. gm/ID vs Vgs — Efficiency of transconductance as a function of gate bias.</span>
+<span class="c1"># 1️. gm/ID vs Vgs - Efficiency of transconductance as a function of gate bias.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'Vgs'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'Vgs'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> gm/id versus Vgs'</span><span class="p">)</span>
 
-<span class="c1"># 2️. gm/ID vs Vov — gm/ID expressed against overdrive voltage for bias region comparison.</span>
+<span class="c1"># 2️. gm/ID vs Vov - gm/ID expressed against overdrive voltage for bias region comparison.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'Vov'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'Vov'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> gm/id versus Vov'</span><span class="p">)</span>
 
-<span class="c1"># 3️. gm/gds vs gm/ID — Intrinsic gain plotted versus transconductance efficiency.</span>
+<span class="c1"># 3️. gm/gds vs gm/ID - Intrinsic gain plotted versus transconductance efficiency.</span>
 <span class="c1">#     Helps analyze trade-off between gain and speed.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'gm/gds'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'gm/gds'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> gm/gds versus gm/id'</span><span class="p">)</span>
 
-<span class="c1"># 4️. id/W vs gm/ID — Current density per unit width versus gm/ID.</span>
+<span class="c1"># 4️. id/W vs gm/ID - Current density per unit width versus gm/ID.</span>
 <span class="c1">#     Useful for evaluating power efficiency.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'id/W'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'id/W'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> id/W versus gm/id'</span><span class="p">)</span>  <span class="c1"># Log scale for better visibility</span>
 
-<span class="c1"># 5️. ft vs gm/ID — Transit frequency versus gm/ID, a speed–efficiency trade-off metric.</span>
+<span class="c1"># 5️. ft vs gm/ID - Transit frequency versus gm/ID, a speed–efficiency trade-off metric.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'ft'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'ft (Hz)'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> ft versus gm/id'</span><span class="p">)</span>  <span class="c1"># Log scale for frequency</span>
 
-<span class="c1"># 6️. Cgd/Cgg vs gm/ID — Shows the ratio of gate-drain capacitance to total gate capacitance.</span>
+<span class="c1"># 6️. Cgd/Cgg vs gm/ID - Shows the ratio of gate-drain capacitance to total gate capacitance.</span>
 <span class="c1">#     Indicates feedback coupling and frequency performance trends.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'Cgd/Cgg'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'Cgd / Cgg'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> Cgd / Cgg versus gm/id'</span><span class="p">)</span>
 
-<span class="c1"># 7️. Cgs/Cgg vs gm/ID — Fraction of gate-source capacitance, useful for analyzing input coupling.</span>
+<span class="c1"># 7️. Cgs/Cgg vs gm/ID - Fraction of gate-source capacitance, useful for analyzing input coupling.</span>
 <span class="n">plot_interactive</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'Cgs/Cgg'</span><span class="p">,</span> <span class="s1">'gm/id'</span><span class="p">,</span> <span class="s1">'Cgs / Cgg'</span><span class="p">,</span>
                  <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s2">"Device"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> Cgs / Cgg versus gm/id'</span><span class="p">)</span>
 </pre></div>
@@ -12327,7 +12327,7 @@ with a Vgs sweep at fixed W = 2 µm.</p>
     <span class="k">for</span> <span class="n">dev_name</span><span class="p">,</span> <span class="n">file_list</span> <span class="ow">in</span> <span class="n">files_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">df_dev</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">file_list</span><span class="p">,</span> <span class="n">dev_name</span><span class="p">)</span>          <span class="c1"># raw columns from Cell 81</span>
 
-        <span class="c1"># Derived metrics — identical to Cell 81 post-processing</span>
+        <span class="c1"># Derived metrics - identical to Cell 81 post-processing</span>
         <span class="n">df_dev</span><span class="p">[</span><span class="s1">'gm/id'</span><span class="p">]</span>  <span class="o">=</span> <span class="n">df_dev</span><span class="p">[</span><span class="s1">'gm'</span><span class="p">]</span>      <span class="o">/</span> <span class="n">df_dev</span><span class="p">[</span><span class="s1">'id_val'</span><span class="p">]</span>
         <span class="n">df_dev</span><span class="p">[</span><span class="s1">'gm/gds'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_dev</span><span class="p">[</span><span class="s1">'gm'</span><span class="p">]</span>      <span class="o">/</span> <span class="n">df_dev</span><span class="p">[</span><span class="s1">'gds'</span><span class="p">]</span>
         <span class="n">df_dev</span><span class="p">[</span><span class="s1">'id/W'</span><span class="p">]</span>   <span class="o">=</span> <span class="n">df_dev</span><span class="p">[</span><span class="s1">'id_val'</span><span class="p">]</span>  <span class="o">/</span> <span class="n">W_CHAR</span>          <span class="c1"># A/m  (= µA/µm × 1e-6)</span>
@@ -12384,18 +12384,18 @@ with a Vgs sweep at fixed W = 2 µm.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># OPTIMISER — solve_optimization(df, tA, tB, w1, w2, bB)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># OPTIMISER - solve_optimization(df, tA, tB, w1, w2, bB)</span>
 <span class="c1">#</span>
-<span class="c1"># Step 1 — scipy.optimize.minimize finds the optimal (gm/id, gm/gds) in</span>
+<span class="c1"># Step 1 - scipy.optimize.minimize finds the optimal (gm/id, gm/gds) in</span>
 <span class="c1">#   continuous space subject to a hard lower bound on gm/gds (bB).</span>
 <span class="c1">#   The objective is a σ-normalised weighted L2² loss so w1, w2 are</span>
 <span class="c1">#   true dimensionless importance weights independent of parameter scale.</span>
 <span class="c1">#</span>
-<span class="c1"># Step 2 — nearest-neighbour search over the LUT using the same</span>
+<span class="c1"># Step 2 - nearest-neighbour search over the LUT using the same</span>
 <span class="c1">#   normalised distance to find the best real (L, bias) operating point.</span>
 <span class="c1">#</span>
 <span class="c1"># NOTE: for a simple quadratic objective the scipy call returns the</span>
-<span class="c1">#   closed-form solution (tA, max(bB, tB)) — it is kept here for</span>
+<span class="c1">#   closed-form solution (tA, max(bB, tB)) - it is kept here for</span>
 <span class="c1">#   explicitness and because it correctly handles the hard gm/gds bound.</span>
 <span class="c1">#</span>
 <span class="c1"># RETURNS: dict with optA, optB, top5, best_row, logs, gmid_std, gmgds_std.</span>
@@ -12410,9 +12410,9 @@ with a Vgs sweep at fixed W = 2 µm.</p>
 <span class="sd">    tB : float  target gm/gds</span>
 <span class="sd">    w1 : float  importance weight for gm/id  (dimensionless after σ-norm)</span>
 <span class="sd">    w2 : float  importance weight for gm/gds (dimensionless after σ-norm)</span>
-<span class="sd">    bB : float  hard lower bound on gm/gds — optimizer never goes below this</span>
+<span class="sd">    bB : float  hard lower bound on gm/gds - optimizer never goes below this</span>
 <span class="sd">    """</span>
-    <span class="c1"># σ-normalisation constants — computed from the filtered LUT subset</span>
+    <span class="c1"># σ-normalisation constants - computed from the filtered LUT subset</span>
     <span class="c1"># so the range of the actual data (not synthetic values) sets the scale.</span>
     <span class="n">gmid_std</span>  <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm/id'</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>  <span class="ow">or</span> <span class="mf">1.0</span>
     <span class="n">gmgds_std</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm/gds'</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="ow">or</span> <span class="mf">1.0</span>
@@ -12425,7 +12425,7 @@ with a Vgs sweep at fixed W = 2 µm.</p>
 
     <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="s1">'gm/id'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm/gds'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()])</span>
 
-    <span class="c1"># Hard bound: gm/gds &gt;= max(bB, tB)  — never recommend below the floor</span>
+    <span class="c1"># Hard bound: gm/gds &gt;= max(bB, tB)  - never recommend below the floor</span>
     <span class="n">gm_gds_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bB</span><span class="p">,</span> <span class="n">tB</span><span class="p">)</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="n">gm_gds_floor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
 
@@ -12440,7 +12440,7 @@ with a Vgs sweep at fixed W = 2 µm.</p>
     <span class="p">)</span>
     <span class="n">top5</span> <span class="o">=</span> <span class="n">df_calc</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">'distance'</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="c1"># ── Convergence trace (illustrative — 6 gradient steps from mean) ────────</span>
+    <span class="c1"># ── Convergence trace (illustrative - 6 gradient steps from mean) ────────</span>
     <span class="n">logs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">a_log</span><span class="p">,</span> <span class="n">b_log</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm/id'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="nb">max</span><span class="p">(</span><span class="n">bB</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">'gm/gds'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
@@ -12493,15 +12493,15 @@ It does three things:</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#  VISUALISATION — render_dashboard()  (Gm/Id Design Helper)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#  VISUALISATION - render_dashboard()  (Gm/Id Design Helper)</span>
 <span class="c1">#</span>
 <span class="c1"># Produces a 2-panel matplotlib figure + Top-5 styled table on widget change.</span>
 <span class="c1">#</span>
-<span class="c1"># PANEL 1 — SCATTER (gm/gds vs gm/id):</span>
+<span class="c1"># PANEL 1 - SCATTER (gm/gds vs gm/id):</span>
 <span class="c1">#   Plasma colourmap per length; markers: ▲ amber (target), × green (optimum),</span>
 <span class="c1">#   ★ green star (best row), red dashed line (gm/gds bound).</span>
 <span class="c1">#</span>
-<span class="c1"># PANEL 2 — LOSS SURFACE:</span>
+<span class="c1"># PANEL 2 - LOSS SURFACE:</span>
 <span class="c1">#   std-normalised L2² loss vs gm/id (gm/gds fixed at optB).</span>
 <span class="c1">#   Log Y-axis; narrow minimum = well-conditioned design problem.</span>
 <span class="c1">#</span>
@@ -12544,7 +12544,7 @@ It does three things:</p>
 
     <span class="c1"># PLOT 1: Scatter gm/id vs gm/gds</span>
     <span class="n">ax_sc</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># plasma colormap per length — exactly matches Cell 58 (Ron/Gm dashboard)</span>
+    <span class="c1"># plasma colormap per length - exactly matches Cell 58 (Ron/Gm dashboard)</span>
     <span class="n">lengths_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
     <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">'plasma'</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">idx_l</span><span class="p">,</span> <span class="n">L</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lengths_sorted</span><span class="p">):</span>
@@ -12576,8 +12576,8 @@ It does three things:</p>
 
     <span class="n">_gs</span>  <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">'gmid_std'</span><span class="p">];</span>  <span class="n">_ggs</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s1">'gmgds_std'</span><span class="p">]</span>     <span class="c1"># ← FIX 2: unpack stds</span>
     <span class="n">losses</span> <span class="o">=</span> <span class="p">(</span>                                             <span class="c1"># ← FIX 1 + FIX 2</span>
-        <span class="n">w1</span> <span class="o">*</span> <span class="p">((</span><span class="n">sweep_x</span>     <span class="o">-</span> <span class="n">tA</span><span class="p">)</span> <span class="o">/</span> <span class="n">_gs</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>              <span class="c1"># gm/id  sweep — std-normalized</span>
-      <span class="o">+</span> <span class="n">w2</span> <span class="o">*</span> <span class="p">((</span><span class="n">res</span><span class="p">[</span><span class="s1">'optB'</span><span class="p">]</span> <span class="o">-</span> <span class="n">tB</span><span class="p">)</span> <span class="o">/</span> <span class="n">_ggs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>              <span class="c1"># gm/gds const — std-normalized</span>
+        <span class="n">w1</span> <span class="o">*</span> <span class="p">((</span><span class="n">sweep_x</span>     <span class="o">-</span> <span class="n">tA</span><span class="p">)</span> <span class="o">/</span> <span class="n">_gs</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>              <span class="c1"># gm/id  sweep - std-normalized</span>
+      <span class="o">+</span> <span class="n">w2</span> <span class="o">*</span> <span class="p">((</span><span class="n">res</span><span class="p">[</span><span class="s1">'optB'</span><span class="p">]</span> <span class="o">-</span> <span class="n">tB</span><span class="p">)</span> <span class="o">/</span> <span class="n">_ggs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>              <span class="c1"># gm/gds const - std-normalized</span>
     <span class="p">)</span>
     <span class="n">min_loss</span> <span class="o">=</span> <span class="p">(</span>                                           <span class="c1"># ← FIX 1 + FIX 2: dot at minimum</span>
         <span class="n">w1</span> <span class="o">*</span> <span class="p">((</span><span class="n">res</span><span class="p">[</span><span class="s1">'optA'</span><span class="p">]</span> <span class="o">-</span> <span class="n">tA</span><span class="p">)</span> <span class="o">/</span> <span class="n">_gs</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>
@@ -12618,15 +12618,15 @@ It does three things:</p>
     <span class="n">tbl</span><span class="p">[</span><span class="s1">'id/W (µA/µm)'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tbl</span><span class="p">[</span><span class="s1">'id/W'</span><span class="p">]</span>
     <span class="n">tbl</span> <span class="o">=</span> <span class="n">tbl</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'id/W'</span><span class="p">])</span>
 
-    <span class="c1"># Normalise dist to [0,1] for colour mapping — matches Cell 58 (Ron/Gm dashboard)</span>
+    <span class="c1"># Normalise dist to [0,1] for colour mapping - matches Cell 58 (Ron/Gm dashboard)</span>
     <span class="n">d_min</span><span class="p">,</span> <span class="n">d_max</span> <span class="o">=</span> <span class="n">tbl</span><span class="p">[</span><span class="s1">'distance'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">tbl</span><span class="p">[</span><span class="s1">'distance'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
     <span class="n">d_range</span> <span class="o">=</span> <span class="n">d_max</span> <span class="o">-</span> <span class="n">d_min</span> <span class="k">if</span> <span class="n">d_max</span> <span class="o">!=</span> <span class="n">d_min</span> <span class="k">else</span> <span class="mi">1</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">dist_color</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
         <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="n">d_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_range</span>
-        <span class="k">if</span>   <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">0.33</span><span class="p">:</span> <span class="n">bg</span> <span class="o">=</span> <span class="s1">'#1a7a3a'</span>   <span class="c1"># green  — best match</span>
-        <span class="k">elif</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">0.66</span><span class="p">:</span> <span class="n">bg</span> <span class="o">=</span> <span class="s1">'#a07800'</span>   <span class="c1"># amber  — mid</span>
-        <span class="k">else</span><span class="p">:</span>          <span class="n">bg</span> <span class="o">=</span> <span class="s1">'#8b1a1a'</span>   <span class="c1"># red    — worst</span>
+        <span class="k">if</span>   <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">0.33</span><span class="p">:</span> <span class="n">bg</span> <span class="o">=</span> <span class="s1">'#1a7a3a'</span>   <span class="c1"># green  - best match</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">0.66</span><span class="p">:</span> <span class="n">bg</span> <span class="o">=</span> <span class="s1">'#a07800'</span>   <span class="c1"># amber  - mid</span>
+        <span class="k">else</span><span class="p">:</span>          <span class="n">bg</span> <span class="o">=</span> <span class="s1">'#8b1a1a'</span>   <span class="c1"># red    - worst</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">'background-color: </span><span class="si">{</span><span class="n">bg</span><span class="si">}</span><span class="s1">; color: white; font-weight: bold; text-align: center'</span>
 
     <span class="n">styled</span> <span class="o">=</span> <span class="p">(</span>
@@ -12681,7 +12681,7 @@ The highlighted green lines show the most important results: the <strong>best ma
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># WIDGET LAYOUT &amp; CALLBACKS — Gm/Id Design Helper</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># WIDGET LAYOUT &amp; CALLBACKS - Gm/Id Design Helper</span>
 <span class="c1"># Slider ranges are derived from the real DF_ALL data so they always</span>
 <span class="c1"># reflect what IHP SG13G2 devices can actually achieve.</span>
 <span class="c1"># Header text corrected to 'Real SPICE LUT data'.</span>
@@ -12690,7 +12690,7 @@ The highlighted green lines show the most important results: the <strong>best ma
 <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">clear_output</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="c1"># Derive slider bounds from real data — no hardcoded magic numbers</span>
+<span class="c1"># Derive slider bounds from real data - no hardcoded magic numbers</span>
 <span class="n">_gmgds_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">DF_ALL</span><span class="p">[</span><span class="s1">'gm/gds'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 <span class="n">_gmid_max</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">DF_ALL</span><span class="p">[</span><span class="s1">'gm/id'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 <span class="n">_lengths_all</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">DF_ALL</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
@@ -12818,7 +12818,7 @@ The highlighted green lines show the most important results: the <strong>best ma
 <td style="text-align:left">5.000 µA/µm</td>
 <td style="text-align:left">0.5 µA</td>
 <td style="text-align:left">0.15 µm</td>
-<td style="text-align:left">—</td>
+<td style="text-align:left">-</td>
 </tr>
 </tbody>
 </table>
@@ -12933,13 +12933,13 @@ The sizing satisfies the <strong>small-signal bandwidth</strong> target ($G_m \a
 <td style="text-align:left"><strong>Fig 13</strong> : $I_{out}$</td>
 <td style="text-align:left"><code>sm_g</code> = branch current × 1e6</td>
 <td style="text-align:left">Raw current waveform in µA</td>
-<td style="text-align:left">$I_{peak}$ magnitude — set by $R_{on}$, invisible to gm/Id</td>
+<td style="text-align:left">$I_{peak}$ magnitude - set by $R_{on}$, invisible to gm/Id</td>
 </tr>
 <tr>
 <td style="text-align:left"><strong>Fig 14</strong> : $dV_{out}/dt$</td>
 <td style="text-align:left"><code>dvdt_g = np.gradient(sv_g, st_us_g)</code></td>
 <td style="text-align:left">Numerical derivative = slew rate</td>
-<td style="text-align:left">Slew rate peak = $I_{peak}/C_L$ — depends on $R_{on}$</td>
+<td style="text-align:left">Slew rate peak = $I_{peak}/C_L$ - depends on $R_{on}$</td>
 </tr>
 </tbody>
 </table>
@@ -12959,7 +12959,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># SPARSE GIT CLONE — Download settling analysis data files</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># SPARSE GIT CLONE - Download settling analysis data files</span>
 <span class="c1">#</span>
 <span class="c1"># Fetches ONLY Plots_Images/INV_OTA_ERROR_PLOTS/ from gmid_IHP130 repo</span>
 <span class="c1"># using sparse checkout (--filter=blob:none --no-checkout + sparse-checkout set).</span>
@@ -13031,9 +13031,9 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># SETTLING ANALYSIS HELPERS — theme + load/extract/fit functions</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># SETTLING ANALYSIS HELPERS - theme + load/extract/fit functions</span>
 <span class="c1">#</span>
-<span class="c1"># _SA_FS: font size dict — change here to resize ALL settling plots at once.</span>
+<span class="c1"># _SA_FS: font size dict - change here to resize ALL settling plots at once.</span>
 <span class="c1">#</span>
 <span class="c1"># _SA_COLORS: signal colour palette.</span>
 <span class="c1">#   'vout'='#E63946'(red), 'vfinal'='#1D3557'(navy), 'error'='#457B9D'(blue),</span>
@@ -13060,7 +13060,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <span class="c1">#   outliers &gt;10×median → scipy.curve_fit() → overlay dashed teal trace.</span>
 <span class="c1">#   Returns τ in µs, or None if fit fails.</span>
 <span class="c1">#</span>
-<span class="c1">#  FONT SIZE CONTROLS  — change these to resize everything at once</span>
+<span class="c1">#  FONT SIZE CONTROLS  - change these to resize everything at once</span>
 <span class="n">_SA_FS</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
     <span class="n">axis_label</span>   <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>   <span class="c1"># xlabel / ylabel on standalone plots</span>
     <span class="n">axis_tick</span>    <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>   <span class="c1"># tick numbers on standalone plots</span>
@@ -13082,7 +13082,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
     <span class="s1">'dvdt'</span>   <span class="p">:</span> <span class="s1">'#7B2D8B'</span><span class="p">,</span>   <span class="c1"># deep violet</span>
 <span class="p">}</span>
 
-<span class="c1">#  Base layout — matches gmid notebook style</span>
+<span class="c1">#  Base layout - matches gmid notebook style</span>
 <span class="n">_SA_LAYOUT</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
     <span class="n">width</span>        <span class="o">=</span> <span class="mi">1200</span><span class="p">,</span>
     <span class="n">height</span>       <span class="o">=</span> <span class="mi">650</span><span class="p">,</span>
@@ -13183,7 +13183,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># LOAD SETTLING DATA — gm/ID designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># LOAD SETTLING DATA - gm/ID designed IBA</span>
 <span class="c1">#</span>
 <span class="c1"># FILE: INV_OTA_gmid.txt</span>
 <span class="c1">#   Transient simulation output for IBA designed with gm/ID methodology:</span>
@@ -13227,7 +13227,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 11: Vout waveform — gm/ID designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 11: Vout waveform - gm/ID designed IBA</span>
 <span class="c1"># Plots Vout vs time.  Dotted navy line marks Vout_final for visual reference.</span>
 <span class="c1"># Ghost trace (x=[None],y=[None]) adds V_final to legend without drawing points.</span>
 <span class="c1">#</span>
@@ -13270,7 +13270,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 12: Log settling error — gm/ID designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 12: Log settling error - gm/ID designed IBA</span>
 <span class="c1"># Filters NaN/Inf/zero error samples; constructs log decade tick marks.</span>
 <span class="c1"># _sa_try_exp_fit() overlays fitted e^(-t/τ) dashed curve and prints τ.</span>
 <span class="c1"># τ(gm/ID) is the small-signal settling time constant of the gm/ID design.</span>
@@ -13280,7 +13280,7 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <span class="n">valid_t_g</span>    <span class="o">=</span> <span class="n">st_us_g</span><span class="p">[</span><span class="n">valid_g</span><span class="p">]</span>
 <span class="n">valid_err_g</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">err_g</span><span class="p">[</span><span class="n">valid_g</span><span class="p">])</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_err_g</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️  No valid (non-zero, finite) error samples found — skipping error plot."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️  No valid (non-zero, finite) error samples found - skipping error plot."</span><span class="p">)</span>
     <span class="n">valid_err_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1e-6</span><span class="p">])</span>
     <span class="n">valid_t_g</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 <span class="n">_emin_g</span> <span class="o">=</span> <span class="n">valid_err_g</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
@@ -13298,13 +13298,13 @@ all of which are characterised pre-simulation in the $R_{on}/g_m$ section that f
 <span class="n">tau_g</span> <span class="o">=</span> <span class="n">_sa_try_exp_fit</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">valid_t_g</span><span class="p">,</span> <span class="n">valid_err_g</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">tau_g</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="se">\u03c4</span><span class="s1"> (gm/ID) = </span><span class="si">{</span><span class="n">tau_g</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> </span><span class="se">\u03bc</span><span class="s1">s'</span><span class="p">)</span>
 
-<span class="c1"># ── highlight nonlinear settling phase — both edges, all cycles ─────────────</span>
-<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs — full clock period</span>
-<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs — 50 ns nonlinear phase per edge</span>
+<span class="c1"># ── highlight nonlinear settling phase - both edges, all cycles ─────────────</span>
+<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs - full clock period</span>
+<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs - 50 ns nonlinear phase per edge</span>
 <span class="n">_t_max</span>       <span class="o">=</span> <span class="n">valid_t_g</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="n">_n_cycles</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_t_max</span> <span class="o">/</span> <span class="n">_period</span><span class="p">))</span>
 
-<span class="c1"># explicitly distinct colors — orange for +edge, steel blue for -edge</span>
+<span class="c1"># explicitly distinct colors - orange for +edge, steel blue for -edge</span>
 <span class="n">_edges</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">'rgba(210, 105,  30, 0.25)'</span><span class="p">,</span> <span class="s1">'rgba(210, 105,  30, 1.0)'</span><span class="p">,</span> <span class="s1">'+edge nonlinear Phase'</span><span class="p">),</span>
     <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">'rgba( 30, 144, 255, 0.25)'</span><span class="p">,</span> <span class="s1">'rgba( 30, 144, 255, 1.0)'</span><span class="p">,</span> <span class="s1">'−edge nonlinear Phase'</span><span class="p">),</span>
@@ -13375,7 +13375,7 @@ transistor sizing stage.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 13: Output current Iout — gm/ID designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 13: Output current Iout - gm/ID designed IBA</span>
 <span class="c1"># sm_g × 1e6 converts branch current (A) to µA for display.</span>
 <span class="c1"># Large initial spike = large-signal phase (high slew current).</span>
 <span class="c1"># Exponential decay = small-signal phase (NMOS/PMOS currents balancing).</span>
@@ -13388,9 +13388,9 @@ transistor sizing stage.</p>
     <span class="n">hovertemplate</span><span class="o">=</span><span class="s1">'t = %</span><span class="si">{x:.3f}</span><span class="s1"> </span><span class="se">\u03bc</span><span class="s1">s&lt;br&gt;I&lt;sub&gt;out&lt;/sub&gt; = %</span><span class="si">{y:.3f}</span><span class="s1"> </span><span class="se">\u03bc</span><span class="s1">A&lt;extra&gt;&lt;/extra&gt;'</span>
 <span class="p">))</span>
 
-<span class="c1"># ── highlight nonlinear vs linear phase — both edges, all cycles ─────────────</span>
-<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs — full clock period</span>
-<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs — 50 ns nonlinear phase per edge</span>
+<span class="c1"># ── highlight nonlinear vs linear phase - both edges, all cycles ─────────────</span>
+<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs - full clock period</span>
+<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs - 50 ns nonlinear phase per edge</span>
 <span class="n">_t_max</span>       <span class="o">=</span> <span class="n">st_us_g</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="n">_n_cycles</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_t_max</span> <span class="o">/</span> <span class="n">_period</span><span class="p">))</span>
 
@@ -13454,7 +13454,7 @@ transistor sizing stage.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 14: dVout/dt — gm/ID designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 14: dVout/dt - gm/ID designed IBA</span>
 <span class="c1"># dvdt_g (V/µs) = dVout/dt via np.gradient (central differences).</span>
 <span class="c1"># dVout/dt = Iout/C_load; peak reflects peak-current large-signal phase.</span>
 <span class="c1"># Two-phase settling (fast slew → slow exponential) visible as slope change.</span>
@@ -13616,8 +13616,8 @@ $$</p>
 </li>
 <li><p>The predicted <strong>deadzone bias voltages</strong>:</p>
 <ul>
-<li>$V_{DZN}$: Pre-simulation $\approx 0.39\,\text{V}$ (TT) — Post-simulation within $\pm50\,\text{mV}$</li>
-<li>$V_{DZP}$: Pre-simulation $\approx 1.11\,\text{V}$ (TT) — Post-simulation within $\pm50\,\text{mV}$<br/>
+<li>$V_{DZN}$: Pre-simulation $\approx 0.39\,\text{V}$ (TT) - Post-simulation within $\pm50\,\text{mV}$</li>
+<li>$V_{DZP}$: Pre-simulation $\approx 1.11\,\text{V}$ (TT) - Post-simulation within $\pm50\,\text{mV}$<br/>
 → corner spread (FF→SS) directly readable from LUT without any transient simulation</li>
 </ul>
 </li>
@@ -13701,7 +13701,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># STEP 7 — DOWNLOAD Ron/gm LUT CSV DATA (NMOS &amp; PMOS)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># STEP 7 - DOWNLOAD Ron/gm LUT CSV DATA (NMOS &amp; PMOS)</span>
 <span class="c1">#</span>
 <span class="c1"># Downloads 10 pre-simulated LUT CSVs (5 lengths × NMOS+PMOS, TT corner)</span>
 <span class="c1"># for the Ron/gm Design Helper.  Uses individual file IDs via gdown.download()</span>
@@ -13763,7 +13763,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
       <span class="sa">f</span><span class="s2">"| NMOS: </span><span class="si">{</span><span class="n">nmos_count</span><span class="si">}</span><span class="s2"> | PMOS: </span><span class="si">{</span><span class="n">pmos_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Failed: </span><span class="si">{</span><span class="n">failed</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"   Tip: re-run this cell — transient Drive rate-limits usually clear in 30s."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"   Tip: re-run this cell - transient Drive rate-limits usually clear in 30s."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -13777,7 +13777,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># IMPORTS AND COLOUR CONSTANTS — Ron/gm Design Helper</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># IMPORTS AND COLOUR CONSTANTS - Ron/gm Design Helper</span>
 <span class="c1"># plt.style.use('dark_background') → dark matplotlib theme.</span>
 <span class="c1"># ACCENT_G='#00ffb2'(neon green=best), ACCENT_B='#3b82f6'(blue=loss curve),</span>
 <span class="c1"># ACCENT_Y='#f59e0b'(amber=query), ACCENT_R='#ef4444'(red=bound/vline),</span>
@@ -13795,10 +13795,10 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'dark_background'</span><span class="p">)</span>
 
 <span class="c1"># Accent palette</span>
-<span class="n">ACCENT_G</span>  <span class="o">=</span> <span class="s1">'#00ffb2'</span>   <span class="c1"># Neon green  — best / optimum</span>
-<span class="n">ACCENT_B</span>  <span class="o">=</span> <span class="s1">'#3b82f6'</span>   <span class="c1"># Royal blue  — nearby</span>
-<span class="n">ACCENT_Y</span>  <span class="o">=</span> <span class="s1">'#f59e0b'</span>   <span class="c1"># Amber       — input target</span>
-<span class="n">ACCENT_R</span>  <span class="o">=</span> <span class="s1">'#ef4444'</span>   <span class="c1"># Red         — bound / vline</span>
+<span class="n">ACCENT_G</span>  <span class="o">=</span> <span class="s1">'#00ffb2'</span>   <span class="c1"># Neon green  - best / optimum</span>
+<span class="n">ACCENT_B</span>  <span class="o">=</span> <span class="s1">'#3b82f6'</span>   <span class="c1"># Royal blue  - nearby</span>
+<span class="n">ACCENT_Y</span>  <span class="o">=</span> <span class="s1">'#f59e0b'</span>   <span class="c1"># Amber       - input target</span>
+<span class="n">ACCENT_R</span>  <span class="o">=</span> <span class="s1">'#ef4444'</span>   <span class="c1"># Red         - bound / vline</span>
 <span class="n">BG_MAIN</span>   <span class="o">=</span> <span class="s1">'#080b12'</span>
 <span class="n">BG_PANEL</span>  <span class="o">=</span> <span class="s1">'#0e1320'</span>
 <span class="n">GRID_COL</span>  <span class="o">=</span> <span class="s1">'#1e2535'</span>
@@ -13877,9 +13877,9 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <span class="c1"># Normalisation</span>
 <span class="c1"># Three CSV conventions exist:</span>
 <span class="c1">#</span>
-<span class="c1">#  1. New PMOS  — columns VSG, VSD (correct, just rename)</span>
-<span class="c1">#  2. Old PMOS  — columns v(VG), v(VD) but VG stored as VGD (negative) → fix</span>
-<span class="c1">#  3. NMOS      — columns v(VG), v(VD), both positive, no change needed</span>
+<span class="c1">#  1. New PMOS  - columns VSG, VSD (correct, just rename)</span>
+<span class="c1">#  2. Old PMOS  - columns v(VG), v(VD) but VG stored as VGD (negative) → fix</span>
+<span class="c1">#  3. NMOS      - columns v(VG), v(VD), both positive, no change needed</span>
 <span class="c1">#</span>
 <span class="c1"># After normalisation every DataFrame uses v(VG) and v(VD) where:</span>
 <span class="c1">#   NMOS: v(VG)=VGS, v(VD)=VDS  (both positive, higher=more on)</span>
@@ -13887,7 +13887,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <span class="c1">#</span>
 <span class="c1"># PMOS validity clamp: VSG and VSD must both be &lt;= VDD.</span>
 <span class="c1"># The testbench sweep can produce VSG &gt; VDD artefacts when vdsx and V2</span>
-<span class="c1"># are simultaneously at extreme values — these rows are physically impossible</span>
+<span class="c1"># are simultaneously at extreme values - these rows are physically impossible</span>
 <span class="c1"># and are dropped here.</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_normalise</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">is_pmos</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -13926,7 +13926,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ⚠️  Could not read </span><span class="si">{</span><span class="n">fp</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">frames</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ⚠️  No valid </span><span class="si">{</span><span class="n">device_label</span><span class="si">}</span><span class="s2"> files — returning empty DataFrame"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ⚠️  No valid </span><span class="si">{</span><span class="n">device_label</span><span class="si">}</span><span class="s2"> files - returning empty DataFrame"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -13970,7 +13970,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FILTER + NEAREST-NEIGHBOUR SEARCH — Ron/Gm Design Helper</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FILTER + NEAREST-NEIGHBOUR SEARCH - Ron/Gm Design Helper</span>
 <span class="c1">#</span>
 <span class="c1"># apply_filter(df, vg, vd, corner):</span>
 <span class="c1">#   Selects rows matching (VGS/VSG, VDS/VSD, corner) using np.isclose(atol=1e-3)</span>
@@ -13986,7 +13986,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <span class="c1"># FILTER HELPER</span>
 <span class="c1"># Both NMOS and PMOS DataFrames now use v(VG) and v(VD) internally.</span>
 <span class="c1"># NMOS: v(VG)=VGS, v(VD)=VDS  (positive when on)</span>
-<span class="c1"># PMOS: v(VG)=VSG, v(VD)=VSD  (positive when on — normalised on load)</span>
+<span class="c1"># PMOS: v(VG)=VSG, v(VD)=VSD  (positive when on - normalised on load)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">apply_filter</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">vg</span><span class="p">,</span> <span class="n">vd</span><span class="p">,</span> <span class="n">corner</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
@@ -14025,19 +14025,19 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># VISUALISATION — render()  (Ron/Gm Design Helper)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># VISUALISATION - render()  (Ron/Gm Design Helper)</span>
 <span class="c1">#</span>
 <span class="c1"># Renders 2-panel matplotlib figure + Best Match printout + Top-5 table.</span>
 <span class="c1">#</span>
 <span class="c1"># DATA FLOW: reads vg/vd/corner from dropdowns → apply_filter() → df_use</span>
 <span class="c1"># → compute() → best, top5, dist; score = 100×(1 - min_dist/max_dist).</span>
 <span class="c1">#</span>
-<span class="c1"># PANEL 1 — SCATTER (Ron_Gm_unit vs i-sweep):</span>
+<span class="c1"># PANEL 1 - SCATTER (Ron_Gm_unit vs i-sweep):</span>
 <span class="c1">#   Plasma colourmap per length; markers:</span>
 <span class="c1">#     ▲ amber (query), ★ neon-green (best match),</span>
 <span class="c1">#     white dashed connector (query→best), red dashed hline (Ron bound).</span>
 <span class="c1">#</span>
-<span class="c1"># PANEL 2 — LOSS SURFACE:</span>
+<span class="c1"># PANEL 2 - LOSS SURFACE:</span>
 <span class="c1">#   L2² loss vs i-sweep sweep (ron/length fixed at best values). Log Y-axis.</span>
 <span class="c1">#   Narrow minimum = well-constrained design; green dot marks best match.</span>
 <span class="c1">#</span>
@@ -14079,7 +14079,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
             <span class="k">for</span> <span class="n">spine</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">spine</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="n">GRID_COL</span><span class="p">)</span>
 
-        <span class="c1"># PANEL 1: Scatter — per-length coloured dots</span>
+        <span class="c1"># PANEL 1: Scatter - per-length coloured dots</span>
         <span class="n">lengths_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">df_use</span><span class="p">[</span><span class="s2">"length"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
         <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lengths_sorted</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">idx_l</span><span class="p">,</span> <span class="n">L</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lengths_sorted</span><span class="p">):</span>
@@ -14207,7 +14207,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># WIDGET LAYOUT AND CALLBACKS — Ron/Gm Design Helper Dashboard</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># WIDGET LAYOUT AND CALLBACKS - Ron/Gm Design Helper Dashboard</span>
 <span class="c1">#</span>
 <span class="c1"># _vals(df, col): safe unique-value extractor; returns [] if df empty or col absent.</span>
 <span class="c1"># vg/vd/corner_vals: union of NMOS+PMOS unique values with sane fallbacks.</span>
@@ -14420,7 +14420,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
         <span class="n">valid_vg</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s2">"v(VG)"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">src</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="n">vg_label</span> <span class="o">=</span> <span class="s2">"VSG"</span> <span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"PMOS"</span> <span class="k">else</span> <span class="s2">"VGS"</span>
         <span class="n">status_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"&lt;span style='color:#ef4444'&gt;⚠️ No data — </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"&lt;span style='color:#ef4444'&gt;⚠️ No data - </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> "</span>
             <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">vg_label</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">vg_select</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> V, "</span>
             <span class="sa">f</span><span class="s2">"VD=</span><span class="si">{</span><span class="n">vd_select</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> V, </span><span class="si">{</span><span class="n">corner_select</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> &amp;nbsp;|"</span>
             <span class="sa">f</span><span class="s2">"&amp;nbsp;Valid </span><span class="si">{</span><span class="n">vg_label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">valid_vg</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/span&gt;"</span>
@@ -14438,7 +14438,7 @@ The best match returns $V_{\text{bias}}$, device width $W$, and channel length $
         <span class="n">status_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"&lt;span style='color:#ef4444'&gt;⚠️ Columns empty after filter&lt;/span&gt;"</span>
         <span class="k">return</span>
 
-    <span class="c1"># Update sliders — seed text boxes from the new midpoint values</span>
+    <span class="c1"># Update sliders - seed text boxes from the new midpoint values</span>
     <span class="n">_syncing</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">w_isweep</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">is_vals</span><span class="p">;</span>       <span class="n">w_isweep</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">is_vals</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">is_vals</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
     <span class="n">w_ron</span><span class="o">.</span><span class="n">options</span>    <span class="o">=</span> <span class="n">ron_vals_cur</span><span class="p">;</span>  <span class="n">w_ron</span><span class="o">.</span><span class="n">value</span>    <span class="o">=</span> <span class="n">ron_vals_cur</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ron_vals_cur</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
@@ -14668,7 +14668,7 @@ Post-simulation: ≈ 12 µA (≈15% deviation)</li>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># LOAD SETTLING DATA — Ron/Gm designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># LOAD SETTLING DATA - Ron/Gm designed IBA</span>
 <span class="c1">#</span>
 <span class="c1"># FILE: INV_OTA_rongm.txt</span>
 <span class="c1">#   Transient data for IBA sized with Ron/Gm methodology:</span>
@@ -14709,7 +14709,7 @@ Post-simulation: ≈ 12 µA (≈15% deviation)</li>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 16: Vout waveform — Ron/Gm designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 16: Vout waveform - Ron/Gm designed IBA</span>
 <span class="c1"># Identical structure to Figure 10 but using Ron/Gm design data.</span>
 <span class="c1"># VOUT_FINAL_ROGM = 0.64263 V</span>
 <span class="c1"># PMOS/NMOS sizing ratios from the Ron/Gm methodology).</span>
@@ -14753,7 +14753,7 @@ Post-simulation: ≈ 12 µA (≈15% deviation)</li>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 17: Log settling error — Ron/Gm designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 17: Log settling error - Ron/Gm designed IBA</span>
 <span class="c1"># Filters NaN/Inf/zero error samples; constructs log decade tick marks.</span>
 <span class="c1"># _sa_try_exp_fit() overlays fitted e^(-t/τ) dashed curve and prints τ.</span>
 <span class="c1"># τ(Ron/Gm) is the small-signal settling time constant of the Ron/Gm design.</span>
@@ -14766,7 +14766,7 @@ Post-simulation: ≈ 12 µA (≈15% deviation)</li>
 <span class="n">valid_t_r</span>    <span class="o">=</span> <span class="n">st_us_r</span><span class="p">[</span><span class="n">valid_r</span><span class="p">]</span>
 <span class="n">valid_err_r</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">err_r</span><span class="p">[</span><span class="n">valid_r</span><span class="p">])</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_err_r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️  No valid (non-zero, finite) error samples found — skipping error plot."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️  No valid (non-zero, finite) error samples found - skipping error plot."</span><span class="p">)</span>
     <span class="n">valid_err_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1e-6</span><span class="p">])</span>
     <span class="n">valid_t_r</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
 <span class="n">_emin_r</span> <span class="o">=</span> <span class="n">valid_err_r</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
@@ -14784,13 +14784,13 @@ Post-simulation: ≈ 12 µA (≈15% deviation)</li>
 <span class="n">tau_r</span> <span class="o">=</span> <span class="n">_sa_try_exp_fit</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">valid_t_r</span><span class="p">,</span> <span class="n">valid_err_r</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">tau_r</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="se">\u03c4</span><span class="s1"> (Ro/gm) = </span><span class="si">{</span><span class="n">tau_r</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> </span><span class="se">\u03bc</span><span class="s1">s'</span><span class="p">)</span>
 
-<span class="c1"># ── highlight nonlinear settling phase — both edges, all cycles ─────────────</span>
-<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs — full clock period</span>
-<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs — 50 ns nonlinear phase per edge</span>
+<span class="c1"># ── highlight nonlinear settling phase - both edges, all cycles ─────────────</span>
+<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs - full clock period</span>
+<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs - 50 ns nonlinear phase per edge</span>
 <span class="n">_t_max</span>       <span class="o">=</span> <span class="n">valid_t_r</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="n">_n_cycles</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_t_max</span> <span class="o">/</span> <span class="n">_period</span><span class="p">))</span>
 
-<span class="c1"># explicitly distinct colors — orange for +edge, steel blue for -edge</span>
+<span class="c1"># explicitly distinct colors - orange for +edge, steel blue for -edge</span>
 <span class="n">_edges</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">'rgba(210, 105,  30, 0.25)'</span><span class="p">,</span> <span class="s1">'rgba(210, 105,  30, 1.0)'</span><span class="p">,</span> <span class="s1">'+edge nonlinear Phase'</span><span class="p">),</span>
     <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">'rgba( 30, 144, 255, 0.25)'</span><span class="p">,</span> <span class="s1">'rgba( 30, 144, 255, 1.0)'</span><span class="p">,</span> <span class="s1">'−edge nonlinear Phase'</span><span class="p">),</span>
@@ -14861,7 +14861,7 @@ transistor sizing stage.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 18: Output current Iout — Ron/Gm designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 18: Output current Iout - Ron/Gm designed IBA</span>
 <span class="c1"># sm_r × 1e6 converts branch current (A) to µA for display.</span>
 <span class="c1"># Large initial spike = large-signal phase (high slew current).</span>
 <span class="c1"># Exponential decay = small-signal phase (NMOS/PMOS currents balancing).</span>
@@ -14876,9 +14876,9 @@ transistor sizing stage.</p>
     <span class="n">hovertemplate</span><span class="o">=</span><span class="s1">'t = %</span><span class="si">{x:.3f}</span><span class="s1"> </span><span class="se">\u03bc</span><span class="s1">s&lt;br&gt;I&lt;sub&gt;out&lt;/sub&gt; = %</span><span class="si">{y:.3f}</span><span class="s1"> </span><span class="se">\u03bc</span><span class="s1">A&lt;extra&gt;&lt;/extra&gt;'</span>
 <span class="p">))</span>
 
-<span class="c1"># ── highlight nonlinear vs linear phase — both edges, all cycles ─────────────</span>
-<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs — full clock period</span>
-<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs — 50 ns nonlinear phase per edge</span>
+<span class="c1"># ── highlight nonlinear vs linear phase - both edges, all cycles ─────────────</span>
+<span class="n">_period</span>      <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># µs - full clock period</span>
+<span class="n">_nl_duration</span> <span class="o">=</span> <span class="mf">0.05</span>   <span class="c1"># µs - 50 ns nonlinear phase per edge</span>
 <span class="n">_t_max</span>       <span class="o">=</span> <span class="n">st_us_r</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="n">_n_cycles</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_t_max</span> <span class="o">/</span> <span class="n">_period</span><span class="p">))</span>
 
@@ -14942,7 +14942,7 @@ transistor sizing stage.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 19: dVout/dt — Ron/Gm designed IBA</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># FIGURE 19: dVout/dt - Ron/Gm designed IBA</span>
 <span class="c1"># dvdt_r (V/µs) vs time.  Peak = Ipeak/C_load (slew rate of large-signal phase).</span>
 <span class="c1"># Compare peak magnitude and timing with Figure 13 (gm/ID design).</span>
 <span class="c1"># Mirrors Figure 13 structure; reveals settling dynamics of Ron/Gm-sized IBA.</span>
@@ -15016,7 +15016,7 @@ transistor sizing stage.</p>
 <tr>
 <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Design entry stage</td>
 <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;">Pre-simulation</td>
-<td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Pre-simulation<br/><small><i>Partial — no large-signal info</i></small></td>
+<td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Pre-simulation<br/><small><i>Partial - no large-signal info</i></small></td>
 <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Requires full transient simulation per iteration</td>
 </tr>
 <!-- ── II ── -->
@@ -15082,7 +15082,7 @@ transistor sizing stage.</p>
 <tr>
 <td style="text-align:left; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">Subsumes $g_m/I_D$ methodology</td>
 <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0; background:#fafafa;"><span style="font-size:1.1em;">✅</span><br/><small><i>$g_m/I_D$ readable from $g_m/I_D$ vs $R_{on}/g_m$ plot; reverse not possible</i></small></td>
-<td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">—</td>
+<td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;">-</td>
 <td style="text-align:center; padding:5px 7px; border-bottom:0.5px solid #ddd; vertical-align:top; word-break:break-word; overflow-wrap:anywhere; white-space:normal; max-width:0;"><span style="font-size:1.1em;">✅</span></td>
 </tr>
 <!-- ── V ── -->
@@ -15219,7 +15219,7 @@ Pre-simulation $V_{bias}$ predictions were within <b>±75 mV</b> of post-simulat
 </main>
 
 <style>
-/* === TABLE FIX — loaded last, wins over notebook CSS === */
+/* === TABLE FIX - loaded last, wins over notebook CSS === */
 table {
   border-collapse: collapse !important;
   display: table !important;
