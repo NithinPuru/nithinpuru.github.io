@@ -81,6 +81,9 @@ const { groups } = Astro.props;
                     </span>
                   )}
                 </div>
+                
+                {entry.authors && <p class="entry__authors" set:html={entry.authors}></p>}
+                {entry.venue && <p class="entry__venue" set:html={entry.venue}></p>}
 
                 {entry.desc && <p class="entry__desc" set:html={entry.desc}></p>}
 

@@ -477,6 +477,20 @@ a {
 .entry__tag.is-hot {
   color: var(--annot);
 }
+.entry__authors {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--ink-2);
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+.entry__venue {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  margin-top: 0.1rem;
+  margin-bottom: 0.4rem;
+}
 .entry__desc {
   margin: 0.4rem 0 0.55rem;
   max-width: 40rem;
