@@ -2146,7 +2146,7 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
 <a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
-<strong>Praveen Kumar Venkatachala</strong> I am a PhD Graduate student from Oregon State University. I am presently working as a part of analog integrated circuits design group in AIS (Artificial Intelligence Solutions) division of Skyworks Solutions Inc. in Hillsboro, Oregon. We work on innovative and challenging analog system on chips (ASoCs) for smart speakers/microphones, gaming controllers, wired/wireless headsets and many more products involving audio and voice technology.
+<strong>Praveen Kumar Venkatachala</strong> received his Ph.D. degree from Oregon State University. He is presently working as a part of the analog integrated circuits design group in the AIS (Artificial Intelligence Solutions) division of Skyworks Solutions Inc. in Hillsboro, Oregon. His work focuses on innovative and challenging analog system-on-chips (ASoCs) for smart speakers/microphones, gaming controllers, wired/wireless headsets, and many more products involving audio and voice technology.
 <br clear="all" />
 </p>
 <br>
