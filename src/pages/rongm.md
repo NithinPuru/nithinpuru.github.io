@@ -2117,7 +2117,7 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 ## About the Authors
 
 <p align="justify" style="text-align: justify; margin-bottom: 20px;">
-<a href="https://www.linkedin.com/in/nithin-purushothama-5b236113b" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/NithinPurushothama_pic.jpg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
+<a href="https://www.linkedin.com/in/nithin-purushothama-70664727b/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/NithinPurushothama_pic.jpg?v=5" align="left" style="width: 120px; margin-right: 15px; border-radius: 8px;" /></a>
 <strong>Nithin Purushothama</strong> received the B.Tech. degree in electronics and communication engineering from Visvesvaraya Technological University (VTU), India, in 2025. He is currently working as an Analog Design Engineer at Omni Design Technologies. He previously worked as a Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under the guidance of Prof. Madhav K. Pathak, where he worked on ring amplifiers and their applications in low-power LDOs. His research interests include high-speed and low-power data converters, dynamic and ring amplifiers, biomedical and wearable circuits, energy-efficient circuits for sensing and computation, algorithm–circuit co-design and emerging computing architectures. He is currently seeking Ph.D. opportunities for Fall 2027 in analog and mixed-signal integrated circuits and related areas.
 <br clear="all" />
 </p>
