@@ -981,23 +981,6 @@ a {
   .contact-card:last-child { border-bottom: none; }
 }
 
-/* ── PhD signal in hero ──────────────────────────── */
-.phd-hero-signal {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-  border: 1px solid var(--rule);
-  display: inline-block;
-  padding: 0.3rem 0.85rem;
-  margin-top: 0.5rem;
-}
-.phd-hero-signal strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-
 /* ── Masthead headshot ─────────────────────────────── */
 .masthead__name-row {
   display: flex;
