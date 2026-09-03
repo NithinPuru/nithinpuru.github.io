@@ -160,10 +160,10 @@
     ['src'],
     ['s_dynamp','s_ldo','s_ota','s_scamp','s_tape',
      's_cad','s_oseda','s_pdk','s_python','s_matlab','s_ml','s_quant'],
-    ['p_omni','p_phytau','p_iitgn','p_isro','p_oss','p_squant','p_spice'],
+    ['p_omni','p_phytau','p_iitgn','p_isro','p_oss','p_squant','p_spice','p_rongm'],
     ['d_ams','d_oss','d_research','d_ml']
   ];
-  var STEPS = [0, 63, 95, 152];  // vertical step per layer
+  var STEPS = [0, 63, 85, 152];  // vertical step per layer
 
   // Compute y positions centred at H/2
   function centredYs(n, step) {
@@ -315,6 +315,12 @@
       desc: '<p>Open-source Python tools for analog IC design automation developed at IIT Gandhinagar. PVT sweep framework for Ngspice: automated metric extraction, cross-corner comparison plots, and structured data export. SPICE-to-area estimation tool using Magic VLSI for pre-layout floorplanning. Used extensively during R\u2092\u2099/g\u2098 methodology development to sweep device geometry and bias conditions across process corners and extract LUTs.</p>',
       groups: [{ title: 'Tools', items: ['Ngspice PVT sweep automation', 'Automated metric extraction \u0026 comparison plots', 'SPICE-to-area estimation (Magic VLSI)', 'LUT generation for R\u2092\u2099/g\u2098 methodology'], accent: ['LUT generation for R\u2092\u2099/g\u2098 methodology', 'Ngspice PVT sweep automation'] }]
     },
+    'p_rongm': {
+      abbr: 'RGM', label: 'R\u2092\u2099/g\u2098 Methodology',
+      line1: 'R\u2092\u2099/g\u2098', line2: 'Methodology',
+      desc: '<p>A pre-simulation framework that pre-characterises device LUTs from parametric SPICE simulations, co-designing the non-linear RC settling phase and the linear small-signal phase of dynamic amplifiers. Exposes worst-case corner behaviour at design entry. Accepted at ESSERC 2026.</p>',
+      groups: [{ title: 'Application', items: ['Dynamic Amplifier Design', 'LUT-based pre-characterisation', 'ESSERC 2026 Acceptance'], accent: ['ESSERC 2026 Acceptance'] }]
+    },
 
     // ─ Layer 3: Domain outputs ────────────────────────────
     'd_ams': {
@@ -354,17 +360,17 @@
     ['src','s_tape'],['src','s_cad'],['src','s_oseda'],['src','s_pdk'],
     ['src','s_python'],['src','s_matlab'],['src','s_ml'],['src','s_quant'],
     // L1 → L2: skills to projects/places
-    ['s_dynamp','p_iitgn'],['s_dynamp','p_omni'],['s_dynamp','p_oss'],
+    ['s_dynamp','p_iitgn'],['s_dynamp','p_omni'],['s_dynamp','p_oss'],['s_dynamp','p_rongm'],
     ['s_ldo','p_iitgn'],['s_ldo','p_omni'],['s_ldo','p_oss'],
     ['s_ota','p_iitgn'],['s_ota','p_phytau'],['s_ota','p_omni'],['s_ota','p_oss'],
     ['s_scamp','p_iitgn'],['s_scamp','p_omni'],
     ['s_tape','p_oss'],['s_tape','p_omni'],['s_tape','p_phytau'],
     ['s_cad','p_phytau'],['s_cad','p_omni'],
-    ['s_oseda','p_iitgn'],['s_oseda','p_oss'],['s_oseda','p_spice'],
+    ['s_oseda','p_iitgn'],['s_oseda','p_oss'],['s_oseda','p_spice'],['s_oseda','p_rongm'],
     ['s_pdk','p_oss'],['s_pdk','p_phytau'],['s_pdk','p_omni'],
-    ['s_python','p_spice'],['s_python','p_squant'],['s_python','p_iitgn'],
+    ['s_python','p_spice'],['s_python','p_squant'],['s_python','p_iitgn'],['s_python','p_rongm'],
     ['s_matlab','p_iitgn'],['s_matlab','p_isro'],
-    ['s_ml','p_squant'],['s_ml','p_iitgn'],
+    ['s_ml','p_squant'],['s_ml','p_iitgn'],['s_ml','p_rongm'],
     ['s_quant','p_squant'],
     // L2 → L3: projects/places to output domains
     ['p_omni','d_ams'],
@@ -373,7 +379,8 @@
     ['p_isro','d_ams'],
     ['p_oss','d_oss'],['p_oss','d_ams'],
     ['p_squant','d_ml'],
-    ['p_spice','d_oss'],['p_spice','d_research'],['p_spice','d_ml']
+    ['p_spice','d_oss'],['p_spice','d_research'],['p_spice','d_ml'],
+    ['p_rongm','d_research']
   ];
 
   // ── Adjacency map ─────────────────────────────────────────────────
