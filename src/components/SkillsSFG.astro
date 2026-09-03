@@ -11,7 +11,7 @@
 
   <!-- Skills detail panel -->
   <div class="sfg-panel" id="sfg-panel">
-    <p class="sfg-empty" id="sfg-empty">hover a node to explore</p>
+    <p class="sfg-empty" id="sfg-empty">click a node to explore</p>
     <div id="sfg-content" style="display:none">
       <div class="sfg-ph">
         <span id="sfg-abbr" class="sfg-abbr"></span>
@@ -588,8 +588,7 @@
   // Attach events to nodes
   Object.keys(nodeEls).forEach(function(id) {
     var el = nodeEls[id];
-    el.addEventListener('mouseenter', function() { activate(id); });
-    el.addEventListener('mouseleave', function() { deactivate(false); });
+    el.addEventListener('click', function() { activate(id); });
     el.addEventListener('touchstart', function(e) { e.preventDefault(); activate(id); }, { passive: false });
   });
 
