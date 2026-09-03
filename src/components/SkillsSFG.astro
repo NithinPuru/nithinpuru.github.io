@@ -196,62 +196,62 @@
     's_dynamp': {
       abbr: 'AMP', label: 'Ring / Dynamic Amplifiers',
       line1: 'Dynamic', line2: 'Amplifiers',
-      desc: '<p>Ring Amplifiers (RAMPs) and Inverter-Based Amplifiers (IBAs) \u2014 dynamic topologies that exploit full large-signal drive for high-speed, energy-efficient settling. Primary focus of the R\u2092\u2099/g\u2098 methodology work at IIT Gandhinagar.</p><p>Designed a Ring Amplifier-based LDO where the final RAMP stage doubles as the pass transistor with adaptive biasing and deadzone regulation for PVT-robust performance. Designed an IBA in IHP SG13G2 BiCMOS as the R\u2092\u2099/g\u2098 methodology silicon test vehicle. Also designed a Process-Invariant Ring Amplifier via deadzone regulation in IHP SG13G2.</p>',
-      groups: [{ title: 'Topologies', items: ['Inverter-Based Amplifier (IBA)', 'Ring Amplifier (RAMP)', 'Dynamic Amplifier in LDO pass stage', 'Process-Invariant Ring Amp \u2014 Deadzone Regulation'], accent: ['Inverter-Based Amplifier (IBA)', 'Ring Amplifier (RAMP)'] }]
+      desc: '<p>Ring Amplifiers (RAMPs) and Inverter-Based Amplifiers (IBAs) - dynamic topologies that exploit full large-signal drive for high-speed, energy-efficient settling. Primary focus of the R\u2092\u2099/g\u2098 methodology work at IIT Gandhinagar.</p><p>Designed a Ring Amplifier-based LDO where the final RAMP stage doubles as the pass transistor with adaptive biasing and deadzone regulation for PVT-robust performance. Designed an IBA in IHP SG13G2 BiCMOS as the R\u2092\u2099/g\u2098 methodology silicon test vehicle. Also designed a Process-Invariant Ring Amplifier via deadzone regulation in IHP SG13G2.</p>',
+      groups: [{ title: 'Topologies', items: ['Inverter-Based Amplifier (IBA)', 'Ring Amplifier (RAMP)', 'Dynamic Amplifier in LDO pass stage', 'Process-Invariant Ring Amp - Deadzone Regulation'], accent: ['Inverter-Based Amplifier (IBA)', 'Ring Amplifier (RAMP)'] }]
     },
     's_ldo': {
       abbr: 'LDO', label: 'LDO / Bandgap Reference',
       line1: 'LDO', line2: 'BGR',
       desc: '<p>At Omni Design Technologies (TSMC\u00a028\u00a0nm): owned the Bandgap Core (self-biased folded-cascode OTA fixing a common-mode latch bug) and REF ANALOG (5 temperature-compensated high-PSRR references + 8\u00d7200\u00a0\u00b5A current references with trim-based programmability for \u00b13% accuracy).</p><p>At IIT Gandhinagar (SKY130): designed a piecewise-compensated BGR with higher-order curvature correction achieving sub-5\u00a0ppm/\u00b0C TC. Low-power always-on startup circuit. Fabricated via TinyTapeout SKY130 shuttle. Separate LDO design in SKY130: 1\u00b5s transient settling, \u221260\u00a0dB PSRR, 100\u00a0pF/40\u00a0mA load.</p>',
-      groups: [{ title: 'Designs', items: ['Piecewise-Compensated BGR \u2014 SKY130 (sub-5 ppm/\u00b0C)', 'Self-biased Folded-Cascode OTA \u2014 TSMC 28\u00a0nm', 'REF ANALOG \u2014 5\u00d7 Vref, 8\u00d7 200\u00a0\u00b5A Iref, \u00b13%', 'LDO \u2014 SKY130 (1\u00b5s settling, \u221260\u00a0dB PSRR)'], accent: ['Piecewise-Compensated BGR \u2014 SKY130 (sub-5 ppm/\u00b0C)', 'Self-biased Folded-Cascode OTA \u2014 TSMC 28\u00a0nm'] }]
+      groups: [{ title: 'Designs', items: ['Piecewise-Compensated BGR - SKY130 (sub-5 ppm/\u00b0C)', 'Self-biased Folded-Cascode OTA - TSMC 28\u00a0nm', 'REF ANALOG - 5\u00d7 Vref, 8\u00d7 200\u00a0\u00b5A Iref, \u00b13%', 'LDO - SKY130 (1\u00b5s settling, \u221260\u00a0dB PSRR)'], accent: ['Piecewise-Compensated BGR - SKY130 (sub-5 ppm/\u00b0C)', 'Self-biased Folded-Cascode OTA - TSMC 28\u00a0nm'] }]
     },
     's_ota': {
       abbr: 'OTA', label: 'OTA / OpAmp Design',
       line1: 'OTA', line2: 'Design',
-      desc: '<p>At Omni (TSMC\u00a028\u00a0nm): replaced the BG CORE opamp with a self-biased folded-cascode OTA to fix a common-mode latch bug. Open-source tapeout: Folded-Cascode OTA in GF180MCU-D (TinyTapeout, full DRC/LVS/PEX).</p><p>Rail-to-Rail Input OTA in SKY130: 63\u201364\u00a0dB DC gain, 2\u00a0MHz UGF, 85\u00b0 PM, Monte Carlo offset \u03c3\u00a0=\u00a01.54\u00a0mV. 2-Stage Fully Differential OTA in SKY130 with buffer-based common-mode sensing. Power-on Reset in SKY130 with PMOS/NMOS current-mirror comparator.</p>',
+      desc: '<p>At Omni (TSMC\u00a028\u00a0nm): replaced the BG CORE opamp with a self-biased folded-cascode OTA to fix a common-mode latch bug. Open-source tapeout: Folded-Cascode OTA in GF180MCU-D (TinyTapeout, full DRC/LVS/PEX).</p><p>Rail-to-Rail Input OTA in SKY130: 63-64\u00a0dB DC gain, 2\u00a0MHz UGF, 85\u00b0 PM, Monte Carlo offset \u03c3\u00a0=\u00a01.54\u00a0mV. 2-Stage Fully Differential OTA in SKY130 with buffer-based common-mode sensing. Power-on Reset in SKY130 with PMOS/NMOS current-mirror comparator.</p>',
       groups: [{ title: 'Topologies', items: ['Self-biased Folded-Cascode OTA (TSMC 28\u00a0nm)', 'Folded-Cascode OTA (GF180MCU tapeout)', 'Rail-to-Rail Input OTA (SKY130)', '2-Stage Fully Differential OTA (SKY130)', 'Power-on Reset (SKY130)'], accent: ['Self-biased Folded-Cascode OTA (TSMC 28\u00a0nm)', 'Folded-Cascode OTA (GF180MCU tapeout)'] }]
     },
     's_scamp': {
       abbr: 'SCA', label: 'Switched-Capacitor Amplifiers',
       line1: 'SC', line2: 'Amplifiers',
-      desc: '<p>Switched-capacitor amplifier design and analysis, used as the primary testbench topology in the R\u2092\u2099/g\u2098 methodology work. The IBA-based SC amplifier at IIT Gandhinagar validated both the non-linear RC settling phase and the linear g\u2098 settling phase of the dynamic amplifier model.</p><p>Also interfaces downstream with the PVT Monitor at Omni Design \u2014 8-bit I-DAC current mismatch requirements to the downstream SC-amp block drove the BG CORE OTA redesign.</p>',
-      groups: [{ title: 'Applications', items: ['IBA SC testbench for R\u2092\u2099/g\u2098 validation (IITGN)', 'Downstream SC-amp interface \u2014 Omni PVT Monitor'], accent: ['IBA SC testbench for R\u2092\u2099/g\u2098 validation (IITGN)'] }]
+      desc: '<p>Switched-capacitor amplifier design and analysis, used as the primary testbench topology in the R\u2092\u2099/g\u2098 methodology work. The IBA-based SC amplifier at IIT Gandhinagar validated both the non-linear RC settling phase and the linear g\u2098 settling phase of the dynamic amplifier model.</p><p>Also interfaces downstream with the PVT Monitor at Omni Design - 8-bit I-DAC current mismatch requirements to the downstream SC-amp block drove the BG CORE OTA redesign.</p>',
+      groups: [{ title: 'Applications', items: ['IBA SC testbench for R\u2092\u2099/g\u2098 validation (IITGN)', 'Downstream SC-amp interface - Omni PVT Monitor'], accent: ['IBA SC testbench for R\u2092\u2099/g\u2098 validation (IITGN)'] }]
     },
     's_tape': {
-      abbr: 'TO', label: 'Tapeout Flow \u2014 DRC / LVS / PEX',
+      abbr: 'TO', label: 'Tapeout Flow - DRC / LVS / PEX',
       line1: 'Tapeout', line2: 'DRC\u00b7LVS\u00b7PEX',
       desc: '<p>Pre-tapeout sign-off across 5 process nodes. Open-source (SKY130, GF180MCU, IHP SG13G2) via TinyTapeout: DRC/LVS with Magic VLSI + Netgen, PEX and corner simulation with Ngspice. Industrial (UMC\u00a055\u00a0nm at PhyTau, TSMC\u00a028\u00a0nm at Omni): Cadence Virtuoso with Calibre sign-off, plus Monte Carlo, trim programmability verification, and integration checks against downstream blocks.</p>',
       groups: [
-        { title: 'Open-Source (TinyTapeout)', items: ['SKY130 \u2014 Piecewise-Compensated BGR', 'GF180MCU-D \u2014 Folded-Cascode OTA', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'], accent: ['SKY130 \u2014 Piecewise-Compensated BGR', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'] },
-        { title: 'Industrial', items: ['UMC 55\u00a0nm \u2014 PWM Comparator (PhyTau)', 'TSMC 28\u00a0nm \u2014 PVT Monitor (Omni Design)'], accent: ['TSMC 28\u00a0nm \u2014 PVT Monitor (Omni Design)'] }
+        { title: 'Open-Source (TinyTapeout)', items: ['SKY130 - Piecewise-Compensated BGR', 'GF180MCU-D - Folded-Cascode OTA', 'IHP SG13G2 - Inverter-Based Amplifier'], accent: ['SKY130 - Piecewise-Compensated BGR', 'IHP SG13G2 - Inverter-Based Amplifier'] },
+        { title: 'Industrial', items: ['UMC 55\u00a0nm - PWM Comparator (PhyTau)', 'TSMC 28\u00a0nm - PVT Monitor (Omni Design)'], accent: ['TSMC 28\u00a0nm - PVT Monitor (Omni Design)'] }
       ]
     },
     's_cad': {
       abbr: 'CAD', label: 'Cadence Virtuoso / Spectre',
       line1: 'Cadence', line2: 'Virtuoso',
       desc: '<p>Primary commercial EDA tool for all industrial tapeout work. Used at PhyTau Semiconductors (UMC\u00a055\u00a0nm) for PWM comparator design, parametric corner sweeps, and full Monte Carlo verification. Used at Omni Design Technologies (TSMC\u00a028\u00a0nm) for Bandgap Core and REF ANALOG design, mismatch analysis, and IP-level integration sign-off. Also Keysight ADS and LTspice.</p>',
-      groups: [{ title: 'Used At', items: ['PhyTau \u2014 UMC 55\u00a0nm, PWM comparator', 'Omni Design \u2014 TSMC 28\u00a0nm, Bandgap + REF', 'Also: Keysight ADS, LTspice'], accent: ['Omni Design \u2014 TSMC 28\u00a0nm, Bandgap + REF'] }]
+      groups: [{ title: 'Used At', items: ['PhyTau - UMC 55\u00a0nm, PWM comparator', 'Omni Design - TSMC 28\u00a0nm, Bandgap + REF', 'Also: Keysight ADS, LTspice'], accent: ['Omni Design - TSMC 28\u00a0nm, Bandgap + REF'] }]
     },
     's_oseda': {
       abbr: 'OSE', label: 'Open-Source EDA',
       line1: 'Open-Src', line2: 'EDA',
-      desc: '<p>Full open-source IC design flow: Xschem (schematic), Ngspice (simulation), Magic VLSI (layout), KLayout (GDS/DRC), Netgen (LVS). Used across SKY130, GF180MCU-D, and IHP SG13G2 for all LP-CAS Lab and TinyTapeout work.</p><p>Also used for the SPICE Automation Framework \u2014 Python tooling for automated Ngspice PVT sweeps, metric extraction, cross-corner comparison plots, and LUT generation for the R\u2092\u2099/g\u2098 methodology.</p>',
-      groups: [{ title: 'Tools', items: ['Ngspice \u2014 simulation', 'Xschem \u2014 schematic', 'Magic VLSI \u2014 layout', 'KLayout \u2014 GDS / DRC', 'Netgen \u2014 LVS'], accent: ['Ngspice \u2014 simulation', 'Xschem \u2014 schematic', 'Magic VLSI \u2014 layout'] }]
+      desc: '<p>Full open-source IC design flow: Xschem (schematic), Ngspice (simulation), Magic VLSI (layout), KLayout (GDS/DRC), Netgen (LVS). Used across SKY130, GF180MCU-D, and IHP SG13G2 for all LP-CAS Lab and TinyTapeout work.</p><p>Also used for the SPICE Automation Framework - Python tooling for automated Ngspice PVT sweeps, metric extraction, cross-corner comparison plots, and LUT generation for the R\u2092\u2099/g\u2098 methodology.</p>',
+      groups: [{ title: 'Tools', items: ['Ngspice - simulation', 'Xschem - schematic', 'Magic VLSI - layout', 'KLayout - GDS / DRC', 'Netgen - LVS'], accent: ['Ngspice - simulation', 'Xschem - schematic', 'Magic VLSI - layout'] }]
     },
     's_pdk': {
-      abbr: 'PDK', label: 'Process Design Kits \u2014 5 Nodes',
+      abbr: 'PDK', label: 'Process Design Kits - 5 Nodes',
       line1: 'PDKs', line2: '5 Nodes',
       desc: '<p>Worked across 5 distinct process technologies: TSMC\u00a028\u00a0nm CMOS (Omni Design), UMC\u00a055\u00a0nm CMOS (PhyTau), IHP SG13G2 130\u00a0nm BiCMOS (LP-CAS Lab/TinyTapeout), SkyWater SKY130 130\u00a0nm (TinyTapeout), GlobalFoundries GF180MCU-D 180\u00a0nm (TinyTapeout). Each with full design, layout, and pre-tapeout sign-off.</p>',
       groups: [
-        { title: 'Industrial', items: ['TSMC 28\u00a0nm CMOS \u2014 Omni Design Technologies', 'UMC 55\u00a0nm CMOS \u2014 PhyTau Semiconductors'], accent: ['TSMC 28\u00a0nm CMOS \u2014 Omni Design Technologies', 'UMC 55\u00a0nm CMOS \u2014 PhyTau Semiconductors'] },
-        { title: 'Open-Source', items: ['IHP SG13G2 \u2014 130\u00a0nm BiCMOS', 'SKY130 \u2014 SkyWater 130\u00a0nm', 'GF180MCU-D \u2014 GlobalFoundries 180\u00a0nm'], accent: ['IHP SG13G2 \u2014 130\u00a0nm BiCMOS'] }
+        { title: 'Industrial', items: ['TSMC 28\u00a0nm CMOS - Omni Design Technologies', 'UMC 55\u00a0nm CMOS - PhyTau Semiconductors'], accent: ['TSMC 28\u00a0nm CMOS - Omni Design Technologies', 'UMC 55\u00a0nm CMOS - PhyTau Semiconductors'] },
+        { title: 'Open-Source', items: ['IHP SG13G2 - 130\u00a0nm BiCMOS', 'SKY130 - SkyWater 130\u00a0nm', 'GF180MCU-D - GlobalFoundries 180\u00a0nm'], accent: ['IHP SG13G2 - 130\u00a0nm BiCMOS'] }
       ]
     },
     's_python': {
       abbr: 'PY', label: 'Python \u0026 Automation',
       line1: 'Python', line2: 'Automation',
       desc: '<p>Python used for EDA automation (parametric Ngspice scripting, LUT generation for R\u2092\u2099/g\u2098 methodology, batch-mode sweep control, metric extraction and cross-corner comparison plots) and financial data analysis (NumPy, Pandas, SciPy, Matplotlib, Scikit-learn, GBM-based Monte Carlo). Also developed the JavaScript analytics engine for the Semi-Quant Terminal.</p>',
-      groups: [{ title: 'Applications', items: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation \u2014 R\u2092\u2099/g\u2098 methodology', 'SPICE-to-area estimation (Magic VLSI)', 'Semi-Quant Terminal analytics engine', 'Financial data modelling \u2014 GBM Monte Carlo'], accent: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation \u2014 R\u2092\u2099/g\u2098 methodology'] }]
+      groups: [{ title: 'Applications', items: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation - R\u2092\u2099/g\u2098 methodology', 'SPICE-to-area estimation (Magic VLSI)', 'Semi-Quant Terminal analytics engine', 'Financial data modelling - GBM Monte Carlo'], accent: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation - R\u2092\u2099/g\u2098 methodology'] }]
     },
     's_matlab': {
       abbr: 'MAT', label: 'MATLAB / C++ / Verilog',
@@ -268,40 +268,40 @@
     's_quant': {
       abbr: 'QF', label: 'Quantitative Finance',
       line1: 'Quant', line2: 'Finance',
-      desc: '<p>Developed the Semi-Quant Terminal \u2014 a zero-backend single-page web application providing institutional-grade quantitative analysis of 40+ semiconductor company stock portfolios. Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine. Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.</p>',
-      groups: [{ title: 'Methods', items: ['Monte Carlo \u2014 GBM-based', 'VaR / CVaR', 'Sharpe / Sortino ratios', 'RSI, MACD, Bollinger Bands', 'ARIMA / Holt-Winters time-series', 'Beta / correlation analysis'], accent: ['Monte Carlo \u2014 GBM-based', 'VaR / CVaR'] }]
+      desc: '<p>Developed the Semi-Quant Terminal - a zero-backend single-page web application providing institutional-grade quantitative analysis of 40+ semiconductor company stock portfolios. Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine. Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.</p>',
+      groups: [{ title: 'Methods', items: ['Monte Carlo - GBM-based', 'VaR / CVaR', 'Sharpe / Sortino ratios', 'RSI, MACD, Bollinger Bands', 'ARIMA / Holt-Winters time-series', 'Beta / correlation analysis'], accent: ['Monte Carlo - GBM-based', 'VaR / CVaR'] }]
     },
 
     // ─ Layer 2: Projects / Places ─────────────────────────
     'p_omni': {
       abbr: 'OMNI', label: 'Omni Design Technologies',
       line1: 'Omni Design', line2: 'TSMC 28nm',
-      desc: '<p>Analog Design Intern \u2192 Engineer at Omni Design Technologies, Bengaluru (March 2026 \u2013 present), TSMC\u00a028\u00a0nm CMOS. Owned the <strong>Bandgap Core</strong>: replaced the conventional opamp with a self-biased folded-cascode OTA and a new always-on startup circuit, fixing a common-mode latch bug that caused the loop to lock at VDD; reduced 8-bit I-DAC current mismatch to downstream SC-amp and ADC blocks.</p><p>Owned <strong>REF ANALOG</strong>: 5 temperature-compensated high-PSRR reference voltages and 8\u00d7200\u00a0\u00b5A current references with trim-based programmability to meet \u00b13% output accuracy. Mapped digital infrastructure from a 16\u00a0nm reference IP onto the 28\u00a0nm blocks, enabling block-level reuse.</p>',
-      groups: [{ title: 'Blocks Owned', items: ['Bandgap Core \u2014 self-biased folded-cascode OTA', 'REF ANALOG \u2014 5\u00d7 Vref, 8\u00d7 200\u00b5A Iref, \u00b13%', 'Digital infrastructure mapping (16\u00a0nm \u2192 28\u00a0nm)'], accent: ['Bandgap Core \u2014 self-biased folded-cascode OTA', 'REF ANALOG \u2014 5\u00d7 Vref, 8\u00d7 200\u00b5A Iref, \u00b13%'] }]
+      desc: '<p>Analog Design Intern \u2192 Engineer at Omni Design Technologies, Bengaluru (March 2026 - present), TSMC\u00a028\u00a0nm CMOS. Owned the <strong>Bandgap Core</strong>: replaced the conventional opamp with a self-biased folded-cascode OTA and a new always-on startup circuit, fixing a common-mode latch bug that caused the loop to lock at VDD; reduced 8-bit I-DAC current mismatch to downstream SC-amp and ADC blocks.</p><p>Owned <strong>REF ANALOG</strong>: 5 temperature-compensated high-PSRR reference voltages and 8\u00d7200\u00a0\u00b5A current references with trim-based programmability to meet \u00b13% output accuracy. Mapped digital infrastructure from a 16\u00a0nm reference IP onto the 28\u00a0nm blocks, enabling block-level reuse.</p>',
+      groups: [{ title: 'Blocks Owned', items: ['Bandgap Core - self-biased folded-cascode OTA', 'REF ANALOG - 5\u00d7 Vref, 8\u00d7 200\u00b5A Iref, \u00b13%', 'Digital infrastructure mapping (16\u00a0nm \u2192 28\u00a0nm)'], accent: ['Bandgap Core - self-biased folded-cascode OTA', 'REF ANALOG - 5\u00d7 Vref, 8\u00d7 200\u00b5A Iref, \u00b13%'] }]
     },
     'p_phytau': {
       abbr: 'PHY', label: 'PhyTau Semiconductors',
       line1: 'PhyTau', line2: 'UMC 55nm',
-      desc: '<p>Analog Design Engineer at PhyTau Semiconductors, Bengaluru (Oct 2025 \u2013 Feb 2026), UMC\u00a055\u00a0nm CMOS. Designed a 4-input PWM comparator with programmable hysteresis for a multi-phase DC\u2013DC converter SoC. Redesign introduced programmable hysteresis at the first comparator stage, eliminating trip-point glitches and reducing propagation delay \u2014 approximately 30% power reduction over the prior implementation.</p><p>Debugged digital-induced glitches in the control path by characterising delay contributions from hysteresis control and de-glitching logic. Full PVT corner and Monte Carlo verification in Cadence Virtuoso / Spectre.</p>',
-      groups: [{ title: 'Block', items: ['4-input PWM Comparator with programmable hysteresis', 'Multi-phase DC\u2013DC converter SoC \u2014 UMC 55\u00a0nm', '~30% power reduction over prior design'], accent: ['4-input PWM Comparator with programmable hysteresis'] }]
+      desc: '<p>Analog Design Engineer at PhyTau Semiconductors, Bengaluru (Oct 2025 - Feb 2026), UMC\u00a055\u00a0nm CMOS. Designed a 4-input PWM comparator with programmable hysteresis for a multi-phase DC-DC converter SoC. Redesign introduced programmable hysteresis at the first comparator stage, eliminating trip-point glitches and reducing propagation delay - approximately 30% power reduction over the prior implementation.</p><p>Debugged digital-induced glitches in the control path by characterising delay contributions from hysteresis control and de-glitching logic. Full PVT corner and Monte Carlo verification in Cadence Virtuoso / Spectre.</p>',
+      groups: [{ title: 'Block', items: ['4-input PWM Comparator with programmable hysteresis', 'Multi-phase DC-DC converter SoC - UMC 55\u00a0nm', '~30% power reduction over prior design'], accent: ['4-input PWM Comparator with programmable hysteresis'] }]
     },
     'p_iitgn': {
       abbr: 'IITGN', label: 'LP-CAS Lab, IIT Gandhinagar',
       line1: 'LP-CAS Lab', line2: 'IITGN',
-      desc: '<p>Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under Prof. Madhav K. Pathak (Feb\u2013Aug 2025). Primary contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers \u2014 pre-characterises device LUTs from parametric SPICE simulations in IHP SG13G2, exposing worst-case corner settling at design entry. Accepted at ESSERC 2026. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000).</p><p>Also designed a Ring Amplifier-based LDO with deadzone regulation, proposed a translinear MAC for analog neural networks, taped out a piecewise-compensated BGR (SKY130) and an IBA (IHP SG13G2) via TinyTapeout. Teaching Assistant for PMIC Design (EE660).</p>',
-      groups: [{ title: 'Projects', items: ['R\u2092\u2099/g\u2098 Design Methodology (ESSERC 2026)', 'Ring Amp\u2013based LDO with deadzone regulation', 'Translinear MAC for analog neural networks', 'BGR tapeout (SKY130, TinyTapeout)', 'IBA tapeout (IHP SG13G2, TinyTapeout)', 'TA \u2014 PMIC Design (EE660)'], accent: ['R\u2092\u2099/g\u2098 Design Methodology (ESSERC 2026)', 'BGR tapeout (SKY130, TinyTapeout)'] }]
+      desc: '<p>Research Intern at the Low-Power Circuits and Systems (LP-CAS) Lab, IIT Gandhinagar, under Prof. Madhav K. Pathak (Feb-Aug 2025). Primary contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers - pre-characterises device LUTs from parametric SPICE simulations in IHP SG13G2, exposing worst-case corner settling at design entry. Accepted at ESSERC 2026. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000).</p><p>Also designed a Ring Amplifier-based LDO with deadzone regulation, proposed a translinear MAC for analog neural networks, taped out a piecewise-compensated BGR (SKY130) and an IBA (IHP SG13G2) via TinyTapeout. Teaching Assistant for PMIC Design (EE660).</p>',
+      groups: [{ title: 'Projects', items: ['R\u2092\u2099/g\u2098 Design Methodology (ESSERC 2026)', 'Ring Amp-based LDO with deadzone regulation', 'Translinear MAC for analog neural networks', 'BGR tapeout (SKY130, TinyTapeout)', 'IBA tapeout (IHP SG13G2, TinyTapeout)', 'TA - PMIC Design (EE660)'], accent: ['R\u2092\u2099/g\u2098 Design Methodology (ESSERC 2026)', 'BGR tapeout (SKY130, TinyTapeout)'] }]
     },
     'p_isro': {
       abbr: 'ISRO', label: 'ISRO Space Applications Centre',
       line1: 'ISRO SAC', line2: 'C-Band/RF',
-      desc: '<p>Internship at the Space Applications Centre (SAC), Hassan, Baseband RF Division, Master Control Facility (Oct\u2013Nov 2023). Calibrated C-Band (6\u00a0GHz) ground station antenna systems to achieve specified Cross-Polar Discrimination (XPD) levels during the In-Orbit Testing of GSAT-31, a geostationary communication satellite.</p><p>Involved operating precision RF test equipment, interpreting antenna radiation patterns, and adjusting mechanical and electrical parameters to meet ITU cross-polarisation isolation specifications.</p>',
+      desc: '<p>Internship at the Space Applications Centre (SAC), Hassan, Baseband RF Division, Master Control Facility (Oct-Nov 2023). Calibrated C-Band (6\u00a0GHz) ground station antenna systems to achieve specified Cross-Polar Discrimination (XPD) levels during the In-Orbit Testing of GSAT-31, a geostationary communication satellite.</p><p>Involved operating precision RF test equipment, interpreting antenna radiation patterns, and adjusting mechanical and electrical parameters to meet ITU cross-polarisation isolation specifications.</p>',
       groups: [{ title: 'Project', items: ['C-Band antenna calibration (6\u00a0GHz)', 'Cross-Polar Discrimination (XPD) verification', 'GSAT-31 In-Orbit Testing, Master Control Facility'], accent: ['GSAT-31 In-Orbit Testing, Master Control Facility'] }]
     },
     'p_oss': {
       abbr: 'OSS', label: 'Open-Source Tapeouts \u00d73',
       line1: 'Open-Src', line2: 'Tapeouts\u00d73',
       desc: '<p>Three silicon tapeouts via the TinyTapeout open-source shuttle program, using entirely open-source EDA tools across three distinct PDKs. <strong>SKY130:</strong> Piecewise-compensated BGR, sub-5\u00a0ppm/\u00b0C TC. <strong>GF180MCU-D:</strong> Folded-Cascode OTA, full DRC/LVS/PEX. <strong>IHP SG13G2 130\u00a0nm BiCMOS:</strong> Inverter-Based Amplifier silicon test vehicle for the R\u2092\u2099/g\u2098 methodology.</p>',
-      groups: [{ title: 'Tapeouts', items: ['SKY130 \u2014 Piecewise-Compensated BGR (sub-5 ppm/\u00b0C TC)', 'GF180MCU-D \u2014 Folded-Cascode OTA', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'], accent: ['SKY130 \u2014 Piecewise-Compensated BGR (sub-5 ppm/\u00b0C TC)', 'IHP SG13G2 \u2014 Inverter-Based Amplifier'] }]
+      groups: [{ title: 'Tapeouts', items: ['SKY130 - Piecewise-Compensated BGR (sub-5 ppm/\u00b0C TC)', 'GF180MCU-D - Folded-Cascode OTA', 'IHP SG13G2 - Inverter-Based Amplifier'], accent: ['SKY130 - Piecewise-Compensated BGR (sub-5 ppm/\u00b0C TC)', 'IHP SG13G2 - Inverter-Based Amplifier'] }]
     },
     'p_squant': {
       abbr: 'SQT', label: 'Semi-Quant Terminal',
@@ -328,21 +328,21 @@
       line1: 'Analog/MS', line2: 'IC Design',
       strong: true,
       desc: '<p>End-to-end analog and mixed-signal IC design across 5 process nodes. Core strengths: dynamic amplifiers, OTAs, LDOs, bandgap references, PVT monitors, SC circuits. Full tapeout experience from schematic through DRC/LVS/PEX in both open-source and commercial flows.</p><p>Industry: Omni Design Technologies (TSMC\u00a028\u00a0nm) and PhyTau Semiconductors (UMC\u00a055\u00a0nm). Research: LP-CAS Lab, IIT Gandhinagar. Publications: ESSERC 2026 + IEEE ICEE 2025. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000).</p>',
-      groups: [{ title: 'Key Credentials', items: ['5 Fabricated Tapeouts across 5 PDKs', 'ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Methodology (poster)', 'IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000', 'TSMC 28nm \u00b7 UMC 55nm \u00b7 IHP \u00b7 SKY130 \u00b7 GF180'], accent: ['IEEE SSCS Code-a-Chip Travel Grant \u2014 $5,000', 'ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Methodology (poster)'] }]
+      groups: [{ title: 'Key Credentials', items: ['5 Fabricated Tapeouts across 5 PDKs', 'ESSERC 2026 - R\u2092\u2099/g\u2098 Methodology (poster)', 'IEEE SSCS Code-a-Chip Travel Grant - $5,000', 'TSMC 28nm \u00b7 UMC 55nm \u00b7 IHP \u00b7 SKY130 \u00b7 GF180'], accent: ['IEEE SSCS Code-a-Chip Travel Grant - $5,000', 'ESSERC 2026 - R\u2092\u2099/g\u2098 Methodology (poster)'] }]
     },
     'd_oss': {
       abbr: 'OSS', label: 'Open-Source EDA \u0026 Tapeout',
       line1: 'Open-Source', line2: 'EDA \u0026 Tapeout',
       strong: true,
-      desc: '<p>Proficient in the complete open-source IC design flow: Xschem, Ngspice, Magic VLSI, KLayout, Netgen \u2014 used across SKY130, GF180MCU-D, and IHP SG13G2. Three TinyTapeout silicon tapeouts with full DRC/LVS/PEX sign-off. Developed the SPICE Automation Framework \u2014 open-source Python tooling for PVT sweep automation and LUT generation for the R\u2092\u2099/g\u2098 methodology.</p>',
+      desc: '<p>Proficient in the complete open-source IC design flow: Xschem, Ngspice, Magic VLSI, KLayout, Netgen - used across SKY130, GF180MCU-D, and IHP SG13G2. Three TinyTapeout silicon tapeouts with full DRC/LVS/PEX sign-off. Developed the SPICE Automation Framework - open-source Python tooling for PVT sweep automation and LUT generation for the R\u2092\u2099/g\u2098 methodology.</p>',
       groups: [{ title: 'Stack', items: ['Ngspice \u00b7 Xschem \u00b7 Magic VLSI \u00b7 KLayout \u00b7 Netgen', 'SKY130 \u00b7 GF180MCU-D \u00b7 IHP SG13G2', 'Python SPICE automation \u00b7 LUT generation'], accent: ['Ngspice \u00b7 Xschem \u00b7 Magic VLSI \u00b7 KLayout \u00b7 Netgen'] }]
     },
     'd_research': {
       abbr: 'RES', label: 'Research \u0026 Methodology',
       line1: 'Research \u0026', line2: 'Methodology',
       strong: true,
-      desc: '<p>Primary research contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers \u2014 a pre-simulation framework co-designing the non-linear RC settling phase (R\u2092\u2099) and the linear small-signal phase (g\u2098) via pre-characterised LUTs, exposing worst-case corner behaviour at design entry. Accepted at ESSERC 2026, Palma de Mallorca. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000). Also published at IEEE ICEE 2025.</p>',
-      groups: [{ title: 'Publications', items: ['ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Based Design Methodology (poster)', 'IEEE ICEE 2025 \u2014 CMOS Multiplier Circuits (published)'], accent: ['ESSERC 2026 \u2014 R\u2092\u2099/g\u2098 Based Design Methodology (poster)'] }]
+      desc: '<p>Primary research contribution: the R\u2092\u2099/g\u2098 design methodology for dynamic amplifiers - a pre-simulation framework co-designing the non-linear RC settling phase (R\u2092\u2099) and the linear small-signal phase (g\u2098) via pre-characterised LUTs, exposing worst-case corner behaviour at design entry. Accepted at ESSERC 2026, Palma de Mallorca. IEEE SSCS Code-a-Chip Travel Grant awardee ($5,000). Also published at IEEE ICEE 2025.</p>',
+      groups: [{ title: 'Publications', items: ['ESSERC 2026 - R\u2092\u2099/g\u2098 Based Design Methodology (poster)', 'IEEE ICEE 2025 - CMOS Multiplier Circuits (published)'], accent: ['ESSERC 2026 - R\u2092\u2099/g\u2098 Based Design Methodology (poster)'] }]
     },
     'd_ml': {
       abbr: 'ML', label: 'ML \u0026 Quantitative Finance',
