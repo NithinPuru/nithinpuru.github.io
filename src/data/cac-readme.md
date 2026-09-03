@@ -2128,7 +2128,7 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <br>
 
 <p>
-<a href="https://www.linkedin.com/search/results/all/?keywords=Suyajnaa%20Jagannath%20Gowda" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/in/suyajnaa-jagannath-13915032b/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Suyajnaa_Pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Suyajnaa Jagannath Gowda</strong> is currently pursuing the B.E. degree in electronics and communication engineering at The National Institute of Engineering, Mysore, India. Her research interests include analog and mixed-signal circuits, silicon photonics, optical sensing, embedded systems, machine learning, and signal processing. Her work includes silicon photonics-based micro-ring resonator gyroscopes, satellite telemetry analysis, MATLAB-based underwater acoustic systems, and ESP32-based intelligent IC testing.<br/>
 <strong>Contact:</strong> <a href="mailto:suyajnaa@gmail.com">suyajnaa@gmail.com</a>
 <br clear="all" />
@@ -2136,7 +2136,7 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <br>
 
 <p>
-<a href="https://www.linkedin.com/search/results/all/?keywords=Runpeng%20Gao" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/in/runpeng-gao-842a44263/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Runpeng_Gao_pic.jpeg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Runpeng Gao</strong> received the M.S. degree from Nanjing University, Nanjing, China, in 2023. He is currently pursuing the Ph.D. degree in electrical and computer engineering at Oregon State University, Corvallis, OR, USA. His research interests include high-performance analog and mixed-signal integrated circuits, with an emphasis on high-resolution and high-speed analog-to-digital converters (ADCs) and low-dropout regulators (LDOs).<br/>
 <strong>Contact:</strong> <a href="mailto:rppgao@gmail.com">rppgao@gmail.com</a>
 <br clear="all" />
@@ -2144,7 +2144,7 @@ This distinction becomes especially significant for dynamic amplifier design, wh
 <br>
 
 <p>
-<a href="https://www.linkedin.com/search/results/all/?keywords=Praveen%20Kumar%20Venkatachala" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
+<a href="https://www.linkedin.com/in/praveen-kumar-venkatachala-5b816b36/" target="_blank"><img src="https://raw.githubusercontent.com/chennakeshavadasa/CAC/main/DEMO/assets/Praveen_Kumar_pic.jpg" align="left" width="120" style="margin-right: 15px;" /></a>
 <strong>Praveen Kumar Venkatachala</strong> received his Ph.D. degree from Oregon State University. He is presently working as a part of the analog integrated circuits design group in the AIS (Artificial Intelligence Solutions) division of Skyworks Solutions Inc. in Hillsboro, Oregon. His work focuses on innovative and challenging analog system-on-chips (ASoCs) for smart speakers/microphones, gaming controllers, wired/wireless headsets, and many more products involving audio and voice technology.<br/>
 <strong>Contact:</strong> <a href="mailto:vpravin.8@gmail.com">vpravin.8@gmail.com</a>
 <br clear="all" />
