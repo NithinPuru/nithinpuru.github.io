@@ -46,8 +46,8 @@ title: "Rₒₙ/gₘ Design Methodology - CAC 2026"
     <tr>
       <td><strong>S Suyajnaa Jagannath Gowda</strong></td>
       <td>B.Tech, VTU</td>
-      <td align="center">-</td>
-      <td align="center">-</td>
+      <td align="center">Yes</td>
+      <td align="center">Yes</td>
       <td><a href="mailto:suyajnaa@gmail.com">suyajnaa@gmail.com</a></td>
     </tr>
     <tr>
