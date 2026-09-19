@@ -29,6 +29,7 @@ interface Entry {
   abstract?: string;
   gif?: string;
   images?: EntryImage[];
+  imagesTitle?: string;
   plots?: EntryPlot[];
   siliconStatus?: string;
 }
@@ -129,7 +130,7 @@ const { groups } = Astro.props;
                 {/* Layout / PCB / silicon images */}
                 {entry.images && entry.images.length > 0 && (
                   <details class="entry__abstract" open>
-                    <summary>Layout &amp; PCB Images</summary>
+                    <summary>{entry.imagesTitle ?? "Layout & PCB Images"}</summary>
                     <div class="abstract-content">
                       <div class="entry__images">
                         {entry.images.map((img) => (
