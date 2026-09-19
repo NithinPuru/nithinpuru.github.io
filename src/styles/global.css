@@ -486,7 +486,7 @@ a {
 }
 .entry__venue {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   color: var(--ink-3);
   margin-top: 0.1rem;
   margin-bottom: 0.4rem;
