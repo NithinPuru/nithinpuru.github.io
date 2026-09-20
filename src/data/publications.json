@@ -61,6 +61,14 @@
           ],
           "links": [
             {
+              "label": "Presentation Slides",
+              "url": "https://drive.google.com/file/d/1vfy8dpicDczUMUZJywYi5BcbKexCQBxn/view?usp=drive_link"
+            },
+            {
+              "label": "Poster / Flyer",
+              "url": "https://drive.google.com/file/d/1KHSdyhA8-rJa677V37mWkK4-J2TC-TEI/view?usp=sharing"
+            },
+            {
               "label": "IEEE SSCS Code-a-Chip Travel Grant - $5,000",
               "url": "https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io"
             },
