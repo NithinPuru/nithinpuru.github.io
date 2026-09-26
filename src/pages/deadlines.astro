@@ -1,16 +1,19 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// Raw Astro page without Layout to avoid global CSS and nav bars
 ---
-
-<Layout title="Chip Conference Deadlines" description="Tracker for analog/mixed-signal IC conference deadlines.">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Chip Conference Deadlines</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    .iframe-container {
-      width: 100%;
-      /* Adjust height to account for nav bar and viewport */
-      height: calc(100vh - 60px); 
+    body, html {
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* Prevent double scrollbars */
     }
     .deadlines-iframe {
       width: 100%;
@@ -19,13 +22,12 @@ import Layout from '../layouts/Layout.astro';
       display: block;
     }
   </style>
-
-  <div class="iframe-container">
-    <iframe
-      src="https://chennakeshavadasa.github.io/Conf_Deadline_Tracker/"
-      class="deadlines-iframe"
-      title="Chip Conference Deadlines Tracker"
-      loading="lazy"
-    ></iframe>
-  </div>
-</Layout>
+</head>
+<body>
+  <iframe
+    src="https://chennakeshavadasa.github.io/Conf_Deadline_Tracker/"
+    class="deadlines-iframe"
+    title="Chip Conference Deadlines Tracker"
+  ></iframe>
+</body>
+</html>
