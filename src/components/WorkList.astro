@@ -77,7 +77,9 @@ const gh = await githubStats("chennakeshavadasa");
               const [die, ...extra] = chip ? entry.images! : [];
               return (
               <li class={"entry" + (chip ? " entry--chip" : "") + (entry.symbol ? " entry--sym" : "")} data-reveal>
-                {entry.symbol && <Symbol name={entry.symbol} class="entry__sym" />}
+                {entry.symbol && (
+                  <span class="entry__symtile" aria-hidden="true"><Symbol name={entry.symbol} /></span>
+                )}
                 {chip && (
                   <figure class="chip__die">
                     <a href={die.url} data-lightbox data-caption={die.label ?? entry.title} aria-label={`Expand image: ${die.label ?? entry.title}`}>
@@ -219,7 +221,7 @@ const gh = await githubStats("chennakeshavadasa");
     height: auto;
   }
   .entry__gif figcaption {
-    font-size: 0.76rem;
+    font-size: 0.82rem;
     color: var(--ink-3);
     text-align: center;
     padding: 0.4rem 0.6rem;
@@ -246,7 +248,7 @@ const gh = await githubStats("chennakeshavadasa");
     height: auto;
   }
   .entry__plot-item figcaption {
-    font-size: 0.76rem;
+    font-size: 0.82rem;
     color: var(--ink-3);
     text-align: center;
     padding: 0.3rem 0.5rem;
@@ -257,7 +259,7 @@ const gh = await githubStats("chennakeshavadasa");
   /* ── Silicon status ───────────────────────────────────── */
   .entry__silicon-status {
     display: inline-block;
-    font-size: 0.78rem;
+    font-size: 0.84rem;
     font-family: var(--font-mono);
     color: var(--ink-3);
     border: 1px solid var(--rule);

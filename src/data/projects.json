@@ -4,7 +4,7 @@
       "entries": [
         {
           "title": "Design of Power-on Reset Circuit",
-          "symbol": "comparator",
+          "symbol": "por",
           "meta": "SKY130 · Power-on reset",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
           "points": [
@@ -24,7 +24,7 @@
         },
         {
           "title": "Process-Invariant Ring Amplifier using Deadzone Regulation",
-          "symbol": "ring",
+          "symbol": "classab",
           "meta": "IHP SG13G2 · Ring amplifier",
           "url": "https://github.com/chennakeshavadasa/PVT-Invariant-Ring-Amplifier",
           "points": [
@@ -34,7 +34,7 @@
         },
         {
           "title": "Ultra-Low Power Two-Transistor Subthreshold Voltage Reference",
-          "symbol": "vref",
+          "symbol": "vref2t",
           "meta": "SKY130 · Subthreshold reference",
           "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
           "points": [

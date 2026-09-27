@@ -8,12 +8,14 @@ export type SymbolName =
   | "comparator"
   | "opamp"
   | "opamp-fd"
-  | "ring"
+  | "classab"
   | "antenna"
   | "vref"
   | "ldo"
   | "sweep"
   | "ground"
+  | "vref2t"
+  | "por"
   | "candles"
   | "forecast"
   | "var";
@@ -25,7 +27,7 @@ interface Props {
 const { name, class: cls } = Astro.props;
 
 // Each symbol: stroked paths, plus optional labels [x, y, text].
-const S: Record<SymbolName, { d: string[]; f?: string[]; dash?: string[]; t?: [number, number, string][] }> = {
+const S: Record<SymbolName, { d: string[]; f?: string[]; o?: string[]; dash?: string[]; t?: [number, number, string][] }> = {
   // Converter blocks: pentagon body with the conventional diagonal.
   adc: {
     d: ["M1 20h7", "M8 8h22l10 12-10 12H8z", "M8 32 30 8", "M40 20h7", "M42 23l3-6"],
@@ -46,15 +48,20 @@ const S: Record<SymbolName, { d: string[]; f?: string[]; dash?: string[]; t?: [n
   "opamp-fd": {
     d: ["M8 5v30l30-15z", "M1 13h7", "M1 27h7", "M28.5 15H47", "M28.5 25H47", "M11 13h3.5M12.75 11.25v3.5", "M11 27h3.5", "M34 11h3M35.5 9.5v3", "M34 29h3"],
   },
-  // Ring amplifier: three inverter stages closed by a feedback wire.
-  ring: {
+  // Class-AB push-pull output stage (the ring amplifier's final stage):
+  // PMOS over NMOS between the rails, separately driven gates, output at the
+  // shared drain node.
+  classab: {
     d: [
-      "M4 13v14l9-7z", "M15 20a2 2 0 1 0 0 .01",
-      "M19 13v14l9-7z", "M30 20a2 2 0 1 0 0 .01",
-      "M34 13v14l9-7z", "M45 20a2 2 0 1 0 0 .01",
-      "M1 20h3", "M17 20h2", "M32 20h2",
-      "M47 20v14H1V20",
+      "M18 3h14",
+      "M22 7v9", "M26 7v9", "M26 9h4V3", "M26 14h4v6",
+      "M22 24v9", "M26 24v9", "M26 26h4v-6", "M26 31h4v5",
+      "M2 11.5h16.5", "M2 28.5h20",
+      "M30 20h16",
+      "M26 36h8", "M28 38.5h4",
     ],
+    f: ["M30 20m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0"],
+    o: ["M20.2 11.5m-1.7 0a1.7 1.7 0 1 0 3.4 0a1.7 1.7 0 1 0-3.4 0"],
   },
   antenna: {
     d: ["M24 36V14", "M14 5l10 11L34 5z", "M18 36h12", "M20.5 38.5h7"],
@@ -64,13 +71,16 @@ const S: Record<SymbolName, { d: string[]; f?: string[]; dash?: string[]; t?: [n
     d: ["M24 2v8", "M24 30v8", "M24 10a10 10 0 1 0 0 20a10 10 0 1 0 0-20", "M22 15h4M24 13v4", "M22 25h4"],
     t: [[39, 21, "REF"]],
   },
-  // LDO: error amplifier driving the gate of a pass device.
+  // LDO: error amplifier driving a PMOS pass device; output fed back.
   ldo: {
     d: [
-      "M3 16v18l14-9z", "M5.5 21h2.5M6.75 19.75v2.5", "M5.5 29h2.5",
-      "M17 25h8V12", "M22 12h6", "M28 8v8", "M28 9h8V2", "M28 15h8v23",
-      "M36 30h11",
+      "M3 12v18l14-9z", "M5 16.5h3M6.5 15v3", "M5 25.5h3",
+      "M17 21h4V11h3.2",
+      "M28 6v10", "M31 6v10", "M31 8h5V2H22", "M31 14h5v10",
+      "M36 24h11",
+      "M36 24v13H1v-11.5h2",
     ],
+    f: ["M25.6 11m-1.4 0a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0", "M36 24m-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0"],
   },
   // Corner sweep: three settling traces (SS / TT / FF).
   sweep: {
@@ -78,6 +88,23 @@ const S: Record<SymbolName, { d: string[]; f?: string[]; dash?: string[]; t?: [n
   },
   ground: {
     d: ["M24 4v14", "M12 18h24", "M16 23h16", "M20 28h8"],
+  },
+  // Two-transistor reference: native NMOS load (VGS = 0) stacked on a
+  // diode-tied NMOS, both gates on the Vout node.
+  vref2t: {
+    d: [
+      "M18 3h20",
+      "M24 7v10", "M28 7v10", "M28 9h6V3", "M28 15h6v6",
+      "M24 23v10", "M28 23v10", "M28 25h6v-4", "M28 31h6v5",
+      "M24 12h-8v17h8", "M16 21h18",
+      "M34 21h11",
+      "M30 36h8", "M32 38.5h4",
+    ],
+    f: ["M34 21m-1.4 0a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0", "M16 21m-1.4 0a1.4 1.4 0 1 0 2.8 0a1.4 1.4 0 1 0-2.8 0"],
+  },
+  // Power-on reset: supply ramp into a comparator, enable out.
+  por: {
+    d: ["M14 6v28l24-14z", "M2 30l8-12h4", "M8 27h6", "M16.5 13h3M18 11.5v3", "M16.5 27h3", "M38 20h4v-6h5"],
   },
   // Finance marks for the Quantitative Finance section.
   // Candlesticks: wicks with open (up) and filled (down) bodies.
@@ -101,6 +128,7 @@ const sym = S[name];
 <svg class={"sym" + (cls ? ` ${cls}` : "")} viewBox="0 0 48 40" width="48" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
   {sym.d.map((d) => <path d={d} />)}
   {sym.f?.map((d) => <path d={d} fill="currentColor" />)}
+  {sym.o?.map((d) => <path d={d} />)}
   {sym.dash?.map((d) => <path d={d} stroke-dasharray="2.5 2.5" />)}
   {sym.t?.map(([x, y, s]) => (
     <text x={x} y={y} text-anchor="middle" dominant-baseline="middle" font-size="7" stroke="none" fill="currentColor">{s}</text>

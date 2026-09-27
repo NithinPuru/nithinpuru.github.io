@@ -8,22 +8,7 @@
       "place": "Bengaluru",
       "kind": "Industry",
       "symbol": "adc",
-      "symbolLabel": "ADC",
       "keywords": "PVT Monitor &amp; Reference IPs &middot; Bandgap Core &middot; REF ANALOG &middot; TSMC 28&nbsp;nm CMOS",
-      "specs": [
-        {
-          "k": "Node",
-          "v": "TSMC 28&nbsp;nm"
-        },
-        {
-          "k": "Accuracy",
-          "v": "&plusmn;3%"
-        },
-        {
-          "k": "References",
-          "v": "5 voltages · 8&times;200&nbsp;&micro;A"
-        }
-      ],
       "detail": "<p><strong>Block Designs:</strong> Designed the Bandgap Core and Reference Analog blocks for the PVT Monitor and Reference IPs in TSMC 28&nbsp;nm CMOS.</p>\n<ul>\n<li>Replaced the BG CORE opamp with a self-biased folded-cascode OTA and a new always-on startup circuit, fixing a common-mode bug that latched the bandgap loop at VDD; reduced 8-bit I-DAC current mismatch to downstream SC-amp and ADC blocks.</li>\n<li>Owned REF ANALOG: 5 temperature-compensated high-PSRR reference voltages and 8&times;200&nbsp;&mu;A current, adding trim-based programmability to compensate for process and mismatch to meet the &plusmn;3% output accuracy specification.</li>\n<li>Mapped digital infrastructure from a 16&nbsp;nm reference IP onto the redesigned 28&nbsp;nm blocks, enabling block-level reuse and accelerating IP closure.</li>\n</ul>"
     },
     {
@@ -33,23 +18,8 @@
       "org": "PhyTau Semiconductors",
       "place": "Bengaluru",
       "kind": "Industry",
-      "symbol": "comparator",
-      "symbolLabel": "Comparator",
+      "symbol": "dac",
       "keywords": "PWM comparator &middot; programmable hysteresis &middot; UMC 55&nbsp;nm CMOS",
-      "specs": [
-        {
-          "k": "Node",
-          "v": "UMC 55&nbsp;nm"
-        },
-        {
-          "k": "Block",
-          "v": "4-input PWM comparator"
-        },
-        {
-          "k": "Power",
-          "v": "&minus;30%"
-        }
-      ],
       "detail": "<p><strong>Block Designs:</strong> Designed a 4-input PWM comparator with programmable hysteresis for a multi-phase DC-DC converter SoC in UMC 55&nbsp;nm CMOS.</p>\n<ul>\n<li>Redesigned the comparator to introduce programmable hysteresis at the first stage, eliminating trip-point glitches and reducing propagation delay; reduced power consumption by 30%.</li>\n<li>Debugged digital-induced glitches, identifying delay contributions from hysteresis control and de-glitching logic.</li>\n</ul>"
     },
     {
@@ -59,27 +29,12 @@
       "org": "LP-CAS Lab",
       "place": "IIT Gandhinagar",
       "kind": "Research",
-      "symbol": "ring",
-      "symbolLabel": "Ring amp",
+      "symbol": "adc",
       "keywords": "<i>R<sub>on</sub>/g<sub>m</sub></i> methodology &middot; SKY130 tapeout &middot; ESSERC 2026",
       "advisor": {
         "name": "Prof. Madhav K. Pathak",
         "url": "https://iitgn.ac.in/faculty/ee/fac-madhav"
       },
-      "specs": [
-        {
-          "k": "Tapeout",
-          "v": "SKY130 bandgap"
-        },
-        {
-          "k": "TC",
-          "v": "&lt; 5&nbsp;ppm/&deg;C"
-        },
-        {
-          "k": "Published",
-          "v": "ESSERC 2026"
-        }
-      ],
       "detail": "<p><strong>Block Designs:</strong> Dynamic Amplifiers and Ring Amplifier-based LDO at LP-CAS Lab, IITGN.</p>\n<ul>\n<li>Developed a design methodology for non-linear dynamic amplifiers modelling RC, large-signal, and small-signal settling stages; validated on an inverter-based switched-capacitor amplifier. (Published at ESSERC 2026.)</li>\n<li>Proposed a Ring Amplifier-based LDO where the final stage serves as the pass transistor, using adaptive biasing and a deadzone regulation circuit for robust PVT performance.</li>\n<li>Proposed a translinear circuit-based MAC architecture for analog neural networks using a digitally controlled subthreshold MOSFET cell with a current-steering DAC for programmable neuron weights.</li>\n<li>Served as Teaching Assistant for the IIT Gandhinagar graduate course PMIC Design (EE660).</li>\n</ul>\n<p><strong>Tapeout:</strong> Designed a piecewise-compensated, high-PSRR Bandgap Reference with sub-5&nbsp;ppm/&deg;C TC in SKY130, including a low-power always-on startup circuit; fabricated through the TinyTapeout SKY130 shuttle.</p>"
     },
     {
@@ -89,23 +44,8 @@
       "org": "ISRO",
       "place": "SAC, Hassan",
       "kind": "Internship",
-      "symbol": "antenna",
-      "symbolLabel": "C-band",
+      "symbol": "dac",
       "keywords": "C-Band antenna calibration &middot; GSAT-31 In-Orbit Testing",
-      "specs": [
-        {
-          "k": "Band",
-          "v": "C (6&nbsp;GHz)"
-        },
-        {
-          "k": "Mission",
-          "v": "GSAT-31 IOT"
-        },
-        {
-          "k": "Task",
-          "v": "XPD calibration"
-        }
-      ],
       "detail": "<p>GeoSat-based satellite communication in the Antenna System for Satellite TTC within C-Band (6&nbsp;GHz) at the Baseband RF Division, Master Control Facility. Calibrated antenna systems to achieve Cross-Polar Discrimination (XPD) during In-Orbit Testing of GSAT-31.</p>"
     }
   ]

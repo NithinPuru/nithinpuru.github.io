@@ -2,29 +2,30 @@
 name: nithinpuru.github.io
 description: Portfolio of Nithin P, typeset like a freshly-compiled LaTeX document — Computer Modern serif, typewriter metadata, ink on paper.
 colors:
-  paper: "#f7f4ec"
-  paper-2: "#efeadd"
-  ink: "#1a1916"
-  ink-2: "#45413a"
-  ink-3: "#69645a"
-  accent: "#234766"
-  accent-wash: "rgba(35, 71, 102, 0.07)"
-  annot: "#8f3526"
-  annot-soft: "#a54837"
-  plate: "#fbf9f3"
-  rule: "rgba(26, 25, 22, 0.16)"
-  rule-strong: "rgba(26, 25, 22, 0.34)"
-  dark-paper: "#16171b"
-  dark-paper-2: "#1d1f24"
-  dark-ink: "#ebe7dc"
-  dark-ink-2: "#c5c0b3"
-  dark-ink-3: "#9d978a"
-  dark-accent: "#93b6dc"
-  dark-annot: "#e2826d"
-  dark-annot-soft: "#d0705c"
-  dark-plate: "#ece8de"
-  dark-rule: "rgba(235, 231, 220, 0.13)"
-  dark-rule-strong: "rgba(235, 231, 220, 0.3)"
+  paper: "#ffffff"
+  paper-2: "#f4f6f9"
+  ink: "#131c28"
+  ink-2: "#3d4756"
+  ink-3: "#5b6676"
+  accent: "#1f4fd1"
+  accent-wash: "rgba(31, 79, 209, 0.06)"
+  annot: "#b42318"
+  annot-soft: "#c4442f"
+  plate: "#ffffff"
+  rule: "rgba(19, 28, 40, 0.12)"
+  rule-strong: "rgba(19, 28, 40, 0.28)"
+  dark-paper: "#0f1620"
+  dark-paper-2: "#172131"
+  dark-ink: "#f2f5fa"
+  dark-ink-2: "#cfd7e3"
+  dark-ink-3: "#95a1b3"
+  dark-accent: "#7aa7ff"
+  dark-accent-wash: "rgba(122, 167, 255, 0.1)"
+  dark-annot: "#ff8a7a"
+  dark-annot-soft: "#f07563"
+  dark-plate: "#eef2f7"
+  dark-rule: "rgba(242, 245, 250, 0.12)"
+  dark-rule-strong: "rgba(242, 245, 250, 0.26)"
   die-well: "#15161a"
 typography:
   display:
@@ -35,35 +36,37 @@ typography:
     letterSpacing: "-0.015em"
   headline:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
-    fontSize: "clamp(1.6rem, 3.6vw, 2.05rem)"
+    fontSize: "clamp(1.75rem, 3.6vw, 2.25rem)"
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: "-0.01em"
   title:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
-    fontSize: "1.16rem"
+    fontSize: "1.2rem"
     fontWeight: 700
     lineHeight: 1.4
   body:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
-    fontSize: "1.0625rem"
+    fontSize: "1.125rem"
     lineHeight: 1.78
   label:
     fontFamily: '"KaTeX_Typewriter", "Courier New", monospace'
     fontSize: "0.72rem"
     letterSpacing: "0.08em"
   scale:
-    micro: "0.66rem"
-    footnote: "0.70rem"
-    small: "0.72rem"
-    rubric: "0.74rem"
-    meta: "0.76rem"
-    compact: "0.78rem"
-    skip: "0.80rem"
-    doc-meta: "0.82rem"
-    contact: "0.84rem"
-    nav-name: "0.92rem"
+    micro: "0.74rem"
+    footnote: "0.76rem"
+    small: "0.78rem"
+    rubric: "0.8rem"
+    meta: "0.82rem"
+    compact: "0.84rem"
+    skip: "0.86rem"
+    doc-meta: "0.88rem"
+    contact: "0.9rem"
+    aside: "0.95rem"
+    nav-name: "0.96rem"
     subhead: "1rem"
+    grid-title: "1.12rem"
     sidebar-name: "1.8rem"
 spacing:
   column: "46rem"
@@ -118,7 +121,7 @@ The page refuses the agency card grid and the hero-metric template outright. Den
 
 ## Colors
 
-One warm-paper field, near-black inks, one oxford-blue accent, and a red held for annotation. A matching **dark theme** ("ink at night": charcoal field, warm off-white inks, a lightened blue accent and softened red) is selected on `<html data-theme>` by a pre-paint head script from the saved choice or the system preference, and flipped by the sun/moon `ThemeToggle` (top nav on small screens, sidebar foot on laptops). Every component reads colours from the variables; only image wells (the tape-out die plate `#15161a`) and photo overlays keep fixed dark values in both themes.
+A crisp, cool palette: a white page with a faint blue-grey raised surface (`paper-2`, the laptop sidebar), navy-black and slate inks, one saturated "silicon blue" accent, and a clean red held for status. A matching **dark theme** (deep navy page, raised navy surfaces, near-white and blue-grey inks, a bright blue accent and a softened red) is selected on `<html data-theme>` by a pre-paint head script from the saved choice or the system preference, and flipped by the sun/moon `ThemeToggle` (top nav on small screens, sidebar foot on laptops). Every component reads colours from the variables; only image wells (the tape-out die plate `#15161a`) and photo overlays keep fixed dark values in both themes.
 
 ### Primary
 - **Oxford Ink Blue** (#2b4863): the single accent. Links, section numbers, nav active states, small arrow SVGs, and small-caps document labels.
@@ -208,10 +211,10 @@ Typewriter uppercase in Ink Three, prefixed by an em-dash in Annotation Soft and
 The CV is a framed A4 Google Drive preview (`aspect-ratio: 210 / 297`, hairline border, max 700px) centered in the section, with a mono uppercase "Open full CV" link (0.78rem, accent, hairline underline on hover) below it.
 
 ### Experience Timeline (`Experience.astro`, data in `experience.json`)
-A plot-style **time axis**: a solid 1px ink rail with a triangular arrowhead and an italic serif *t* label pointing up to "now"; each role's start year is an axis tick (typewriter, right-aligned in the gutter, with a short tick mark), and a ring-and-dot SVG node sits on the rail (current role: accent node + accent tick). In place of organisation logos each entry carries the **schematic symbol** of the circuit worked on there (ADC, comparator with hysteresis, inverter ring amplifier, antenna) with a small typewriter caption — accent for the current role and on hover. The summary shows typewriter dates · tenure (computed at build time from `start`/`end`, e.g. "1 yr 1 mo") with a right-aligned kind label (Industry / Research / Internship), the serif-bold role (accent on hover), organisation line, keyword line, an always-visible datasheet **spec strip** of headline figures (copied from the role's own bullets), an optional "Advisor · name" line, and a "Details / Hide" fold that reveals the full detail hung off a `rule-strong` line as hanging en-dash lists. The role — not the employer — is the title. Under 600px the axis collapses to a plain rail, ticks and symbols hide.
+A plot-style **time axis**: a solid 1px ink rail with a triangular arrowhead and an italic serif *t* label pointing up to "now"; each role's start year is an axis tick (typewriter, right-aligned in the gutter, with a short tick mark), and a ring-and-dot SVG node sits on the rail (current role: accent node + accent tick). In place of organisation logos each entry carries an **ADC / DAC converter symbol**, alternating down the axis — accent for the current role and on hover. No spec tables in Experience. The summary shows typewriter dates · tenure (computed at build time from `start`/`end`, e.g. "1 yr 1 mo") with a right-aligned kind label (Industry / Research / Internship), the serif-bold role (accent on hover), organisation line, keyword line, an always-visible datasheet **spec strip** of headline figures (copied from the role's own bullets), an optional "Advisor · name" line, and a "Details / Hide" fold that reveals the full detail hung off a `rule-strong` line as hanging en-dash lists. The role — not the employer — is the title. Under 600px the axis collapses to a plain rail, ticks and symbols hide.
 
 ### Schematic & Finance Symbols (`Symbol.astro`)
-One 48×40 line-art set at 1.5px stroke in `currentColor` (Ink Three at rest, accent on hover): ADC / DAC, comparator, op-amp, fully differential op-amp, inverter ring, antenna, reference source, LDO (error amp + pass device), corner sweep, ground — and, for Quantitative Finance, candlesticks, a series with a dashed forecast past a "now" line, and a return distribution with the VaR tail filled. Circuit projects and finance entries set `symbol` in JSON and render it in a 2.9rem column beside the entry. The section heading rule ends in an open **terminal** (drawn in after the rule), and the document ends with a centred **ground** symbol above the footer.
+One 48×40 line-art set at 1.5px stroke in `currentColor` (Ink Three at rest, accent on hover): ADC / DAC, comparator (and POR comparator with supply ramp), op-amp, fully differential op-amp, class-AB push-pull stage (ring amplifier output), two-transistor reference (native NMOS over diode-tied NMOS), LDO (error amp driving a PMOS pass device with feedback), corner sweep, ground — and, for Quantitative Finance, candlesticks, a series with a dashed forecast past a "now" line, and a return distribution with the VaR tail filled. Circuit projects and finance entries set `symbol` in JSON and render it inside a 3.9rem square **schematic tile** (raised `paper-2` fill, hairline frame, accent on hover) beside the entry. The section heading rule ends in an open **terminal** (drawn in after the rule), and the document ends with a centred **ground** symbol above the footer.
 
 ### Latest (news ticker, `News.astro` + `news.json`)
 Directly after the About masthead: an accent, arrow-ended "Latest" net label beside a ruled strip of dated items (typewriter accent date, optional red tag, serif text linking to the relevant section or source) scrolling right-to-left in a 70s loop; it pauses on hover and keyboard focus, the duplicate track is `aria-hidden`, and under reduced motion it becomes a static, horizontally scrollable row. Items must be real and dated from site content.
