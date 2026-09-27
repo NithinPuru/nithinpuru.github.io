@@ -1,6 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import Gallery from "./Gallery.astro";
+import Symbol, { type SymbolName } from "./Symbol.astro";
 import { githubStats, repoFor } from "../lib/github";
 
 interface EntryLink {
@@ -24,6 +25,7 @@ interface Entry {
   url?: string;
   desc?: string;
   points?: string[];
+  symbol?: SymbolName;
   specs?: { k: string; v: string }[];
   meta?: string;
   tag?: string;
@@ -74,7 +76,8 @@ const gh = await githubStats("chennakeshavadasa");
               const chip = layout === "chip" && !!entry.images?.length;
               const [die, ...extra] = chip ? entry.images! : [];
               return (
-              <li class={"entry" + (chip ? " entry--chip" : "")} data-reveal>
+              <li class={"entry" + (chip ? " entry--chip" : "") + (entry.symbol ? " entry--sym" : "")} data-reveal>
+                {entry.symbol && <Symbol name={entry.symbol} class="entry__sym" />}
                 {chip && (
                   <figure class="chip__die">
                     <a href={die.url} data-lightbox data-caption={die.label ?? entry.title} aria-label={`Expand image: ${die.label ?? entry.title}`}>

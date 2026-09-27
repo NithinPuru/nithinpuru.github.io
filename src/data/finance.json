@@ -5,6 +5,7 @@
       "entries": [
         {
           "title": "Career Semi-Quant Terminal",
+          "symbol": "candles",
           "url": "https://chennakeshavadasa.github.io/career-semi-quant/",
           "points": [
             "Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 40+ semiconductor companies.",
@@ -27,12 +28,14 @@
       "entries": [
         {
           "title": "Time-Series Forecasting",
+          "symbol": "forecast",
           "url": "https://github.com/chennakeshavadasa",
           "desc": "Applied ARIMA and Holt-Winters exponential smoothing models for financial time-series forecasting and trend decomposition.",
           "meta": "Python · ARIMA · Holt-Winters · SciPy"
         },
         {
           "title": "Risk Metrics & Portfolio Analysis",
+          "symbol": "var",
           "url": "https://github.com/chennakeshavadasa",
           "desc": "Implementation of standard risk metrics including Value-at-Risk (VaR), Conditional VaR (CVaR), Beta, Sharpe ratio, and Sortino ratio for portfolio performance evaluation.",
           "meta": "Python · NumPy · Pandas · Scikit-learn"

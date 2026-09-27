@@ -7,7 +7,8 @@
       "org": "Omni Design Technologies",
       "place": "Bengaluru",
       "kind": "Industry",
-      "badge": "ODT",
+      "symbol": "adc",
+      "symbolLabel": "ADC",
       "keywords": "PVT Monitor &amp; Reference IPs &middot; Bandgap Core &middot; REF ANALOG &middot; TSMC 28&nbsp;nm CMOS",
       "specs": [
         {
@@ -32,7 +33,8 @@
       "org": "PhyTau Semiconductors",
       "place": "Bengaluru",
       "kind": "Industry",
-      "badge": "PTS",
+      "symbol": "comparator",
+      "symbolLabel": "Comparator",
       "keywords": "PWM comparator &middot; programmable hysteresis &middot; UMC 55&nbsp;nm CMOS",
       "specs": [
         {
@@ -57,7 +59,8 @@
       "org": "LP-CAS Lab",
       "place": "IIT Gandhinagar",
       "kind": "Research",
-      "badge": "IITGN",
+      "symbol": "ring",
+      "symbolLabel": "Ring amp",
       "keywords": "<i>R<sub>on</sub>/g<sub>m</sub></i> methodology &middot; SKY130 tapeout &middot; ESSERC 2026",
       "advisor": {
         "name": "Prof. Madhav K. Pathak",
@@ -86,7 +89,8 @@
       "org": "ISRO",
       "place": "SAC, Hassan",
       "kind": "Internship",
-      "badge": "ISRO",
+      "symbol": "antenna",
+      "symbolLabel": "C-band",
       "keywords": "C-Band antenna calibration &middot; GSAT-31 In-Orbit Testing",
       "specs": [
         {

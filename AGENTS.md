@@ -34,6 +34,8 @@ src/
     WorkList.astro           # reusable JSON-driven entry list (Work/Tape-outs/Finance)
     PubList.astro            # numbered bibliography for Publications ([n], authors, italic venue)
     Experience.astro         # time-axis Experience timeline from experience.json
+    News.astro               # "Latest" news ticker after the About masthead
+    Symbol.astro             # schematic + finance line symbols (adc, comparator, ring, candles, var, ...)
     ThemeToggle.astro        # light/dark switch (initial theme set pre-paint in Layout head)
     Gallery.astro            # open-by-default image strip; thumbnails open the shared lightbox
     SkillsSFG.astro          # interactive skills graph (keyboard-accessible nodes)
@@ -43,7 +45,8 @@ src/
     publications.json        # Publications & Tape-outs entries
     tapeouts.json            # Tape-outs (silicon-fabricated work) entries
     finance.json             # Quantitative Finance entries
-    experience.json          # Experience timeline (start/end YYYY-MM, role, org, specs, detail HTML)
+    experience.json          # Experience timeline (start/end YYYY-MM, role, org, symbol, specs, detail HTML)
+    news.json                # "Latest" ticker items (date, text, optional tag/href) — real events only
     notebook.html            # nbconvert (JupyterLab) export served at /notebook
   styles/global.css          # all tokens + styling (single stylesheet)
   scripts/reveal.js          # scroll reveals, stagger, running-head scroll-spy (links need data-nav)

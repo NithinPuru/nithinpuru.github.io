@@ -7,6 +7,8 @@ import Layout from "../layouts/Layout.astro";
 import SkillsSFG from "../components/SkillsSFG.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import Experience from "../components/Experience.astro";
+import News from "../components/News.astro";
+import Symbol from "../components/Symbol.astro";
 import { githubStats } from "../lib/github";
 
 // Data hygiene: re-verify src/data/*.json when updating content (GitHub stars are fetched live).
@@ -132,6 +134,8 @@ const gh = await githubStats("chennakeshavadasa");
         </a>
       </div>
     </header>
+
+    <News />
 
     <section class="section" id="experience" aria-labelledby="experience-h">
       <header class="section-head" data-reveal>
@@ -469,13 +473,6 @@ const gh = await githubStats("chennakeshavadasa");
       </ul>
     </section>
 
-    <!-- Achievements marquee -->
-    <div class="marquee-wrap" aria-hidden="true">
-      <div class="marquee-track" id="marqueeTrack">
-        <!-- items duplicated in JS for seamless loop -->
-      </div>
-    </div>
-
     <section class="section" id="work" aria-labelledby="work-h">
       <header class="section-head" data-reveal>
         <span class="sec-num">06</span>
@@ -574,6 +571,7 @@ const gh = await githubStats("chennakeshavadasa");
       </div>
     </section>
 
+    <div class="end-mark" aria-hidden="true"><Symbol name="ground" /></div>
     <div class="site-footer" role="contentinfo">
       <span>Nithin Purushothama &middot; Portfolio</span>
       <span aria-hidden="true">·</span>
@@ -588,37 +586,6 @@ const gh = await githubStats("chennakeshavadasa");
   </div>
   </div>
 
-  <script is:inline>
-  /* ── Achievements marquee ─────────────────────────── */
-  (function () {
-    var items = [
-      { text: "ESSERC 2026 · Accepted",             sub: "Palma de Mallorca, Spain" },
-      { text: "IEEE SSCS Code-a-Chip Travel Grant", sub: "$5,000 · Young Professional" },
-      { text: "SKY130 Tapeout",                     sub: "Piecewise-Compensated BGR · TinyTapeout" },
-      { text: "GF180MCU Tapeout",                   sub: "Folded-Cascode OTA · TinyTapeout" },
-      { text: "IHP SG13G2 · 130 nm BiCMOS",         sub: "Ron/gm Methodology · ESSERC 2026" },
-      { text: "UMC 55 nm CMOS",                     sub: "PWM Comparator · PhyTau Semiconductors" },
-      { text: "TSMC 28 nm CMOS",                    sub: "PVT Monitor & Reference IPs · Omni Design" },
-      { text: "Omni Design Technologies",           sub: "Bandgap Core · REF ANALOG" },
-      { text: "IIT Gandhinagar · LP-CAS Lab",       sub: "Advisor: Prof. Madhav K. Pathak" },
-      { text: "ISRO · SAC Hassan",                  sub: "C-Band Antenna Calibration · GSAT-31" },
-      { text: "Seeking PhD · Fall 2027",            sub: "Energy-efficient AMS design" },
-    ];
-    var track = document.getElementById('marqueeTrack');
-    if (!track) return;
-    // Double the items for seamless loop
-    var all = items.concat(items);
-    all.forEach(function (a) {
-      var el = document.createElement('div');
-      el.className = 'marquee-item';
-      el.innerHTML =
-        '<span class="marquee-text">' + a.text + '</span>' +
-        '<span class="marquee-sep" aria-hidden="true">&middot;</span>' +
-        '<span class="marquee-sub">' + a.sub + '</span>';
-      track.appendChild(el);
-    });
-  })();
-  </script>
 
   <script is:inline>
   (function () {

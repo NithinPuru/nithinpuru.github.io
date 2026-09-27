@@ -1,0 +1,42 @@
+---
+// "Latest" ticker: news items scroll right-to-left in a loop (paused on hover
+// and keyboard focus). The second track is a visual duplicate for a seamless
+// loop and is hidden from assistive tech; with reduced motion the strip is a
+// static, horizontally scrollable row.
+import data from "../data/news.json";
+
+interface Item {
+  date: string;
+  text: string;
+  tag?: string;
+  href?: string;
+}
+const items = data.items as Item[];
+const external = (h?: string) => !!h && /^https?:/.test(h);
+---
+<section class="news" aria-labelledby="news-h" data-reveal>
+  <h2 class="news__label" id="news-h">Latest</h2>
+  <div class="news__viewport">
+    {[0, 1].map((copy) => (
+      <ul class="news__track" aria-hidden={copy === 1 ? "true" : undefined}>
+        {items.map((it) => (
+          <li class="news__item">
+            <span class="news__date">{it.date}</span>
+            {it.tag && <span class="news__tag">{it.tag}</span>}
+            {it.href ? (
+              <a
+                href={it.href}
+                tabindex={copy === 1 ? "-1" : undefined}
+                target={external(it.href) ? "_blank" : undefined}
+                rel={external(it.href) ? "noopener noreferrer" : undefined}
+                set:html={it.text}
+              />
+            ) : (
+              <span set:html={it.text} />
+            )}
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</section>

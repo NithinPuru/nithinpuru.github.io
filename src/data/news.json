@@ -1,0 +1,35 @@
+{
+  "items": [
+    {
+      "date": "Dec 2026",
+      "tag": "Upcoming",
+      "text": "<i>R<sub>on</sub>/g<sub>m</sub></i> design methodology featured in IEEE SSCS Magazine",
+      "href": "#publications"
+    },
+    {
+      "date": "Sep 2026",
+      "text": "Presented the <i>R<sub>on</sub>/g<sub>m</sub></i> methodology at ESSERC 2026, Palma de Mallorca",
+      "href": "#publications"
+    },
+    {
+      "date": "2026",
+      "text": "Awarded the IEEE SSCS Code-a-Chip Travel Grant ($5,000, Young Professional)",
+      "href": "#awards"
+    },
+    {
+      "date": "Silicon",
+      "text": "Piecewise-compensated bandgap reference fabricated in SKY130 via TinyTapeout",
+      "href": "#work"
+    },
+    {
+      "date": "Feb 2025",
+      "text": "Paper at IEEE ICEE 2025: Analog CMOS Multiplier Circuits",
+      "href": "https://ieeexplore.ieee.org/abstract/document/11409824"
+    },
+    {
+      "date": "Fall 2027",
+      "text": "Seeking PhD positions in analog &amp; mixed-signal IC design",
+      "href": "#contact"
+    }
+  ]
+}

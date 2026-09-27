@@ -1,10 +1,11 @@
 ---
 // Experience as a time axis: an ink rail labelled t that points up to "now",
 // the start year of each role as an axis tick, a ring-and-dot node on the
-// rail, and a line-drawn DIP package carrying the organisation's initials in
-// place of a logo. Summaries show dates, computed tenure, role, organisation,
+// rail, and the schematic symbol of the circuit worked on there (ADC,
+// comparator, ring amplifier, antenna) in place of a logo. Summaries show dates, computed tenure, role, organisation,
 // keywords and a datasheet strip of headline figures; detail expands below.
 import data from "../data/experience.json";
+import Symbol, { type SymbolName } from "./Symbol.astro";
 
 interface Spec {
   k: string;
@@ -17,7 +18,8 @@ interface Role {
   org: string;
   place: string;
   kind: string;
-  badge: string;
+  symbol: SymbolName;
+  symbolLabel: string;
   keywords?: string;
   advisor?: { name: string; url: string };
   specs?: Spec[];
@@ -56,7 +58,6 @@ const roles = data.entries as Role[];
   <ol class="xp__list">
     {roles.map((r) => {
       const current = r.end === null;
-      const small = r.badge.length > 4;
       return (
         <li class={"xp__item" + (current ? " is-current" : "")}>
           <span class="xp__tick" aria-hidden="true">{parse(r.start).y}</span>
@@ -66,11 +67,10 @@ const roles = data.entries as Role[];
           </svg>
           <details class="xp__entry">
             <summary class="xp__summary">
-              <svg class="xp__pkg" viewBox="0 0 44 52" width="44" height="52" aria-hidden="true">
-                <path class="xp__pkg-pins" d="M3 13h6M3 21h6M3 29h6M3 37h6M35 13h6M35 21h6M35 29h6M35 37h6" />
-                <path class="xp__pkg-body" d="M9 4h9.5a3.5 3.5 0 0 0 7 0H35v44H9z" />
-                <text x="22" y="27" text-anchor="middle" dominant-baseline="middle" font-size={small ? "7" : "9"}>{r.badge}</text>
-              </svg>
+              <span class="xp__sym">
+                <Symbol name={r.symbol} />
+                <span class="xp__sym-label">{r.symbolLabel}</span>
+              </span>
               <span class="xp__meta">
                 <span class="xp__dates">{fmt(r.start)} &ndash; {fmt(r.end)}</span>
                 <span class="xp__tenure">{tenure(r.start, r.end)}</span>

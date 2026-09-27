@@ -53,6 +53,7 @@
   --nav-h: 3.4rem;
   --content: 46rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ring: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Ccircle cx='4' cy='4' r='3.1' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E");
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
@@ -671,6 +672,18 @@ a {
   letter-spacing: -0.01em;
   line-height: 1.15;
 }
+/* the heading rule is a wire ending in an open terminal */
+.section-head::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 8px;
+  height: 8px;
+  background: var(--ink);
+  -webkit-mask: var(--ring) center / contain no-repeat;
+  mask: var(--ring) center / contain no-repeat;
+}
 .section-rule {
   position: absolute;
   left: 0;
@@ -750,9 +763,13 @@ a {
   .worklist--grid .entry:nth-child(2) {
     border-top: none;
   }
-  .worklist--grid .entry {
+  .worklist--grid .entry:not(.entry--sym),
+  .worklist--grid .entry__main {
     display: flex;
     flex-direction: column;
+  }
+  .worklist--grid .entry__main {
+    height: 100%;
   }
   .worklist--grid .entry__links {
     margin-top: auto;
@@ -772,6 +789,24 @@ a {
   letter-spacing: 0.03em;
   color: var(--ink-3);
 }
+/* Circuit symbol beside a project entry. */
+.entry--sym {
+  display: grid;
+  grid-template-columns: 2.9rem minmax(0, 1fr);
+  column-gap: 1rem;
+  align-items: start;
+}
+.entry__sym {
+  width: 2.9rem;
+  height: auto;
+  margin-top: 0.2rem;
+  color: var(--ink-3);
+  transition: color 0.2s var(--ease-out);
+}
+.entry--sym:hover .entry__sym {
+  color: var(--accent);
+}
+
 /* Tape-out "chip plate": die image left, datasheet body right. */
 .entry__main {
   min-width: 0;
@@ -1115,6 +1150,14 @@ a {
   .js .section.is-in .section-rule,
   .js .section-rule.is-in {
     transform: scaleX(1);
+  }
+  /* the terminal lands once the wire has drawn to it */
+  .js .section-head::after {
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-out) 0.9s;
+  }
+  .js .section.is-in .section-head::after {
+    opacity: 1;
   }
 }
 
@@ -1737,48 +1780,96 @@ a {
   clip-path: polygon(0 0, calc(100% - 0.45rem) 0, 100% 50%, calc(100% - 0.45rem) 100%, 0 100%);
 }
 
-/* ── Achievements marquee ────────────────────────── */
-.marquee-wrap {
+/* ── Latest (news ticker) ──────────────────────── */
+.news {
+  display: flex;
+  align-items: stretch;
+  margin-top: 2.2rem;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.news__label {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0 1rem 0 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--accent);
+  clip-path: polygon(0 0, calc(100% - 0.5rem) 0, 100% 50%, calc(100% - 0.5rem) 100%, 0 100%);
+}
+.news__viewport {
+  display: flex;
   overflow: hidden;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  padding: 0.65rem 0;
-  background: var(--paper);
+  min-width: 0;
 }
-.marquee-track {
+.news__track {
   display: flex;
-  align-items: center;
-  width: max-content;
-  animation: marquee-scroll 55s linear infinite;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: news-scroll 70s linear infinite;
 }
-.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
-@keyframes marquee-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.news__viewport:hover .news__track,
+.news__viewport:focus-within .news__track {
+  animation-play-state: paused;
 }
-.marquee-item {
+@keyframes news-scroll {
+  to { transform: translateX(-100%); }
+}
+.news__item {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0 2.5rem;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.7rem 1.6rem;
   border-right: 1px solid var(--rule);
   white-space: nowrap;
-  flex-shrink: 0;
+  font-size: 0.95rem;
 }
-.marquee-text {
-  font-family: var(--font-serif);
-  font-size: 0.9rem;
-  color: var(--ink);
+.news__date {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--accent);
 }
-.marquee-sep { color: var(--ink-3); }
-.marquee-sub {
+.news__tag {
   font-family: var(--font-mono);
   font-size: 0.66rem;
-  letter-spacing: 0.06em;
-  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--annot);
+}
+.news__item a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.news__item a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
+  .news__track { animation: none; }
+  .news__track[aria-hidden] { display: none; }
+  .news__viewport { overflow-x: auto; }
+}
+
+/* End of document: a ground symbol, like the last node of a netlist. */
+.end-mark {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  color: var(--ink-3);
+}
+.end-mark .sym {
+  width: 2.4rem;
+  height: auto;
 }
 
 /* ── Experience: time axis ───────────────────────── */
@@ -1872,31 +1963,35 @@ a {
   list-style: none;
 }
 .xp__summary::-webkit-details-marker { display: none; }
-.xp__summary > :not(.xp__pkg) { grid-column: 2; }
-.xp__pkg {
+.xp__summary > :not(.xp__sym) { grid-column: 2; }
+.xp__sym {
   grid-column: 1;
   grid-row: 1 / span 4;
-  width: 3.3rem;
-  height: auto;
-  margin-top: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
   color: var(--ink-3);
   transition: color 0.2s var(--ease-out);
 }
-.xp__pkg-body,
-.xp__pkg-pins {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.2;
-  stroke-linejoin: round;
+.xp__sym .sym {
+  width: 3.3rem;
+  height: auto;
 }
-.xp__pkg text {
-  fill: currentColor;
+.xp__sym-label {
   font-family: var(--font-mono);
-  letter-spacing: 0.02em;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
 }
-.is-current .xp__pkg,
-.xp__summary:hover .xp__pkg {
+.is-current .xp__sym,
+.xp__summary:hover .xp__sym {
   color: var(--accent);
+}
+.sym text {
+  font-family: var(--font-mono);
 }
 .xp__meta {
   display: flex;
@@ -2028,8 +2123,8 @@ a {
   .xp__tick { display: none; }
   .xp__node { left: calc(-1.8rem - 0.5px); }
   .xp__summary { grid-template-columns: minmax(0, 1fr); }
-  .xp__pkg { display: none; }
-  .xp__summary > :not(.xp__pkg) { grid-column: 1; }
+  .xp__sym { display: none; }
+  .xp__summary > :not(.xp__sym) { grid-column: 1; }
   .xp__detail { margin-left: 0; }
 }
 @media (prefers-reduced-motion: no-preference) {

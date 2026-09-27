@@ -4,6 +4,7 @@
       "entries": [
         {
           "title": "Design of Power-on Reset Circuit",
+          "symbol": "comparator",
           "meta": "SKY130 · Power-on reset",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
           "points": [
@@ -12,6 +13,7 @@
         },
         {
           "title": "Automation of PVT and SPICE Simulation Framework for Analog Design",
+          "symbol": "sweep",
           "meta": "Python · NGSpice · Magic VLSI",
           "url": "https://github.com/chennakeshavadasa/Cross_corners_script_Ngspice",
           "points": [
@@ -22,6 +24,7 @@
         },
         {
           "title": "Process-Invariant Ring Amplifier using Deadzone Regulation",
+          "symbol": "ring",
           "meta": "IHP SG13G2 · Ring amplifier",
           "url": "https://github.com/chennakeshavadasa/PVT-Invariant-Ring-Amplifier",
           "points": [
@@ -31,6 +34,7 @@
         },
         {
           "title": "Ultra-Low Power Two-Transistor Subthreshold Voltage Reference",
+          "symbol": "vref",
           "meta": "SKY130 · Subthreshold reference",
           "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
           "points": [
@@ -40,6 +44,7 @@
         },
         {
           "title": "Low Dropout Voltage Regulator (LDO)",
+          "symbol": "ldo",
           "meta": "SKY130 · LDO",
           "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
           "points": [
@@ -50,6 +55,7 @@
         },
         {
           "title": "Rail-to-Rail Input Swing OTA",
+          "symbol": "opamp",
           "meta": "SKY130 · Folded-cascode OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/tree/main/OTAs/Rail_to_Rail_OTA_Inp_IP/without_internal_bias",
           "points": [
@@ -61,6 +67,7 @@
         },
         {
           "title": "2-Stage Fully Differential OTA",
+          "symbol": "opamp-fd",
           "meta": "SKY130 · Fully differential OTA",
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS",
           "points": [
