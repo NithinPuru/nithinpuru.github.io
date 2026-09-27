@@ -78,7 +78,7 @@ try {
 
   // ── Every tool and tab ───────────────────────────────────────────────────
   console.log('Tools');
-  const toolTabs = { factor: ['exp', 'scores', 'quality', 'fret'], regime: ['mkt', 'uni'], lab: ['main'], pairs: ['main'], rrg: ['main'], backtest: ['main'] };
+  const toolTabs = { factor: ['exp', 'scores', 'quality', 'fret'], regime: ['mkt', 'uni', 'corr'], lab: ['main', 'dd', 'vt', 'attr'], pairs: ['main'], rrg: ['main'], backtest: ['main'], earnings: ['up', 'study'], replay: ['replay', 'ic'] };
   for (const [tool, tabs] of Object.entries(toolTabs)) {
     for (const tab of tabs) {
       await page.evaluate((tool, tab) => openTool(tool, tab), tool, tab);
@@ -115,6 +115,30 @@ try {
     check(true, `portfolio lab: ${src} portfolio stress table renders`);
     await page.keyboard.press('Escape');
   }
+  // New tools: interactions
+  await page.evaluate(() => openTool('earnings', 'study'));
+  await page.waitForFunction(() => document.getElementById('es-t') && !document.querySelector('#tool-body .tool-loading'), { timeout: 60000 });
+  await page.select('#es-t', 'NVDA');
+  await page.waitForFunction(() => document.getElementById('es-t')?.value === 'NVDA' && document.querySelector('#es-tbl tbody tr'), { timeout: 60000 });
+  const nvEv = await page.evaluate(() => document.querySelectorAll('#es-tbl tbody tr').length);
+  check(nvEv >= 20, `earnings: NVDA event study lists ${nvEv} past reports`);
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => openTool('replay', 'replay'));
+  await page.waitForFunction(() => document.getElementById('rp-b') && document.querySelector('#rp-tbl tbody tr'), { timeout: 60000 });
+  const d1 = await page.evaluate(() => document.querySelector('#tool-body .tool-controls b').textContent);
+  await page.click('#rp-b');
+  await page.waitForFunction(d => document.querySelector('#tool-body .tool-controls b')?.textContent !== d && document.querySelector('#rp-tbl tbody tr'), { timeout: 60000 }, d1);
+  check(true, 'replay: stepping back 4 weeks recomputes the point-in-time scores');
+  await page.keyboard.press('Escape');
+  for (const [tab, sel, val] of [['dd', '#dd-h', '104'], ['vt', '#vt-t', '0.15'], ['attr', '#at-b', 'ew']]) {
+    await page.evaluate(t => openTool('lab', t), tab);
+    await page.waitForFunction(s => document.querySelector(s) && !document.querySelector('#tool-body .tool-loading'), { timeout: 60000 }, sel);
+    await page.select(sel, val);
+    await page.waitForFunction((s, v) => document.querySelector(s)?.value === v && document.querySelector('#tool-body canvas'), { timeout: 60000 }, sel, val);
+    check(true, `portfolio lab/${tab}: option ${val} re-renders`);
+    await page.keyboard.press('Escape');
+  }
+
   // Pairs: FDR + split-sample columns present; RRG sector mode + window switch
   await page.evaluate(() => openTool('pairs'));
   await page.waitForFunction(() => document.querySelector('#pr-tbl tbody tr'), { timeout: 90000 });

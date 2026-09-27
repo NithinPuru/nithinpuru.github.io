@@ -160,6 +160,29 @@ def compact(result):
     return grid, result
 
 
+def fetch_earnings(t):
+    """Past earnings as [date, eps_est, eps_act, surprise_pct] rows, oldest first (last ~10y)."""
+    for attempt in range(RETRIES):
+        try:
+            df = yf.Ticker(t).get_earnings_dates(limit=48)
+            if df is None or df.empty:
+                return []
+            now = pd.Timestamp.now(tz=df.index.tz)
+            out = []
+            for ts, row in df[df.index < now].sort_index().iterrows():
+                act, est = clean(row.get("Reported EPS")), clean(row.get("EPS Estimate"))
+                if act is None:
+                    continue  # announced date without results yet
+                surp = clean(row.get("Surprise(%)"))
+                # Compact row: [date, EPS estimate, EPS actual, surprise %]
+                out.append([ts.strftime("%Y-%m-%d"), None if est is None else round(est, 4), round(act, 4), None if surp is None else round(surp, 2)])
+            return out
+        except Exception as e:  # noqa: BLE001
+            print(f"  earnings retry {attempt + 1} {t}: {e}")
+            time.sleep(2 * (attempt + 1))
+    return None
+
+
 def fetch_fx(currencies):
     """Units of each currency per 1 USD (e.g. KRW -> ~1400), for USD market caps."""
     fx = {"USD": 1.0}
@@ -206,6 +229,9 @@ def main():
             # sits on the same weekly grid and benchmark alignment stays exact.
             s = s[~s.index.duplicated(keep="last")].asfreq("W-MON").ffill() if len(s) > 1 else s
             fund = fetch_fund(t) or (prev_t.get(t) or {}).get("fund") or {}
+            earn = fetch_earnings(t) if t not in EXTRA else []
+            if earn is None:  # fetch failed: keep what we had
+                earn = (prev_t.get(t) or {}).get("earnings") or []
             result[t] = {
                 "dates": [d.strftime("%Y-%m-%d") for d in s.index],
                 "closes": [round(float(v), 4) for v in s.values],
@@ -213,6 +239,7 @@ def main():
                 "fund": fund,
                 "updated": now.isoformat(timespec="seconds"),
                 "flatRatio": round(flat, 3),
+                "earnings": earn,
             }
             fresh.append(t)
             warn = f"  WARN illiquid: {flat:.0%} flat weeks" if flat > FLAT_WARN else ""

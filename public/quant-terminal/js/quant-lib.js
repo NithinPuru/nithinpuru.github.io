@@ -496,12 +496,173 @@
     return { rets: out, start: look + skip, stats: perfStats(out), turnover: rebals ? (turnSum / out.length) * W : 0 };
   }
 
+  // ─── Seeded PRNG (reproducible simulations) ────────────────────────────
+  function mulberry32(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const quantile = (sorted, p) => sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))))];
+
+  // ─── Event study (earnings) ─────────────────────────────────────────────
+  // Market-model event study on weekly returns. r, m: aligned weekly returns (r[t] =
+  // return into week t). events: [{ t0, ...meta }] — t0 = index of the week containing
+  // the announcement. Abnormal return AR = r − (α + β·m), with α, β estimated on
+  // [t0 − gap − est, t0 − gap). Returns per-event AR/CAR paths over [−pre, +post].
+  // Other event weeks (and the week after) are excluded from every estimation window,
+  // otherwise earlier earnings jumps inflate the "normal" return and bias pre-event CAR.
+  function eventStudy(r, m, events, { pre = 4, post = 8, est = 52, gap = 6, minEst = 26 } = {}) {
+    const out = [], excluded = new Set(); events.forEach(e => { excluded.add(e.t0); excluded.add(e.t0 + 1); });
+    for (const ev of events) {
+      const t0 = ev.t0, lo = t0 - gap - est, hi = t0 - gap;
+      if (lo < 1 || t0 + post >= r.length || t0 - pre < 1) continue;
+      const idx = []; for (let t = lo; t < hi; t++) if (r[t] != null && m[t] != null && !excluded.has(t)) idx.push(t);
+      if (idx.length < minEst) continue;
+      const reg = ols(idx.map(t => r[t]), idx.map(t => [1, m[t]]));
+      const sigma = Math.sqrt(reg.s2);
+      const ar = [];
+      let ok = true;
+      for (let k = -pre; k <= post; k++) { const t = t0 + k; if (r[t] == null || m[t] == null) { ok = false; break; } ar.push(r[t] - reg.b[0] - reg.b[1] * m[t]); }
+      if (!ok) continue;
+      let c = 0; const car = ar.map(v => (c += v));
+      out.push({ ...ev, alpha: reg.b[0], beta: reg.b[1], sigma, ar, car, ar0: ar[pre] });
+    }
+    const n = out.length, L = pre + post + 1;
+    const meanPath = key => Array.from({ length: L }, (_, k) => mean(out.map(e => e[key][k])));
+    const sePath = key => Array.from({ length: L }, (_, k) => (n > 1 ? std(out.map(e => e[key][k])) / Math.sqrt(n) : 0));
+    const absAr0 = n ? mean(out.map(e => Math.abs(e.ar0))) : null, sig = n ? mean(out.map(e => e.sigma)) : null;
+    return {
+      events: out, n, pre, post, meanAR: n ? meanPath('ar') : [], meanCAR: n ? meanPath('car') : [], seCAR: n ? sePath('car') : [],
+      absAr0, sigma: sig,
+      // Earnings-week move relative to a typical week: E|X| = σ·√(2/π) for a normal week.
+      moveMultiple: n && sig ? absAr0 / (sig * Math.sqrt(2 / Math.PI)) : null,
+    };
+  }
+  // Index of the weekly bar (dated Monday) that absorbs an announcement on `day`
+  // (YYYY-MM-DD). Friday/weekend releases are priced in the following week.
+  function eventWeekIndex(weekDates, day) {
+    const d = new Date(day + 'T00:00:00Z'), wd = d.getUTCDay();
+    if (wd === 5 || wd === 6 || wd === 0) d.setUTCDate(d.getUTCDate() + ((8 - wd) % 7 || 7));
+    const iso = d.toISOString().slice(0, 10);
+    let lo = 0, hi = weekDates.length - 1, ans = -1;
+    while (lo <= hi) { const mid = (lo + hi) >> 1; if (weekDates[mid] <= iso) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
+    if (ans < 0) return -1;
+    const gapDays = (Date.parse(iso) - Date.parse(weekDates[ans])) / 86400000;
+    return gapDays < 7 ? ans : -1;
+  }
+
+  // ─── Regime-switching drawdown forecast ─────────────────────────────────
+  // Simulates future weekly returns by walking the fitted HMM's transition matrix
+  // (starting from the current state probabilities) and bootstrapping historical
+  // returns from the matching regime. Captures volatility clustering and fat tails
+  // that an i.i.d. Gaussian simulation misses.
+  // drift: 'hist' keeps the sample's average return; 'zero' removes it (the usual choice
+  // for risk forecasts, so a strong past decade doesn't flatter the outlook).
+  function simulateDrawdowns(r, { weeks = 52, paths = 4000, K = 2, seed = 7, regime = true, drift = 'hist' } = {}) {
+    let x = r.filter(v => v != null && isFinite(v)); if (x.length < 60) return null;
+    if (drift === 'zero') { const m0 = mean(x); x = x.map(v => v - m0); }
+    const h = fitHMM(x, K); if (!h) return null;
+    const pools = Array.from({ length: K }, (_, k) => x.filter((_, t) => h.path[t] === k));
+    if (pools.some(p => p.length < 5)) regime = false;
+    const rnd = mulberry32(seed), pick = a => a[Math.floor(rnd() * a.length)];
+    const eqQ = Array.from({ length: weeks + 1 }, () => []), mdd = [], term = [];
+    const g0 = h.gamma[h.gamma.length - 1];
+    for (let p = 0; p < paths; p++) {
+      let s = 0; { let u = rnd(), c = 0; for (let k = 0; k < K; k++) { c += g0[k]; if (u <= c) { s = k; break; } s = k; } }
+      let eq = 1, pk = 1, dd = 0; eqQ[0].push(1);
+      for (let w = 1; w <= weeks; w++) {
+        if (regime) { const u = rnd(); let c = 0; for (let k = 0; k < K; k++) { c += h.A[s][k]; if (u <= c) { s = k; break; } } }
+        eq *= 1 + (regime ? pick(pools[s]) : pick(x));
+        if (eq > pk) pk = eq; dd = Math.min(dd, eq / pk - 1); eqQ[w].push(eq);
+      }
+      mdd.push(dd); term.push(eq - 1);
+    }
+    const sd = [...mdd].sort((a, b) => a - b), st = [...term].sort((a, b) => a - b);
+    const fan = eqQ.map(v => { v.sort((a, b) => a - b); return { p5: quantile(v, 0.05), p25: quantile(v, 0.25), p50: quantile(v, 0.5), p75: quantile(v, 0.75), p95: quantile(v, 0.95) }; });
+    return { hmm: h, fan, maxDD: { p5: quantile(sd, 0.05), p25: quantile(sd, 0.25), p50: quantile(sd, 0.5), p75: quantile(sd, 0.75), mean: mean(mdd) },
+      terminal: { p5: quantile(st, 0.05), p50: quantile(st, 0.5), p95: quantile(st, 0.95) },
+      prob: t => mdd.filter(v => v <= -t).length / mdd.length, mdd, paths, weeks, regime };
+  }
+
+  // ─── Correlation dynamics ────────────────────────────────────────────────
+  // Average pairwise correlation among assets, rolling window and EWMA (RiskMetrics).
+  function avgCorr(C) { let s = 0, n = 0; for (let i = 0; i < C.length; i++) for (let j = i + 1; j < C.length; j++) { s += C[i][j]; n++; } return n ? s / n : null; }
+  function rollingAvgCorr(R, window = 26) {
+    const T = R[0].length, out = new Array(T).fill(null);
+    for (let t = window; t < T; t++) {
+      const cols = R.map(r => r.slice(t - window + 1, t + 1)).filter(r => r.every(v => v != null));
+      if (cols.length >= 3) out[t] = avgCorr(corrFromCov(covMatrix(cols)));
+    }
+    return out;
+  }
+  function ewmaAvgCorr(R, lambda = 0.94, warm = 26) {
+    const n = R.length, T = R[0].length, S = zeros(n, n), out = new Array(T).fill(null);
+    for (let t = 1; t < T; t++) {
+      if (R.some(r => r[t] == null)) continue;
+      for (let i = 0; i < n; i++) for (let j = i; j < n; j++) { const v = lambda * S[i][j] + (1 - lambda) * R[i][t] * R[j][t]; S[i][j] = S[j][i] = v; }
+      if (t >= warm) out[t] = avgCorr(corrFromCov(S));
+    }
+    return out;
+  }
+
+  // ─── Performance attribution ────────────────────────────────────────────
+  // One-period Brinson-Fachler by group. wp, wb: asset weights; r: asset returns;
+  // group: group label per asset. Effects sum exactly to Rp − Rb.
+  function brinson(wp, wb, r, group) {
+    const G = [...new Set(group)], Rp = dot(wp, r), Rb = dot(wb, r);
+    const rows = G.map(g => {
+      const ix = group.map((x, i) => (x === g ? i : -1)).filter(i => i >= 0);
+      const wpG = ix.reduce((s, i) => s + wp[i], 0), wbG = ix.reduce((s, i) => s + wb[i], 0);
+      const rpG = wpG ? ix.reduce((s, i) => s + wp[i] * r[i], 0) / wpG : null, rbG = wbG ? ix.reduce((s, i) => s + wb[i] * r[i], 0) / wbG : null;
+      const rb = rbG ?? Rb, rp = rpG ?? rb;
+      return { g, wp: wpG, wb: wbG, rp: rpG, rb: rbG, alloc: (wpG - wbG) * (rb - Rb), select: wbG * (rp - rb), inter: (wpG - wbG) * (rp - rb) };
+    });
+    return { Rp, Rb, rows };
+  }
+  // Carino (1999) smoothing: link per-period additive effects so they sum to the
+  // compounded excess return over the whole horizon.
+  function carinoLink(rp, rb, effects) {
+    const k = (x, y) => (Math.abs(x - y) < 1e-12 ? 1 / (1 + x) : (Math.log(1 + x) - Math.log(1 + y)) / (x - y));
+    const Rp = rp.reduce((e, x) => e * (1 + x), 1) - 1, Rb = rb.reduce((e, x) => e * (1 + x), 1) - 1, K = k(Rp, Rb);
+    const K2 = effects[0].map(() => 0);
+    effects.forEach((row, t) => { const kt = k(rp[t], rb[t]); row.forEach((v, j) => (K2[j] += (v * kt) / K)); });
+    return { Rp, Rb, excess: Rp - Rb, linked: K2 };
+  }
+
+  // ─── Volatility targeting ────────────────────────────────────────────────
+  // Causal EWMA volatility forecast (annualized): out[t] uses returns up to t.
+  function ewmaVolSeries(r, lambda = 0.94, warm = 20) {
+    let v = null, n = 0; const out = new Array(r.length).fill(null);
+    for (let t = 0; t < r.length; t++) {
+      if (r[t] == null) { out[t] = v != null && n >= warm ? Math.sqrt(v * W) : null; continue; }
+      v = v == null ? r[t] * r[t] : lambda * v + (1 - lambda) * r[t] * r[t]; n++;
+      out[t] = n >= warm ? Math.sqrt(v * W) : null;
+    }
+    return out;
+  }
+  // Volatility-managed returns (Moreira & Muir 2017): exposure_t = target / σ̂_{t−1}, capped.
+  function volManaged(r, { target = 0.2, lambda = 0.94, maxLev = 1.5 } = {}) {
+    const sig = ewmaVolSeries(r, lambda), out = [], lev = [];
+    for (let t = 1; t < r.length; t++) {
+      if (sig[t - 1] == null || r[t] == null) continue;
+      const L = Math.min(maxLev, target / sig[t - 1]); lev.push(L); out.push(L * r[t]);
+    }
+    return { rets: out, lev, start: r.length - out.length };
+  }
+
+  // Spearman rank correlation (average ranks for ties) — the information coefficient.
+  function spearman(a, b) {
+    const idx = a.map((_, i) => i).filter(i => a[i] != null && b[i] != null && isFinite(a[i]) && isFinite(b[i]));
+    if (idx.length < 5) return null;
+    const rank = v => { const o = v.map((x, i) => [x, i]).sort((p, q) => p[0] - q[0]), r = new Array(v.length); let k = 0; while (k < o.length) { let j = k; while (j + 1 < o.length && o[j + 1][0] === o[k][0]) j++; for (let m = k; m <= j; m++) r[o[m][1]] = (k + j) / 2 + 1; k = j + 1; } return r; };
+    const ra = rank(idx.map(i => a[i])), rb = rank(idx.map(i => b[i])), ma = mean(ra), mb = mean(rb);
+    let c = 0, va = 0, vb = 0; for (let i = 0; i < ra.length; i++) { c += (ra[i] - ma) * (rb[i] - mb); va += (ra[i] - ma) ** 2; vb += (rb[i] - mb) ** 2; }
+    return c / Math.sqrt(va * vb || 1);
+  }
+
   const QL = {
     zeros, eye, T, mul, mv, dot, inv, ols, mean, variance, std, rets, covMatrix, shrinkCov, corrFromCov, maxDrawdown, perfStats, normInv,
     fitHMM, adf, EG_CRIT, mackinnonp, benjaminiHochberg, normCdf, cointegration, halfLife,
     projectSimplex, meanVariance, portStats, efficientFrontier, riskParity, hrp, blackLitterman, riskDecomposition,
     longShortFactor, factorRegression, zscores, rankZ, qualityScores, QUALITY_PILLARS, rrg, rrgSeries, rrgHeading,
     emaSeries, rsiSeries, smaSeries, STRATEGIES, strategyReturns, walkForward, momentumRotation,
+    mulberry32, eventStudy, eventWeekIndex, simulateDrawdowns, avgCorr, rollingAvgCorr, ewmaAvgCorr, brinson, carinoLink, ewmaVolSeries, volManaged, spearman,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = QL; else root.QL = QL;
 })(typeof window !== 'undefined' ? window : globalThis);

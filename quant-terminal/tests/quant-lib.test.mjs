@@ -168,3 +168,78 @@ test('rankZ is monotone, symmetric and handles ties/missing', () => {
   assert.equal(z[3], null); assert.ok(z[1] < z[2] && z[2] < z[0]); assert.equal(z[2], z[4]);
   close(z[1] + z[0], 0, 1e-12, 'symmetric extremes');
 });
+
+// ─── Six new tools ──────────────────────────────────────────────────────────
+test('event study recovers an injected earnings-week abnormal return', () => {
+  const T = 520, m = normals(T, 61).map(v => 0.02 * v), e = normals(T, 62).map(v => 0.02 * v);
+  const r = m.map((v, t) => 0.001 + 1.3 * v + e[t]);
+  const events = []; for (let t0 = 80; t0 < T - 10; t0 += 13) { r[t0] += 0.10; events.push({ t0 }); }
+  const es = QL.eventStudy(r, m, events, { pre: 4, post: 8 });
+  assert.ok(es.n >= 30, `events used ${es.n}`);
+  close(es.meanAR[4], 0.10, 0.01, 'mean AR in event week');
+  close(es.meanCAR[3], 0, 0.02, 'no abnormal drift before the event');
+  assert.ok(es.moveMultiple > 3, `earnings move multiple ${es.moveMultiple}`);
+  close(QL.mean(es.events.map(x => x.beta)), 1.3, 0.1, 'market-model beta');
+});
+
+test('eventWeekIndex maps announcement days to the right weekly bar', () => {
+  const weeks = ['2026-01-05', '2026-01-12', '2026-01-19'];
+  assert.equal(QL.eventWeekIndex(weeks, '2026-01-07'), 0, 'Wednesday -> same week');
+  assert.equal(QL.eventWeekIndex(weeks, '2026-01-12'), 1, 'Monday -> its own week');
+  assert.equal(QL.eventWeekIndex(weeks, '2026-01-09'), 1, 'Friday -> priced next week');
+  assert.equal(QL.eventWeekIndex(weeks, '2026-01-10'), 1, 'Saturday -> next week');
+  assert.equal(QL.eventWeekIndex(weeks, '2025-12-20'), -1, 'before data -> none');
+  assert.equal(QL.eventWeekIndex(weeks, '2026-02-20'), -1, 'after data -> none');
+});
+
+test('regime-switching drawdown simulation is reproducible, ordered, and regime-aware', () => {
+  const z = normals(600, 71), r = z.map((v, i) => (Math.floor(i / 100) % 2 ? 0.05 * v - 0.004 : 0.015 * v + 0.004));
+  const a = QL.simulateDrawdowns(r, { paths: 1500, seed: 3 }), b = QL.simulateDrawdowns(r, { paths: 1500, seed: 3 });
+  assert.equal(a.maxDD.p50, b.maxDD.p50, 'same seed -> same result');
+  assert.ok(a.maxDD.p5 <= a.maxDD.p50 && a.maxDD.p50 <= a.maxDD.p75, 'drawdown quantiles ordered');
+  a.fan.forEach(f => assert.ok(f.p5 <= f.p50 && f.p50 <= f.p95));
+  assert.ok(a.prob(0.1) >= a.prob(0.2) && a.prob(0.2) >= a.prob(0.4), 'tail probabilities decrease');
+  // Ending the sample in the turbulent regime should forecast deeper drawdowns than ending calm.
+  const calmEnd = r.slice(0, 500), turbEnd = r.slice(0, 600);
+  const dc = QL.simulateDrawdowns(calmEnd, { paths: 1500, seed: 5 }), dt = QL.simulateDrawdowns(turbEnd, { paths: 1500, seed: 5 });
+  assert.ok(dt.maxDD.p50 < dc.maxDD.p50, `turbulent start deeper (${dt.maxDD.p50.toFixed(3)} vs ${dc.maxDD.p50.toFixed(3)})`);
+});
+
+test('rolling and EWMA average correlation recover a known correlation', () => {
+  const T = 300, f = normals(T, 81), R = [0, 1, 2, 3, 4].map(k => { const e = normals(T, 90 + k); return f.map((v, t) => 0.02 * (v + e[t])); }); // corr = 0.5
+  const roll = QL.rollingAvgCorr(R, 52).filter(v => v != null), ew = QL.ewmaAvgCorr(R).filter(v => v != null);
+  close(QL.mean(roll), 0.5, 0.06, 'rolling avg corr'); close(QL.mean(ew), 0.5, 0.08, 'EWMA avg corr');
+});
+
+test('Brinson effects sum to the excess return; Carino linking matches compounded excess', () => {
+  const g = ['A', 'A', 'B', 'B', 'C'], wp = [0.4, 0.1, 0.3, 0.2, 0], wb = [0.2, 0.2, 0.2, 0.2, 0.2];
+  const rp = [], rb = [], eff = [];
+  const z = normals(5 * 60, 101);
+  for (let t = 0; t < 60; t++) {
+    const r = z.slice(t * 5, t * 5 + 5).map(v => 0.03 * v), b = QL.brinson(wp, wb, r, g);
+    const tot = b.rows.reduce((s, x) => s + x.alloc + x.select + x.inter, 0);
+    close(tot, b.Rp - b.Rb, 1e-12, `period ${t} effects sum`);
+    rp.push(b.Rp); rb.push(b.Rb);
+    eff.push([b.rows.reduce((s, x) => s + x.alloc, 0), b.rows.reduce((s, x) => s + x.select, 0), b.rows.reduce((s, x) => s + x.inter, 0)]);
+  }
+  const L = QL.carinoLink(rp, rb, eff);
+  close(L.linked.reduce((s, x) => s + x, 0), L.excess, 1e-10, 'linked effects = compounded excess');
+});
+
+test('volatility targeting stabilises realized volatility', () => {
+  // Volatility that clusters and drifts smoothly (as real volatility does), 4x between calm and stressed.
+  const z = normals(520, 111), r = z.map((v, t) => v * 0.03 * (1 + 0.6 * Math.sin((2 * Math.PI * t) / 104)));
+  const vm = QL.volManaged(r, { target: 0.2, maxLev: 3 });
+  // Buckets aligned to the regime boundaries (weeks 52k..52k+51), skipping the warm-up year.
+  const managed = new Array(vm.start).fill(null).concat(vm.rets);
+  const yearly = a => { const o = []; for (let k = 52; k + 52 <= a.length; k += 52) o.push(QL.std(a.slice(k, k + 52).filter(v => v != null)) * Math.sqrt(52)); return o; };
+  const disp = a => QL.std(yearly(a)) / QL.mean(yearly(a));
+  assert.ok(disp(managed) < disp(r) * 0.6, `vol-managed yearly vol is far more stable (${disp(managed).toFixed(2)} vs ${disp(r).toFixed(2)})`);
+  close(QL.mean(yearly(managed)), 0.2, 0.06, 'realized vol near target');
+});
+
+test('spearman is +1 / -1 for monotone relations and ignores missing values', () => {
+  close(QL.spearman([1, 2, 3, 4, 5, 6], [10, 20, 25, 40, 90, 91]), 1, 1e-12, 'monotone up');
+  close(QL.spearman([1, 2, 3, 4, 5, 6], [6, 5, 4, 3, 2, 1]), -1, 1e-12, 'monotone down');
+  close(QL.spearman([1, 2, null, 4, 5, 6, 7], [2, 4, 9, 8, 10, 12, 14]), 1, 1e-12, 'nulls skipped');
+});

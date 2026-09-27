@@ -92,18 +92,20 @@
       <button class="tool" onclick="openTool('regime')"><span class="ti">≋</span><span><b>Regimes</b><small>Hidden Markov model</small></span></button>
       <button class="tool" onclick="openTool('rrg')"><span class="ti">⟳</span><span><b>Rotation</b><small>Relative strength map</small></span></button>
       <button class="tool" onclick="openTool('pairs')"><span class="ti">⇄</span><span><b>Pairs</b><small>Cointegration screener</small></span></button>
+      <button class="tool" onclick="openTool('earnings')"><span class="ti">◷</span><span><b>Earnings</b><small>Event study, post-earnings drift</small></span></button>
       <button class="tool" onclick="toggleCorrelation()"><span class="ti">▦</span><span><b>Correlation</b><small>Who moves together</small></span></button>
       <button class="tool" onclick="toggleRiskMap()"><span class="ti">◉</span><span><b>Risk Map</b><small>Return vs volatility</small></span></button>
     </div>
     <div class="tool-group">
       <div class="tg-label">Portfolio</div>
       <button class="tool" onclick="togglePortfolio()"><span class="ti">⚖</span><span><b>Optimizer</b><small>Frontier · ERC · HRP · B-L</small></span></button>
-      <button class="tool" onclick="openTool('lab')"><span class="ti">⚠</span><span><b>Risk &amp; Stress</b><small>VaR decomposition, crises</small></span></button>
+      <button class="tool" onclick="openTool('lab')"><span class="ti">⚠</span><span><b>Risk &amp; Stress</b><small>Crises, drawdowns, sizing, attribution</small></span></button>
       <button class="tool" onclick="toggleTracker()"><span class="ti">◇</span><span><b>Tracker</b><small>Your holdings</small></span></button>
     </div>
     <div class="tool-group">
       <div class="tg-label">Signals &amp; data</div>
       <button class="tool" onclick="openTool('backtest')"><span class="ti">↻</span><span><b>Backtest</b><small>Walk-forward, with costs</small></span></button>
+      <button class="tool" onclick="openTool('replay')"><span class="ti">⏮</span><span><b>Timeline Replay</b><small>Past signals &amp; information coefficient</small></span></button>
       <button class="tool" onclick="exportCSV()"><span class="ti">⤓</span><span><b>Export</b><small>Download CSV</small></span></button>
     </div>
   </div>
@@ -168,6 +170,7 @@
       <div><h4>Range</h4><p>The <b>Range</b> selector in the header sets the look-back window for every metric and chart, from 3 months to 10 years.</p></div>
       <div><h4>Research tools</h4><p><b>Factor Model</b>: exposure to market, semis, momentum, low-vol and size factors, and how much of each stock's risk they explain. <b>Regimes</b>: a hidden Markov model that detects calm vs turbulent markets. <b>Rotation</b>: who is gaining or losing relative strength. <b>Pairs</b>: cointegrated, mean-reverting pairs.</p></div>
       <div><h4>Portfolio tools</h4><p><b>Optimizer</b>: exact efficient frontier, risk parity, hierarchical risk parity and Black-Litterman with your own views. <b>Risk &amp; Stress</b>: VaR broken down by holding, plus how the portfolio did in real crises and under custom shocks. <b>Backtest</b>: walk-forward testing with trading costs.</p></div>
+      <div><h4>Earnings &amp; replay</h4><p><b>Earnings</b>: how each stock moves around its reports and whether it keeps drifting after a beat or miss. <b>Timeline Replay</b>: see what the quant score said in any past week and how well it predicted the next months.</p></div>
       <div><h4>Table view</h4><p>Switch <b>Cards / Table</b> above the grid for a sortable screener of every metric. Tools use whichever companies are currently visible, so filter or search first to focus on a group.</p></div>
       <div><h4>Currencies</h4><p>International listings (Samsung, SK Hynix, TSMC peers, Tokyo Electron…) are shown in their home currency. Returns and ratios are unaffected.</p></div>
     </div>
@@ -1429,7 +1432,7 @@ function fmtBig(v, sym = '$') {
   if (a >= 1e12) return sym + (v / 1e12).toFixed(2) + 'T';
   if (a >= 1e9)  return sym + (v / 1e9).toFixed(1) + 'B';
   if (a >= 1e6)  return sym + (v / 1e6).toFixed(0) + 'M';
-  return sym + v.toFixed(0);
+  return sym + Math.round(v).toLocaleString();
 }
 function escapeHtml(x) {
   return String(x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
