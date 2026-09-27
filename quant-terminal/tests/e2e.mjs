@@ -78,7 +78,7 @@ try {
 
   // ── Every tool and tab ───────────────────────────────────────────────────
   console.log('Tools');
-  const toolTabs = { factor: ['exp', 'scores', 'fret'], regime: ['mkt', 'uni'], lab: ['main'], pairs: ['main'], rrg: ['main'], backtest: ['main'] };
+  const toolTabs = { factor: ['exp', 'scores', 'quality', 'fret'], regime: ['mkt', 'uni'], lab: ['main'], pairs: ['main'], rrg: ['main'], backtest: ['main'] };
   for (const [tool, tabs] of Object.entries(toolTabs)) {
     for (const tab of tabs) {
       await page.evaluate((tool, tab) => openTool(tool, tab), tool, tab);
@@ -115,6 +115,22 @@ try {
     check(true, `portfolio lab: ${src} portfolio stress table renders`);
     await page.keyboard.press('Escape');
   }
+  // Pairs: FDR + split-sample columns present; RRG sector mode + window switch
+  await page.evaluate(() => openTool('pairs'));
+  await page.waitForFunction(() => document.querySelector('#pr-tbl tbody tr'), { timeout: 90000 });
+  const pairCols = await page.evaluate(() => [...document.querySelectorAll('#pr-tbl th')].map(th => th.textContent).join('|'));
+  check(/q \(FDR\)/.test(pairCols) && /2nd half/.test(pairCols) && /Status/.test(pairCols), 'pairs: FDR q-values, split-sample p-values and status shown');
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => openTool('rrg'));
+  await page.waitForFunction(() => document.querySelector('#tool-body [data-m="sectors"]'), { timeout: 60000 });
+  await page.click('#tool-body [data-m="sectors"]');
+  await page.waitForFunction(() => document.querySelector('#tool-body [data-m="sectors"].on') && document.querySelector('#rrg-t tbody tr'), { timeout: 60000 });
+  await page.select('#rrg-w', '26');
+  await page.waitForFunction(() => document.getElementById('rrg-w')?.value === '26' && document.querySelector('#rrg-t tbody tr'), { timeout: 60000 });
+  const secRows = await page.evaluate(() => document.querySelectorAll('#rrg-t tbody tr').length);
+  check(secRows >= 8, `rrg: sector view with 26w window (${secRows} sectors)`);
+  await shot('07-rrg-sectors');
+  await page.keyboard.press('Escape');
   await page.evaluate(() => openTool('pairs'));
   await page.waitForFunction(() => document.querySelector('#tool-body [data-s="0"]'), { timeout: 60000 });
   await page.click('#tool-body [data-s="0"]');

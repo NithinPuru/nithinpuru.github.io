@@ -168,27 +168,57 @@
   }
 
   // ─── Cointegration ───────────────────────────────────────────────────────
-  // Augmented Dickey-Fuller (constant, no trend). Returns the t-stat on y_{t-1}.
-  function adf(y, lags = 1) {
+  // Augmented Dickey-Fuller. trend 'c' = with constant, 'n' = none. Returns the
+  // t-stat on y_{t-1}. Matches statsmodels adfuller(maxlag=lags, autolag=None).
+  function adf(y, lags = 1, trend = 'c') {
     const dy = []; for (let i = 1; i < y.length; i++) dy.push(y[i] - y[i - 1]);
     const Y = [], X = [];
     for (let t = lags; t < dy.length; t++) {
-      const row = [1, y[t]]; for (let l = 1; l <= lags; l++) row.push(dy[t - l]);
+      const row = trend === 'c' ? [1, y[t]] : [y[t]]; for (let l = 1; l <= lags; l++) row.push(dy[t - l]);
       Y.push(dy[t]); X.push(row);
     }
     if (Y.length < 20) return { t: 0, gamma: 0 };
-    const r = ols(Y, X);
-    return { t: r.t[1], gamma: r.b[1] };
+    const r = ols(Y, X), k = trend === 'c' ? 1 : 0;
+    return { t: r.t[k], gamma: r.b[k] };
+  }
+  // MacKinnon (1994, 2010) approximate p-values for unit-root / Engle-Granger tests,
+  // regression with constant; N = number of variables (1 = ADF, 2 = two-series
+  // cointegration). Same response-surface coefficients as statsmodels.mackinnonp.
+  const MK = {
+    max: [2.74, 0.92, 0.55, 0.61, 0.79, 1], min: [-18.83, -18.86, -23.48, -28.07, -25.96, -23.27], star: [-1.61, -2.62, -3.13, -3.47, -3.78, -3.93],
+    small: [[2.1659, 1.4412, 0.038269], [2.92, 1.5012, 0.039796], [3.4699, 1.4856, 0.03164], [3.9673, 1.4777, 0.026315], [4.5509, 1.5338, 0.029545], [5.1399, 1.6036, 0.034445]],
+    large: [[1.7339, 0.93202, -0.12745, -0.010368], [2.1945, 0.64695, -0.29198, -0.042377], [2.5893, 0.45168, -0.65437, -0.0979], [3.0387, 0.45452, -0.65486, -0.08811], [3.5049, 0.52727, -0.57266, -0.069276], [3.9536, 0.50773, -0.72506, -0.095338]],
+  };
+  function normCdf(x) { // Abramowitz-Stegun 7.1.26 via erf, |err| < 1.5e-7
+    const z = Math.abs(x) / Math.SQRT2, t = 1 / (1 + 0.3275911 * z);
+    const e = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z);
+    return x >= 0 ? 0.5 * (1 + e) : 0.5 * (1 - e);
+  }
+  function mackinnonp(tstat, N = 1) {
+    const i = N - 1;
+    if (tstat > MK.max[i]) return 1;
+    if (tstat < MK.min[i]) return 0;
+    const c = tstat <= MK.star[i] ? MK.small[i] : MK.large[i];
+    return normCdf(c.reduce((s, v, k) => s + v * tstat ** k, 0));
+  }
+  // Benjamini-Hochberg: q-values controlling the false discovery rate across m tests.
+  function benjaminiHochberg(p) {
+    const m = p.length, order = p.map((v, i) => i).sort((a, b) => p[a] - p[b]), q = new Array(m);
+    let run = 1;
+    for (let k = m - 1; k >= 0; k--) { const i = order[k]; run = Math.min(run, (p[i] * m) / (k + 1)); q[i] = run; }
+    return q;
   }
   // Engle-Granger critical values for 2-variable cointegration (MacKinnon 2010, constant).
   const EG_CRIT = { 1: -3.90, 5: -3.34, 10: -3.04 };
+  // Engle-Granger two-step (y on x with constant; ADF without constant on the residual,
+  // p-value from MacKinnon N=2) — equivalent to statsmodels coint(y, x, maxlag=1, autolag=None).
   function cointegration(pa, pb) {
     const la = pa.map(Math.log), lb = pb.map(Math.log);
     const reg = ols(la, lb.map(v => [1, v]));
     const hedge = reg.b[1], spread = la.map((v, i) => v - hedge * lb[i] - reg.b[0]);
-    const test = adf(spread, 1);
+    const test = adf(spread, 1, 'n');
     const hl = halfLife(spread), m = mean(spread), s = std(spread);
-    const pval = test.t < EG_CRIT[1] ? 0.01 : test.t < EG_CRIT[5] ? 0.05 : test.t < EG_CRIT[10] ? 0.10 : 1;
+    const pval = mackinnonp(test.t, 2);
     let rho = 0; { const ra = rets(pa), rb = rets(pb), ma = mean(ra), mb = mean(rb); let c = 0, va = 0, vb = 0; for (let i = 0; i < ra.length; i++) { c += (ra[i] - ma) * (rb[i] - mb); va += (ra[i] - ma) ** 2; vb += (rb[i] - mb) ** 2; } rho = c / Math.sqrt(va * vb || 1); }
     return { hedge, alpha: reg.b[0], adfT: test.t, pval, halfLife: hl, z: s ? (spread[spread.length - 1] - m) / s : 0, spread, mean: m, sd: s, corr: rho };
   }
@@ -331,17 +361,70 @@
     return vals.map(x => (x == null || !isFinite(x) ? null : Math.max(-3, Math.min(3, (x - m) / s))));
   }
 
+  // Rank-based normal scores: robust to outliers (e.g. +1,190% EPS growth off a low base).
+  function rankZ(vals) {
+    const idx = vals.map((v, i) => i).filter(i => vals[i] != null && isFinite(vals[i]));
+    const n = idx.length, out = vals.map(() => null);
+    if (n < 3) return out;
+    idx.sort((a, b) => vals[a] - vals[b]);
+    let k = 0;
+    while (k < n) { // average ranks for ties
+      let j = k; while (j + 1 < n && vals[idx[j + 1]] === vals[idx[k]]) j++;
+      const r = (k + j) / 2 + 1; for (let m = k; m <= j; m++) out[idx[m]] = normInv((r - 0.5) / n);
+      k = j + 1;
+    }
+    return out;
+  }
+  // Quality score in the spirit of Asness, Frazzini & Pedersen, "Quality Minus Junk":
+  // quality = profitability + growth + safety, each the average rank-z of its inputs,
+  // re-standardized. Rows: { roe, roa, grossMargin, opMargin, fcfMargin, revGrowth,
+  // epsGrowth, debtToEquity, currentRatio, beta, vol }.
+  const QUALITY_PILLARS = {
+    profitability: [['roe', 1], ['roa', 1], ['grossMargin', 1], ['opMargin', 1], ['fcfMargin', 1]],
+    growth: [['revGrowth', 1], ['epsGrowth', 1]],
+    safety: [['debtToEquity', -1], ['currentRatio', 1], ['beta', -1], ['vol', -1]],
+  };
+  function qualityScores(rows) {
+    const comp = {};
+    Object.values(QUALITY_PILLARS).flat().forEach(([k, sgn]) => { comp[k] = rankZ(rows.map(r => (r[k] == null ? null : sgn * r[k]))); });
+    const pill = {};
+    for (const [p, ks] of Object.entries(QUALITY_PILLARS)) {
+      const minN = p === 'profitability' ? 2 : 1;
+      const raw = rows.map((_, i) => { const v = ks.map(([k]) => comp[k][i]).filter(x => x != null); return v.length >= minN ? mean(v) : null; });
+      pill[p] = rankZ(raw);
+    }
+    const total = Object.values(QUALITY_PILLARS).flat().length;
+    const q = rows.map((_, i) => { if (pill.profitability[i] == null) return null; const v = ['profitability', 'growth', 'safety'].map(p => pill[p][i]).filter(x => x != null); return mean(v); });
+    const qz = rankZ(q);
+    return rows.map((_, i) => ({ profitability: pill.profitability[i], growth: pill.growth[i], safety: pill.safety[i], quality: qz[i],
+      coverage: Object.values(QUALITY_PILLARS).flat().filter(([k]) => rows[i][k] != null).length / total }));
+  }
+
   // ─── Relative rotation (RRG-style) ───────────────────────────────────────
-  // Open approximation of JdK RS-Ratio / RS-Momentum: z-scored relative strength
-  // vs a benchmark and the z-scored rate of change of that ratio, centred on 100.
-  function rrg(prices, bench, n = 10, tail = 8) {
+  // Open reconstruction of the JdK RS-Ratio / RS-Momentum (the exact formula is
+  // proprietary): RS = 100·P/B; RS-Ratio = 100 + rolling z-score of RS; RS-Momentum =
+  // 100 + rolling z-score of the rate of change of RS-Ratio (so momentum leads the
+  // ratio and trajectories rotate clockwise). Light EMA smoothing tames weekly noise.
+  function rrgSeries(prices, bench, { window = 14, smooth = 3 } = {}) {
     const len = Math.min(prices.length, bench.length), p = prices.slice(-len), b = bench.slice(-len);
     const rs = p.map((v, i) => (100 * v) / b[i]);
-    const roll = (a, i, k) => a.slice(Math.max(0, i - k + 1), i + 1);
-    const ratio = rs.map((_, i) => { if (i < n) return null; const w = roll(rs, i, n * 2); const s = std(w) || 1; return 100 + (rs[i] - mean(w)) / s; });
-    const mom = ratio.map((v, i) => { if (v == null || i < n * 2) return null; const w = roll(ratio, i, n).filter(x => x != null); const s = std(w) || 1; return 100 + (v - mean(w)) / s; });
-    const pts = []; for (let i = len - tail; i < len; i++) if (ratio[i] != null && mom[i] != null) pts.push({ x: ratio[i], y: mom[i] });
+    const z = (a, i, w) => { const x = a.slice(i - w + 1, i + 1); if (x.length < w || x.some(v => v == null)) return null; const m = mean(x), sd = Math.sqrt(x.reduce((s, v) => s + (v - m) ** 2, 0) / w); return sd ? (a[i] - m) / sd : 0; };
+    const ema = a => { const k = 2 / (smooth + 1); let e = null; return a.map(v => (v == null ? null : (e = e == null ? v : v * k + e * (1 - k)))); };
+    const ratio = ema(rs.map((_, i) => { const v = z(rs, i, window); return v == null ? null : 100 + v; }));
+    const roc = ratio.map((v, i) => (i && v != null && ratio[i - 1] != null ? 100 * (v / ratio[i - 1] - 1) : null));
+    const mom = ema(roc.map((_, i) => { const v = z(roc, i, window); return v == null ? null : 100 + v; }));
+    return { ratio, mom };
+  }
+  function rrg(prices, bench, opts = {}) {
+    const tail = opts.tail || 8, { ratio, mom } = rrgSeries(prices, bench, opts), pts = [];
+    for (let i = ratio.length - tail; i < ratio.length; i++) if (i >= 0 && ratio[i] != null && mom[i] != null) pts.push({ x: ratio[i], y: mom[i] });
     return pts;
+  }
+  // Direction of travel (degrees, 0 = east/right, 90 = north) and distance from centre.
+  function rrgHeading(pts) {
+    if (pts.length < 2) return { heading: null, dist: null };
+    const a = pts[pts.length - 2], b = pts[pts.length - 1];
+    return { heading: (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI, dist: Math.hypot(b.x - 100, b.y - 100) };
   }
 
   // ─── Causal indicators for the backtester ───────────────────────────────
@@ -415,9 +498,9 @@
 
   const QL = {
     zeros, eye, T, mul, mv, dot, inv, ols, mean, variance, std, rets, covMatrix, shrinkCov, corrFromCov, maxDrawdown, perfStats, normInv,
-    fitHMM, adf, EG_CRIT, cointegration, halfLife,
+    fitHMM, adf, EG_CRIT, mackinnonp, benjaminiHochberg, normCdf, cointegration, halfLife,
     projectSimplex, meanVariance, portStats, efficientFrontier, riskParity, hrp, blackLitterman, riskDecomposition,
-    longShortFactor, factorRegression, zscores, rrg,
+    longShortFactor, factorRegression, zscores, rankZ, qualityScores, QUALITY_PILLARS, rrg, rrgSeries, rrgHeading,
     emaSeries, rsiSeries, smaSeries, STRATEGIES, strategyReturns, walkForward, momentumRotation,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = QL; else root.QL = QL;

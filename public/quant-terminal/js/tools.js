@@ -155,21 +155,27 @@
     factorCache = { key, est, dates, names, F: Object.fromEntries(names.map((k, j) => [k, Fc[j]])), exposures };
     return factorCache;
   }
+  const QUALITY_FIELDS = ['roe', 'roa', 'grossMargin', 'opMargin', 'fcfMargin', 'revGrowth', 'epsGrowth', 'debtToEquity', 'currentRatio'];
   function factorScores(tickers) {
     const pn = panel(tickers, 60), rows = tickers.map((t, i) => {
       const p = pn.P[i], d = D[t] || {}, f = (MARKET.tickers[t] || {}).fund || {};
       const L = p.length - 1, momv = p[L - 4] != null && p[L - 52] != null ? p[L - 4] / p[L - 52] - 1 : null;
       const r26 = pn.R[i].slice(-26).filter(v => v != null), vol = r26.length > 15 ? QL.std(r26) * Math.sqrt(52) : null;
       const pe = f.pe > 0 ? f.pe : f.fpe > 0 ? f.fpe : null;
-      return { t, name: nameOf(t), sector: sectorOf(t), mom: momv, vol, ey: pe ? 1 / pe : null, cap: capUSD(t),
-        sortino: d.ok ? d.sortino : null, maxDD: d.ok ? d.maxDD : null, ulcer: d.ok ? d.ulcer : null };
+      return { t, name: nameOf(t), sector: sectorOf(t), mom: momv, vol, ey: pe ? 1 / pe : null, cap: capUSD(t), beta: d.ok ? d.beta : null,
+        sortino: d.ok ? d.sortino : null, maxDD: d.ok ? d.maxDD : null, ulcer: d.ok ? d.ulcer : null,
+        ...Object.fromEntries(QUALITY_FIELDS.map(k => [k, f[k] ?? null])) };
     });
     const z = (k, inv = false) => QL.zscores(rows.map(r => (r[k] == null ? null : inv ? -r[k] : r[k])));
     const zm = z('mom'), zv = z('vol', true), ze = z('ey'), zs = QL.zscores(rows.map(r => (r.cap ? -Math.log(r.cap) : null)));
-    const zq = (() => { const a = z('sortino'), b = z('maxDD'), c = z('ulcer', true); return rows.map((_, i) => { const v = [a[i], b[i], c[i]].filter(x => x != null); return v.length ? QL.mean(v) : null; }); })();
+    // Fundamental quality (QMJ); price-based proxy only where fundamentals are missing.
+    const qm = QL.qualityScores(rows);
+    const proxy = (() => { const a = z('sortino'), b = z('maxDD'), c = z('ulcer', true); return rows.map((_, i) => { const v = [a[i], b[i], c[i]].filter(x => x != null); return v.length ? QL.mean(v) : null; }); })();
     rows.forEach((r, i) => {
-      Object.assign(r, { zMom: zm[i], zLowVol: zv[i], zValue: ze[i], zSize: zs[i], zQuality: zq[i] });
-      const v = [zm[i], zv[i], ze[i], zq[i]].filter(x => x != null); r.composite = v.length ? QL.mean(v) : null;
+      const q = qm[i], useProxy = q.quality == null;
+      Object.assign(r, { zMom: zm[i], zLowVol: zv[i], zValue: ze[i], zSize: zs[i], zQuality: useProxy ? proxy[i] : q.quality, qProxy: useProxy && proxy[i] != null,
+        zProf: q.profitability, zGrowth: q.growth, zSafety: q.safety, qCoverage: q.coverage });
+      const v = [zm[i], zv[i], ze[i], r.zQuality].filter(x => x != null); r.composite = v.length ? QL.mean(v) : null;
     });
     const ranked = rows.filter(r => r.composite != null).sort((a, b) => b.composite - a.composite); ranked.forEach((r, i) => (r.rank = i + 1));
     return rows;
@@ -204,16 +210,32 @@
       } },
       { id: 'scores', label: 'Factor scores (today)', render(body) {
         const rows = factorScores(visibleTickers());
-        body.innerHTML = `<p class="tool-note">Cross-sectional z-scores versus the visible universe (winsorized at ±3). <b>Value</b> = earnings yield (1 / P/E), <b>Quality</b> is a price-based proxy (Sortino, drawdown depth, Ulcer index) since balance-sheet data isn't available. <b>Composite</b> = equal-weight average of Momentum, Low-Vol, Value and Quality.</p><div id="fs-tbl"></div>`;
+        const nProxy = rows.filter(r => r.qProxy).length;
+        body.innerHTML = `<p class="tool-note">Cross-sectional z-scores versus the visible universe (winsorized at ±3). <b>Value</b> = earnings yield (1 / P/E). <b>Quality</b> = fundamental QMJ score from profitability, growth and safety (see the Quality tab)${nProxy ? `; ${nProxy} name${nProxy > 1 ? 's' : ''} without fundamentals use a price-based proxy, marked ~` : ''}. <b>Composite</b> = equal-weight average of Momentum, Low-Vol, Value and Quality.</p><div id="fs-tbl"></div>`;
         const z = k => ({ key: k, num: true, fmt: v => num(v), style: v => heat(v, 2) });
         table($('fs-tbl'), [
           { key: 'rank', label: '#', num: true, fmt: v => v ?? '—' },
           { key: 't', label: 'Ticker', fmt: v => `<b>${escapeHtml(v)}</b>` }, { key: 'name', label: 'Company' }, { key: 'sector', label: 'Sector' },
           { ...z('zMom'), label: 'Momentum', title: '12-1 month return' }, { ...z('zLowVol'), label: 'Low-Vol', title: 'Negative 26-week volatility' },
-          { ...z('zValue'), label: 'Value', title: 'Earnings yield' }, { ...z('zQuality'), label: 'Quality*', title: 'Price-based proxy: Sortino, drawdown, Ulcer' },
+          { ...z('zValue'), label: 'Value', title: 'Earnings yield' },
+          { ...z('zQuality'), label: 'Quality', title: 'QMJ fundamental quality (price proxy where marked ~)', fmt: (v, r) => (v == null ? '—' : (r.qProxy ? '~' : '') + v.toFixed(2)) },
           { ...z('zSize'), label: 'Small size', title: 'Negative log USD market cap (positive = smaller)' },
           { ...z('composite'), label: 'Composite' },
         ], rows, { sortKey: 'composite', onRow: r => { closeTool(); openDetail(r.t); } });
+      } },
+      { id: 'quality', label: 'Quality (QMJ)', render(body) {
+        const rows = factorScores(visibleTickers()).filter(r => r.zProf != null);
+        const pc = v => (v == null ? '—' : (v * 100).toFixed(0) + '%');
+        body.innerHTML = `<p class="tool-note">Quality in the spirit of Asness, Frazzini &amp; Pedersen, <i>Quality Minus Junk</i>: <b>Profitability</b> (ROE, ROA, gross, operating and free-cash-flow margins), <b>Growth</b> (revenue and earnings growth, latest year over year) and <b>Safety</b> (low debt/equity, current ratio, low beta, low volatility). Each input is converted to a rank-based z-score, so one extreme figure can't dominate; pillars are averaged and re-standardized. Fundamentals are Yahoo's trailing figures, refreshed with prices. ${rows.length} companies with fundamentals.</p><div id="q-tbl"></div>`;
+        const z = (k, label, title) => ({ key: k, label, title, num: true, fmt: v => num(v), style: v => heat(v, 2) });
+        table($('q-tbl'), [
+          { key: 't', label: 'Ticker', fmt: v => `<b>${escapeHtml(v)}</b>` }, { key: 'name', label: 'Company' },
+          z('zQuality', 'Quality'), z('zProf', 'Profitability'), z('zGrowth', 'Growth'), z('zSafety', 'Safety'),
+          { key: 'roe', label: 'ROE', num: true, fmt: pc }, { key: 'opMargin', label: 'Op margin', num: true, fmt: pc }, { key: 'fcfMargin', label: 'FCF margin', num: true, fmt: pc },
+          { key: 'revGrowth', label: 'Rev growth', num: true, fmt: v => pct(v, 0) }, { key: 'debtToEquity', label: 'Debt/Eq', num: true, fmt: v => (v == null ? '—' : v.toFixed(2)) },
+          { key: 'currentRatio', label: 'Current', num: true, fmt: v => (v == null ? '—' : v.toFixed(1)) },
+          { key: 'qCoverage', label: 'Data', num: true, fmt: v => pctU(v, 0), title: 'Share of the 11 quality inputs available' },
+        ], rows, { sortKey: 'zQuality', onRow: r => { closeTool(); openDetail(r.t); } });
       } },
       { id: 'fret', label: 'Factor returns', render(body) {
         const fc = computeFactors(), pal = PAL();
@@ -452,46 +474,63 @@
   let pairsSameSector = true;
   const pairsTool = {
     title: 'Pairs & Cointegration Screener',
-    sub: () => `Engle-Granger two-step test on log prices: hedge ratio by OLS, then an augmented Dickey-Fuller test on the spread. Cointegrated pairs have spreads that mean-revert — the basis of statistical-arbitrage pair trading. Window ≥ 2 years. ${universeNote(visibleTickers().length)}`,
+    sub: () => `Engle-Granger two-step test on log prices (OLS hedge ratio, then an ADF test on the spread, MacKinnon p-values). Because many pairs are tested at once, significance is controlled with the Benjamini-Hochberg false-discovery rate, and each pair must also hold up in both halves of the window. Window ≥ 2 years. ${universeNote(visibleTickers().length)}`,
     render(body) {
       const weeks = Math.max(rangeWeeks(), 104), vis = visibleTickers().slice(0, 60), pn = panel(vis, weeks);
       const ok = vis.map((t, i) => i).filter(i => pn.P[i].every(v => v != null));
-      const res = [];
+      const res = [], half = Math.floor(weeks / 2);
       for (let a = 0; a < ok.length; a++) for (let b = a + 1; b < ok.length; b++) {
         const i = ok[a], j = ok[b], ti = vis[i], tj = vis[j];
         if (pairsSameSector && sectorOf(ti) !== sectorOf(tj)) continue;
         const c1 = QL.cointegration(pn.P[i], pn.P[j]), c2 = QL.cointegration(pn.P[j], pn.P[i]);
-        const c = c1.adfT <= c2.adfT ? { ...c1, y: ti, x: tj, yi: i, xi: j } : { ...c2, y: tj, x: ti, yi: j, xi: i };
-        res.push(c);
+        const [c, yi, xi] = c1.adfT <= c2.adfT ? [c1, i, j] : [c2, j, i];
+        res.push({ ...c, y: vis[yi], x: vis[xi], yi, xi });
       }
-      res.sort((a, b) => a.adfT - b.adfT);
-      const sig = res.filter(r => r.pval <= 0.05).length;
+      // False-discovery-rate control across every pair tested in this run.
+      const q = QL.benjaminiHochberg(res.map(r => r.pval)); res.forEach((r, k) => (r.q = q[k]));
+      // Split-sample stability for the candidates worth looking at.
+      res.filter(r => r.pval < 0.1).forEach(r => {
+        const h1 = QL.cointegration(pn.P[r.yi].slice(0, half), pn.P[r.xi].slice(0, half)), h2 = QL.cointegration(pn.P[r.yi].slice(half), pn.P[r.xi].slice(half));
+        r.p1 = h1.pval; r.p2 = h2.pval; r.hedgeDrift = Math.abs(h1.hedge - h2.hedge) / (Math.abs(r.hedge) || 1);
+      });
+      res.forEach(r => {
+        const stable = r.p1 < 0.1 && r.p2 < 0.1 && r.hedgeDrift < 0.5 && r.hedge > 0, hlOk = r.halfLife >= 1 && r.halfLife <= 26;
+        r.status = r.q < 0.1 && stable && hlOk ? 'Robust' : r.q < 0.1 ? (stable ? 'FDR-sig., slow' : 'FDR-sig., unstable') : r.pval < 0.05 ? 'Nominal only' : '—';
+      });
+      res.sort((a, b) => a.pval - b.pval || a.adfT - b.adfT);
+      const m = res.length, nom = res.filter(r => r.pval < 0.05).length, fdr = res.filter(r => r.q < 0.1).length, rob = res.filter(r => r.status === 'Robust').length;
       body.innerHTML = `<div class="tool-controls"><div class="seg"><button class="btn ${pairsSameSector ? 'on' : ''}" data-s="1">Same sector</button><button class="btn ${!pairsSameSector ? 'on' : ''}" data-s="0">All visible</button></div>
-          <span class="tool-note">${res.length} pairs tested · ${sig} significant at 5% · ${ok.length} companies with full history in the window</span></div>
-        <p class="tool-note warnline">With many pairs tested, some will look cointegrated by chance (≈5% at the 5% level). Prefer pairs with an economic link, short half-lives and a stable hedge ratio.</p>
-        <div class="tool-grid2"><div id="pr-tbl"></div><div class="panel"><h4 id="pr-h">Spread z-score</h4><div class="chart-box tall"><canvas id="pr-ch"></canvas></div><p class="tool-note" id="pr-note">Click a pair to plot its spread.</p></div></div>`;
+          <span class="tool-note">${ok.length} companies with full history in the window</span></div>
+        <div class="kpis">${stat('Pairs tested', m)}${stat('p < 5% (nominal)', nom, '', 'Uncorrected. About 5% of tested pairs would pass by chance alone')}${stat('Expected by chance', '≈ ' + Math.round(0.05 * m), '', '5% of pairs tested')}${stat('FDR q < 10%', fdr, fdr ? 'g' : '', 'Benjamini-Hochberg: at most ~10% of these are expected to be false discoveries')}${stat('Robust', rob, rob ? 'g' : '', 'FDR-significant, cointegrated in both halves of the window, stable positive hedge ratio, half-life 1–26 weeks')}</div>
+        <p class="tool-note"><b>Robust</b> pairs pass all checks. Trade signals are shown only for them. <b>FDR-sig., unstable</b> means the relationship didn't hold in one half of the window or its hedge ratio drifted by more than 50%. <b>Nominal only</b> means significant before, but not after, correcting for the number of pairs tested.</p>
+        <div class="tool-grid2 pairs-grid"><div id="pr-tbl"></div><div class="panel"><h4 id="pr-h">Spread z-score</h4><div class="chart-box tall"><canvas id="pr-ch"></canvas></div><p class="tool-note" id="pr-note">Click a pair to plot its spread.</p></div></div>`;
       body.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => { pairsSameSector = b.dataset.s === '1'; showTab('main'); }));
       if (!res.length) { $('pr-tbl').innerHTML = '<p class="tool-note">No pairs to test — widen the universe.</p>'; return; }
       const rows = res.slice(0, 40).map(r => ({ ...r, pair: `${r.y} / ${r.x}`, sector: sectorOf(r.y) === sectorOf(r.x) ? sectorOf(r.y) : `${sectorOf(r.y)} / ${sectorOf(r.x)}`,
-        sig: r.pval <= 0.01 ? '1%' : r.pval <= 0.05 ? '5%' : r.pval <= 0.1 ? '10%' : '—', signal: r.pval > 0.1 ? '—' : r.z > 2 ? `Short ${r.y} / long ${r.x}` : r.z < -2 ? `Long ${r.y} / short ${r.x}` : 'Inside ±2σ' }));
+        signal: r.status !== 'Robust' ? '—' : r.z > 2 ? `Short ${r.y} / long ${r.x}` : r.z < -2 ? `Long ${r.y} / short ${r.x}` : 'Inside ±2σ' }));
       const plot = r => {
         clearCharts();
         const z = r.spread.map(v => (v - r.mean) / r.sd), labels = pn.dates.map(shortDate);
         $('pr-h').textContent = `Spread z-score · ${r.y} − ${num(r.hedge)}×${r.x}`;
-        $('pr-note').innerHTML = `ADF t = ${num(r.adfT)} (5% critical ${QL.EG_CRIT[5]}) · half-life ${isFinite(r.halfLife) ? r.halfLife.toFixed(1) + ' weeks' : '∞'} · return correlation ${num(r.corr)} · current z ${num(r.z)}`;
+        $('pr-note').innerHTML = `${r.status} · ADF t = ${num(r.adfT)}, p = ${num(r.pval, 3)}, q = ${num(r.q, 3)} · halves p = ${r.p1 != null ? num(r.p1, 3) + ' / ' + num(r.p2, 3) : '—'} · half-life ${isFinite(r.halfLife) ? r.halfLife.toFixed(1) + ' weeks' : '∞'} · current z ${num(r.z)}. The dotted line marks the split used for the stability check.`;
         const band = v => labels.map(() => v);
-        chart('pr-ch', { type: 'line', data: { labels, datasets: [
+        const split = { id: 'split', afterDraw(c) { const x = c.scales.x.getPixelForValue(half), { top, bottom } = c.chartArea; c.ctx.save(); c.ctx.strokeStyle = 'rgba(255,255,255,.25)'; c.ctx.setLineDash([3, 4]); c.ctx.beginPath(); c.ctx.moveTo(x, top); c.ctx.lineTo(x, bottom); c.ctx.stroke(); c.ctx.restore(); } };
+        chart('pr-ch', { type: 'line', plugins: [split], data: { labels, datasets: [
           { label: 'z', data: z, borderColor: css('--blue'), borderWidth: 1.6, pointRadius: 0, tension: 0.1 },
           { label: '+2σ', data: band(2), borderColor: css('--red'), borderDash: [5, 4], borderWidth: 1, pointRadius: 0 },
           { label: '−2σ', data: band(-2), borderColor: css('--green-bright'), borderDash: [5, 4], borderWidth: 1, pointRadius: 0 },
           { label: 'mean', data: band(0), borderColor: 'rgba(255,255,255,.3)', borderWidth: 1, pointRadius: 0 } ] },
           options: baseOpts({ plugins: { legend: { display: false } } }) });
       };
+      const pv = v => (v == null ? '—' : v < 0.001 ? '<0.001' : v.toFixed(3));
       table($('pr-tbl'), [{ key: 'pair', label: 'Pair (Y / X)', fmt: v => `<b>${escapeHtml(v)}</b>` }, { key: 'sector', label: 'Sector' },
-        { key: 'adfT', label: 'ADF t', num: true, fmt: v => num(v), style: v => heat(v < QL.EG_CRIT[5] ? 1 : v < QL.EG_CRIT[10] ? 0.4 : 0, 1) }, { key: 'sig', label: 'Sig.' },
+        { key: 'pval', label: 'p', num: true, fmt: pv, title: 'MacKinnon p-value of the Engle-Granger test' },
+        { key: 'q', label: 'q (FDR)', num: true, fmt: pv, style: v => heat(v < 0.1 ? 1 : 0, 1), title: 'Benjamini-Hochberg q-value across all pairs tested' },
+        { key: 'p1', label: 'p 1st half', num: true, fmt: pv }, { key: 'p2', label: 'p 2nd half', num: true, fmt: pv },
         { key: 'halfLife', label: 'Half-life', num: true, fmt: v => (isFinite(v) ? v.toFixed(1) + 'w' : '∞') }, { key: 'hedge', label: 'Hedge β', num: true, fmt: v => num(v) },
-        { key: 'z', label: 'z now', num: true, fmt: v => num(v), style: v => heat(Math.abs(v) > 2 ? v : 0, 3, true) }, { key: 'signal', label: 'Signal' }],
-        rows, { sortKey: 'adfT', sortDir: 1, onRow: plot });
+        { key: 'z', label: 'z now', num: true, fmt: v => num(v), style: v => heat(Math.abs(v) > 2 ? v : 0, 3, true) },
+        { key: 'status', label: 'Status', fmt: v => `<span class="${v === 'Robust' ? 'g' : v.startsWith('FDR') ? '' : 'muted'}">${v}</span>` }, { key: 'signal', label: 'Signal' }],
+        rows, { sortKey: 'pval', sortDir: 1, onRow: plot });
       plot(rows[0]);
     },
   };
@@ -499,33 +538,57 @@
   // ═════════════════════════════════════════════════════════════════════════
   // RELATIVE ROTATION GRAPH
   // ═════════════════════════════════════════════════════════════════════════
-  let rrgBench = 'SOXX';
+  let rrgBench = 'SOXX', rrgWindow = 14, rrgMode = 'stocks';
   const quadrant = p => (p.x >= 100 ? (p.y >= 100 ? 'Leading' : 'Weakening') : p.y >= 100 ? 'Improving' : 'Lagging');
   const Q_COL = { Leading: '52,211,153', Weakening: '251,191,36', Lagging: '248,113,113', Improving: '91,157,255' };
+  const compass = h => (h == null ? '—' : ['→ E', '↗ NE', '↑ N', '↖ NW', '← W', '↙ SW', '↓ S', '↘ SE'][((Math.round(h / 45) % 8) + 8) % 8]);
+  // Equal-weight sector indices built from the members' weekly returns.
+  function sectorIndices(tickers) {
+    const pn = panel(tickers), by = {};
+    tickers.forEach((t, i) => (by[sectorOf(t)] = by[sectorOf(t)] || []).push(i));
+    return Object.entries(by).filter(([, ix]) => ix.length >= 2).map(([sec, ix]) => {
+      let lvl = 100; const px = pn.dates.map((_, t) => { if (t === 0) return lvl; const r = ix.map(i => pn.R[i][t]).filter(v => v != null); if (r.length) lvl *= 1 + QL.mean(r); return lvl; });
+      return { t: sec, label: `${sec} (${ix.length})`, dates: pn.dates, closes: px };
+    });
+  }
   const rrgTool = {
     title: 'Relative Rotation Graph',
-    sub: () => `Relative strength (x) and its momentum (y) versus a benchmark, with 8-week tails. Stocks typically rotate clockwise: Improving → Leading → Weakening → Lagging. RRG-style open approximation of the JdK RS-Ratio / RS-Momentum. ${universeNote(visibleTickers().length)}`,
+    sub: () => `Relative strength (RS-Ratio, x) and its momentum (RS-Momentum, y) versus a benchmark, with 8-week tails. Leaders typically rotate clockwise: Improving → Leading → Weakening → Lagging. Open reconstruction of the proprietary JdK method (rolling z-score of relative strength; momentum = z-score of its rate of change). Unit-tested to rotate clockwise and lead, as the real indicator does. ${universeNote(visibleTickers().length)}`,
     render(body) {
       const b = fullSeries(rrgBench); const vis = visibleTickers().filter(t => t !== rrgBench && t !== 'SOXX');
-      const pts = vis.map(t => { const s = fullSeries(t), m = new Map(b.dates.map((d, i) => [d, b.closes[i]])); const idx = s.dates.map((d, i) => [m.get(d), s.closes[i]]).filter(x => x[0] != null);
-        const tail = QL.rrg(idx.map(x => x[1]), idx.map(x => x[0]), 10, 8); return tail.length ? { t, tail, head: tail[tail.length - 1] } : null; }).filter(Boolean);
+      const series = rrgMode === 'sectors' ? sectorIndices(vis) : vis.map(t => ({ t, label: t, ...fullSeries(t) }));
+      const bm = new Map(b.dates.map((d, i) => [d, b.closes[i]]));
+      const pts = series.map(s => { const idx = s.dates.map((d, i) => [bm.get(d), s.closes[i]]).filter(x => x[0] != null && x[1] != null);
+        const tail = QL.rrg(idx.map(x => x[1]), idx.map(x => x[0]), { window: rrgWindow, tail: 8 }); return tail.length ? { t: s.t, label: s.label, tail, head: tail[tail.length - 1], ...QL.rrgHeading(tail) } : null; }).filter(Boolean);
       if (!pts.length) return needMore(body, 'Not enough history.');
       pts.forEach(p => (p.q = quadrant(p.head)));
-      body.innerHTML = `<div class="tool-controls"><div class="seg">${['SOXX', 'SPY'].map(x => `<button class="btn ${x === rrgBench ? 'on' : ''}" data-b="${x}">vs ${x}</button>`).join('')}</div><span class="tool-note">Click a dot to open that company.</span></div>
-        <div class="tool-grid2 wide-left"><div class="panel"><div class="chart-box xtall"><canvas id="rrg-ch"></canvas></div></div><div id="rrg-q"></div></div>`;
+      body.innerHTML = `<div class="tool-controls">
+          <div class="seg">${['SOXX', 'SPY'].map(x => `<button class="btn ${x === rrgBench ? 'on' : ''}" data-b="${x}">vs ${x}</button>`).join('')}</div>
+          <div class="seg">${[['stocks', 'Stocks'], ['sectors', 'Sectors']].map(([k, l]) => `<button class="btn ${k === rrgMode ? 'on' : ''}" data-m="${k}">${l}</button>`).join('')}</div>
+          <label class="range-wrap" title="Look-back of the rolling z-scores: shorter reacts faster, longer is smoother">Window <select class="search" id="rrg-w">${[10, 14, 26].map(w => `<option value="${w}" ${w === rrgWindow ? 'selected' : ''}>${w}w</option>`).join('')}</select></label>
+          <span class="tool-note">${rrgMode === 'stocks' ? 'Click a dot to open that company.' : 'Equal-weight sector indices built from the visible members.'}</span></div>
+        <div class="tool-grid2 rrg-grid"><div class="panel"><div class="chart-box xtall"><canvas id="rrg-ch"></canvas></div></div><div><div id="rrg-q"></div><h4 style="margin-top:6px">Direction &amp; strength</h4><div id="rrg-t"></div></div></div>`;
       body.querySelectorAll('[data-b]').forEach(x => x.addEventListener('click', () => { rrgBench = x.dataset.b; showTab('main'); }));
-      const all = pts.flatMap(p => p.tail), ext = Math.max(2.2, ...all.map(p => Math.abs(p.x - 100)), ...all.map(p => Math.abs(p.y - 100))) * 1.1;
+      body.querySelectorAll('[data-m]').forEach(x => x.addEventListener('click', () => { rrgMode = x.dataset.m; showTab('main'); }));
+      $('rrg-w').addEventListener('change', e => { rrgWindow = +e.target.value; showTab('main'); });
+      const all = pts.flatMap(p => p.tail), ext = Math.max(1.5, ...all.map(p => Math.abs(p.x - 100)), ...all.map(p => Math.abs(p.y - 100))) * 1.1;
       const quadBg = { id: 'quadBg', beforeDraw(c) { const { ctx, chartArea: a, scales: { x, y } } = c; const cx = x.getPixelForValue(100), cy = y.getPixelForValue(100);
         [[cx, a.top, a.right - cx, cy - a.top, 'Leading'], [cx, cy, a.right - cx, a.bottom - cy, 'Weakening'], [a.left, cy, cx - a.left, a.bottom - cy, 'Lagging'], [a.left, a.top, cx - a.left, cy - a.top, 'Improving']].forEach(([x0, y0, w, h, q]) => {
           ctx.fillStyle = `rgba(${Q_COL[q]},0.07)`; ctx.fillRect(x0, y0, w, h); ctx.fillStyle = `rgba(${Q_COL[q]},0.8)`; ctx.font = '600 11px Outfit, sans-serif'; ctx.textAlign = q === 'Leading' || q === 'Weakening' ? 'right' : 'left';
           ctx.fillText(q.toUpperCase(), q === 'Leading' || q === 'Weakening' ? x0 + w - 8 : x0 + 8, q === 'Leading' || q === 'Improving' ? y0 + 16 : y0 + h - 8); }); } };
-      const c = chart('rrg-ch', { type: 'scatter', plugins: [quadBg], data: { datasets: pts.map(p => ({ label: p.t, data: p.tail, showLine: true, borderColor: `rgba(${Q_COL[p.q]},0.3)`, borderWidth: 1,
+      const labels = { id: 'headLabels', afterDatasetsDraw(c) { if (rrgMode !== 'sectors' && pts.length > 25) return; const { ctx } = c; ctx.save(); ctx.font = '600 10px JetBrains Mono, monospace'; ctx.fillStyle = 'rgba(234,240,250,.85)';
+        c.data.datasets.forEach((ds, i) => { const m = c.getDatasetMeta(i), el = m.data[m.data.length - 1]; if (el) ctx.fillText(ds.label, el.x + 7, el.y - 6); }); ctx.restore(); } };
+      const c = chart('rrg-ch', { type: 'scatter', plugins: [quadBg, labels], data: { datasets: pts.map(p => ({ label: p.label, t: p.t, data: p.tail, showLine: true, borderColor: `rgba(${Q_COL[p.q]},${rrgMode === 'sectors' ? 0.7 : 0.3})`, borderWidth: rrgMode === 'sectors' ? 1.6 : 1,
           pointRadius: p.tail.map((_, i) => (i === p.tail.length - 1 ? 5 : 1.5)), pointBackgroundColor: `rgb(${Q_COL[p.q]})`, pointBorderColor: `rgb(${Q_COL[p.q]})` })) },
         options: baseOpts({ interaction: { mode: 'nearest', intersect: true }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: x => `${x.dataset.label}: RS-Ratio ${x.parsed.x.toFixed(2)}, RS-Mom ${x.parsed.y.toFixed(2)}` } } },
-          onClick: (e, els) => { if (els.length) { const t = c.data.datasets[els[0].datasetIndex].label; closeTool(); openDetail(t); } },
+          onClick: (e, els) => { if (els.length && rrgMode === 'stocks') { const t = c.data.datasets[els[0].datasetIndex].t; closeTool(); openDetail(t); } },
           scales: { x: { min: 100 - ext, max: 100 + ext, title: { display: true, text: 'RS-Ratio (relative strength)' }, grid: { color: 'rgba(255,255,255,.05)' } }, y: { position: 'left', min: 100 - ext, max: 100 + ext, title: { display: true, text: 'RS-Momentum' }, grid: { color: 'rgba(255,255,255,.05)' } } } }) });
-      $('rrg-q').innerHTML = ['Leading', 'Improving', 'Weakening', 'Lagging'].map(q => { const m = pts.filter(p => p.q === q); return `<div class="quad" style="border-color:rgba(${Q_COL[q]},.5)"><h4 style="color:rgb(${Q_COL[q]})">${q} <span class="cnt">${m.length}</span></h4><div class="quad-list">${m.map(p => `<button class="chip" data-t="${p.t}">${p.t}</button>`).join('') || '<span class="tool-note">none</span>'}</div></div>`; }).join('');
-      $('rrg-q').querySelectorAll('[data-t]').forEach(x => x.addEventListener('click', () => { closeTool(); openDetail(x.dataset.t); }));
+      $('rrg-q').innerHTML = ['Leading', 'Improving', 'Weakening', 'Lagging'].map(q => { const m = pts.filter(p => p.q === q); return `<div class="quad" style="border-color:rgba(${Q_COL[q]},.5)"><h4 style="color:rgb(${Q_COL[q]})">${q} <span class="cnt">${m.length}</span></h4><div class="quad-list">${m.map(p => `<button class="chip" data-t="${escapeHtml(p.t)}">${escapeHtml(p.label)}</button>`).join('') || '<span class="tool-note">none</span>'}</div></div>`; }).join('');
+      if (rrgMode === 'stocks') $('rrg-q').querySelectorAll('[data-t]').forEach(x => x.addEventListener('click', () => { closeTool(); openDetail(x.dataset.t); }));
+      table($('rrg-t'), [{ key: 'label', label: rrgMode === 'sectors' ? 'Sector' : 'Ticker', fmt: v => `<b>${escapeHtml(v)}</b>` }, { key: 'q', label: 'Quadrant', fmt: v => `<span style="color:rgb(${Q_COL[v]})">${v}</span>` },
+        { key: 'rsr', label: 'RS-Ratio', num: true, fmt: v => num(v) }, { key: 'rsm', label: 'RS-Mom', num: true, fmt: v => num(v) },
+        { key: 'heading', label: 'Heading', fmt: v => compass(v), title: 'Direction of the latest weekly move on the chart' }, { key: 'dist', label: 'Strength', num: true, fmt: v => num(v), title: 'Distance from the centre (100, 100)' }],
+        pts.map(p => ({ ...p, rsr: p.head.x, rsm: p.head.y })), { sortKey: 'dist', maxRows: 30 });
     },
   };
 

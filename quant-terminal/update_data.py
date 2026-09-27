@@ -58,6 +58,11 @@ def clean(v):
     return None if math.isnan(f) or math.isinf(f) else f
 
 
+def ratio(num, den):
+    num, den = clean(num), clean(den)
+    return num / den if num is not None and den else None
+
+
 def fetch_history(tickers):
     """Bulk download, then retry any ticker that came back empty one by one."""
     out = {}
@@ -102,6 +107,21 @@ def fetch_fund(t):
                 "high52": clean(info.get("fiftyTwoWeekHigh")),
                 "low52": clean(info.get("fiftyTwoWeekLow")),
                 "earnDate": datetime.fromtimestamp(earn, timezone.utc).strftime("%Y-%m-%d") if earn else None,
+                # Quality inputs. Only ratios computed within one reporting currency are
+                # kept: for ADRs Yahoo reports cash/debt in the home currency but market
+                # cap in USD, so mixing those fields would be wrong.
+                "roe": clean(info.get("returnOnEquity")),
+                "roa": clean(info.get("returnOnAssets")),
+                "grossMargin": clean(info.get("grossMargins")),
+                "opMargin": clean(info.get("operatingMargins")),
+                "netMargin": clean(info.get("profitMargins")),
+                "fcfMargin": ratio(info.get("freeCashflow"), info.get("totalRevenue")),
+                "revGrowth": clean(info.get("revenueGrowth")),
+                "epsGrowth": clean(info.get("earningsGrowth")),
+                # Yahoo quotes debt/equity in percent; store as a ratio. No debt -> 0.
+                "debtToEquity": (clean(info.get("debtToEquity")) / 100 if clean(info.get("debtToEquity")) is not None
+                                 else 0.0 if info.get("totalDebt") == 0 else None),
+                "currentRatio": clean(info.get("currentRatio")),
             }
         except Exception as e:  # noqa: BLE001
             print(f"  fund retry {attempt + 1} {t}: {e}")

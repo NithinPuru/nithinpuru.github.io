@@ -770,6 +770,8 @@ body::before { opacity: .6; }
 .tool-grid2 { display: grid; grid-template-columns: 1.25fr 1fr; gap: 12px; align-items: start; }
 .tool-grid2.wide-left { grid-template-columns: 2.2fr 1fr; }
 .tool-grid2.lab-grid { grid-template-columns: 1fr 1.7fr; }
+.tool-grid2.pairs-grid { grid-template-columns: 1.75fr 1fr; }
+.tool-grid2.rrg-grid { grid-template-columns: 1.5fr 1fr; }
 @media (max-width: 1000px) { .tool-grid2, .tool-grid2.wide-left { grid-template-columns: 1fr; } }
 .tbl-wrap { overflow: auto; max-height: 62vh; border: 1px solid var(--border); border-radius: 10px; }
 .tbl.dense { font-size: 12px; }
@@ -2207,6 +2209,7 @@ function normFund(f) {
   return {
     name: f.name || null, pe: n(f.pe), fpe: n(f.fpe), mcap: n(f.mcap), eps: n(f.eps),
     divYield: n(f.divYield), high52: n(f.high52), low52: n(f.low52),
+    roe: n(f.roe), opMargin: n(f.opMargin), fcfMargin: n(f.fcfMargin), revGrowth: n(f.revGrowth), debtToEquity: n(f.debtToEquity),
     earnDate: ed && !isNaN(ed) ? ed : null,
   };
 }
@@ -2737,6 +2740,12 @@ function openDetail(ticker, name) {
     if (f.fpe) parts.push(['Fwd P/E', f.fpe.toFixed(1) + 'x']);
     if (f.high52 && f.low52) parts.push(['52W', `${fmtPx(d, f.low52)} – ${fmtPx(d, f.high52)}`]);
     if (f.divYield) parts.push(['Yield', f.divYield.toFixed(2) + '%']);
+    const pc = v => (v * 100).toFixed(0) + '%';
+    if (f.roe != null) parts.push(['ROE', pc(f.roe)]);
+    if (f.opMargin != null) parts.push(['Op margin', pc(f.opMargin)]);
+    if (f.fcfMargin != null) parts.push(['FCF margin', pc(f.fcfMargin)]);
+    if (f.revGrowth != null) parts.push(['Rev growth', (f.revGrowth >= 0 ? '+' : '') + pc(f.revGrowth)]);
+    if (f.debtToEquity != null) parts.push(['Debt/Eq', f.debtToEquity.toFixed(2)]);
     if (f.earnDate) parts.push(['Earnings', f.earnDate.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })]);
     fEl.innerHTML = parts.length ? parts.map(([k, v]) => `<span class="fund-chip"><em>${k}</em>${v}</span>`).join('') : '<span class="fund-chip">No fundamentals available</span>';
   });

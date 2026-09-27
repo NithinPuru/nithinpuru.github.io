@@ -107,3 +107,64 @@ test('rsiSeries matches the textbook value on a constant uptrend', () => {
   const p = Array.from({ length: 40 }, (_, i) => 100 + i);
   assert.equal(QL.rsiSeries(p, 14)[39], 100);
 });
+
+// ─── Validation against statsmodels (fixtures/statsmodels.json, see gen_fixtures.py) ───
+const FIX = JSON.parse((await import('node:fs')).readFileSync(new URL('./fixtures/statsmodels.json', import.meta.url)));
+
+test('ADF t-stat and MacKinnon p-value match statsmodels adfuller', () => {
+  FIX.cases.forEach((c, k) => {
+    const r = QL.adf(c.a.map(Math.log), 1, 'c');
+    close(r.t, c.adf_t, 1e-6, `case ${k} ADF t`);
+    close(QL.mackinnonp(r.t, 1), c.adf_p, 1e-5, `case ${k} ADF p`);
+  });
+});
+
+test('Engle-Granger t-stat and p-value match statsmodels coint', () => {
+  FIX.cases.forEach((c, k) => {
+    const r = QL.cointegration(c.a, c.b);
+    close(r.adfT, c.coint_t, 1e-6, `case ${k} coint t`);
+    close(r.pval, c.coint_p, 1e-5, `case ${k} coint p`);
+  });
+});
+
+test('Benjamini-Hochberg q-values match statsmodels multipletests(fdr_bh)', () => {
+  QL.benjaminiHochberg(FIX.bh.p).forEach((q, i) => close(q, FIX.bh.q[i], 1e-12, `q[${i}]`));
+});
+
+test('RRG trajectories rotate clockwise when relative performance cycles', () => {
+  // Stock = benchmark × a slow sine wave of outperformance: a textbook rotation.
+  const n = 400, B = [], P = []; let b = 100;
+  const z = normals(n, 51);
+  for (let t = 0; t < n; t++) { b *= Math.exp(0.02 * z[t]); B.push(b); P.push(b * Math.exp(0.15 * Math.sin((2 * Math.PI * t) / 52))); }
+  const { ratio, mom } = QL.rrgSeries(P, B, { window: 14, smooth: 3 });
+  // Signed (shoelace) area over each full cycle: negative = clockwise.
+  let cw = 0, cycles = 0;
+  for (let s = 60; s + 52 < n; s += 52) {
+    let a = 0; for (let t = s; t < s + 52; t++) a += (ratio[t] - 100) * (mom[t + 1] - 100) - (ratio[t + 1] - 100) * (mom[t] - 100);
+    cycles++; if (a < 0) cw++;
+  }
+  assert.ok(cycles >= 5 && cw === cycles, `clockwise in ${cw}/${cycles} cycles`);
+  // RS-Momentum must LEAD RS-Ratio: their correlation peaks with momentum shifted earlier.
+  const lagCorr = k => { const x = [], y = []; for (let t = 60; t + k < n; t++) { x.push(mom[t] - 100); y.push(ratio[t + k] - 100); } const mx = QL.mean(x), my = QL.mean(y); let c = 0, vx = 0, vy = 0; x.forEach((v, i) => { c += (v - mx) * (y[i] - my); vx += (v - mx) ** 2; vy += (y[i] - my) ** 2; }); return c / Math.sqrt(vx * vy); };
+  // Rate of change leads its level by 90°, and z-scoring it adds more lead; any lead
+  // strictly between 0 and half a cycle (26 of 52 weeks) produces clockwise rotation.
+  let best = 0; for (let k = -25; k <= 25; k++) if (lagCorr(k) > lagCorr(best)) best = k;
+  assert.ok(best > 0 && best < 26, `momentum should lead ratio by (0, 26) weeks, got ${best}`);
+});
+
+test('quality score ranks strong businesses above weak ones and is outlier-robust', () => {
+  const firm = (lvl, extra = {}) => ({ roe: 0.05 * lvl, roa: 0.02 * lvl, grossMargin: 0.3 + 0.05 * lvl, opMargin: 0.05 * lvl, fcfMargin: 0.04 * lvl,
+    revGrowth: 0.03 * lvl, epsGrowth: 0.04 * lvl, debtToEquity: 1.2 - 0.2 * lvl, currentRatio: 1 + 0.4 * lvl, beta: 1.6 - 0.1 * lvl, vol: 0.6 - 0.05 * lvl, ...extra });
+  const rows = [firm(1), firm(2), firm(3), firm(4), firm(5), { beta: 1, vol: 0.3 } /* no fundamentals */, firm(3, { epsGrowth: 11.9 }) /* outlier */];
+  const q = QL.qualityScores(rows);
+  for (let i = 1; i < 5; i++) assert.ok(q[i].quality > q[i - 1].quality, `firm ${i + 1} beats firm ${i}`);
+  assert.equal(q[5].quality, null, 'no profitability data -> no quality score');
+  assert.ok(q[6].quality < q[4].quality, 'a huge EPS-growth outlier cannot outrank the best all-round firm');
+  assert.ok(q[5].coverage < 0.3 && q[0].coverage === 1);
+});
+
+test('rankZ is monotone, symmetric and handles ties/missing', () => {
+  const z = QL.rankZ([3, 1, 2, null, 2]);
+  assert.equal(z[3], null); assert.ok(z[1] < z[2] && z[2] < z[0]); assert.equal(z[2], z[4]);
+  close(z[1] + z[0], 0, 1e-12, 'symmetric extremes');
+});
