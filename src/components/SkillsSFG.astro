@@ -555,20 +555,34 @@
     });
   }
 
-  // Highlight a node, its edges and its neighbours; fade everything else.
+  // Highlight every signal path through a node: walk upstream to the source
+  // and downstream to the domain outputs (edges run layer L -> L+1). Edges
+  // touching the node are boldest; the rest of its paths are accent; every
+  // node off those paths fades.
   function paint(id) {
     resetEdges();
     resetNodes();
-    var near = {};
+    var up = {}, down = {};
     if (id) {
-      near[id] = true;
-      (ADJ[id] || []).forEach(function(i) {
+      up[id] = down[id] = true;
+      var grew = true;
+      while (grew) {
+        grew = false;
+        EDGES.forEach(function(e) {
+          if (up[e[1]] && !up[e[0]]) { up[e[0]] = true; grew = true; }
+          if (down[e[0]] && !down[e[1]]) { down[e[1]] = true; grew = true; }
+        });
+      }
+      EDGES.forEach(function(e, i) {
         var el = edgeEls[i];
         if (!el) return;
+        var onPath = (up[e[0]] && up[e[1]]) || (down[e[0]] && down[e[1]]);
+        if (!onPath) return;
+        var direct = e[0] === id || e[1] === id;
         el.setAttribute('stroke', 'var(--accent)');
-        el.setAttribute('stroke-width', '1.8');
+        el.setAttribute('stroke-width', direct ? '2' : '1.2');
         el.setAttribute('marker-end', 'url(#ar1)');
-        near[EDGES[i][0]] = near[EDGES[i][1]] = true;
+        edgeG.appendChild(el); // draw path edges above the faded mesh
       });
       var nc = nodeEls[id] && nodeEls[id].querySelector('.sfg-nc');
       var pd = ND[id], pp = NODE_POS[id];
@@ -579,7 +593,7 @@
       }
     }
     Object.keys(nodeEls).forEach(function(n) {
-      nodeEls[n].classList.toggle('is-dim', !!id && !near[n]);
+      nodeEls[n].classList.toggle('is-dim', !!id && !up[n] && !down[n]);
     });
   }
 
