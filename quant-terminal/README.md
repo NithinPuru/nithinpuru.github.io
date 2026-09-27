@@ -4,7 +4,7 @@
 >
 > **Live: [nithinpuru.github.io/quant-terminal](https://nithinpuru.github.io/quant-terminal/)**
 >
-> Part of the [nithinpuru.github.io](https://github.com/NithinPuru/nithinpuru.github.io) site. The web app lives in `public/quant-terminal/` (published as-is by the site's Astro build); this folder holds the data pipeline and documentation. It previously lived at `chennakeshavadasa/career-semi-quant`, and that URL now redirects here.
+> Source of truth: [chennakeshavadasa/career-semi-quant](https://github.com/chennakeshavadasa/career-semi-quant). The portfolio site mirrors this folder and `public/quant-terminal/` from it automatically, and only syncs commits that pass the test suite. See that repo's README for the sync design.
 
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen)
 ![Architecture](https://img.shields.io/badge/Architecture-100%25_Client--Side-blue)
@@ -26,6 +26,24 @@ When evaluating a job offer in the semiconductor industry, one of the most conse
 No login required. No account required. No API key required for the primary data source. Open the page and the analysis runs.
 
 ---
+
+## Institutional Tools
+
+All tools run on the full 10-year weekly history in the data file and use the companies currently visible on the dashboard, so filter or search first to focus on a group.
+
+| Tool | Model | What it answers |
+|---|---|---|
+| **Factor Model** | Barra-style 5-factor regression: MKT (SPY), SEMI (SOXX − SPY), MOM (12-1 month), LOWVOL (26-week vol), SIZE (USD market cap). Long-short tercile factor portfolios built from the universe, with variance attribution `β'Σ_fβ + σ²_ε`. | What drives this stock? How much of its risk is market, sector or style, and how much is stock-specific? |
+| **Factor scores** | Cross-sectional z-scores (winsorized ±3): momentum, low-vol, value (earnings yield), quality proxy, size, and an equal-weight composite. | Which names rank best on classic factors today? |
+| **Regimes** | Gaussian hidden Markov model (Baum-Welch EM, Viterbi path), 2 or 3 states, fitted on SOXX/SPY and on each stock. | Is the market calm or turbulent? How persistent is the current state? |
+| **Rotation (RRG)** | JdK-style RS-Ratio / RS-Momentum vs SOXX or SPY with 8-week tails. | Who is gaining or losing leadership relative to the sector? |
+| **Pairs** | Engle-Granger cointegration: OLS hedge ratio, ADF test on the spread (MacKinnon critical values), half-life, spread z-score. | Which pairs mean-revert, and is a spread stretched right now? |
+| **Optimizer** | Exact long-only mean-variance frontier (projected gradient + simplex projection), max Sharpe, min variance, equal-risk-contribution risk parity, hierarchical risk parity (López de Prado), Black-Litterman with user views (Idzorek-style confidence). Shrunk expected returns and covariance. | How should capital be split, under different philosophies? |
+| **Risk & Stress** | Parametric and historical VaR/ES, component VaR and marginal risk, diversification ratio, betas; replays of real crises (Q4 2018, COVID, 2022, Aug 2024, DeepSeek, 2025 tariffs) and custom SPY/SOXX shocks via two-factor betas. | Where does portfolio risk come from, and what happens in a crash? |
+| **Backtest** | Walk-forward optimization: pick parameters on a training window, trade them blind on the next test window, roll forward. Transaction costs, turnover, exposure. Strategies: RSI, MACD, trend, absolute momentum, cross-sectional momentum rotation. | Does a rule work out-of-sample, after costs? |
+| **Screener** | Sortable table of every metric (Cards / Table switch). | Quick cross-sectional comparison. |
+
+The quant library has unit tests against known answers (`quant-terminal/tests/quant-lib.test.mjs`). For example, the HMM must recover planted regimes, the cointegration test must tell a mean-reverting spread from a random walk, and the factor engine must not use future data.
 
 ## Architecture Overview
 
@@ -279,10 +297,10 @@ Visit **[nithinpuru.github.io/quant-terminal](https://nithinpuru.github.io/quant
 ### Run locally
 
 ```bash
-git clone https://github.com/NithinPuru/nithinpuru.github.io.git
-cd nithinpuru.github.io/public/quant-terminal
-python3 -m http.server 8000
-# Open http://localhost:8000
+git clone https://github.com/chennakeshavadasa/career-semi-quant.git
+cd career-semi-quant
+npm install && npm test        # unit + browser tests
+npm run serve                  # open http://localhost:8000/quant-terminal/
 ```
 
 ### Refresh the data manually

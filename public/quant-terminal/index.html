@@ -13,39 +13,41 @@
    ============================================================ */
 
 :root {
-  /* MIDNIGHT — Default */
-  --bg: #010409;
-  --bg-2: #080d15;
-  --bg-card: rgba(13, 17, 23, 0.94);
-  --bg-card-solid: #0d1117;
-  --border: rgba(48, 54, 61, 0.9);
-  --border-hover: rgba(88, 166, 255, 0.65);
-  --text-main: #f0f6fc;
-  --text-muted: #a0aab4;
-  --text-dim: #6e7681;
-  --green: #2ea043;
-  --green-bright: #3fb950;
-  --green-glow: rgba(46, 160, 67, 0.25);
-  --red: #f85149;
-  --red-glow: rgba(248, 81, 73, 0.25);
-  --blue: #58a6ff;
-  --purple: #bc8cff;
-  --orange: #e3b341;
-  --cyan: #39c5cf;
-  --accent: #58a6ff;
-  --glass: blur(20px);
+  /* MIDNIGHT — Default: deep navy base, clearly separated surfaces, high-contrast text */
+  --bg: #0a0f1a;
+  --bg-2: #0e1524;
+  --bg-card: #111a2b;
+  --bg-card-solid: #131d30;
+  --surface-2: #17223a;
+  --border: #22304a;
+  --border-hover: rgba(96, 165, 250, 0.6);
+  --text-main: #eaf0fa;
+  --text-muted: #a3b3cc;
+  --text-dim: #6e7f9a;
+  --green: #10b981;
+  --green-bright: #34d399;
+  --green-glow: rgba(52, 211, 153, 0.25);
+  --red: #f87171;
+  --red-glow: rgba(248, 113, 113, 0.25);
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --orange: #fbbf24;
+  --cyan: #22d3ee;
+  --accent: #60a5fa;
+  --glass: blur(18px);
   --sans: 'Outfit', sans-serif;
   --mono: 'JetBrains Mono', monospace;
   --radius-card: 16px;
   --radius-sm: 8px;
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3);
-  --shadow-hover: 0 16px 48px rgba(0,0,0,0.75), 0 4px 12px rgba(0,0,0,0.5);
-  --bg-r1: rgba(88,166,255,0.06);
-  --bg-r2: rgba(188,140,255,0.05);
-  --header-bg: rgba(1,4,9,0.93);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-hover: 0 1px 0 rgba(255,255,255,0.05) inset, 0 18px 40px rgba(0,0,0,0.5);
+  --bg-r1: rgba(96,165,250,0.08);
+  --bg-r2: rgba(167,139,250,0.06);
+  --header-bg: rgba(10,15,26,0.88);
 }
 
 html.theme-obsidian {
+  --surface-2: #1b1b2e;
   --bg: #0e0e16;
   --bg-2: #13131f;
   --bg-card: rgba(20, 20, 34, 0.96);
@@ -69,6 +71,7 @@ html.theme-obsidian {
 }
 
 html.theme-slate {
+  --surface-2: #0f1a36;
   --bg: #060b18;
   --bg-2: #0b1225;
   --bg-card: rgba(10, 18, 40, 0.96);
@@ -93,6 +96,7 @@ html.theme-slate {
 }
 
 html.theme-terminal {
+  --surface-2: #07180a;
   --bg: #020c02;
   --bg-2: #051005;
   --bg-card: rgba(4, 16, 4, 0.97);
@@ -518,6 +522,7 @@ svg.spark { width: 100%; height: 100%; overflow: visible; }
 <!-- Pinned: unpinned CDN URLs silently jumped to lightweight-charts v5, which removed addCandlestickSeries. -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+<script src="js/quant-lib.js"></script>
 <style>
 /* ============================================================
    DESIGN LAYER — all colours come from theme variables
@@ -709,6 +714,99 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
 .sec-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border) 0%, transparent 100%); }
 .q-box { border-radius: 8px; }
 
+
+/* ============================================================
+   LAYOUT REFRESH + INSTITUTIONAL TOOLS
+   ============================================================ */
+body::before { opacity: .6; }
+.stats { background: var(--bg-card); border-color: var(--border); }
+.stat { border-right-color: var(--border); }
+.stat-label { color: var(--text-muted); }
+.card { background: linear-gradient(180deg, var(--surface-2) 0%, var(--bg-card) 38%); }
+.m-box { background: rgba(0,0,0,.18); border-color: var(--border); }
+.chip { border-color: var(--border); }
+.seg { background: var(--bg-card); border-color: var(--border); }
+.search { background: var(--bg-card); border-color: var(--border); }
+.card.buy { box-shadow: var(--shadow-card), inset 3px 0 0 var(--green-bright); }
+.card.sell { box-shadow: var(--shadow-card), inset 3px 0 0 var(--red); }
+
+.tools { display: grid; grid-template-columns: 2.1fr 1.15fr .85fr; gap: 14px; margin-bottom: 18px; }
+.tool-group { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: grid; gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); align-content: start; }
+.tg-label { grid-column: 1 / -1; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: var(--text-muted); padding: 0 2px 2px; }
+.tool { background: var(--surface-2); padding: 10px 12px; }
+.tool:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface-2)); }
+@media (max-width: 1200px) { .tools { grid-template-columns: 1fr 1fr; } .tools .tool-group:first-child { grid-column: 1 / -1; } }
+@media (max-width: 700px) { .tools { grid-template-columns: 1fr; } }
+
+/* Tool modal */
+.tool-box { width: 1240px; max-width: 96vw; height: 92vh; display: flex; flex-direction: column; padding: 22px 24px; }
+.tool-sub { font-size: 12px; color: var(--text-muted); margin: 4px 0 0 !important; max-width: 980px; line-height: 1.5; }
+.tabs { display: flex; gap: 4px; margin: 12px 0 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.tabs:empty { display: none; }
+.tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font: 600 12px var(--sans); padding: 8px 12px; cursor: pointer; margin-bottom: -1px; }
+.tab:hover { color: var(--text-main); }
+.tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+.tool-body { flex: 1; overflow-y: auto; padding-right: 6px; min-height: 0; }
+.tool-loading { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 60px; color: var(--text-muted); font-size: 13px; }
+.spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tool-note { font-size: 11.5px; color: var(--text-muted); line-height: 1.55; margin: 0 0 10px; }
+.tool-note.warnline { color: var(--orange); }
+.tool-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.tool-controls select.search, .tool-controls input.search { width: auto; padding: 6px 28px 6px 10px; font-size: 12px; }
+.num-in { width: 76px !important; padding: 6px 8px !important; font-family: var(--mono); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.kpi { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.kpi span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--text-muted); }
+.kpi b { font-family: var(--mono); font-size: 16px; color: var(--text-main); }
+.kpi b small { font-size: 10px; color: var(--text-dim); font-weight: 500; }
+.kpi b.g, .g { color: var(--green-bright); } .kpi b.r, .r { color: var(--red); }
+.panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+.panel h4, .tool-body h4 { font-size: 12px; font-weight: 700; color: var(--text-main); margin: 0 0 8px; letter-spacing: .2px; }
+.chart-box { position: relative; height: 220px; }
+.chart-box.tall { height: 320px; }
+.chart-box.xtall { height: 560px; }
+.tool-grid2 { display: grid; grid-template-columns: 1.25fr 1fr; gap: 12px; align-items: start; }
+.tool-grid2.wide-left { grid-template-columns: 2.2fr 1fr; }
+.tool-grid2.lab-grid { grid-template-columns: 1fr 1.7fr; }
+@media (max-width: 1000px) { .tool-grid2, .tool-grid2.wide-left { grid-template-columns: 1fr; } }
+.tbl-wrap { overflow: auto; max-height: 62vh; border: 1px solid var(--border); border-radius: 10px; }
+.tbl.dense { font-size: 12px; }
+.tbl.dense th { position: sticky; top: 0; background: var(--bg-card-solid); z-index: 1; cursor: pointer; white-space: nowrap; user-select: none; padding: 8px 9px; }
+.tbl.dense th.sorted { color: var(--accent); }
+.tbl.dense td { padding: 7px 9px; white-space: nowrap; }
+.tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tbl.dense td.wrap { white-space: normal; min-width: 160px; }
+.tool-grid2 > *, .panel { min-width: 0; }
+.tbl tr.clickable { cursor: pointer; }
+.tbl tr.clickable:hover td { background-color: color-mix(in srgb, var(--accent) 8%, transparent); }
+.quad { border: 1px solid; border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; background: var(--bg-card); }
+.quad-list { display: flex; flex-wrap: wrap; gap: 5px; }
+.quad-list .chip { cursor: pointer; }
+.bl-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+.bl-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+.bl-head .tool-note { margin: 0; }
+.bl-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted); }
+.bl-row select.search { width: 180px; padding: 5px 24px 5px 8px; font-size: 11px; }
+.bl-row input.search { width: 64px; padding: 5px 6px; font-size: 11px; font-family: var(--mono); }
+.bl-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.pf-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid; border-radius: 10px; padding: 11px 13px; margin-bottom: 10px; }
+.pf-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 800; font-size: 13px; }
+.pf-sh { font-family: var(--mono); font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.pf-desc { font-size: 11px; color: var(--text-muted); margin: 3px 0 7px; line-height: 1.4; }
+.pf-stats { display: flex; gap: 14px; font-family: var(--mono); font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+.pf-stats b { color: var(--text-main); } .pf-stats b.up { color: var(--green-bright); }
+.wbar { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+.wbar .wt { font-family: var(--mono); font-size: 10px; width: 64px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; }
+.wbar .wtrack { flex: 1; height: 8px; background: rgba(255,255,255,.06); border-radius: 5px; overflow: hidden; }
+.wbar .wtrack div { height: 100%; border-radius: 5px; }
+.wbar .wv { font-family: var(--mono); font-size: 10px; width: 44px; text-align: right; color: var(--text-main); font-weight: 700; }
+#screener { margin-top: 2px; }
+#screener .tbl-wrap { max-height: none; }
+#screener .tbl.dense th { top: 0; }
+#pf-results { padding-right: 4px; }
+
 /* Responsive */
 @media (max-width: 900px) {
   header { position: static; padding: 12px 16px; }
@@ -791,12 +889,26 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
   </div>
 
   <div class="tools">
-    <button class="tool" onclick="toggleRiskMap()"><span class="ti">◉</span><span><b>Risk Map</b><small>Return vs volatility</small></span></button>
-    <button class="tool" onclick="toggleCorrelation()"><span class="ti">▦</span><span><b>Correlation</b><small>Who moves together</small></span></button>
-    <button class="tool" onclick="togglePortfolio()"><span class="ti">⚖</span><span><b>Optimizer</b><small>Efficient frontier</small></span></button>
-    <button class="tool" onclick="toggleBacktest()"><span class="ti">↻</span><span><b>Backtest</b><small>RSI &amp; MACD rules</small></span></button>
-    <button class="tool" onclick="toggleTracker()"><span class="ti">◇</span><span><b>Tracker</b><small>Your holdings</small></span></button>
-    <button class="tool" onclick="exportCSV()"><span class="ti">⤓</span><span><b>Export</b><small>Download CSV</small></span></button>
+    <div class="tool-group">
+      <div class="tg-label">Research</div>
+      <button class="tool" onclick="openTool('factor')"><span class="ti">∑</span><span><b>Factor Model</b><small>Exposures &amp; risk attribution</small></span></button>
+      <button class="tool" onclick="openTool('regime')"><span class="ti">≋</span><span><b>Regimes</b><small>Hidden Markov model</small></span></button>
+      <button class="tool" onclick="openTool('rrg')"><span class="ti">⟳</span><span><b>Rotation</b><small>Relative strength map</small></span></button>
+      <button class="tool" onclick="openTool('pairs')"><span class="ti">⇄</span><span><b>Pairs</b><small>Cointegration screener</small></span></button>
+      <button class="tool" onclick="toggleCorrelation()"><span class="ti">▦</span><span><b>Correlation</b><small>Who moves together</small></span></button>
+      <button class="tool" onclick="toggleRiskMap()"><span class="ti">◉</span><span><b>Risk Map</b><small>Return vs volatility</small></span></button>
+    </div>
+    <div class="tool-group">
+      <div class="tg-label">Portfolio</div>
+      <button class="tool" onclick="togglePortfolio()"><span class="ti">⚖</span><span><b>Optimizer</b><small>Frontier · ERC · HRP · B-L</small></span></button>
+      <button class="tool" onclick="openTool('lab')"><span class="ti">⚠</span><span><b>Risk &amp; Stress</b><small>VaR decomposition, crises</small></span></button>
+      <button class="tool" onclick="toggleTracker()"><span class="ti">◇</span><span><b>Tracker</b><small>Your holdings</small></span></button>
+    </div>
+    <div class="tool-group">
+      <div class="tg-label">Signals &amp; data</div>
+      <button class="tool" onclick="openTool('backtest')"><span class="ti">↻</span><span><b>Backtest</b><small>Walk-forward, with costs</small></span></button>
+      <button class="tool" onclick="exportCSV()"><span class="ti">⤓</span><span><b>Export</b><small>Download CSV</small></span></button>
+    </div>
   </div>
 
   <div class="prog-wrap"><div class="prog-bar" id="prog"></div></div>
@@ -822,6 +934,10 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
       <option value="vol-d">Volatility ↓</option>
       <option value="vol-a">Volatility ↑</option>
     </select>
+    <div class="seg" id="view-seg" role="group" aria-label="View">
+      <button class="btn on" data-v="cards" onclick="setView('cards')" title="Card view">▤ Cards</button>
+      <button class="btn" data-v="table" onclick="setView('table')" title="Sortable screener table">▦ Table</button>
+    </div>
     <div class="search-wrap">
       <input class="search" id="srch" placeholder="Search company, ticker or sector" oninput="doSearch(this.value)" aria-label="Search" autocomplete="off">
       <kbd>/</kbd>
@@ -829,6 +945,7 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
   </div>
 
   <div class="grid" id="grid"></div>
+  <div id="screener" style="display:none"></div>
   <div id="grid-empty" class="empty-state big" style="display:none">
     <div class="es-icon">⌕</div>
     <div class="es-title">No companies match</div>
@@ -852,6 +969,9 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
       <div><h4>Risk metrics</h4><p><b>Volatility</b> is the typical yearly swing. <b>Max DD</b> is the worst fall from a peak. <b>VaR 95%</b> is a bad-week loss you'd expect about 1 week in 20.</p></div>
       <div><h4>Market exposure</h4><p><b>Beta</b> 1.5 means the stock moves about 1.5× the market. <b>Alpha</b> is return beyond what that exposure explains.</p></div>
       <div><h4>Range</h4><p>The <b>Range</b> selector in the header sets the look-back window for every metric and chart, from 3 months to 10 years.</p></div>
+      <div><h4>Research tools</h4><p><b>Factor Model</b>: exposure to market, semis, momentum, low-vol and size factors, and how much of each stock's risk they explain. <b>Regimes</b>: a hidden Markov model that detects calm vs turbulent markets. <b>Rotation</b>: who is gaining or losing relative strength. <b>Pairs</b>: cointegrated, mean-reverting pairs.</p></div>
+      <div><h4>Portfolio tools</h4><p><b>Optimizer</b>: exact efficient frontier, risk parity, hierarchical risk parity and Black-Litterman with your own views. <b>Risk &amp; Stress</b>: VaR broken down by holding, plus how the portfolio did in real crises and under custom shocks. <b>Backtest</b>: walk-forward testing with trading costs.</p></div>
+      <div><h4>Table view</h4><p>Switch <b>Cards / Table</b> above the grid for a sortable screener of every metric. Tools use whichever companies are currently visible, so filter or search first to focus on a group.</p></div>
       <div><h4>Currencies</h4><p>International listings (Samsung, SK Hynix, TSMC peers, Tokyo Electron…) are shown in their home currency. Returns and ratios are unaffected.</p></div>
     </div>
     <h4 style="margin-top:18px">Keyboard shortcuts</h4>
@@ -972,6 +1092,9 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
         </div>
       </div>
 
+      <div class="sec-divider"><span>Regime &amp; Factor Profile</span></div>
+      <div id="det-profile" style="margin-bottom:8px"></div>
+
       <div class="sec-divider"><span>Score Validation</span></div>
 
       <div id="det-score-validation" style="margin-top:4px; margin-bottom:16px; padding:14px 16px; background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:10px;">
@@ -987,20 +1110,15 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
 </div>
 
 
-<!-- Backtest Modal -->
-<div class="modal-bg" id="backtest-modal">
-  <div class="modal-box" style="width: 900px; max-width: 95vw; height: 80vh; display: flex; flex-direction: column;">
-    <h3>Strategy Backtesting Engine</h3>
-    <p>Test a systematic strategy over the currently loaded historical data.</p>
-    <div style="display:flex; gap:10px; margin-bottom:15px; flex-shrink: 0;">
-      <select id="bt-strategy" class="search" style="padding:8px;">
-        <option value="rsi">RSI Mean Reversion (Buy < 30, Sell > 70)</option>
-        <option value="macd">MACD Trend Following (Buy Cross Up, Sell Cross Down)</option>
-      </select>
-      <button class="btn" onclick="runBacktest()">Run Backtest on Universe</button>
-      <button class="btn" onclick="toggleBacktest()">Close</button>
+<!-- Generic tool modal (factor model, regimes, portfolio lab, pairs, rotation, backtest) -->
+<div class="modal-bg" id="tool-modal">
+  <div class="modal-box tool-box">
+    <div class="modal-head">
+      <div><h3 id="tool-title"></h3><p id="tool-sub" class="tool-sub"></p></div>
+      <button class="btn" onclick="closeTool()">✕ Close</button>
     </div>
-    <div id="bt-results" style="flex: 1; overflow-y: auto;"></div>
+    <div id="tool-tabs" class="tabs"></div>
+    <div id="tool-body" class="tool-body"></div>
   </div>
 </div>
 
@@ -1070,8 +1188,8 @@ footer { text-align: center; padding: 26px 16px 34px; font-family: var(--mono); 
   <div class="modal-box" style="width: 1180px; max-width: 96vw; height: 92vh; display: flex; flex-direction: column; padding:24px;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0;">
       <div>
-        <h3 style="margin-bottom:4px;">Markowitz Portfolio Optimizer · Efficient Frontier</h3>
-        <p style="margin-bottom:0;">Mean–variance optimization over the loaded universe. 12,000 random long-only portfolios are simulated on the return/risk simplex; the Max-Sharpe (tangency), Min-Variance, Risk-Parity (inverse-vol) and Equal-Weight portfolios are highlighted. Annualized from weekly log-returns, risk-free 4.5%.</p>
+        <h3 style="margin-bottom:4px;">Portfolio Optimizer · Efficient Frontier, Risk Parity, HRP &amp; Black-Litterman</h3>
+        <p style="margin-bottom:0;">Exact long-only mean-variance frontier plus four alternative constructions institutions use. Add your own return views to Black-Litterman below the charts on the right.</p>
       </div>
       <button class="btn" onclick="togglePortfolio()">✕ CLOSE</button>
     </div>
@@ -1212,80 +1330,6 @@ function exportCSV() {
   toast(`Exported ${rows.length} tickers to CSV`, 'ok');
 }
 
-function toggleBacktest() {
-  const m = document.getElementById('backtest-modal');
-  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function runBacktest() {
-  const strat = document.getElementById('bt-strategy').value;
-  const resDiv = document.getElementById('bt-results');
-  resDiv.innerHTML = '<div style="padding:20px; text-align:center;">Running Backtest Simulator...</div>';
-  
-  setTimeout(() => {
-    let html = `<table style="width:100%; text-align:left; border-collapse:collapse; font-size:13px;">
-      <tr style="border-bottom:1px solid var(--border); background:rgba(255,255,255,0.05);">
-        <th style="padding:10px;">Ticker</th><th style="padding:10px;">Strategy Ret</th><th style="padding:10px;">Buy&Hold Ret</th><th style="padding:10px;">Win Rate</th><th style="padding:10px;">Trades</th>
-      </tr>`;
-      
-    COS.forEach(co => {
-      const d = D[co.t];
-      if (!d || !d.ok || !d.prices || d.prices.length < 20) return;
-      const prices = d.prices;
-      let pos = 0, entryPrice = 0;
-      let stratRet = 1;
-      let trades = 0, wins = 0;
-      
-      for (let i = 26; i < prices.length; i++) {
-        const slice = prices.slice(0, i+1);
-        const curPrice = prices[i];
-        let buySig = false, sellSig = false;
-        
-        if (strat === 'rsi') {
-          const rsi = calcRSI(slice, 14);
-          if (rsi < 30) buySig = true;
-          if (rsi > 70) sellSig = true;
-        } else if (strat === 'macd') {
-          const macd = calcMACD(slice);
-          const prevMacd = calcMACD(slice.slice(0, slice.length-1));
-          if (macd.hist > 0 && prevMacd.hist <= 0) buySig = true;
-          if (macd.hist < 0 && prevMacd.hist >= 0) sellSig = true;
-        }
-        
-        if (buySig && pos === 0) { pos = 1; entryPrice = curPrice; }
-        else if (sellSig && pos === 1) { 
-          pos = 0; 
-          const ret = (curPrice - entryPrice) / entryPrice;
-          stratRet *= (1 + ret);
-          trades++;
-          if (ret > 0) wins++;
-        }
-      }
-      if (pos === 1) {
-        const ret = (prices[prices.length-1] - entryPrice) / entryPrice;
-        stratRet *= (1 + ret);
-        trades++;
-        if (ret > 0) wins++;
-      }
-      
-      const bhRet = prices[prices.length-1] / prices[0];
-      const sRetPct = (stratRet - 1) * 100;
-      const bhRetPct = (bhRet - 1) * 100;
-      const winRate = trades > 0 ? (wins/trades*100).toFixed(1) : 0;
-      
-      html += `<tr style="border-bottom:1px solid rgba(255,255,255,0.05); transition: background 0.1s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-        <td style="padding:10px; color:var(--blue); font-weight:500;">${co.n} (${co.t})</td>
-        <td style="padding:10px; color:${sRetPct>=0?'var(--green)':'var(--red)'}; font-family:var(--mono);">${sRetPct>=0?'+':''}${sRetPct.toFixed(1)}%</td>
-        <td style="padding:10px; color:${bhRetPct>=0?'var(--green)':'var(--red)'}; font-family:var(--mono);">${bhRetPct>=0?'+':''}${bhRetPct.toFixed(1)}%</td>
-        <td style="padding:10px;">${winRate}%</td>
-        <td style="padding:10px;">${trades}</td>
-      </tr>`;
-    });
-    html += `</table>`;
-    resDiv.innerHTML = html;
-  }, 10);
-}
-
 let myPortfolio = JSON.parse(localStorage.getItem('my_portfolio') || '[]');
 
 function toggleTracker() {
@@ -1306,6 +1350,12 @@ function addToTracker() {
   document.getElementById('trk-ticker').value = '';
   document.getElementById('trk-shares').value = '';
   renderTracker();
+}
+
+function labFromTracker() {
+  // Portfolio Lab reads its source from a select; preset it to the tracker.
+  openTool('lab');
+  setTimeout(() => { const s = document.getElementById('lab-src'); if (s && s.value !== 'tracker') { s.value = 'tracker'; s.dispatchEvent(new Event('change')); } }, 80);
 }
 
 function removeFromTracker(t) {
@@ -1347,8 +1397,14 @@ function renderTracker() {
     </tr>`;
   });
   holdDiv.innerHTML = html + '</table>';
+  const fx = (MARKET.meta && MARKET.meta.fx) || { USD: 1 };
+  const usd = Object.entries(totals).reduce((s, [c, v]) => s + (fx[c] ? v / fx[c] : 0), 0);
+  const missingFx = Object.keys(totals).filter(c => !fx[c]);
   const parts = Object.entries(totals).map(([c, v]) => `<span class="up">${fmtPx({ sym: curSym(c) }, v)}</span>`);
-  sumDiv.innerHTML = parts.length ? `Total value: ${parts.join(' &nbsp;+&nbsp; ')}` : 'Total value: —';
+  sumDiv.innerHTML = parts.length
+    ? `Total value: <span class="up">${fmtPx({ sym: '$' }, usd)}</span>${Object.keys(totals).length > 1 || !totals.USD ? ` <span class="muted" style="font-size:12px">(${parts.join(' + ')} at latest FX${missingFx.length ? `; no FX for ${missingFx.join(', ')}` : ''})</span>` : ''}
+       <button class="btn btn-xs" style="margin-left:10px" onclick="toggleTracker();labFromTracker()">Stress-test holdings →</button>`
+    : 'Total value: —';
 }
 
 // Fundamentals: from the data file, then optional Finnhub / Alpha Vantage keys.
@@ -3021,6 +3077,7 @@ function openDetail(ticker, name) {
   
   document.getElementById('detail-modal').style.display = 'flex';
   document.getElementById('det-scroll').scrollTop = 0;
+  setTimeout(() => { try { renderDetailProfile(ticker); } catch (e) { console.warn('profile failed', e); } }, 50);
   // Chart was built while hidden; refit once it has real dimensions.
   requestAnimationFrame(() => { try { window.lwChartInst?.timeScale?.().fitContent(); } catch {} });
   // Update URL state
@@ -3186,7 +3243,9 @@ async function loadAll(force = false) {
   else if (ok > 0) setPill('ok', `✓ ${ok}/${PUB.length} LOADED`);
   else setPill('err', 'NO DATA — SEE NOTICE');
   renderDataStatus();
+  if (typeof invalidateToolCaches === 'function') invalidateToolCaches();
   if (sortKey) doSort(sortKey);
+  if (typeof renderScreener === 'function') renderScreener();
 }
 
 function reloadAll(force = false) {
@@ -3255,6 +3314,7 @@ function applyFS() {
     const b = document.querySelector(`#f-${f} .cnt`);
     if (b) b.textContent = cards.filter(el => !el.classList.contains('skeleton') && cardMatches(el, f) && searchHit(el)).length;
   });
+  if (typeof renderScreener === 'function') renderScreener();
   const empty = document.getElementById('grid-empty');
   if (empty) {
     const loading = cards.some(el => el.classList.contains('skeleton'));
@@ -3273,7 +3333,7 @@ function resetView() {
 // ── Modal behaviour: Esc / backdrop click closes, background doesn't scroll ──
 const MODAL_CLOSERS = {
   'detail-modal': closeDetail,
-  'backtest-modal': toggleBacktest, 'tracker-modal': toggleTracker, 'settings-modal': toggleSettings,
+  'tool-modal': () => closeTool(), 'tracker-modal': toggleTracker, 'settings-modal': toggleSettings,
   'risk-map-modal': toggleRiskMap, 'correlation-modal': toggleCorrelation, 'portfolio-modal': togglePortfolio,
   'help-modal': toggleHelp,
 };
@@ -3508,116 +3568,84 @@ function setPfUniverse(u) {
 }
 
 function selectPfAssets() {
-  let pool = COS.filter(c => c.pub && c.t !== 'SPY' && D[c.t] && D[c.t].ok && D[c.t].prices && D[c.t].prices.length > 30);
+  // Optimizers use the full data-file history; SPY is the benchmark, not an asset.
+  let pool = COS.filter(c => c.pub && c.t !== 'SPY' && D[c.t] && D[c.t].ok && MARKET.tickers[c.t]);
   if (pfUniverse === 'a') pool = pool.filter(c => c.tier === 'a');
   else if (pfUniverse !== 'all') pool = pool.filter(c => c.sector === pfUniverse);
-  return pool.slice(0, 28).map(c => ({ t: c.t, n: c.n, sector: c.sector, prices: D[c.t].prices }));
+  return pool.slice(0, 40).map(c => c.t);
 }
 
-function optimizePortfolio(assets) {
-  const RF = 0.045;
-  const r = a => { const o = []; for (let i = 1; i < a.length; i++) o.push((a[i] - a[i-1]) / a[i-1]); return o; };
-  const series = assets.map(a => r(a.prices));
-  const minLen = Math.min(...series.map(s => s.length));
-  const R = series.map(s => s.slice(-minLen));
-  const n = R.length;
-  const muW = R.map(s => s.reduce((a, b) => a + b, 0) / minLen);
-  const mu = muW.map(m => m * 52);
-  const cov = Array(n).fill(0).map(() => Array(n).fill(0));
-  for (let i = 0; i < n; i++) for (let j = i; j < n; j++) {
-    let c = 0; for (let k = 0; k < minLen; k++) c += (R[i][k] - muW[i]) * (R[j][k] - muW[j]);
-    c = c / minLen * 52; cov[i][j] = c; cov[j][i] = c;
-  }
-  const vol = mu.map((_, i) => Math.sqrt(Math.max(0, cov[i][i])));
-  const pStats = w => {
-    let pr = 0; for (let i = 0; i < n; i++) pr += w[i] * mu[i];
-    let pv = 0; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) pv += w[i] * w[j] * cov[i][j];
-    const sd = Math.sqrt(Math.max(0, pv));
-    return { ret: pr, vol: sd, sharpe: sd === 0 ? 0 : (pr - RF) / sd };
-  };
-  const cloud = [];
-  let maxSh = { sharpe: -Infinity }, minV = { vol: Infinity };
-  for (let it = 0; it < 12000; it++) {
-    let w = Array(n).fill(0).map(() => -Math.log(Math.max(Math.random(), 1e-12)));
-    const s = w.reduce((a, b) => a + b, 0); w = w.map(x => x / s);
-    const st = pStats(w);
-    cloud.push({ x: st.vol * 100, y: st.ret * 100 });
-    if (st.sharpe > maxSh.sharpe) maxSh = { ...st, w };
-    if (st.vol < minV.vol) minV = { ...st, w };
-  }
-  let rp = vol.map(v => v > 0 ? 1 / v : 0); const rs = rp.reduce((a, b) => a + b, 0) || 1; rp = rp.map(x => x / rs);
-  const rpStats = { ...pStats(rp), w: rp };
-  const ew = Array(n).fill(1 / n); const ewStats = { ...pStats(ew), w: ew };
-  const assetPts = assets.map((a, i) => ({ t: a.t, x: vol[i] * 100, y: mu[i] * 100 }));
-  return { n, cloud, maxSh, minV, rp: rpStats, ew: ewStats, assets, assetPts };
-}
-
-function pfWeightTable(title, color, stats, assets) {
-  const rows = stats.w.map((w, i) => ({ t: assets[i].t, w: w * 100 }))
-    .filter(x => x.w > 0.8).sort((a, b) => b.w - a.w).slice(0, 8);
-  let bars = rows.map(x => `
-    <div style="display:flex;align-items:center;gap:8px;margin:3px 0;">
-      <span style="font-family:var(--mono);font-size:10px;width:46px;color:var(--text-muted);">${x.t}</span>
-      <div style="flex:1;height:9px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden;">
-        <div style="height:100%;width:${Math.min(100,x.w)}%;background:${color};"></div></div>
-      <span style="font-family:var(--mono);font-size:10px;width:42px;text-align:right;color:#fff;font-weight:700;">${x.w.toFixed(1)}%</span>
-    </div>`).join('');
+function pfWeightTable(key, stats, tickers) {
+  const [title, colorVar, desc] = PORT_META[key];
+  const color = `var(${colorVar})`;
+  const rows = stats.w.map((w, i) => ({ t: tickers[i], w: w * 100 }))
+    .filter(x => x.w > 0.5).sort((a, b) => b.w - a.w).slice(0, 8);
+  const bars = rows.map(x => `
+    <div class="wbar"><span class="wt">${escapeHtml(x.t)}</span>
+      <div class="wtrack"><div style="width:${Math.min(100, x.w)}%;background:${color};"></div></div>
+      <span class="wv">${x.w.toFixed(1)}%</span></div>`).join('');
+  const held = stats.w.filter(w => w > 0.005).length;
   return `
-    <div style="background:var(--bg-card);border:1px solid var(--border);border-left:3px solid ${color};border-radius:10px;padding:12px 14px;margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
-        <span style="font-weight:800;color:${color};font-size:13px;letter-spacing:0.3px;">${title}</span>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);">Sharpe ${stats.sharpe.toFixed(2)}</span>
-      </div>
-      <div style="display:flex;gap:14px;font-family:var(--mono);font-size:11px;margin-bottom:10px;">
-        <span style="color:var(--text-muted);">Ret <b style="color:#7ee787;">${(stats.ret*100).toFixed(1)}%</b></span>
-        <span style="color:var(--text-muted);">Vol <b style="color:#e3b341;">${(stats.vol*100).toFixed(1)}%</b></span>
-      </div>
+    <div class="pf-card" style="border-left-color:${color}">
+      <div class="pf-head"><span style="color:${color}">${title}</span><span class="pf-sh">Sharpe ${stats.sharpe.toFixed(2)}</span></div>
+      <div class="pf-desc">${desc}</div>
+      <div class="pf-stats"><span>Exp. return <b class="up">${(stats.ret*100).toFixed(1)}%</b></span><span>Vol <b>${(stats.vol*100).toFixed(1)}%</b></span><span>${held} holdings</span></div>
       ${bars}
     </div>`;
 }
 
 function renderPortfolio() {
   const results = document.getElementById('pf-results');
-  const assets = selectPfAssets();
-  if (assets.length < 3) {
-    results.innerHTML = "<p style='color:#f85149;font-weight:500;'>Need at least 3 loaded tickers in this universe. Wait for data to finish loading, or pick a broader filter.</p>";
+  const tickers = selectPfAssets();
+  if (tickers.length < 3) {
+    results.innerHTML = "<div class='empty-state'><div class='es-title'>Need at least 3 companies</div><div class='es-sub'>Wait for data to finish loading, or pick a broader universe.</div></div>";
     if (pfChartInst) { pfChartInst.destroy(); pfChartInst = null; }
     return;
   }
-  results.innerHTML = "<p style='color:var(--text-muted);'>Optimizing " + assets.length + " assets across 12,000 portfolios…</p>";
+  results.innerHTML = `<div class="tool-loading"><span class="spinner"></span>Optimizing ${tickers.length} assets…</div>`;
 
   setTimeout(() => {
-    const o = optimizePortfolio(assets);
-    results.innerHTML =
-      pfWeightTable('★ MAX SHARPE (Tangency)', '#3fb950', o.maxSh, assets) +
-      pfWeightTable('● MIN VARIANCE', '#58a6ff', o.minV, assets) +
-      pfWeightTable('◆ RISK PARITY (Inv-Vol)', '#bc8cff', o.rp, assets) +
-      pfWeightTable('○ EQUAL WEIGHT (1/N)', '#39c5cf', o.ew, assets) +
-      `<p style="font-size:10px;color:var(--text-dim);line-height:1.5;margin-top:4px;">Long-only, fully invested. Frontier cloud = random simplex sampling. Past covariance is not predictive of future co-movement — for research only, not advice.</p>`;
+    const pf = buildPortfolios(tickers);
+    if (!pf) { results.innerHTML = "<div class='empty-state'><div class='es-title'>Not enough overlapping history</div></div>"; return; }
+    const tk = pf.M.tickers;
+    results.innerHTML = `<p class="tool-note">Expected returns: historical means over the Range window, shrunk 50% toward the cross-sectional average; covariance shrunk toward constant correlation (25%). Long-only, fully invested, risk-free 4.5%. ${tk.length} assets, ${pf.M.dates.length} weeks. Past covariance isn't predictive of future co-movement — for research only.</p>
+      <div id="bl-views"></div>` +
+      ['maxSharpe', 'minVar', 'erc', 'hrp', 'bl', 'ew'].map(k => pfWeightTable(k, pf.ports[k], tk)).join('') +
+      `<button class="btn" style="width:100%;margin-top:4px" onclick="togglePortfolio();openTool('lab')">Stress-test these portfolios in Risk &amp; Stress →</button>`;
+    blViewsUI(document.getElementById('bl-views'), pf, renderPortfolio);
+
+    // Random long-only portfolios as a backdrop for the exact frontier.
+    const cloud = [];
+    for (let it = 0; it < 3000; it++) {
+      let w = tk.map(() => (-Math.log(Math.max(Math.random(), 1e-12))) ** 1.6);
+      const z = w.reduce((a, b) => a + b, 0); w = w.map(x => x / z);
+      const st = QL.portStats(w, pf.mu, pf.C); cloud.push({ x: st.vol * 100, y: st.ret * 100 });
+    }
+    const assetPts = tk.map((t, i) => ({ t, x: Math.sqrt(pf.C[i][i]) * 100, y: pf.mu[i] * 100 }));
+    const cv = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+    const pt = (k, style, r) => ({ label: PORT_META[k][0].replace(/^[^ ]+ /, ''), data: [{ x: pf.ports[k].vol * 100, y: pf.ports[k].ret * 100 }], backgroundColor: cv(PORT_META[k][1]), borderColor: '#fff', borderWidth: 1, pointRadius: r, pointHoverRadius: r + 2, pointStyle: style });
 
     if (pfChartInst) pfChartInst.destroy();
-    Chart.defaults.color = 'rgba(255,255,255,0.7)';
+    Chart.defaults.color = cv('--text-muted');
     Chart.defaults.font.family = "'JetBrains Mono', monospace";
     pfChartInst = new Chart(document.getElementById('pf-frontier-canvas').getContext('2d'), {
       type: 'scatter',
       data: { datasets: [
-        { label: 'Portfolios', data: o.cloud, backgroundColor: 'rgba(88,166,255,0.13)', pointRadius: 1.6, pointHoverRadius: 2 },
-        { label: 'Assets', data: o.assetPts, backgroundColor: 'rgba(227,179,65,0.9)', pointRadius: 4, pointHoverRadius: 6, pointStyle:'rectRot' },
-        { label: 'Max Sharpe', data: [{ x: o.maxSh.vol*100, y: o.maxSh.ret*100 }], backgroundColor: '#3fb950', pointRadius: 9, pointHoverRadius: 11, pointStyle:'star' },
-        { label: 'Min Variance', data: [{ x: o.minV.vol*100, y: o.minV.ret*100 }], backgroundColor: '#58a6ff', pointRadius: 7, pointHoverRadius: 9, pointStyle:'circle' },
-        { label: 'Risk Parity', data: [{ x: o.rp.vol*100, y: o.rp.ret*100 }], backgroundColor: '#bc8cff', pointRadius: 7, pointHoverRadius: 9, pointStyle:'rect' },
-        { label: 'Equal Weight', data: [{ x: o.ew.vol*100, y: o.ew.ret*100 }], backgroundColor: '#39c5cf', pointRadius: 7, pointHoverRadius: 9, pointStyle:'triangle' }
+        { label: 'Random portfolios', data: cloud, backgroundColor: 'rgba(91,157,255,0.10)', pointRadius: 1.4, pointHoverRadius: 1.4 },
+        { label: 'Efficient frontier', data: pf.frontier, showLine: true, borderColor: cv('--green-bright'), borderWidth: 2, pointRadius: 0, fill: false },
+        { label: 'Assets', data: assetPts, backgroundColor: 'rgba(251,191,36,0.85)', pointRadius: 3.5, pointHoverRadius: 6, pointStyle: 'rectRot' },
+        pt('maxSharpe', 'star', 10), pt('minVar', 'circle', 7), pt('erc', 'rect', 7), pt('hrp', 'rectRounded', 7), pt('bl', 'triangle', 8), pt('ew', 'crossRot', 8),
       ]},
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { display: true, position: 'top', labels: { boxWidth: 8, font: { size: 9 }, color: '#a0aab4', filter: i => i.text !== 'Portfolios' } },
-          tooltip: { backgroundColor: 'rgba(13,17,23,0.92)', titleColor: '#8b949e', bodyColor: '#fff', borderColor: 'rgba(99,102,241,0.8)', borderWidth: 1,
+          legend: { display: true, position: 'top', labels: { boxWidth: 8, font: { size: 9 }, filter: i => i.text !== 'Random portfolios' } },
+          tooltip: { backgroundColor: 'rgba(10,14,22,0.94)', borderWidth: 1,
             callbacks: { label: c => { const t = c.dataset.data[c.dataIndex].t; return (t ? t + ': ' : c.dataset.label + ': ') + 'σ ' + c.parsed.x.toFixed(1) + '% / μ ' + c.parsed.y.toFixed(1) + '%'; } } }
         },
         scales: {
-          x: { title: { display: true, text: 'Annualized Volatility (Risk) %', color: '#6e7681', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
-          y: { title: { display: true, text: 'Annualized Return %', color: '#6e7681', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          x: { title: { display: true, text: 'Annualized volatility (risk) %' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: { title: { display: true, text: 'Expected return % (shrunk)' }, grid: { color: 'rgba(255,255,255,0.05)' } }
         }
       }
     });
@@ -3677,6 +3705,8 @@ document.getElementById('clear-cache-btn').addEventListener('click', async () =>
     if (srch) srch.value = initialState.q;
   }
 
+  if (localStorage.getItem('csq_view') === 'table') setView('table');
+
   // Start loading all tickers
   await loadAll();
 
@@ -3689,5 +3719,6 @@ document.getElementById('clear-cache-btn').addEventListener('click', async () =>
   }
 })();
 </script>
+<script src="js/tools.js"></script>
 </body>
 </html>

@@ -140,6 +140,23 @@ def compact(result):
     return grid, result
 
 
+def fetch_fx(currencies):
+    """Units of each currency per 1 USD (e.g. KRW -> ~1400), for USD market caps."""
+    fx = {"USD": 1.0}
+    for c in sorted(set(currencies) - {"USD", None}):
+        for attempt in range(RETRIES):
+            try:
+                h = yf.Ticker(f"{c}=X").history(period="5d", interval="1d")
+                v = clean(h["Close"].dropna().iloc[-1]) if not h.empty else None
+                if v:
+                    fx[c] = v
+                    break
+            except Exception as e:  # noqa: BLE001
+                print(f"  fx retry {attempt + 1} {c}: {e}")
+            time.sleep(1 + attempt)
+    return fx
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--web-dir", default=DEFAULT_WEB_DIR, help="folder containing index.html; market_data.json is written here")
@@ -195,6 +212,14 @@ def main():
         print(f"ERROR: only {ratio:.0%} fresh (< {MIN_OK_RATIO:.0%}); refusing to overwrite {out_path}")
         sys.exit(1)
 
+    fx = fetch_fx(e.get("currency") for e in result.values())
+    fx = {**(prev.get("meta", {}).get("fx") or {}), **fx} if isinstance(prev, dict) else fx
+    for e in result.values():
+        f = e.get("fund") or {}
+        rate = fx.get(e.get("currency") or "USD")
+        f["mcapUSD"] = round(f["mcap"] / rate) if f.get("mcap") and rate else None
+    print("fx per USD:", {k: round(v, 3) for k, v in fx.items()})
+
     grid, result = compact(result)
     payload = {
         "meta": {
@@ -203,6 +228,7 @@ def main():
             "source": f"Yahoo Finance via yfinance {yf.__version__}",
             "interval": INTERVAL,
             "fresh": fresh, "stale": stale, "failed": failed,
+            "fx": fx,
         },
         "dates": grid,
         "tickers": result,
