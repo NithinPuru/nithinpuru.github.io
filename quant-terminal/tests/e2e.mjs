@@ -76,6 +76,24 @@ try {
     await page.keyboard.press('Escape');
   }
 
+  // ── Daily price chart with zoom ranges ────────────────────────────────────
+  console.log('Daily chart');
+  await page.evaluate(() => openDetail('NVDA'));
+  await page.waitForFunction(() => document.querySelectorAll('#det-range .btn').length === 8 && document.querySelector('#det-lw-chart canvas'), { timeout: 30000 });
+  const dchart = await page.evaluate(() => ({ title: document.getElementById('det-chart-title').textContent, legend: document.getElementById('det-legend').textContent }));
+  check(/Daily price/.test(dchart.title) && /Vol/.test(dchart.legend), `daily candles + volume load (${dchart.legend.slice(0, 70)})`);
+  const bars = async () => page.evaluate(() => { const r = window.lwChartInst.timeScale().getVisibleLogicalRange(); return r ? Math.round(r.to - r.from) : 0; });
+  await page.click('#det-range [data-r="2W"]'); await sleep(300);
+  const b2w = await bars();
+  check(b2w >= 8 && b2w <= 16, `2W zoom shows ~10 trading days (${b2w} bars)`);
+  await page.click('#det-range [data-r="10Y"]'); await sleep(300);
+  const t10 = await page.evaluate(() => document.getElementById('det-chart-title').textContent);
+  check(/Weekly price/.test(t10) && (await bars()) > 400, '10Y switches to the weekly history');
+  await page.click('#det-range [data-r="6M"]');
+  const spk = await page.evaluate(() => ({ n: D.NVDA.spark ? D.NVDA.spark.length : 0, m1: D.NVDA.chg1m }));
+  check(spk.n > 200 && spk.m1 != null, `card sparkline uses ${spk.n} daily closes; 1M change ${spk.m1?.toFixed(1)}%`);
+  await page.keyboard.press('Escape');
+
   // ── Every tool and tab ───────────────────────────────────────────────────
   console.log('Tools');
   const toolTabs = { factor: ['exp', 'scores', 'quality', 'fret'], regime: ['mkt', 'uni', 'corr'], lab: ['main', 'dd', 'vt', 'attr'], pairs: ['main'], rrg: ['main'], backtest: ['main'], earnings: ['up', 'study'], replay: ['replay', 'ic'] };

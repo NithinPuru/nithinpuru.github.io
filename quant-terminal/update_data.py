@@ -29,6 +29,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_WEB_DIR = os.path.normpath(os.path.join(HERE, "..", "public", "quant-terminal"))
 PERIOD = "10y"
 INTERVAL = "1wk"
+# Daily OHLCV for charts: one file per ticker in <web_dir>/daily/, loaded on demand,
+# plus ~1 year of daily closes in market_data.json for the card sparklines.
+DAILY_PERIOD = "2y"
+SPARK_DAYS = 370
 MIN_OK_RATIO = 0.6
 RETRIES = 3
 # Share of unchanged week-over-week closes (last 2y) above which a series is
@@ -183,6 +187,66 @@ def fetch_earnings(t):
     return None
 
 
+def fetch_daily(tickers):
+    """Daily OHLCV (split/dividend-adjusted). Failures only affect charts, never the weekly data."""
+    try:
+        df = yf.download(tickers, period=DAILY_PERIOD, interval="1d", auto_adjust=True,
+                         group_by="ticker", threads=True, progress=False)
+    except Exception as e:  # noqa: BLE001
+        print(f"  daily download failed: {e}")
+        return {}
+    out = {}
+    for t in tickers:
+        try:
+            s = (df[t] if len(tickers) > 1 else df).dropna(subset=["Close"])
+        except KeyError:
+            continue
+        if len(s) >= 60:
+            out[t] = s
+    return out
+
+
+def px(v):
+    v = float(v)
+    return round(v, 2) if abs(v) >= 100 else round(v, 4)
+
+
+def write_json(path, obj):
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(obj, f, separators=(",", ":"))
+    os.replace(tmp, path)
+
+
+def write_daily(daily, web_dir, currencies, now):
+    """One compact file per ticker; tickers that failed today keep yesterday's file."""
+    ddir = os.path.join(web_dir, "daily")
+    os.makedirs(ddir, exist_ok=True)
+    for t, s in daily.items():
+        write_json(os.path.join(ddir, f"{t}.json"), {
+            "t": t, "currency": currencies.get(t) or "USD", "updated": now.isoformat(timespec="seconds"),
+            "d": [x.strftime("%Y-%m-%d") for x in s.index],
+            "o": [px(v) for v in s["Open"]], "h": [px(v) for v in s["High"]],
+            "l": [px(v) for v in s["Low"]], "c": [px(v) for v in s["Close"]],
+            "v": [int(v) if v == v else 0 for v in s["Volume"]],
+        })
+
+
+def spark_block(daily):
+    """~1 year of daily closes on a shared calendar (null where a market was closed)."""
+    if not daily:
+        return [], {}
+    last = max(s.index[-1] for s in daily.values())
+    cut = last - pd.Timedelta(days=SPARK_DAYS)
+    grid = sorted({d for s in daily.values() for d in s.index if d >= cut})
+    keys = [d.strftime("%Y-%m-%d") for d in grid]
+    out = {}
+    for t, s in daily.items():
+        m = {d.strftime("%Y-%m-%d"): px(v) for d, v in s["Close"].items() if d >= cut}
+        out[t] = [m.get(k) for k in keys]
+    return keys, out
+
+
 def fetch_fx(currencies):
     """Units of each currency per 1 USD (e.g. KRW -> ~1400), for USD market caps."""
     fx = {"USD": 1.0}
@@ -267,6 +331,16 @@ def main():
         f["mcapUSD"] = round(f["mcap"] / rate) if f.get("mcap") and rate else None
     print("fx per USD:", {k: round(v, 3) for k, v in fx.items()})
 
+    daily = fetch_daily(fresh)
+    print(f"daily bars: {len(daily)}/{len(fresh)} tickers")
+    write_daily(daily, args.web_dir, {t: e.get("currency") for t, e in result.items()}, now)
+    ddates, d1 = spark_block(daily)
+    for t, e in result.items():
+        if t in d1:
+            e["d1"] = d1[t]
+        else:
+            e.pop("d1", None)  # no fresh daily closes: the page falls back to weekly
+
     grid, result = compact(result)
     payload = {
         "meta": {
@@ -278,6 +352,7 @@ def main():
             "fx": fx,
         },
         "dates": grid,
+        "ddates": ddates,
         "tickers": result,
     }
     # Write atomically so a crash mid-write can never leave a truncated file.

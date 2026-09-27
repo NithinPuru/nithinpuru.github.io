@@ -167,7 +167,7 @@
       <div><h4>Signal chips</h4><p><b>Oversold / Overbought</b> use Bollinger Bands and RSI. <b>F&amp;G</b> is a per-stock Fear &amp; Greed gauge. <b>Uptrend</b> means the 10-week average is above the 40-week.</p></div>
       <div><h4>Risk metrics</h4><p><b>Volatility</b> is the typical yearly swing. <b>Max DD</b> is the worst fall from a peak. <b>VaR 95%</b> is a bad-week loss you'd expect about 1 week in 20.</p></div>
       <div><h4>Market exposure</h4><p><b>Beta</b> 1.5 means the stock moves about 1.5× the market. <b>Alpha</b> is return beyond what that exposure explains.</p></div>
-      <div><h4>Range</h4><p>The <b>Range</b> selector in the header sets the look-back window for every metric and chart, from 3 months to 10 years.</p></div>
+      <div><h4>Range &amp; daily charts</h4><p>The <b>Range</b> selector sets the look-back window for every metric (3 months to 10 years). It starts at 3 months because volatility, Sharpe, beta and VaR need enough observations to mean anything. To look at a shorter period, open a company: its price chart uses <b>daily</b> candles and volume, with 2W / 1M / 3M … zoom buttons, and you can scroll or pinch to zoom further.</p></div>
       <div><h4>Research tools</h4><p><b>Factor Model</b>: exposure to market, semis, momentum, low-vol and size factors, and how much of each stock's risk they explain. <b>Regimes</b>: a hidden Markov model that detects calm vs turbulent markets. <b>Rotation</b>: who is gaining or losing relative strength. <b>Pairs</b>: cointegrated, mean-reverting pairs.</p></div>
       <div><h4>Portfolio tools</h4><p><b>Optimizer</b>: exact efficient frontier, risk parity, hierarchical risk parity and Black-Litterman with your own views. <b>Risk &amp; Stress</b>: VaR broken down by holding, plus how the portfolio did in real crises and under custom shocks. <b>Backtest</b>: walk-forward testing with trading costs.</p></div>
       <div><h4>Earnings &amp; replay</h4><p><b>Earnings</b>: how each stock moves around its reports and whether it keeps drifting after a beat or miss. <b>Timeline Replay</b>: see what the quant score said in any past week and how well it predicted the next months.</p></div>
@@ -194,10 +194,11 @@
     <div style="overflow-y:auto; flex:1; padding-right:8px;" id="det-scroll">
       
       <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
-        <h3 class="det-h" style="margin:0">Weekly Price (close-to-close candles) &amp; 40-Wk SMA</h3>
+        <h3 class="det-h" style="margin:0" id="det-chart-title">Price</h3>
         <div id="det-fundamentals">Loading Fundamentals...</div>
       </div>
-      <div class="det-chart" style="height:400px;" id="det-lw-chart">
+      <div class="det-ctl"><div class="seg" id="det-range" role="group" aria-label="Chart range"></div><span id="det-legend" class="det-legend"></span></div>
+      <div class="det-chart" style="height:420px;" id="det-lw-chart">
       </div>
 
       <div class="det-row" style="display:flex; gap:12px; margin-top:16px;">
@@ -1593,8 +1594,22 @@ async function fetchOne(ticker, isBench = false) {
   // Composite Quant Score (0–100)
   const score = quantScore({ chg6m, chg1y, macdHist: macd.hist, price: cur, momentum, fg: fg.val, sortino, sharpe, sma10: tech.sma10, sma40: tech.sma40, alpha });
 
+  // ~1 year of daily closes for the sparkline and the 1-month change (falls back to weekly).
+  const e1 = MARKET.tickers[ticker], dd = MARKET.ddates;
+  let spk = null, chg1m = null;
+  if (e1 && e1.d1 && dd && e1.d1.length === dd.length) {
+    const pts = []; e1.d1.forEach((v, i) => { if (v != null) pts.push([dd[i], v]); });
+    if (pts.length > 40) {
+      spk = pts.map(p => p[1]);
+      const lastD = pts[pts.length - 1][0], cut = new Date(Date.parse(lastD + 'T00:00:00Z') - 30 * 86400000).toISOString().slice(0, 10);
+      let base = null; for (const [dt, v] of pts) { if (dt <= cut) base = v; else break; }
+      if (base) chg1m = (pts[pts.length - 1][1] / base - 1) * 100;
+    }
+  }
+  if (chg1m == null && closes.length > 5) chg1m = (cur / closes[closes.length - 5] - 1) * 100;
+
   return {
-    ok: true, source, price: cur, prices: closes, dates, spyA, soxA,
+    ok: true, source, price: cur, prices: closes, dates, spyA, soxA, spark: spk, chg1m,
     currency: s.currency, sym: curSym(s.currency), fund: s.fund, stale: s.stale, asOf: dates[dates.length - 1],
     chg6m, chg1y, rsi, stoch, vol, sharpe, sortino, var95, cvar95, maxDD,
     macd, mc, momentum, momCls, score, fg, tech, beta, alpha, r2, treynor, infoRatio, trackingError, kellyObj,
@@ -1737,12 +1752,13 @@ function cardHTML(co) {
     <div class="price-box">
       <span class="price">${fmtPx(d, d.price)}</span>
       <div class="chg-row">
+        ${d.chg1m != null ? `<span class="chg ${d.chg1m >= 0 ? 'up' : 'dn'}">${d.chg1m >= 0 ? '▲' : '▼'} ${Math.abs(d.chg1m).toFixed(1)}%<span class="chg-label">1M</span></span>` : ''}
         <span class="chg ${u6 ? 'up' : 'dn'}">${u6?'▲':'▼'} ${Math.abs(d.chg6m).toFixed(1)}%<span class="chg-label">6M</span></span>
         <span class="chg ${u1 ? 'up' : 'dn'}">${u1?'▲':'▼'} ${Math.abs(d.chg1y).toFixed(1)}%<span class="chg-label">1Y</span></span>
       </div>
     </div>
 
-    <div class="spark-wrap">${spark(d.prices.slice(-52), d.chg1y >= 0)}</div>
+    <div class="spark-wrap">${spark(d.spark || d.prices.slice(-52), d.chg1y >= 0)}</div>
 
     <div class="chips">${chips.join('')}</div>
 
@@ -1957,73 +1973,7 @@ function openDetail(ticker, name) {
   });
   fEl.dataset.for = ticker;
 
-  if (window.lwChartInst) { 
-    if (typeof window.lwChartInst.remove === 'function') window.lwChartInst.remove(); 
-    else if (typeof window.lwChartInst.destroy === 'function') window.lwChartInst.destroy();
-    window.lwChartInst = null; 
-  }
-  const lwContainer = document.getElementById('det-lw-chart');
-  if (lwContainer) {
-    lwContainer.innerHTML = '';
-    try {
-      // autoSize: the modal is still hidden here, so a fixed-size chart would init at 0×0.
-      const chart = LightweightCharts.createChart(lwContainer, {
-        autoSize: true,
-        layout: { background: { type: 'solid', color: 'transparent' }, textColor: C('--ink-3'), fontFamily: 'KaTeX_Typewriter, monospace' },
-        grid: { vertLines: { color: CA('--ink', 0.05) }, horzLines: { color: CA('--ink', 0.05) } },
-        rightPriceScale: { borderColor: CA('--ink', 0.1) },
-        timeScale: { borderColor: CA('--ink', 0.1) },
-      });
-      window.lwChartInst = chart;
-      // v4 API with a v5 fallback, in case the pinned CDN build ever changes.
-      const LW = LightweightCharts;
-      const addSeries = (kind, opts) => chart[`add${kind}Series`] ? chart[`add${kind}Series`](opts) : chart.addSeries(LW[`${kind}Series`], opts);
-      const big = d.price >= 1000;
-      const priceFormat = { type: 'price', precision: big ? 0 : 2, minMove: big ? 1 : 0.01 };
-      const candleSeries = addSeries('Candlestick', { priceFormat, upColor: C('--up'), downColor: C('--down'), borderVisible: false, wickUpColor: C('--up'), wickDownColor: C('--down') });
-      
-      const ohlc = [];
-      for(let i=0; i<d.prices.length; i++) {
-        const p = d.prices[i];
-        const prev = i>0 ? d.prices[i-1] : p;
-        // Weekly closes only: open = prior close, wicks = body (no invented highs/lows).
-        ohlc.push({ time: isoDates[i], open: prev, high: Math.max(prev,p), low: Math.min(prev,p), close: p });
-      }
-      candleSeries.setData(ohlc);
-
-      const smaSeries = addSeries('Line', { color: C('--accent'), lineWidth: 2, title: '40-Wk SMA', priceLineVisible: false, priceFormat });
-      const sData = [];
-      for(let i=0; i<ohlc.length; i++) {
-        if(i<39) continue;
-        let sum=0; for(let j=0; j<40; j++) sum+=ohlc[i-j].close;
-        sData.push({ time: ohlc[i].time, value: sum/40 });
-      }
-      smaSeries.setData(sData);
-      chart.timeScale().fitContent();
-    } catch(e) {
-      console.error("LightweightCharts Error:", e);
-      lwContainer.innerHTML = '<canvas id="det-chart-fallback"></canvas>';
-      window.lwChartInst = new Chart(document.getElementById('det-chart-fallback').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: d_dates,
-          datasets: [
-            { label: 'Price', data: d_prices, borderColor: C('--accent'), borderWidth: 2, pointRadius: 0, tension: 0.1 },
-            { label: '40-Wk SMA', data: d_sma40, borderColor: CA('--ink', 0.3), borderDash: [4, 4], borderWidth: 1.5, pointRadius: 0 },
-            { label: 'Upper Band', data: d_bbUp, borderColor: CA('--ink', 0.1), borderWidth: 1, pointRadius: 0 },
-            { label: 'Lower Band', data: d_bbDn, borderColor: CA('--ink', 0.1), borderWidth: 1, pointRadius: 0, fill: '-1', backgroundColor: CA('--ink', 0.02) }
-          ]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          plugins: { legend: { display: false }, tooltip: { backgroundColor:C('--tooltip-bg'), titleColor:C('--ink-3'), bodyColor:C('--ink'), borderColor:C('--rule-strong'), borderWidth:1, callbacks:{label:(c)=>d.sym+c.parsed.y.toFixed(2)} } },
-          scales: { x: { display: false }, y: { position: 'right', grid: { color: CA('--ink', 0.05) } } }
-        }
-      });
-    }
-  }
-
+  renderPriceChart(ticker, d);
 
   chartInst2 = new Chart(document.getElementById('det-dd-chart').getContext('2d'), {
     type: 'line',
@@ -2293,8 +2243,6 @@ function openDetail(ticker, name) {
   document.getElementById('detail-modal').style.display = 'flex';
   document.getElementById('det-scroll').scrollTop = 0;
   setTimeout(() => { try { renderDetailProfile(ticker); } catch (e) { console.warn('profile failed', e); } }, 50);
-  // Chart was built while hidden; refit once it has real dimensions.
-  requestAnimationFrame(() => { try { window.lwChartInst?.timeScale?.().fitContent(); } catch {} });
   // Update URL state
   pushUrlState({ company: ticker });
 
@@ -2328,6 +2276,91 @@ function openDetail(ticker, name) {
       }
     }, 0);
   }
+}
+
+// ============================
+// DETAIL PRICE CHART — daily OHLCV (lazy per-ticker file) with zoom ranges
+// ============================
+// Daily bars live in daily/<TICKER>.json (written by the data pipeline) and load only
+// when a company is opened. 5Y/10Y use the weekly history from market_data.json.
+const DAILY_CACHE = new Map();
+function loadDaily(ticker) {
+  if (DAILY_CACHE.has(ticker)) return DAILY_CACHE.get(ticker);
+  const v = encodeURIComponent((MARKET.meta && MARKET.meta.generated_at) || Math.floor(Date.now() / 600000));
+  const p = fetchJSON(`daily/${encodeURIComponent(ticker)}.json?v=${v}`, 15000).catch(() => null);
+  DAILY_CACHE.set(ticker, p);
+  return p;
+}
+const CHART_RANGES = [['2W', 14, 'd'], ['1M', 31, 'd'], ['3M', 92, 'd'], ['6M', 183, 'd'], ['1Y', 366, 'd'], ['2Y', 731, 'd'], ['5Y', 1827, 'w'], ['10Y', 3653, 'w']];
+let chartRange = '6M', chartToken = 0;
+function smaOf(bars, n) { const out = []; let s = 0; bars.forEach((b, i) => { s += b.close; if (i >= n) s -= bars[i - n].close; if (i >= n - 1) out.push({ time: b.time, value: s / n }); }); return out; }
+async function renderPriceChart(ticker, d) {
+  const token = ++chartToken;
+  if (window.lwChartInst) { try { window.lwChartInst.remove ? window.lwChartInst.remove() : window.lwChartInst.destroy(); } catch {} window.lwChartInst = null; }
+  const box = document.getElementById('det-lw-chart'), seg = document.getElementById('det-range'), legend = document.getElementById('det-legend'), title = document.getElementById('det-chart-title');
+  if (!box) return;
+  box.innerHTML = '<div class="tool-loading"><span class="spinner"></span>Loading daily prices…</div>';
+  const daily = await loadDaily(ticker);
+  if (token !== chartToken) return;                       // another company was opened meanwhile
+  const hasDaily = !!(daily && daily.d && daily.d.length > 20);
+  const full = MARKET.tickers[ticker] || {};
+  const weeklyDates = full.dates || d.dates, weeklyCloses = full.closes || d.prices;
+  const dailyBars = hasDaily ? daily.d.map((t, i) => ({ time: t, open: daily.o[i], high: daily.h[i], low: daily.l[i], close: daily.c[i], vol: daily.v[i] })) : [];
+  // Weekly history as close-to-close candles (open = prior close; no invented highs/lows).
+  const weeklyBars = weeklyCloses.map((c, i) => { const o = i ? weeklyCloses[i - 1] : c; return { time: weeklyDates[i], open: o, high: Math.max(o, c), low: Math.min(o, c), close: c }; });
+  box.innerHTML = '';
+  let chart;
+  try {
+    chart = LightweightCharts.createChart(box, {
+      autoSize: true,
+      layout: { background: { type: 'solid', color: 'transparent' }, textColor: C('--ink-3'), fontFamily: 'KaTeX_Typewriter, monospace' },
+      grid: { vertLines: { color: CA('--ink', 0.05) }, horzLines: { color: CA('--ink', 0.05) } },
+      rightPriceScale: { borderColor: CA('--ink', 0.1), scaleMargins: { top: 0.06, bottom: 0.24 } },
+      timeScale: { borderColor: CA('--ink', 0.1), rightOffset: 3, minBarSpacing: 2 },
+      crosshair: { mode: 0 },
+    });
+  } catch (e) { console.error('LightweightCharts Error:', e); box.innerHTML = '<div class="empty-state"><div class="es-title">Chart unavailable</div></div>'; return; }
+  window.lwChartInst = chart;
+  const LW = LightweightCharts;
+  const add = (kind, o) => (chart[`add${kind}Series`] ? chart[`add${kind}Series`](o) : chart.addSeries(LW[`${kind}Series`], o));
+  const big = d.price >= 1000, priceFormat = { type: 'price', precision: big ? 0 : 2, minMove: big ? 1 : 0.01 };
+  const candles = add('Candlestick', { priceFormat, upColor: C('--up'), downColor: C('--down'), borderVisible: false, wickUpColor: C('--up'), wickDownColor: C('--down') });
+  const vol = add('Histogram', { priceScaleId: 'vol', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+  chart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+  const smaA = add('Line', { color: C('--accent'), lineWidth: 1.6, priceLineVisible: false, lastValueVisible: false, priceFormat, crosshairMarkerVisible: false });
+  const smaB = add('Line', { color: C('--warn'), lineWidth: 1.4, priceLineVisible: false, lastValueVisible: false, priceFormat, crosshairMarkerVisible: false });
+  let mode = null, bars = [];
+  const fmtVol = v => (v >= 1e9 ? (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(0) + 'K' : String(v));
+  const showBar = b => {
+    if (!b) { legend.innerHTML = ''; return; }
+    const i = bars.findIndex(x => x.time === b.time), prev = i > 0 ? bars[i - 1].close : b.open, ch = b.close / prev - 1;
+    legend.innerHTML = `<b>${fmtDate(b.time)}</b> <em>O</em>${fmtPx(d, b.open)} <em>H</em>${fmtPx(d, b.high)} <em>L</em>${fmtPx(d, b.low)} <em>C</em>${fmtPx(d, b.close)} <span class="${ch >= 0 ? 'up' : 'dn'}">${ch >= 0 ? '+' : ''}${(ch * 100).toFixed(2)}%</span>${b.vol ? ` <em>Vol</em>${fmtVol(b.vol)}` : ''}`;
+  };
+  const fmtDate = t => new Date(t + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  function setMode(m) {
+    if (m === mode) return; mode = m;
+    bars = m === 'd' ? dailyBars : weeklyBars;
+    candles.setData(bars.map(({ vol, ...b }) => b));
+    vol.setData(m === 'd' ? bars.map(b => ({ time: b.time, value: b.vol || 0, color: b.close >= b.open ? CA('--up', 0.35) : CA('--down', 0.35) })) : []);
+    if (m === 'd') { smaA.setData(smaOf(bars, 50)); smaB.setData(smaOf(bars, 200)); smaA.applyOptions({ title: 'SMA 50' }); smaB.applyOptions({ title: 'SMA 200' }); }
+    else { smaA.setData(smaOf(bars, 40)); smaB.setData([]); smaA.applyOptions({ title: 'SMA 40w' }); smaB.applyOptions({ title: '' }); }
+    title.textContent = m === 'd' ? 'Daily price · volume · 50 / 200-day moving averages' : 'Weekly price (close-to-close candles) · 40-week moving average';
+  }
+  function setRange(key) {
+    const r = CHART_RANGES.find(x => x[0] === key) || CHART_RANGES[3];
+    chartRange = r[0];
+    setMode(r[2] === 'd' && hasDaily ? 'd' : 'w');
+    const last = bars[bars.length - 1].time, from = new Date(Date.parse(last + 'T00:00:00Z') - r[1] * 86400000).toISOString().slice(0, 10);
+    const first = bars.find(b => b.time >= from) || bars[0];
+    chart.timeScale().setVisibleRange({ from: first.time, to: last });
+    seg.querySelectorAll('.btn').forEach(b => b.classList.toggle('on', b.dataset.r === chartRange));
+    showBar(bars[bars.length - 1]);
+  }
+  seg.innerHTML = CHART_RANGES.map(([k, , m]) => `<button class="btn" data-r="${k}" ${m === 'd' && !hasDaily ? 'disabled title="Daily data unavailable for this company"' : ''}>${k}</button>`).join('');
+  seg.querySelectorAll('.btn').forEach(b => b.addEventListener('click', () => setRange(b.dataset.r)));
+  chart.subscribeCrosshairMove(p => { if (!p || !p.time) return showBar(bars[bars.length - 1]); const v = p.seriesData.get(candles); if (v) showBar({ ...v, time: typeof p.time === 'string' ? p.time : v.time, vol: (bars.find(b => b.time === p.time) || {}).vol }); });
+  setRange(chartRange);
+  requestAnimationFrame(() => { if (token === chartToken) setRange(chartRange); }); // re-fit once the modal has its real size
 }
 
 // ============================
