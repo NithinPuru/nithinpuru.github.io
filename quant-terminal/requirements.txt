@@ -1,0 +1,4 @@
+# Keep yfinance current — Yahoo changes its API often and old pins break
+# (0.2.40 started failing every request, which emptied market_data.json).
+yfinance>=1.0
+pandas>=2.0

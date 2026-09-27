@@ -6,9 +6,9 @@
         {
           "title": "Career Semi-Quant Terminal",
           "symbol": "candles",
-          "url": "https://chennakeshavadasa.github.io/career-semi-quant/",
+          "url": "/quant-terminal/",
           "points": [
-            "Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 40+ semiconductor companies.",
+            "Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 70+ semiconductor companies.",
             "Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine.",
             "Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation."
           ],
@@ -21,11 +21,11 @@
           "links": [
             {
               "label": "Live app",
-              "url": "https://chennakeshavadasa.github.io/career-semi-quant/"
+              "url": "/quant-terminal/"
             },
             {
               "label": "Source code",
-              "url": "https://github.com/chennakeshavadasa/career-semi-quant"
+              "url": "https://github.com/NithinPuru/nithinpuru.github.io/tree/main/quant-terminal"
             }
           ]
         }
