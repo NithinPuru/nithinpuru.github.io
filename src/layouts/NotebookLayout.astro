@@ -300,5 +300,17 @@ const title = frontmatter?.title ?? "Rₒₙ/gₘ Design Methodology - CAC 2026"
         throwOnError: false
       })">
     </script>
+    <script is:inline>
+    (function () {
+      var ENDPOINT = "https://nithin-analytics.YOUR-SUBDOMAIN.workers.dev/collect";
+      var h = location.hostname;
+      if (h === "localhost" || h === "127.0.0.1" || location.protocol === "file:") return;
+      if (location.pathname.indexOf("/analytics") === 0) return; // don't count the dashboard itself
+      var data = JSON.stringify({ p: location.pathname, r: document.referrer, q: location.search });
+      // text/plain beacon = no CORS preflight
+      if (navigator.sendBeacon) navigator.sendBeacon(ENDPOINT, data);
+      else fetch(ENDPOINT, { method: "POST", body: data, keepalive: true, mode: "no-cors" });
+    })();
+    </script>
   </body>
 </html>
