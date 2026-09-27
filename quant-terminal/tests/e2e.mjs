@@ -174,6 +174,19 @@ try {
   await page.keyboard.press('Escape');
   await page.evaluate(() => { myPortfolio = []; localStorage.setItem('my_portfolio', '[]'); });
 
+  // ── Theme switching (shared with nithinpuru.github.io via localStorage "theme") ──
+  console.log('Theme');
+  await page.evaluate(() => openDetail('NVDA'));
+  await page.waitForFunction(() => document.querySelector('#det-profile canvas'), { timeout: 20000 });
+  const before = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+  await page.evaluate(() => toggleTheme());
+  await page.waitForFunction(() => document.querySelector('#det-profile canvas'), { timeout: 20000 });
+  const after = await page.evaluate(() => ({ t: document.documentElement.getAttribute('data-theme'), saved: localStorage.getItem('theme'), bg: getComputedStyle(document.documentElement).getPropertyValue('--page').trim() }));
+  check(after.t !== before && after.saved === after.t, `theme toggles ${before} → ${after.t}, saved for the whole site (page ${after.bg})`);
+  await shot('08-theme-' + after.t);
+  await page.evaluate(() => toggleTheme());
+  await page.keyboard.press('Escape');
+
   // ── Mobile layout ────────────────────────────────────────────────────────
   await page.setViewport({ width: 390, height: 844, isMobile: true }); await sleep(400); await shot('06-mobile');
 } catch (e) {

@@ -11,7 +11,8 @@
   const pctU = (v, d = 1) => (v == null || !isFinite(v) ? '—' : (v * 100).toFixed(d) + '%');
   const num = (v, d = 2) => (v == null || !isFinite(v) ? '—' : v.toFixed(d));
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const PAL = () => [css('--blue'), css('--green-bright'), css('--orange'), css('--purple'), css('--cyan'), css('--red'), '#f778ba', '#79c0ff', '#ffa657', '#7ee787', '#d2a8ff', '#56d4dd'];
+  const cssA = (n, a) => `rgba(${css(n + '-rgb')},${a})`;
+  const PAL = () => [css('--accent'), css('--up'), css('--warn'), css('--violet'), css('--teal'), css('--down'), css('--pink'), css('--ink-3')];
   const nameOf = t => (COS.find(c => c.t === t) || {}).n || t;
   // USD market cap; falls back to local cap / FX (or USD listings) for older data files.
   function capUSD(t) {
@@ -50,18 +51,20 @@
   function chart(id, cfg) { const el = $(id); if (!el) return null; const c = new Chart(el.getContext('2d'), cfg); charts.push(c); return c; }
   function clearCharts() { charts.forEach(c => { try { c.destroy(); } catch {} }); charts = []; }
   function baseOpts(extra = {}) {
-    Chart.defaults.color = css('--text-muted') || '#9aa7bd';
-    Chart.defaults.font.family = "'JetBrains Mono', monospace";
-    const grid = { color: 'rgba(255,255,255,0.06)' };
+    Chart.defaults.color = css('--ink-3');
+    Chart.defaults.font.family = 'KaTeX_Typewriter, "Courier New", monospace';
+    const grid = { color: cssA('--ink', 0.06) };
     const tick = { font: { size: 9 }, maxRotation: 0, autoSkip: true };
     const base = {
       responsive: true, maintainAspectRatio: false, animation: { duration: 250 },
       interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { labels: { boxWidth: 10, font: { size: 10 } } }, tooltip: { backgroundColor: 'rgba(10,14,22,0.94)', borderColor: css('--border'), borderWidth: 1 } },
+      plugins: { legend: { labels: { boxWidth: 10, font: { size: 10 } } }, tooltip: { backgroundColor: css('--tooltip-bg'), titleColor: css('--tooltip-ink'), bodyColor: css('--tooltip-ink'), borderColor: css('--rule-strong'), borderWidth: 1, titleFont: { family: 'KaTeX_Main, serif', size: 12 }, bodyFont: { family: 'KaTeX_Typewriter, monospace', size: 11 } } },
       scales: { x: { grid, ticks: { ...tick, maxTicksLimit: 8 } }, y: { grid, position: 'right', ticks: { ...tick } } },
     };
-    // Merge axis options so per-chart overrides keep the default tick hygiene.
-    const scales = { ...base.scales };
+    // Merge axis options so per-chart overrides keep the default tick hygiene. Charts that
+    // define their own axis ids (e.g. regime: p / px) don't get an empty default y axis.
+    const custom = Object.keys(extra.scales || {}).some(k => k !== 'x' && k !== 'y');
+    const scales = custom ? { x: base.scales.x } : { ...base.scales };
     Object.entries(extra.scales || {}).forEach(([k, v]) => { const d = base.scales[k] || { grid, ticks: { ...tick } }; scales[k] = { ...d, ...v, ticks: { ...d.ticks, ...(v.ticks || {}) } }; });
     return { ...base, ...extra, plugins: { ...base.plugins, ...(extra.plugins || {}) }, scales };
   }
@@ -69,8 +72,8 @@
   function heat(v, lim = 1, invert = false) {
     if (v == null || !isFinite(v)) return '';
     const t = Math.max(-1, Math.min(1, v / lim)) * (invert ? -1 : 1);
-    const c = t >= 0 ? '52,211,153' : '248,113,113';
-    return `background:rgba(${c},${(0.06 + Math.abs(t) * 0.38).toFixed(2)})`;
+    const c = css(t >= 0 ? '--up-rgb' : '--down-rgb');
+    return `background:rgba(${c},${(0.05 + Math.abs(t) * 0.3).toFixed(2)})`;
   }
   // Sortable table. cols: {key,label,fmt?,style?,title?,num?}; rows: objects.
   function table(el, cols, rows, { onRow, sortKey, sortDir = -1, maxRows } = {}) {
@@ -196,8 +199,8 @@
           $('fx-sel-h').textContent = `Risk attribution · ${r.name}`;
           $('fx-sel-note').innerHTML = `R² ${num(r.r2)} · annualized alpha ${pct(r.alpha)} · stock-specific vol ${pctU(r.idioVol)}`;
           clearCharts();
-          chart('fx-attr', { type: 'bar', data: { labels: [...fc.names, 'Specific'], datasets: [{ data: [...r.contrib, r.idio].map(v => v * 100), backgroundColor: [...pal.slice(0, fc.names.length), 'rgba(160,170,190,0.5)'], borderRadius: 4 }] },
-            options: baseOpts({ indexAxis: 'y', plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.x.toFixed(1) + '% of variance' } } }, scales: { x: { grid: { color: 'rgba(255,255,255,.06)' }, ticks: { callback: v => v + '%' } }, y: { grid: { display: false } } } }) });
+          chart('fx-attr', { type: 'bar', data: { labels: [...fc.names, 'Specific'], datasets: [{ data: [...r.contrib, r.idio].map(v => v * 100), backgroundColor: [...pal.slice(0, fc.names.length), cssA('--ink', 0.3)], borderRadius: 4 }] },
+            options: baseOpts({ indexAxis: 'y', plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.x.toFixed(1) + '% of variance' } } }, scales: { x: { grid: { color: cssA('--ink', .06) }, ticks: { callback: v => v + '%' } }, y: { grid: { display: false } } } }) });
         };
         table($('fx-tbl'), [
           { key: 't', label: 'Ticker', fmt: (v, r) => `<b>${escapeHtml(v)}</b>` },
@@ -243,7 +246,7 @@
         body.innerHTML = `<p class="tool-note">Cumulative returns of each factor portfolio (long-short factors are dollar-neutral, rebalanced weekly, no costs). A t-stat above ~2 suggests the premium is unlikely to be noise.</p>
           <div class="panel"><div class="chart-box tall"><canvas id="fr-ch"></canvas></div></div><div id="fr-tbl" style="margin-top:12px"></div><h4 style="margin-top:14px">Factor correlations</h4><div id="fr-corr"></div>`;
         chart('fr-ch', { type: 'line', data: { labels: fc.dates.map(shortDate), datasets: fc.names.map((k, j) => { let e = 1; return { label: k, data: fc.F[k].map(v => (v == null ? e : (e *= 1 + v))), borderColor: pal[j], borderWidth: 1.6, pointRadius: 0, tension: 0.1 }; }) },
-          options: baseOpts({ scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } }, y: { position: 'right', grid: { color: 'rgba(255,255,255,.06)' }, ticks: { callback: v => v.toFixed(2) + 'x' } } } }) });
+          options: baseOpts({ scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } }, y: { position: 'right', grid: { color: cssA('--ink', .06) }, ticks: { callback: v => v.toFixed(2) + 'x' } } } }) });
         table($('fr-tbl'), [{ key: 'k', label: 'Factor', fmt: v => `<b>${v}</b>` }, { key: 'desc', label: 'Definition', wrap: true }, { key: 'ann', label: 'Return/yr', num: true, fmt: v => pct(v), style: v => heat(v, 0.3) },
           { key: 'vol', label: 'Vol', num: true, fmt: v => pctU(v) }, { key: 'sharpe', label: 'Sharpe', num: true, fmt: v => num(v) }, { key: 't', label: 't-stat', num: true, fmt: v => num(v), style: v => heat(Math.abs(v) > 2 ? v : 0, 4) }], st);
         const M = fc.names.map(k => fc.F[k]), idx = fc.dates.map((_, t) => t).filter(t => M.every(f => f[t] != null));
@@ -257,7 +260,7 @@
   // REGIMES (hidden Markov model)
   // ═════════════════════════════════════════════════════════════════════════
   const STATE_NAMES = { 2: ['Calm', 'Turbulent'], 3: ['Calm', 'Normal', 'Stress'] };
-  const STATE_COL = { 2: ['52,211,153', '248,113,113'], 3: ['52,211,153', '251,191,36', '248,113,113'] };
+  const STATE_COL = k => (k === 2 ? [css('--up-rgb'), css('--down-rgb')] : [css('--up-rgb'), css('--warn-rgb'), css('--down-rgb')]);
   let regimeK = 2, regimeBench = 'SOXX';
   function hmmFor(t, K) { const s = fullSeries(t); if (!s) return null; return { s, h: QL.fitHMM(QL.rets(s.closes), K) }; }
   const regimeTool = {
@@ -265,7 +268,7 @@
     sub: () => 'Gaussian hidden Markov model fitted on the full 10-year weekly return history. It infers unobserved market states from return behaviour (mean and volatility) and the probability of being in each one — the same family of models many risk desks use for regime-aware sizing.',
     tabs: [
       { id: 'mkt', label: 'Market regime', render(body) {
-        const K = regimeK, names = STATE_NAMES[K], cols = STATE_COL[K], r = hmmFor(regimeBench, K);
+        const K = regimeK, names = STATE_NAMES[K], cols = STATE_COL(K), r = hmmFor(regimeBench, K);
         if (!r || !r.h) return needMore(body, 'Benchmark history unavailable.');
         const { s, h } = r, n = h.gamma.length, show = Math.min(n, Math.max(rangeWeeks(), 104)), off = n - show;
         const cur = h.gamma[n - 1], cs = cur.indexOf(Math.max(...cur));
@@ -286,9 +289,9 @@
         body.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => { regimeK = +b.dataset.k; showTab('mkt'); }));
         const labels = s.dates.slice(1).slice(off).map(shortDate);
         chart('rg-ch', { data: { labels, datasets: [
-          ...names.map((nm, k) => ({ type: 'line', label: `P(${nm})`, data: h.gamma.slice(off).map(g => g[k]), yAxisID: 'p', fill: true, stack: 'p', backgroundColor: `rgba(${cols[k]},0.28)`, borderWidth: 0, pointRadius: 0, tension: 0.2 })),
+          ...names.map((nm, k) => ({ type: 'line', label: `P(${nm})`, data: h.gamma.slice(off).map(g => g[k]), yAxisID: 'p', fill: k === 0 ? 'origin' : '-1', stack: 'p', backgroundColor: `rgba(${cols[k]},0.22)`, borderWidth: 0, pointRadius: 0, tension: 0.2 })),
           { type: 'line', label: regimeBench, data: s.closes.slice(1).slice(off), yAxisID: 'px', borderColor: css('--text-main'), borderWidth: 1.6, pointRadius: 0, tension: 0.1 } ] },
-          options: baseOpts({ scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } }, p: { position: 'left', stacked: true, min: 0, max: 1, grid: { display: false }, ticks: { callback: v => (v * 100) + '%' } }, px: { position: 'right', grid: { color: 'rgba(255,255,255,.06)' } } } }) });
+          options: baseOpts({ scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } }, p: { position: 'left', stacked: true, min: 0, max: 1, grid: { display: false }, ticks: { callback: v => (v * 100) + '%' } }, px: { position: 'right', grid: { color: cssA('--ink', .06) } } } }) });
         table($('rg-st'), [{ key: 'nm', label: 'State', fmt: (v, r) => `<span class="dot" style="background:rgb(${r.col})"></span> <b>${v}</b>` }, { key: 'ret', label: 'Return/yr', num: true, fmt: v => pct(v), style: v => heat(v, 0.5) },
           { key: 'vol', label: 'Vol/yr', num: true, fmt: v => pctU(v) }, { key: 'dur', label: 'Avg duration', num: true, fmt: v => Math.round(v) + ' w' }, { key: 'share', label: 'Time in state', num: true, fmt: v => pctU(v, 0) }],
           names.map((nm, k) => ({ nm, col: cols[k], ret: h.mu[k] * 52, vol: h.sigma[k] * Math.sqrt(52), dur: h.duration[k], share: share[k] })));
@@ -433,7 +436,7 @@
       // Risk contribution chart (top 15 by risk)
       const items = M.tickers.map((t, i) => ({ t, w: w[i], rc: rd.pct[i] })).sort((a, b) => b.rc - a.rc).slice(0, 15);
       chart('lab-rc', { type: 'bar', data: { labels: items.map(x => x.t), datasets: [{ label: 'Weight', data: items.map(x => x.w * 100), backgroundColor: css('--blue') + 'aa', borderRadius: 3 }, { label: 'Risk contribution', data: items.map(x => x.rc * 100), backgroundColor: css('--red') + 'cc', borderRadius: 3 }] },
-        options: baseOpts({ indexAxis: 'y', scales: { x: { grid: { color: 'rgba(255,255,255,.06)' }, ticks: { callback: v => v + '%' } }, y: { grid: { display: false }, ticks: { font: { size: 9 } } } } }) });
+        options: baseOpts({ indexAxis: 'y', scales: { x: { grid: { color: cssA('--ink', .06) }, ticks: { callback: v => v + '%' } }, y: { grid: { display: false }, ticks: { font: { size: 9 } } } } }) });
       // Stress scenarios over the full history
       const full = panel([...M.tickers, 'SPY', 'SOXX']), di = new Map(full.dates.map((d, i) => [d, i]));
       const at = d => { let i = full.dates.findIndex(x => x >= d); return i < 0 ? full.dates.length - 1 : i; };
@@ -514,12 +517,12 @@
         $('pr-h').textContent = `Spread z-score · ${r.y} − ${num(r.hedge)}×${r.x}`;
         $('pr-note').innerHTML = `${r.status} · ADF t = ${num(r.adfT)}, p = ${num(r.pval, 3)}, q = ${num(r.q, 3)} · halves p = ${r.p1 != null ? num(r.p1, 3) + ' / ' + num(r.p2, 3) : '—'} · half-life ${isFinite(r.halfLife) ? r.halfLife.toFixed(1) + ' weeks' : '∞'} · current z ${num(r.z)}. The dotted line marks the split used for the stability check.`;
         const band = v => labels.map(() => v);
-        const split = { id: 'split', afterDraw(c) { const x = c.scales.x.getPixelForValue(half), { top, bottom } = c.chartArea; c.ctx.save(); c.ctx.strokeStyle = 'rgba(255,255,255,.25)'; c.ctx.setLineDash([3, 4]); c.ctx.beginPath(); c.ctx.moveTo(x, top); c.ctx.lineTo(x, bottom); c.ctx.stroke(); c.ctx.restore(); } };
+        const split = { id: 'split', afterDraw(c) { const x = c.scales.x.getPixelForValue(half), { top, bottom } = c.chartArea; c.ctx.save(); c.ctx.strokeStyle = cssA('--ink', .25); c.ctx.setLineDash([3, 4]); c.ctx.beginPath(); c.ctx.moveTo(x, top); c.ctx.lineTo(x, bottom); c.ctx.stroke(); c.ctx.restore(); } };
         chart('pr-ch', { type: 'line', plugins: [split], data: { labels, datasets: [
           { label: 'z', data: z, borderColor: css('--blue'), borderWidth: 1.6, pointRadius: 0, tension: 0.1 },
           { label: '+2σ', data: band(2), borderColor: css('--red'), borderDash: [5, 4], borderWidth: 1, pointRadius: 0 },
           { label: '−2σ', data: band(-2), borderColor: css('--green-bright'), borderDash: [5, 4], borderWidth: 1, pointRadius: 0 },
-          { label: 'mean', data: band(0), borderColor: 'rgba(255,255,255,.3)', borderWidth: 1, pointRadius: 0 } ] },
+          { label: 'mean', data: band(0), borderColor: cssA('--ink', .3), borderWidth: 1, pointRadius: 0 } ] },
           options: baseOpts({ plugins: { legend: { display: false } } }) });
       };
       const pv = v => (v == null ? '—' : v < 0.001 ? '<0.001' : v.toFixed(3));
@@ -540,7 +543,7 @@
   // ═════════════════════════════════════════════════════════════════════════
   let rrgBench = 'SOXX', rrgWindow = 14, rrgMode = 'stocks';
   const quadrant = p => (p.x >= 100 ? (p.y >= 100 ? 'Leading' : 'Weakening') : p.y >= 100 ? 'Improving' : 'Lagging');
-  const Q_COL = { Leading: '52,211,153', Weakening: '251,191,36', Lagging: '248,113,113', Improving: '91,157,255' };
+  const Q_COL = {}; const refreshQ = () => Object.assign(Q_COL, { Leading: css('--up-rgb'), Weakening: css('--warn-rgb'), Lagging: css('--down-rgb'), Improving: css('--accent-rgb') });
   const compass = h => (h == null ? '—' : ['→ E', '↗ NE', '↑ N', '↖ NW', '← W', '↙ SW', '↓ S', '↘ SE'][((Math.round(h / 45) % 8) + 8) % 8]);
   // Equal-weight sector indices built from the members' weekly returns.
   function sectorIndices(tickers) {
@@ -555,6 +558,7 @@
     title: 'Relative Rotation Graph',
     sub: () => `Relative strength (RS-Ratio, x) and its momentum (RS-Momentum, y) versus a benchmark, with 8-week tails. Leaders typically rotate clockwise: Improving → Leading → Weakening → Lagging. Open reconstruction of the proprietary JdK method (rolling z-score of relative strength; momentum = z-score of its rate of change). Unit-tested to rotate clockwise and lead, as the real indicator does. ${universeNote(visibleTickers().length)}`,
     render(body) {
+      refreshQ();
       const b = fullSeries(rrgBench); const vis = visibleTickers().filter(t => t !== rrgBench && t !== 'SOXX');
       const series = rrgMode === 'sectors' ? sectorIndices(vis) : vis.map(t => ({ t, label: t, ...fullSeries(t) }));
       const bm = new Map(b.dates.map((d, i) => [d, b.closes[i]]));
@@ -574,15 +578,15 @@
       const all = pts.flatMap(p => p.tail), ext = Math.max(1.5, ...all.map(p => Math.abs(p.x - 100)), ...all.map(p => Math.abs(p.y - 100))) * 1.1;
       const quadBg = { id: 'quadBg', beforeDraw(c) { const { ctx, chartArea: a, scales: { x, y } } = c; const cx = x.getPixelForValue(100), cy = y.getPixelForValue(100);
         [[cx, a.top, a.right - cx, cy - a.top, 'Leading'], [cx, cy, a.right - cx, a.bottom - cy, 'Weakening'], [a.left, cy, cx - a.left, a.bottom - cy, 'Lagging'], [a.left, a.top, cx - a.left, cy - a.top, 'Improving']].forEach(([x0, y0, w, h, q]) => {
-          ctx.fillStyle = `rgba(${Q_COL[q]},0.07)`; ctx.fillRect(x0, y0, w, h); ctx.fillStyle = `rgba(${Q_COL[q]},0.8)`; ctx.font = '600 11px Outfit, sans-serif'; ctx.textAlign = q === 'Leading' || q === 'Weakening' ? 'right' : 'left';
+          ctx.fillStyle = `rgba(${Q_COL[q]},0.06)`; ctx.fillRect(x0, y0, w, h); ctx.fillStyle = `rgba(${Q_COL[q]},0.8)`; ctx.font = '12px KaTeX_Main, serif'; ctx.textAlign = q === 'Leading' || q === 'Weakening' ? 'right' : 'left';
           ctx.fillText(q.toUpperCase(), q === 'Leading' || q === 'Weakening' ? x0 + w - 8 : x0 + 8, q === 'Leading' || q === 'Improving' ? y0 + 16 : y0 + h - 8); }); } };
-      const labels = { id: 'headLabels', afterDatasetsDraw(c) { if (rrgMode !== 'sectors' && pts.length > 25) return; const { ctx } = c; ctx.save(); ctx.font = '600 10px JetBrains Mono, monospace'; ctx.fillStyle = 'rgba(234,240,250,.85)';
+      const labels = { id: 'headLabels', afterDatasetsDraw(c) { if (rrgMode !== 'sectors' && pts.length > 25) return; const { ctx } = c; ctx.save(); ctx.font = '11px KaTeX_Typewriter, monospace'; ctx.fillStyle = css('--ink');
         c.data.datasets.forEach((ds, i) => { const m = c.getDatasetMeta(i), el = m.data[m.data.length - 1]; if (el) ctx.fillText(ds.label, el.x + 7, el.y - 6); }); ctx.restore(); } };
       const c = chart('rrg-ch', { type: 'scatter', plugins: [quadBg, labels], data: { datasets: pts.map(p => ({ label: p.label, t: p.t, data: p.tail, showLine: true, borderColor: `rgba(${Q_COL[p.q]},${rrgMode === 'sectors' ? 0.7 : 0.3})`, borderWidth: rrgMode === 'sectors' ? 1.6 : 1,
           pointRadius: p.tail.map((_, i) => (i === p.tail.length - 1 ? 5 : 1.5)), pointBackgroundColor: `rgb(${Q_COL[p.q]})`, pointBorderColor: `rgb(${Q_COL[p.q]})` })) },
         options: baseOpts({ interaction: { mode: 'nearest', intersect: true }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: x => `${x.dataset.label}: RS-Ratio ${x.parsed.x.toFixed(2)}, RS-Mom ${x.parsed.y.toFixed(2)}` } } },
           onClick: (e, els) => { if (els.length && rrgMode === 'stocks') { const t = c.data.datasets[els[0].datasetIndex].t; closeTool(); openDetail(t); } },
-          scales: { x: { min: 100 - ext, max: 100 + ext, title: { display: true, text: 'RS-Ratio (relative strength)' }, grid: { color: 'rgba(255,255,255,.05)' } }, y: { position: 'left', min: 100 - ext, max: 100 + ext, title: { display: true, text: 'RS-Momentum' }, grid: { color: 'rgba(255,255,255,.05)' } } } }) });
+          scales: { x: { min: 100 - ext, max: 100 + ext, title: { display: true, text: 'RS-Ratio (relative strength)' }, grid: { color: cssA('--ink', .05) } }, y: { position: 'left', min: 100 - ext, max: 100 + ext, title: { display: true, text: 'RS-Momentum' }, grid: { color: cssA('--ink', .05) } } } }) });
       $('rrg-q').innerHTML = ['Leading', 'Improving', 'Weakening', 'Lagging'].map(q => { const m = pts.filter(p => p.q === q); return `<div class="quad" style="border-color:rgba(${Q_COL[q]},.5)"><h4 style="color:rgb(${Q_COL[q]})">${q} <span class="cnt">${m.length}</span></h4><div class="quad-list">${m.map(p => `<button class="chip" data-t="${escapeHtml(p.t)}">${escapeHtml(p.label)}</button>`).join('') || '<span class="tool-note">none</span>'}</div></div>`; }).join('');
       if (rrgMode === 'stocks') $('rrg-q').querySelectorAll('[data-t]').forEach(x => x.addEventListener('click', () => { closeTool(); openDetail(x.dataset.t); }));
       table($('rrg-t'), [{ key: 'label', label: rrgMode === 'sectors' ? 'Sector' : 'Ticker', fmt: v => `<b>${escapeHtml(v)}</b>` }, { key: 'q', label: 'Quadrant', fmt: v => `<span style="color:rgb(${Q_COL[v]})">${v}</span>` },
@@ -647,9 +651,9 @@
         ${perTicker.length ? '<h4 style="margin-top:14px">Per-stock out-of-sample results</h4><div id="bt-tbl"></div>' : ''}`;
       const L = dates.map(shortDate), dd = c => { let pk = -Infinity; return c.map(v => { pk = Math.max(pk, v); return (v / pk - 1) * 100; }); };
       chart('bt-ch', { type: 'line', data: { labels: L, datasets: [{ label: 'Strategy', data: s.curve.slice(1), borderColor: css('--green-bright'), borderWidth: 2, pointRadius: 0 }, { label: 'Buy & hold', data: b.curve.slice(1), borderColor: css('--text-muted'), borderWidth: 1.4, borderDash: [4, 3], pointRadius: 0 }] },
-        options: baseOpts({ scales: { x: { grid: { display: false } }, y: { type: 'logarithmic', position: 'right', grid: { color: 'rgba(255,255,255,.06)' }, ticks: { autoSkip: false, callback: v => ([0.5, 0.75, 1, 1.5, 2, 3, 5, 7.5, 10, 15, 20, 30, 50, 75, 100].includes(+(+v).toPrecision(3)) ? '$' + (+v) : '') } } } }) });
+        options: baseOpts({ scales: { x: { grid: { display: false } }, y: { type: 'logarithmic', position: 'right', grid: { color: cssA('--ink', .06) }, ticks: { autoSkip: false, callback: v => ([0.5, 0.75, 1, 1.5, 2, 3, 5, 7.5, 10, 15, 20, 30, 50, 75, 100].includes(+(+v).toPrecision(3)) ? '$' + (+v) : '') } } } }) });
       chart('bt-dd', { type: 'line', data: { labels: L, datasets: [{ label: 'Strategy', data: dd(s.curve.slice(1)), borderColor: css('--red'), backgroundColor: css('--red') + '33', fill: true, borderWidth: 1.4, pointRadius: 0 }, { label: 'Buy & hold', data: dd(b.curve.slice(1)), borderColor: css('--text-muted'), borderWidth: 1, pointRadius: 0 }] },
-        options: baseOpts({ scales: { x: { grid: { display: false } }, y: { position: 'right', grid: { color: 'rgba(255,255,255,.06)' }, ticks: { callback: v => v + '%' } } } }) });
+        options: baseOpts({ scales: { x: { grid: { display: false } }, y: { position: 'right', grid: { color: cssA('--ink', .06) }, ticks: { callback: v => v + '%' } } } }) });
       if (perTicker.length) table($('bt-tbl'), [{ key: 't', label: 'Ticker', fmt: v => `<b>${escapeHtml(v)}</b>` }, { key: 'name', label: 'Company' },
         { key: 'sharpe', label: 'OOS Sharpe', num: true, fmt: v => num(v), style: v => heat(v, 1.5) }, { key: 'cagr', label: 'CAGR', num: true, fmt: v => pct(v) }, { key: 'bhCagr', label: 'B&H CAGR', num: true, fmt: v => pct(v) },
         { key: 'excess', label: 'Excess', num: true, fmt: v => pct(v), style: v => heat(v, 0.3) }, { key: 'maxDD', label: 'Max DD', num: true, fmt: v => pctU(v, 0) }, { key: 'exposure', label: 'Time in market', num: true, fmt: v => pctU(v, 0) },
@@ -710,16 +714,17 @@
       ${fx ? '<div class="panel" style="flex:1;min-width:260px"><h4>Factor exposures (β)</h4><div class="chart-box"><canvas id="det-fx"></canvas></div></div>' : ''}</div>`;
     const mk = (id, cfg) => { const c = new Chart($(id).getContext('2d'), cfg); detailCharts.push(c); };
     mk('det-rg', { type: 'line', data: { labels: r.s.dates.slice(1).slice(off).map(shortDate), datasets: [{ data: h.gamma.slice(off).map(g => g[1] * 100), borderColor: css('--red'), backgroundColor: css('--red') + '30', fill: true, borderWidth: 1.3, pointRadius: 0, tension: 0.2 }] },
-      options: baseOpts({ plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { position: 'right', min: 0, max: 100, grid: { color: 'rgba(255,255,255,.06)' }, ticks: { callback: v => v + '%' } } } }) });
+      options: baseOpts({ plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { position: 'right', min: 0, max: 100, grid: { color: cssA('--ink', .06) }, ticks: { callback: v => v + '%' } } } }) });
     const fnames = (factorCache && factorCache.names) || FACTOR_NAMES;
     if (fx) mk('det-fx', { type: 'bar', data: { labels: fnames, datasets: [{ data: fx.beta, backgroundColor: fx.beta.map(v => (v >= 0 ? css('--green-bright') : css('--red')) + 'bb'), borderRadius: 4 }] },
-      options: baseOpts({ plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `β ${c.parsed.y.toFixed(2)} (t = ${fx.tstat[c.dataIndex].toFixed(1)})` } } }, scales: { x: { grid: { display: false } }, y: { position: 'right', grid: { color: 'rgba(255,255,255,.06)' } } } }) });
+      options: baseOpts({ plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `β ${c.parsed.y.toFixed(2)} (t = ${fx.tstat[c.dataIndex].toFixed(1)})` } } }, scales: { x: { grid: { display: false } }, y: { position: 'right', grid: { color: cssA('--ink', .06) } } } }) });
   }
 
   // ─── Public API ──────────────────────────────────────────────────────────
   const TOOLS = { factor: factorTool, regime: regimeTool, lab: labTool, pairs: pairsTool, rrg: rrgTool, backtest: backtestTool };
   Object.assign(window, {
     openTool: (k, tab) => openTool(TOOLS[k], tab), closeTool, renderScreener, setView, renderDetailProfile,
+    rerenderTool: () => { const t = document.querySelector('#tool-tabs .tab.on'); if (current) showTab(t ? t.dataset.tab : undefined); },
     invalidateToolCaches: () => { factorCache = null; },
     _toolInternals: { panel, returnMatrix, computeFactors, factorScores, labHoldings, SCENARIOS },
   });

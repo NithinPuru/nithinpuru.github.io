@@ -342,8 +342,8 @@ This tool is for educational and informational purposes only. It is not financia
 | Layer | Technology |
 |---|---|
 | **Application structure** | Single `index.html` file — zero build step, zero dependencies to install |
-| **Styling** | Vanilla CSS with CSS custom properties, glassmorphism, and a fully dark theme |
-| **Typography** | [Outfit](https://fonts.google.com/specimen/Outfit) for UI text; [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) for all numeric data |
+| **Styling** | `public/quant-terminal/css/terminal.css`: one design system using nithinpuru.github.io's tokens (paper / ink / rule / accent) with light and dark themes. The theme choice is shared with the portfolio site via `localStorage.theme`. |
+| **Typography** | Computer Modern (LaTeX), bundled in `public/quant-terminal/fonts/`: KaTeX_Main for text and KaTeX_Typewriter for numbers and labels, the same faces as the portfolio. |
 | **Quantitative math engine** | Pure JavaScript — RSI, Stochastic, MACD, Bollinger Bands, Sharpe, Sortino, Calmar, VaR, CVaR, Parametric & Cornish-Fisher VaR, Max Drawdown, Beta, Alpha, R-Squared, Treynor, Information Ratio, Kelly Criterion, Fibonacci, GBM Monte Carlo, EWMA & GARCH(1,1) volatility, Probabilistic Sharpe, two-factor (SPY+SOXX) regression, asymmetric beta, Markowitz frontier optimization |
 | **Dashboard sparklines** | Inline SVG with gradient fills and area charts |
 | **Detail modal charts** | [Chart.js](https://www.chartjs.org/) — 7 interactive canvas-based plots with custom tooltips |
