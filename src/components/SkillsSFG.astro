@@ -488,6 +488,25 @@
   var HOP = 1.0;           // seconds per layer
   function hash(n) { var x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
   var weights = EDGES.map(function(e, i) { return 0.3 + 0.7 * hash(i + 1); });
+
+  // Forward pass: the source fires at 1; each neuron's activation is the
+  // weighted sum of its inputs (source activation × edge weight), min-max
+  // normalised within its layer to 0.15..1. Edges then glow with the signal
+  // they carry (source activation × weight), so line and neuron brightness
+  // stay consistent all the way to the outputs.
+  var ACT = { src: 1 };
+  for (var L = 1; L < LAYERS.length; L++) {
+    var raw = {};
+    LAYERS[L].forEach(function(n) { raw[n] = 0; });
+    EDGES.forEach(function(e, i) {
+      if (raw[e[1]] !== undefined && ACT[e[0]] !== undefined) raw[e[1]] += ACT[e[0]] * weights[i];
+    });
+    var vals = LAYERS[L].map(function(n) { return raw[n]; });
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    LAYERS[L].forEach(function(n) {
+      ACT[n] = hi > lo ? 0.15 + 0.85 * (raw[n] - lo) / (hi - lo) : 1;
+    });
+  }
   var glowG = svgEl('g', { 'class': 'sfg-glows' });
   svg.appendChild(glowG);
   var pulseEls = [];
@@ -496,10 +515,11 @@
     var a = NODE_POS[edge[0]];
     if (!src || !a) { pulseEls.push(null); return; }
     var w = weights[i];
+    var signal = (ACT[edge[0]] || 0) * w;          // what this edge carries
     var gl = svgEl('path', {
       d: src.getAttribute('d'), 'class': 'sfg-glow',
       style: '--d:' + (a.layer * HOP + 0.3 + hash(i + 99) * 0.15).toFixed(2) + 's;' +
-             '--w:' + (0.25 + 0.65 * w).toFixed(2) + ';--sw:' + (0.8 + 1.6 * w).toFixed(2)
+             '--w:' + (0.08 + 0.82 * signal).toFixed(2) + ';--sw:' + (0.8 + 1.6 * w).toFixed(2)
     });
     glowG.appendChild(gl);
     pulseEls.push(gl);
@@ -586,7 +606,7 @@
     if (!p || !base) return;
     var act = svgEl('circle', {
       cx: p.x, cy: p.y, r: p.r - 2, 'class': 'sfg-act',
-      style: '--d:' + (p.layer * HOP).toFixed(2) + 's;--a:' + (0.14 + 0.2 * hash(k + 7)).toFixed(2)
+      style: '--d:' + (p.layer * HOP).toFixed(2) + 's;--a:' + (0.06 + 0.44 * (ACT[id] || 0)).toFixed(2)
     });
     g.insertBefore(act, base.nextSibling);
     actEls[id] = act;
