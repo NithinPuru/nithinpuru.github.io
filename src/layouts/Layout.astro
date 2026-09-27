@@ -133,6 +133,12 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       var h = location.hostname;
       if (h === "localhost" || h === "127.0.0.1" || location.protocol === "file:") return;
       if (location.pathname.indexOf("/analytics") === 0) return; // don't count the dashboard itself
+      try {
+        var qs = location.search;
+        if (/[?&]notrack\b/.test(qs)) localStorage.setItem("np_notrack", "1");
+        if (/[?&]track\b/.test(qs)) localStorage.removeItem("np_notrack");
+        if (localStorage.getItem("np_notrack") === "1") return;
+      } catch (e) {}
       var data = JSON.stringify({ p: location.pathname, r: document.referrer, q: location.search });
       // text/plain beacon = no CORS preflight
       if (navigator.sendBeacon) navigator.sendBeacon(ENDPOINT, data);

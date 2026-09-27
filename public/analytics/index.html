@@ -104,6 +104,7 @@
   .empty td { color: var(--muted); font-style: italic; }
 
   .status { color: var(--visitors); font-style: italic; }
+  .notrack button { font: inherit; background: none; border: 0; padding: 0; margin-left: .5rem; cursor: pointer; color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
   footer { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
 
   @media (max-width: 860px) {
@@ -175,7 +176,9 @@
     </section>
   </div>
 
-  <footer style="margin-top:3.5rem">No cookies. Visitors are counted by a salted hash; raw IP addresses are never stored.</footer>
+  <footer style="margin-top:3.5rem">No cookies. Visitors are counted by a salted hash; raw IP addresses are never stored.
+    <p class="notrack"><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
+  </footer>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -380,6 +383,21 @@ document.querySelectorAll(".legend button").forEach(b => b.addEventListener("cli
   drawChart(lastDaily, ...lastRange);
 }));
 let resizeT; addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(() => lastRange.length && drawChart(lastDaily, ...lastRange), 150); });
+
+function renderNotrack() {
+  let off = false;
+  try { off = localStorage.getItem("np_notrack") === "1"; } catch (e) {}
+  $("notrack-status").textContent = off ? "Visits from this browser are not counted." : "Visits from this browser are counted.";
+  $("notrack-toggle").textContent = off ? "Count this browser again" : "Stop counting this browser";
+}
+$("notrack-toggle").addEventListener("click", () => {
+  try {
+    if (localStorage.getItem("np_notrack") === "1") localStorage.removeItem("np_notrack");
+    else localStorage.setItem("np_notrack", "1");
+  } catch (e) {}
+  renderNotrack();
+});
+renderNotrack();
 
 $("to").max = todayUTC();
 setPreset(90);
