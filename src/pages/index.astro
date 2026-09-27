@@ -29,6 +29,11 @@ const courseGroups = [
   { title: "Communication & RF", items: ["Analog and digital communication", "Microwave and antenna theory", "Optical and wireless communication"] },
   { title: "Digital & Embedded", items: ["Microprocessor and microcontrollers"] },
 ];
+// CV hosted on Google Drive: embedded preview, viewer and direct download.
+const cvId = "1u9SBAN4afHSnqbGC5mDJin0y14OM_jb-";
+const cvPreview = `https://drive.google.com/file/d/${cvId}/preview`;
+const cvView = `https://drive.google.com/file/d/${cvId}/view?usp=sharing`;
+const cvDownload = `https://drive.google.com/uc?export=download&id=${cvId}`;
 // Section list drives the sidebar pinout (laptop layout).
 const sections = [
   { id: "about", label: "About" },
@@ -576,27 +581,36 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <div class="cv-embed-wrap" data-reveal>
+      <div class="cv" data-reveal>
+        <div class="cv__bar">
+          <span class="cv__file">
+            <Icon name="file" size={16} />
+            <span>Curriculum Vitae</span>
+            <span class="cv__type">PDF</span>
+          </span>
+          <span class="cv__actions">
+            <a href={cvView} target="_blank" rel="noopener noreferrer">
+              <Icon name="external" size={13} />
+              Open
+            </a>
+            <a href={cvDownload} rel="noopener noreferrer">
+              <Icon name="down" size={13} />
+              Download PDF
+            </a>
+          </span>
+        </div>
         <iframe
-          src="https://drive.google.com/file/d/1u9SBAN4afHSnqbGC5mDJin0y14OM_jb-/preview"
-          class="cv-embed"
+          src={cvPreview}
+          class="cv__frame"
           allow="autoplay"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
           title="Nithin Purushothama - CV"
         ></iframe>
-        <a
-          href="https://drive.google.com/file/d/1u9SBAN4afHSnqbGC5mDJin0y14OM_jb-/view?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="cv-open-link mono"
-        >
-          Open full CV
-          <span class="btn__arrow" aria-hidden="true">
-            <Icon name="external" />
-          </span>
-        </a>
       </div>
+      <p class="cv__note" data-reveal>
+        Need the latest version? <a href={`mailto:${email}`}>Email me</a> and I&rsquo;ll send it directly.
+      </p>
     </section>
 
     <section class="section" id="contact" aria-labelledby="contact-h">
