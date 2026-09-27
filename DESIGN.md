@@ -14,7 +14,7 @@ colors:
 typography:
   display:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
-    fontSize: "clamp(2.9rem, 9vw, 5.1rem)"
+    fontSize: "clamp(2.4rem, 9vw, 5.1rem)"
     fontWeight: 700
     lineHeight: 1.04
     letterSpacing: "-0.015em"
@@ -48,6 +48,7 @@ typography:
     doc-meta: "0.82rem"
     contact: "0.84rem"
     nav-name: "0.92rem"
+    subhead: "1rem"
 spacing:
   column: "46rem"
   section-block: "clamp(2.75rem, 6vw, 4.25rem)"
@@ -130,7 +131,7 @@ One warm-paper field, near-black inks, one oxford-blue accent, and a red held fo
 **Character:** The authentic Computer Modern pairing — serif body and display, typewriter for document machinery. Mono is never used as a "technical" costume; it marks metadata, dates, tags, bibliographic lines, and navigation the way a LaTeX source annotates its own structure.
 
 ### Hierarchy
-- **Display** (700, `clamp(2.9rem, 9vw, 5.1rem)`, 1.04, -0.015em): the masthead name — the only use.
+- **Display** (700, `clamp(2.4rem, 9vw, 5.1rem)`, 1.04, -0.015em): the masthead name — the only use.
 - **Headline** (700, `clamp(1.6rem, 3.6vw, 2.05rem)`, 1.15, -0.01em): `\section` titles, preceded by a serif section numeral.
 - **Title** (700, 1.16rem, 1.4): work-entry titles — serif bold, underlined, the link itself.
 - **Body** (400, 1.0625rem, 1.78): justified and hyphenated, column measure ≈74ch.
@@ -141,7 +142,7 @@ One warm-paper field, near-black inks, one oxford-blue accent, and a red held fo
 
 ## Layout
 
-A single centered column (`max-width: 46rem`, ≈736px, ≈74ch measure) with generous inline padding that collapses to 1.15rem below 600px. A fixed running-head nav (`3.4rem`) carries the name mark left and seven numbered section links right; below 760px the subtitle hides and the link strip becomes horizontally scrollable with a hidden scrollbar. Sections stack, separated by 1px hairlines, each opening with the numeral + title + a flexed hairline that draws itself on reveal. Vertical rhythm: `padding-block: clamp(2.75rem, 6vw, 4.25rem)` per section, more space above a heading than below it, entries at 1.05rem per row under a 1px top rule. All anchors scroll with `scroll-margin-top` clearing the fixed nav.
+A single centered column (`max-width: 46rem`, ≈736px, ≈74ch measure) with generous inline padding that collapses to 1.15rem below 600px. A fixed running-head nav (`3.4rem`) carries the name mark left and the section links right (plus the notebook link); below 760px the strip becomes horizontally scrollable with a hidden scrollbar and auto-scrolls to keep the scroll-spy's active link in view, and below 520px the name mark hides (the masthead carries the name). Sections stack, separated by 1px hairlines, each opening with the numeral + title + a flexed hairline that draws itself on reveal. Vertical rhythm: `padding-block: clamp(2.75rem, 6vw, 4.25rem)` per section, more space above a heading than below it, entries at 1.05rem per row under a 1px top rule. All anchors scroll with `scroll-margin-top` clearing the fixed nav.
 
 ## Elevation & Depth
 
@@ -160,7 +161,16 @@ Square. There is no `border-radius` anywhere in the shipped CSS; corners are sha
 Fixed bar, paper field, 1px bottom rule. Name mark left (typewriter uppercase); mono links (0.72rem, uppercase) right. Hover and active tint the link to the accent; active gets a 1px accent underline. Mobile: subtitle hidden, links scroll horizontally with a hidden scrollbar.
 
 ### Work Entry (data-driven)
-The reusable, JSON-driven list item (Work / Publications / Finance all feed one component). 1px top rule between entries; serif bold title is the link (ink → accent on hover) with an inline external-arrow SVG; an optional right-aligned mono tag (annotation red when `tagHot`); justified description in Ink Two; a mono metadata line in Ink Three (PDK · domain · stars) with optional accent extra links ("Live demo", "3D GDS view").
+The reusable, JSON-driven list item (Work / Tape-outs / Finance feed one component; Publications use the bibliography variant below). 1px top rule between entries; serif bold title is the link (ink → accent on hover) with an inline external-arrow SVG; an optional right-aligned mono tag (annotation red when `tagHot`); justified description in Ink Two; a mono metadata line in Ink Three (PDK · domain · stars) with optional accent extra links ("Live demo", "3D GDS view").
+
+### Bibliography (Publications)
+`PubList.astro` renders `publications.json` as a LaTeX `thebibliography`: a hanging accent `[n]` label in typewriter (numbered continuously across groups), a plain serif-bold title that underlines only on hover, the author line with the site owner in bold, the venue in italic serif, then the description, an **Abstract** fold, the image strip, and a wrapping row of typewriter links. No logo column — the entry is text, like a reference list. On narrow screens the tag drops under the title.
+
+### Folds, Image Strip, Lightbox
+Collapsible content (`Abstract`, `View Methodology & Results`, image strips) uses `details.fold`: a typewriter uppercase accent summary with a drawn chevron (CSS mask, not a glyph) and a body hung off a 1px `rule-strong` line. Image strips (`Gallery.astro`) are open by default and carry `data-keep-open` so the Publications/Awards auto-collapse observer skips them. Thumbnails are plain anchors to the full image (works without JS); `src/scripts/lightbox.js` upgrades any `a[data-lightbox]` into one shared native `<dialog>` — ink overlay, paper caption, drawn close icon, Esc/backdrop to close, focus returned to the thumbnail.
+
+### Comparison Table
+The Awards methodology table is `table.cmp-table`, set booktabs-style: 2px ink top and bottom rules, a 1px ink rule under the header, hairline row rules, small-caps-style section rows, and the "This Work" column tinted with a 6% accent wash. Yes/No cells use drawn check (accent) and cross (annotation red) marks with `aria-label`s — never emoji or face icons. It scrolls horizontally inside its own frame below ~34rem.
 
 ### Group Rubric
 Typewriter 0.74rem uppercase in Ink Three, prefixed by an em-dash in Annotation Soft, preceding each group of entries inside a section.

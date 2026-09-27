@@ -60,6 +60,12 @@
       link.classList.toggle("is-active", active);
       if (active) {
         link.setAttribute("aria-current", "true");
+        // Keep the active link visible in the horizontally scrolling strip.
+        var strip = link.parentElement;
+        if (strip && strip.scrollWidth > strip.clientWidth) {
+          var left = link.offsetLeft - (strip.clientWidth - link.offsetWidth) / 2;
+          strip.scrollTo({ left: left, behavior: reduce ? "auto" : "smooth" });
+        }
       } else {
         link.removeAttribute("aria-current");
       }

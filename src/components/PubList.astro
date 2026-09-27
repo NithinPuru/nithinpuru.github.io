@@ -1,0 +1,87 @@
+---
+// Bibliography-style publication list: a hanging [n] label, plain serif title,
+// author line (self in bold), italic venue, then abstract / images / links.
+// Numbering runs continuously across groups, like a LaTeX thebibliography.
+import Icon from "./Icon.astro";
+import Gallery from "./Gallery.astro";
+
+interface Link {
+  label: string;
+  url: string;
+}
+interface Entry {
+  title: string;
+  url?: string;
+  authors?: string;
+  venue?: string;
+  desc?: string;
+  abstract?: string;
+  tag?: string;
+  tagHot?: boolean;
+  links?: Link[];
+  images?: { url: string; label?: string; id?: string }[];
+  imagesTitle?: string;
+}
+interface Props {
+  groups: { heading?: string; entries: Entry[] }[];
+}
+
+const { groups } = Astro.props;
+let n = 0;
+const numbered = groups.map((g) => ({
+  ...g,
+  entries: g.entries.map((e) => ({ ...e, n: ++n })),
+}));
+---
+<div class="bib">
+  {numbered.map((group) => (
+    <div data-reveal-group>
+      {group.heading && <h3 class="group-head">{group.heading}</h3>}
+      <ol class="bib__list">
+        {group.entries.map((e) => (
+          <li class="bib__item" data-reveal>
+            <span class="bib__n" aria-hidden="true">[{e.n}]</span>
+            <div class="bib__body">
+              <div class="bib__top">
+                <h4 class="bib__title">
+                  {e.url ? (
+                    <a href={e.url} target="_blank" rel="noopener noreferrer">
+                      <Fragment set:html={e.title} />
+                    </a>
+                  ) : (
+                    <Fragment set:html={e.title} />
+                  )}
+                </h4>
+                {e.tag && <span class={"entry__tag" + (e.tagHot ? " is-hot" : "")}>{e.tag}</span>}
+              </div>
+              {e.authors && <p class="bib__authors" set:html={e.authors} />}
+              {e.venue && <p class="bib__venue" set:html={e.venue} />}
+              {e.desc && <p class="bib__desc" set:html={e.desc} />}
+              {e.abstract && (
+                <details class="fold">
+                  <summary>Abstract</summary>
+                  <div class="fold__body" set:html={e.abstract} />
+                </details>
+              )}
+              {e.images && e.images.length > 0 && (
+                <Gallery images={e.images} title={e.imagesTitle} alt={e.title} />
+              )}
+              {e.links && (
+                <ul class="bib__links">
+                  {e.links.map((l) => (
+                    <li>
+                      <a href={l.url} target="_blank" rel="noopener noreferrer">
+                        <Icon name="external" />
+                        {l.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ))}
+</div>

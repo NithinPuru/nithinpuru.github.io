@@ -31,8 +31,11 @@ src/
   pages/robots.txt.ts        # dynamic robots.txt -> sitemap-index.xml
   layouts/Layout.astro       # head, meta, JSON-LD, direction contract, running-head nav, reveal script
   components/
-    WorkList.astro           # reusable JSON-driven entry list (Work/Publications/Tape-outs/Finance)
-    Icon.astro               # 1.5px-stroke SVG line icons (external, down)
+    WorkList.astro           # reusable JSON-driven entry list (Work/Tape-outs/Finance)
+    PubList.astro            # numbered bibliography for Publications ([n], authors, italic venue)
+    Gallery.astro            # open-by-default image strip; thumbnails open the shared lightbox
+    SkillsSFG.astro          # interactive skills graph (keyboard-accessible nodes)
+    Icon.astro               # 1.5px-stroke SVG line icons (external, down, close, expand, check, cross)
   data/
     projects.json            # Selected Work entries
     publications.json        # Publications & Tape-outs entries
@@ -40,7 +43,8 @@ src/
     finance.json             # Quantitative Finance entries
     notebook.html            # nbconvert (JupyterLab) export served at /notebook
   styles/global.css          # all tokens + styling (single stylesheet)
-  scripts/reveal.js          # scroll reveals, stagger, running-head scroll-spy
+  scripts/reveal.js          # scroll reveals, stagger, running-head scroll-spy (links need data-nav)
+  scripts/lightbox.js        # shared <dialog> lightbox for any a[data-lightbox]
 public/
   fonts/                     # self-hosted KaTeX Computer Modern woff2
   favicon.svg
@@ -71,7 +75,11 @@ All work/publication/finance entries are plain JSON — no markup changes needed
           "tagHot": true,          // optional; renders the tag in annotation red
           "links": [               // optional extra links (demo, 3D view, ...)
             { "label": "Live demo", "url": "https://..." }
-          ]
+          ],
+          "images": [              // optional; rendered as an open image strip
+            { "id": "unique-id", "url": "/img/x.jpg", "label": "Caption" }
+          ],
+          "imagesTitle": "Layout & PCB Images"   // optional strip title
         }
       ]
     }
@@ -84,7 +92,11 @@ Rules for content:
   real and verifiable. Star counts and the "28 repositories" figure go stale;
   re-verify when editing data (note in `src/pages/index.astro` frontmatter).
 - Keep `desc` as a real, faithful summary of the linked artifact.
-- One JSON file per domain; `WorkList.astro` renders every group/entry.
+- One JSON file per domain; `WorkList.astro` renders every group/entry
+  (`PubList.astro` for `publications.json`, which also takes `authors` with the
+  owner in `<strong>`, `venue`, and `abstract`; titles may contain inline HTML).
+- Photos: strip EXIF (camera GPS!) and cap at ~2000px before committing, e.g.
+  `magick in.jpg -auto-orient -resize '2000x2000>' -strip -quality 82 out.jpg`.
 - The CV is a Google Drive embed in the Curriculum Vitae section — swap the two
   `drive.google.com` URLs in `src/pages/index.astro` to change it.
 

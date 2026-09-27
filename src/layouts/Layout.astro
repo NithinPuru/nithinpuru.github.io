@@ -11,6 +11,8 @@ const asset = (p) =>
 
 // `site` is set in astro.config.mjs; CI can override it via SITE_URL. Use it
 // for canonical/social URLs, falling back to the request URL if unset.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "") + "/";
+
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 
 const description =
@@ -108,15 +110,17 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
             <span class="site-nav__name">Nithin&nbsp;Purushothama</span>
           </a>
           <div class="site-nav__links">
-            <a href={`${import.meta.env.BASE_URL}#about`}>ABOUT</a>
-            <a href={`${import.meta.env.BASE_URL}#experience`} aria-label="Experience">EXP</a>
-            <a href={`${import.meta.env.BASE_URL}#education`}>EDUCATION</a>
-            <a href={`${import.meta.env.BASE_URL}#skills`}>SKILLS</a>
-            <a href={`${import.meta.env.BASE_URL}#publications`} aria-label="Publications">PAPERS</a>
-            <a href={`${import.meta.env.BASE_URL}#awards`}>AWARDS</a>
-            <a href={`${import.meta.env.BASE_URL}#work`}>WORK</a>
-            <a href={`${import.meta.env.BASE_URL}#finance`}>FINANCE</a>
-            <a href={`${import.meta.env.BASE_URL}rongm`} aria-label="Notebook"><span style="text-transform: none; font-family: var(--font-serif); font-size: 1.1em;"><i>R<sub>on</sub>/G<sub>m</sub></i></span></a>
+            <a data-nav href={`${base}#about`}>About</a>
+            <a data-nav href={`${base}#experience`} aria-label="Experience">Exp</a>
+            <a data-nav href={`${base}#education`}>Education</a>
+            <a data-nav href={`${base}#skills`}>Skills</a>
+            <a data-nav href={`${base}#publications`} aria-label="Publications">Papers</a>
+            <a data-nav href={`${base}#awards`}>Awards</a>
+            <a data-nav href={`${base}#work`}>Work</a>
+            <a data-nav href={`${base}#finance`}>Finance</a>
+            <a data-nav href={`${base}#cv`}>CV</a>
+            <a data-nav href={`${base}#contact`}>Contact</a>
+            <a class="site-nav__nb" href={`${base}rongm`} aria-label="Ron/gm notebook"><i>R<sub>on</sub>/g<sub>m</sub></i></a>
           </div>
         </div>
       </nav>
@@ -124,8 +128,17 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <main id="main">
       <slot />
     </main>
+    <dialog class="lightbox" id="lightbox" aria-label="Image viewer">
+      <button class="lightbox__close" type="button" aria-label="Close image viewer">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
+      <figure class="lightbox__figure">
+        <figcaption class="lightbox__caption"></figcaption>
+      </figure>
+    </dialog>
     <script>
       import "../scripts/reveal.js";
+      import "../scripts/lightbox.js";
     </script>
     <script is:inline>
     (function () {
