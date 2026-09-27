@@ -5,3 +5,4 @@ dist/
 .impeccable/mocks/
 npm-debug.log*
 .DS_Store
+__pycache__/
