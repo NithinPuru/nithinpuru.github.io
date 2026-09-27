@@ -1,19 +1,29 @@
 ---
 interface Props {
-  name: "external" | "down" | "close" | "expand" | "check" | "cross";
+  name:
+    | "external" | "down" | "close" | "expand" | "check" | "cross"
+    | "github" | "linkedin" | "mail" | "file" | "star";
   size?: number;
 }
 const { name, size } = Astro.props;
-const paths = {
-  external: "M7 17 17 7M9 7h8v8",
-  down: "M12 4v16M6 14l6 6 6-6",
-  close: "M6 6l12 12M18 6 6 18",
-  expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
-  check: "M5 12.5 10 17.5 19 7",
-  cross: "M7 7l10 10M17 7 7 17",
+// 1.5px line icons on a 24px grid; multi-part icons are arrays of paths.
+const paths: Record<string, string[]> = {
+  external: ["M7 17 17 7M9 7h8v8"],
+  down: ["M12 4v16M6 14l6 6 6-6"],
+  close: ["M6 6l12 12M18 6 6 18"],
+  expand: ["M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"],
+  check: ["M5 12.5 10 17.5 19 7"],
+  cross: ["M7 7l10 10M17 7 7 17"],
+  github: [
+    "M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21",
+  ],
+  linkedin: ["M3.5 3.5h17v17h-17z", "M8 10.5V17", "M8 7.3v.01", "M12 17v-6.5", "M12 13.5a2.75 2.75 0 0 1 5.5 0V17"],
+  mail: ["M3 5h18v14H3z", "M3 6l9 7 9-7"],
+  file: ["M6 3h8l4 4v14H6z", "M14 3v4h4", "M9 12h6M9 16h6"],
+  star: ["M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"],
 };
 const px = size ?? (name === "external" ? 13 : 14);
 ---
 <svg viewBox="0 0 24 24" width={px} height={px} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <path d={paths[name]} />
+  {paths[name].map((d) => <path d={d} />)}
 </svg>

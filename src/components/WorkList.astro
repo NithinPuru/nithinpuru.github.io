@@ -1,6 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import Gallery from "./Gallery.astro";
+import { githubStats, repoFor } from "../lib/github";
 
 interface EntryLink {
   label: string;
@@ -45,15 +46,22 @@ interface Props {
 }
 
 const { groups } = Astro.props;
+const gh = await githubStats("chennakeshavadasa");
 ---
 <div class="worklist">
   {
     groups.map((group) => (
       <div data-reveal-group>
-        {group.heading && <h3 class="group-head">{group.heading}</h3>}
+        {group.heading && (
+          <h3 class="group-head">
+            {group.heading} <span class="group-count">{group.entries.length}</span>
+          </h3>
+        )}
         <ul class="entries">
           {
-            group.entries.map((entry) => (
+            group.entries.map((entry) => {
+              const repo = repoFor(gh, entry.url);
+              return (
               <li class="entry" data-reveal>
                 <div class="entry__body">
                 <div class="entry__top">
@@ -67,11 +75,19 @@ const { groups } = Astro.props;
                       )}
                     </a>
                   </h4>
-                  {entry.tag && (
-                    <span class={"entry__tag" + (entry.tagHot ? " is-hot" : "")}>
-                      {entry.tag}
-                    </span>
-                  )}
+                  <span class="entry__marks">
+                    {repo && repo.stars > 0 && (
+                      <span class="entry__stars" title={`${repo.stars} GitHub stars`}>
+                        <Icon name="star" size={12} />
+                        {repo.stars}
+                      </span>
+                    )}
+                    {entry.tag && (
+                      <span class={"entry__tag" + (entry.tagHot ? " is-hot" : "")}>
+                        {entry.tag}
+                      </span>
+                    )}
+                  </span>
                 </div>
                 
                 {entry.desc && <p class="entry__desc" set:html={entry.desc}></p>}
@@ -137,7 +153,8 @@ const { groups } = Astro.props;
                 </div>
                 </div>
               </li>
-            ))
+              );
+            })
           }
         </ul>
       </div>

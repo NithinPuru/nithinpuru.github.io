@@ -14,7 +14,7 @@ colors:
 typography:
   display:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
-    fontSize: "clamp(2.4rem, 9vw, 5.1rem)"
+    fontSize: "clamp(2.4rem, 6.5vw, 3.9rem)"
     fontWeight: 700
     lineHeight: 1.04
     letterSpacing: "-0.015em"
@@ -131,7 +131,7 @@ One warm-paper field, near-black inks, one oxford-blue accent, and a red held fo
 **Character:** The authentic Computer Modern pairing — serif body and display, typewriter for document machinery. Mono is never used as a "technical" costume; it marks metadata, dates, tags, bibliographic lines, and navigation the way a LaTeX source annotates its own structure.
 
 ### Hierarchy
-- **Display** (700, `clamp(2.4rem, 9vw, 5.1rem)`, 1.04, -0.015em): the masthead name — the only use.
+- **Display** (700, `clamp(2.4rem, 6.5vw, 3.9rem)`, 1.04, -0.015em): the masthead name — the only use.
 - **Headline** (700, `clamp(1.6rem, 3.6vw, 2.05rem)`, 1.15, -0.01em): `\section` titles, preceded by a serif section numeral.
 - **Title** (700, 1.16rem, 1.4): work-entry titles — serif bold, underlined, the link itself.
 - **Body** (400, 1.0625rem, 1.78): justified and hyphenated, column measure ≈74ch.
@@ -164,7 +164,7 @@ Fixed bar, paper field, 1px bottom rule. Name mark left (typewriter uppercase); 
 The reusable, JSON-driven list item (Work / Tape-outs / Finance feed one component; Publications use the bibliography variant below). 1px top rule between entries; serif bold title is the link (ink → accent on hover) with an inline external-arrow SVG; an optional right-aligned mono tag (annotation red when `tagHot`); justified description in Ink Two; a mono metadata line in Ink Three (PDK · domain · stars) with optional accent extra links ("Live demo", "3D GDS view").
 
 ### Bibliography (Publications)
-`PubList.astro` renders `publications.json` as a LaTeX `thebibliography`: a hanging accent `[n]` label in typewriter (numbered continuously across groups), a plain serif-bold title that underlines only on hover, the author line with the site owner in bold, the venue in italic serif, then the description, an **Abstract** fold, the image strip, and a wrapping row of typewriter links. No logo column — the entry is text, like a reference list. On narrow screens the tag drops under the title.
+`PubList.astro` renders `publications.json` as a LaTeX `thebibliography`: a hanging accent `[n]` label in typewriter (numbered continuously across groups), a plain serif-bold title that underlines only on hover, the author line with the site owner in bold, the venue in italic serif, then the description, an **Abstract** fold, the image strip, and a wrapping row of typewriter links. An optional venue logo (`logo`, `logoAlt`) sits in a fixed 16:9 hairline "plate" in a 9.5rem right-hand column; the logo is contained and multiply-blended into the paper so marks of any shape (square society seal, wide conference wordmark) read as one family. On narrow screens the plate moves above the title at 8rem and the tag drops under the title. Group rubrics carry an accent count ("Conference Papers 2").
 
 ### Folds, Image Strip, Lightbox
 Collapsible content (`Abstract`, `View Methodology & Results`, image strips) uses `details.fold`: a typewriter uppercase accent summary with a drawn chevron (CSS mask, not a glyph) and a body hung off a 1px `rule-strong` line. Image strips (`Gallery.astro`) are open by default and carry `data-keep-open` so the Publications/Awards auto-collapse observer skips them. Thumbnails are plain anchors to the full image (works without JS); `src/scripts/lightbox.js` upgrades any `a[data-lightbox]` into one shared native `<dialog>` — ink overlay, paper caption, drawn close icon, Esc/backdrop to close, focus returned to the thumbnail.
@@ -172,8 +172,11 @@ Collapsible content (`Abstract`, `View Methodology & Results`, image strips) use
 ### Comparison Table
 The Awards methodology table is `table.cmp-table`, set booktabs-style: 2px ink top and bottom rules, a 1px ink rule under the header, hairline row rules, small-caps-style section rows, and the "This Work" column tinted with a 6% accent wash. Yes/No cells use drawn check (accent) and cross (annotation red) marks with `aria-label`s — never emoji or face icons. It scrolls horizontally inside its own frame below ~34rem.
 
+### Live GitHub Figures
+`src/lib/github.ts` fetches the owner's public repositories once at build time (authenticated with `GITHUB_TOKEN` in CI, 8s timeout). Work entries whose URL points at a repo with stars show a typewriter `☆ n` mark (accent line star) left of the tag — zero counts are omitted — and the Work footer states the live repository and star totals. On any failure the figures are simply absent; nothing is hand-maintained or cached in JSON.
+
 ### Group Rubric
-Typewriter 0.74rem uppercase in Ink Three, prefixed by an em-dash in Annotation Soft, preceding each group of entries inside a section.
+Typewriter uppercase in Ink Three, prefixed by an em-dash in Annotation Soft and followed by the group's entry count in the accent, preceding each group of entries inside a section.
 
 ### CV Section
 The CV is a framed A4 Google Drive preview (`aspect-ratio: 210 / 297`, hairline border, max 700px) centered in the section, with a mono uppercase "Open full CV" link (0.78rem, accent, hairline underline on hover) below it.
@@ -185,7 +188,7 @@ Mono small-caps labels (`flex: 0 0 7.5–8.5rem`) followed by the value, separat
 One face of the button grammar — a square 1px ink frame, mono uppercase 0.78rem with 0.07em tracking, and an arrow SVG in the accent. **Ghost** (`--ghost`): transparent fill with ink text, filling on hover — the masthead "Get in touch" anchor (scrolls to contact) and the 404 page's "Back to the home page".
 
 ### Signature: The Masthead (`\maketitle`)
-The name set huge in Computer Modern over a typewriter role/affiliation line, the small-caps "Abstract" over two justified paragraphs, and a "Get in touch" ghost button spanning below. Above it, the authored device: a mechanical 1px hairline that stroke-draws in, then a blur-settle of the whole block.
+A two-column title block: left, the name set large in Computer Modern over two typewriter lines (role, then affiliation), a single annotation-red status line ("Seeking PhD positions · Fall 2027"), and a row of typewriter profile links (Email, GitHub, LinkedIn, CV) with accent line icons; right, a square portrait printed in grayscale inside a 1px `rule-strong` frame with a paper mat — the photo belongs to the paper, not a colour accent. Below 600px the portrait moves above the name at 6.5rem. Then the small-caps "About me" abstract (research interests set in two columns ≥760px) and a "Get in touch" ghost button. Above it, the authored device: a mechanical 1px hairline that stroke-draws in, then a blur-settle of the whole block.
 
 ## Do's and Don'ts
 

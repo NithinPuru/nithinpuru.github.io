@@ -2,6 +2,8 @@
 // Bibliography-style publication list: a hanging [n] label, plain serif title,
 // author line (self in bold), italic venue, then abstract / images / links.
 // Numbering runs continuously across groups, like a LaTeX thebibliography.
+// An optional venue logo sits in a fixed 16:9 hairline "plate" in a right-hand
+// column (above the title on narrow screens) so mixed logo shapes line up.
 import Icon from "./Icon.astro";
 import Gallery from "./Gallery.astro";
 
@@ -14,6 +16,8 @@ interface Entry {
   url?: string;
   authors?: string;
   venue?: string;
+  logo?: string;
+  logoAlt?: string;
   desc?: string;
   abstract?: string;
   tag?: string;
@@ -36,11 +40,20 @@ const numbered = groups.map((g) => ({
 <div class="bib">
   {numbered.map((group) => (
     <div data-reveal-group>
-      {group.heading && <h3 class="group-head">{group.heading}</h3>}
+      {group.heading && (
+        <h3 class="group-head">
+          {group.heading} <span class="group-count">{group.entries.length}</span>
+        </h3>
+      )}
       <ol class="bib__list">
         {group.entries.map((e) => (
-          <li class="bib__item" data-reveal>
+          <li class={"bib__item" + (e.logo ? " bib__item--plate" : "")} data-reveal>
             <span class="bib__n" aria-hidden="true">[{e.n}]</span>
+            {e.logo && (
+              <div class="bib__plate">
+                <img src={e.logo} alt={e.logoAlt ?? ""} loading="lazy" decoding="async" />
+              </div>
+            )}
             <div class="bib__body">
               <div class="bib__top">
                 <h4 class="bib__title">

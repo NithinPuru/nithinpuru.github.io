@@ -275,15 +275,12 @@ a {
 }
 
 .masthead h1 {
-  margin: 0 auto;
+  margin: 0;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: clamp(2.4rem, 9vw, 5.1rem);
+  font-size: clamp(2.4rem, 6.5vw, 3.9rem);
   line-height: 1.04;
   letter-spacing: -0.015em;
-  max-width: 12ch;
-  text-align: center;
-  width: 100%;
 }
 
 .doc-meta {
@@ -295,13 +292,56 @@ a {
   font-size: 0.92rem;
   letter-spacing: 0.02em;
   color: var(--ink-2);
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 100%;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 .doc-meta .sep {
-  color: var(--ink-3);
+  display: none;
+}
+.masthead__status {
+  margin: 0.9rem 0 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--annot);
+}
+.masthead__links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+}
+.masthead__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+.masthead__links a svg {
+  color: var(--accent);
+}
+.masthead__links a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.masthead__photo {
+  display: block;
+  width: 10rem;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--rule-strong);
+  padding: 0.3rem;
+  background: var(--paper);
+  filter: grayscale(1) contrast(1.05);
 }
 
 .abstract {
@@ -336,6 +376,13 @@ a {
 }
 .abstract-list li {
   margin-bottom: 0.5rem;
+  break-inside: avoid;
+}
+@media (min-width: 760px) {
+  .abstract-list {
+    columns: 2;
+    column-gap: 2.5rem;
+  }
 }
 
 .masthead__grid {
@@ -353,9 +400,22 @@ a {
 
 .masthead__head {
   grid-area: head;
-  align-self: auto;
-  text-align: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 2.5rem;
+  text-align: left;
   width: 100%;
+}
+@media (max-width: 600px) {
+  .masthead__head {
+    grid-template-columns: 1fr;
+  }
+  .masthead__photo {
+    grid-row: 1;
+    width: 6.5rem;
+    margin-bottom: 1.2rem;
+  }
 }
 .masthead__grid .abstract {
   grid-area: abstract;
@@ -452,6 +512,11 @@ a {
   color: var(--ink-3);
   margin: 2.5rem 0 0.35rem;
 }
+.group-count {
+  margin-left: 0.5rem;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
 .group-head::before {
   content: "\2014  ";
   color: var(--annot-soft);
@@ -487,6 +552,26 @@ a {
 .entry__title a:hover {
   color: var(--accent);
   text-decoration-color: var(--accent);
+}
+.entry__marks {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  flex-shrink: 0;
+}
+.entry__stars,
+.section-foot__stars {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-2);
+}
+.entry__stars svg,
+.section-foot__stars svg {
+  align-self: center;
+  color: var(--accent);
 }
 .entry__tag {
   font-family: var(--font-mono);
@@ -900,6 +985,32 @@ a {
 .bib__item:first-child {
   border-top: none;
 }
+.bib__item--plate {
+  grid-template-columns: 2.6rem 1fr 9.5rem;
+  grid-template-areas: "n body plate";
+}
+.bib__item--plate .bib__n { grid-area: n; }
+.bib__item--plate .bib__body { grid-area: body; }
+.bib__plate {
+  grid-area: plate;
+  align-self: start;
+  margin-left: 1.1rem;
+  margin-top: 0.25rem;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+.bib__plate img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
 .bib__n {
   font-family: var(--font-mono);
   font-size: 0.84rem;
@@ -984,6 +1095,15 @@ a {
   .bib__top {
     flex-direction: column;
     gap: 0.2rem;
+  }
+  .bib__item--plate {
+    grid-template-columns: 2rem 1fr;
+    grid-template-areas: "n plate" ". body";
+  }
+  .bib__plate {
+    justify-self: start;
+    width: 8rem;
+    margin: 0 0 0.6rem;
   }
 }
 
@@ -1325,43 +1445,24 @@ a {
 
 .exp-summary {
   display: grid;
-  grid-template-columns: 12.5rem 1fr 1rem;
-  grid-template-rows: auto auto auto;
+  grid-template-columns: 1fr 1rem;
   column-gap: 1rem;
   row-gap: 0.1rem;
-  padding: 1rem 0.75rem 1rem 2.5rem;
+  padding: 1.1rem 0.75rem 1.1rem 1.4rem;
   cursor: pointer;
   list-style: none;
   position: relative;
   transition: background-color 0.15s;
   align-items: baseline;
 }
-.exp-summary .journey-year {
-  grid-column: 1;
-  grid-row: 1;
-}
-.exp-summary .journey-role {
-  grid-column: 2;
-  grid-row: 1;
-}
-.exp-summary .journey-org {
-  grid-column: 2;
-  grid-row: 2;
-}
-.exp-summary .journey-detail {
-  grid-column: 2;
-  grid-row: 3;
-  margin-top: 0.6rem;
-}
+.exp-summary > span { grid-column: 1; }
+.exp-summary .journey-year { font-size: 0.78rem; }
+.exp-summary .journey-role { margin-top: 0.15rem; }
+.exp-summary .journey-detail { margin-top: 0.45rem; }
 @media (max-width: 560px) {
   .exp-summary {
-    grid-template-columns: 1fr 1rem;
     padding-left: 1rem;
   }
-  .exp-summary .journey-year { grid-column: 1; grid-row: 1; }
-  .exp-summary .journey-role { grid-column: 1; grid-row: 2; }
-  .exp-summary .journey-org  { grid-column: 1; grid-row: 3; }
-  .exp-summary .journey-detail { grid-column: 1; grid-row: 4; }
 }
 .exp-summary::-webkit-details-marker { display: none; }
 .exp-summary:hover {
@@ -1372,7 +1473,7 @@ a {
 .exp-summary .journey-dot {
   position: absolute;
   left: -1.4rem;
-  top: 1.4rem;
+  top: 1.55rem;
 }
 .exp-item--active .exp-summary .journey-dot {
   border-color: var(--ink);
@@ -1382,8 +1483,8 @@ a {
 /* Open indicator — small arrow */
 .exp-summary::after {
   content: "";
-  grid-column: 3;
-  grid-row: 1 / span 3;
+  grid-column: 2;
+  grid-row: 1 / span 4;
   justify-self: end;
   align-self: start;
   width: 1rem;
@@ -1400,7 +1501,7 @@ a {
 
 /* Expanded detail content */
 .exp-detail {
-  padding: 0.8rem 0.75rem 1.4rem 2.5rem;
+  padding: 0.8rem 0.75rem 1.4rem 1.4rem;
   border-top: 1px solid var(--rule);
   color: var(--ink-2);
   line-height: 1.6;

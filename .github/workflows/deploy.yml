@@ -35,6 +35,8 @@ jobs:
         env:
           SITE_URL: https://nithinpuru.github.io
           ASTRO_BASE: /
+          # Read-only token for the build-time GitHub stars lookup (src/lib/github.ts).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5

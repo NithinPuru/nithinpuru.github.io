@@ -45,6 +45,7 @@ src/
   styles/global.css          # all tokens + styling (single stylesheet)
   scripts/reveal.js          # scroll reveals, stagger, running-head scroll-spy (links need data-nav)
   scripts/lightbox.js        # shared <dialog> lightbox for any a[data-lightbox]
+  lib/github.ts              # build-time GitHub repo/star lookup (fails soft to no figures)
 public/
   fonts/                     # self-hosted KaTeX Computer Modern woff2
   favicon.svg
@@ -89,12 +90,13 @@ All work/publication/finance entries are plain JSON — no markup changes needed
 
 Rules for content:
 - **Never fabricate.** Every entry, star count, affiliation, and claim must be
-  real and verifiable. Star counts and the "28 repositories" figure go stale;
-  re-verify when editing data (note in `src/pages/index.astro` frontmatter).
+  real and verifiable. Star counts and repository totals are fetched live at
+  build time by `src/lib/github.ts` — never type them into JSON.
 - Keep `desc` as a real, faithful summary of the linked artifact.
 - One JSON file per domain; `WorkList.astro` renders every group/entry
   (`PubList.astro` for `publications.json`, which also takes `authors` with the
-  owner in `<strong>`, `venue`, and `abstract`; titles may contain inline HTML).
+  owner in `<strong>`, `venue`, `abstract`, and an optional venue `logo` +
+  `logoAlt`; titles may contain inline HTML).
 - Photos: strip EXIF (camera GPS!) and cap at ~2000px before committing, e.g.
   `magick in.jpg -auto-orient -resize '2000x2000>' -strip -quality 82 out.jpg`.
 - The CV is a Google Drive embed in the Curriculum Vitae section — swap the two
