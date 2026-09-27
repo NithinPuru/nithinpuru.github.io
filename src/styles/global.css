@@ -537,6 +537,7 @@ a {
   .profile::-webkit-scrollbar { display: none; }
   .profile__photo {
     order: -1;
+    align-self: center;
     width: 8.5rem;
     margin-bottom: 1.4rem;
   }
@@ -595,12 +596,60 @@ a {
   .profile__foot { padding-top: 0.8rem; }
 }
 
-/* Sidebar section list drawn like an IC pinout: pin number, a pin stub that
-   lengthens on hover / when active, and the net name. */
+/* Sidebar section list drawn like an IC pinout: a signal bus runs down the
+   left; each section hangs off it on a pin stub. A probe travels the bus to
+   the active section (the trace behind it fills like a charged wire), lights
+   that pin's stub and emits a small ping on arrival. */
+.pinout {
+  position: relative;
+}
 .pinout ol {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+.pinout__bus {
+  position: absolute;
+  left: 0;
+  top: var(--bus-top, 0);
+  height: var(--bus-h, 0);
+  width: 1px;
+  background: var(--rule-strong);
+}
+.pinout__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleY(var(--fill, 0));
+  transform-origin: top;
+  transition: transform 0.6s var(--ease-out);
+}
+.pinout__probe,
+.pinout__ping {
+  position: absolute;
+  left: -3px;
+  top: -3.5px;
+  width: 7px;
+  height: 7px;
+  transform: translateY(var(--probe, 0));
+  transition: transform 0.6s var(--ease-out);
+}
+.pinout__probe {
+  background: var(--accent);
+  clip-path: circle(50%);
+}
+.pinout__ping {
+  background: var(--accent);
+  -webkit-mask: var(--ring) center / contain no-repeat;
+  mask: var(--ring) center / contain no-repeat;
+  opacity: 0;
+}
+.pinout__ping.is-on {
+  animation: pinout-ping 0.7s var(--ease-out) 0.45s;
+}
+@keyframes pinout-ping {
+  from { opacity: 0.9; scale: 1; }
+  to { opacity: 0; scale: 3.2; }
 }
 .pinout a {
   display: flex;
@@ -620,12 +669,19 @@ a {
   color: var(--ink-3);
 }
 .pinout__stub {
-  width: 1.2rem;
+  width: 0.9rem;
   height: 1px;
   background: var(--rule-strong);
-  transform: scaleX(0.5);
+  transform: scaleX(0.55);
   transform-origin: left;
-  transition: transform 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
+  transition: transform 0.3s var(--ease-out), background-color 0.3s var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pinout__fill,
+  .pinout__probe,
+  .pinout__ping,
+  .pinout__stub { transition: none; }
+  .pinout__ping.is-on { animation: none; }
 }
 .pinout a:hover,
 .pinout a.is-active {
@@ -635,6 +691,10 @@ a {
 .pinout a.is-active .pinout__stub {
   transform: none;
   background: var(--accent);
+}
+/* the active pin lights once the probe has travelled to it */
+.pinout a.is-active .pinout__stub {
+  transition-delay: 0.35s;
 }
 .pinout a.is-active .pinout__no {
   color: var(--accent);

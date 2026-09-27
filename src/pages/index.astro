@@ -69,12 +69,17 @@ const gh = await githubStats("chennakeshavadasa");
         </ul>
       </div>
       <nav class="pinout" aria-label="Sections">
+        <span class="pinout__bus" aria-hidden="true">
+          <span class="pinout__fill"></span>
+          <span class="pinout__ping"></span>
+          <span class="pinout__probe"></span>
+        </span>
         <ol>
           {sections.map((sec, i) => (
             <li>
               <a data-nav href={`#${sec.id}`}>
-                <span class="pinout__no">{String(i).padStart(2, "0")}</span>
                 <span class="pinout__stub" aria-hidden="true"></span>
+                <span class="pinout__no">{String(i).padStart(2, "0")}</span>
                 <span class="pinout__label">{sec.label}</span>
               </a>
             </li>
