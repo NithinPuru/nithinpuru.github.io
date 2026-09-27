@@ -166,4 +166,5 @@ rounded corners).
 - After a build, the direction contract seed key must survive in `dist/index.html`
   (grep for `impeccable:direction contract`).
 - Visual checks: preview the built site; confirm no horizontal overflow at
-  360/768/1024/1440px and every text color ≥ 4.5:1 on paper.
+  360/768/980/1024/1366/1440px (980 = phone "desktop site" mode, which must get
+  the sidebar layout) in both themes, and every text color ≥ 4.5:1.
