@@ -1,8 +1,9 @@
 ---
 // Experience as a time axis: an ink rail labelled t that points up to "now",
 // the start year of each role as an axis tick, a ring-and-dot node on the
-// rail, and an ADC / DAC converter symbol (alternating down the axis) in
-// place of a logo. Summaries show dates, computed tenure, role, organisation,
+// rail, and the schematic symbol of the circuit class worked on there (ADC,
+// multiphase buck, class-AB stage, RF TX/RX) with a short caption, in place
+// of a logo. Summaries show dates, computed tenure, role, organisation,
 // keywords and a datasheet strip of headline figures; detail expands below.
 import data from "../data/experience.json";
 import Symbol, { type SymbolName } from "./Symbol.astro";
@@ -19,6 +20,7 @@ interface Role {
   place: string;
   kind: string;
   symbol: SymbolName;
+  symbolLabel?: string;
   keywords?: string;
   advisor?: { name: string; url: string };
   specs?: Spec[];
@@ -68,6 +70,7 @@ const roles = data.entries as Role[];
             <summary class="xp__summary">
               <span class="xp__sym">
                 <Symbol name={r.symbol} />
+                {r.symbolLabel && <span class="xp__sym-label">{r.symbolLabel}</span>}
               </span>
               <span class="xp__meta">
                 <span class="xp__dates">{fmt(r.start)} &ndash; {fmt(r.end)}</span>

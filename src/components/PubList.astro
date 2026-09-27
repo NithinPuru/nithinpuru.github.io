@@ -25,6 +25,7 @@ interface Entry {
   links?: Link[];
   images?: { url: string; label?: string; id?: string }[];
   imagesTitle?: string;
+  cite?: { bibtex: string; text: string };
 }
 interface Props {
   groups: { heading?: string; entries: Entry[] }[];
@@ -74,6 +75,16 @@ const numbered = groups.map((g) => ({
                 <details class="fold">
                   <summary>Abstract</summary>
                   <div class="fold__body" set:html={e.abstract} />
+                </details>
+              )}
+              {e.cite && (
+                <details class="fold cite">
+                  <summary>Cite this</summary>
+                  <div class="fold__body cite__body">
+                    <p class="cite__text" set:html={e.cite.text} />
+                    <pre class="cite__bib" id={`bib-${e.n}`}>{e.cite.bibtex}</pre>
+                    <button class="cite__copy" type="button" data-copy={`bib-${e.n}`}>Copy BibTeX</button>
+                  </div>
                 </details>
               )}
               {e.images && e.images.length > 0 && (
