@@ -181,6 +181,9 @@ Typewriter uppercase in Ink Three, prefixed by an em-dash in Annotation Soft and
 ### CV Section
 The CV is a framed A4 Google Drive preview (`aspect-ratio: 210 / 297`, hairline border, max 700px) centered in the section, with a mono uppercase "Open full CV" link (0.78rem, accent, hairline underline on hover) below it.
 
+### Experience Timeline
+A time axis in the document's own register: a solid 1px ink rail with a small triangular arrowhead pointing up to "now", and SVG ring-and-dot nodes aligned to each role title (the current role in the accent). Each entry is a `<details>`: typewriter date with a right-aligned typewriter kind label (Industry / Research / Internship) and drawn chevron, serif-bold role (turns accent on hover), organisation line, keyword line, an optional "Advisor · name" line, and expanded detail as hanging en-dash lists. Entries are divided by hairlines that start after the rail. The role — not the employer — is the title.
+
 ### Contact Rows / CV Highlights
 Mono small-caps labels (`flex: 0 0 7.5–8.5rem`) followed by the value, separated by 1px top rules; links accent with a hairline underline. On mobile the row stacks to a column.
 
