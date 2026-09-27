@@ -27,6 +27,14 @@ colors:
   dark-rule: "rgba(242, 245, 250, 0.12)"
   dark-rule-strong: "rgba(242, 245, 250, 0.26)"
   die-well: "#15161a"
+  d-ams: "#1f4fd1"
+  d-oss: "#0b8a6b"
+  d-res: "#7b3fd0"
+  d-ml: "#b86200"
+  dark-d-ams: "#7aa7ff"
+  dark-d-oss: "#4fd1a8"
+  dark-d-res: "#b89bff"
+  dark-d-ml: "#ffb357"
 typography:
   display:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
@@ -139,6 +147,7 @@ A crisp, cool palette: a white page with a faint blue-grey raised surface (`pape
 - **Annotation Red** (#8f3526): sparing status marks — hot tags such as "Tape-out" / "Chip", rubric dashes. **Annotation Soft** (#a54837): the em-dash prefix on group rubrics.
 
 ### Named Rules
+**Sanctioned exception - skills-graph domain hues.** The skills graph colours its four output domains (blue Analog/MS, teal Open-source EDA & tapeout, violet Research & methodology, amber ML & quant finance, each with a lighter dark-theme variant); every other neuron takes the hue of the domain it reaches by the most paths, edges take the hue of the neuron they feed, domain rings carry their hue at rest, and a colour key sits under the graph. These hues appear nowhere else on the site.
 **The One Accent Rule.** Exactly one ink-blue accent exists. Hierarchy comes from weight and size, never a second hue; the pre-buid second blue was folded into `--accent`.
 **The Sparing Red Rule.** Annotation red appears only as small rubrics and status tags. If a screen shows more than a handful, the point is lost.
 **The Hairline Rule.** Structure is drawn with 1px rules. A box, shadow, or radius where a hairline belongs is a foreign object.

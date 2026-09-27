@@ -18,6 +18,13 @@
     <span><svg viewBox="0 0 24 16" width="20" height="14" aria-hidden="true"><path d="M2 8h17M15 4.5 19.5 8 15 11.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> applied in</span>
   </div>
 
+  <div class="sfg-key" aria-label="Domain colours">
+    <span><i style="--c: var(--d-ams)"></i>Analog / MS IC design</span>
+    <span><i style="--c: var(--d-oss)"></i>Open-source EDA &amp; tapeout</span>
+    <span><i style="--c: var(--d-res)"></i>Research &amp; methodology</span>
+    <span><i style="--c: var(--d-ml)"></i>ML &amp; quant finance</span>
+  </div>
+
   <!-- Skills detail panel -->
   <div class="sfg-panel" id="sfg-panel">
     <p class="sfg-empty" id="sfg-empty">Select a node to explore how skills, places, and outputs connect.</p>
@@ -148,14 +155,14 @@
 .sfg-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .sfg-glow {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--c, var(--accent));
   stroke-width: var(--sw, 1.2);
   stroke-linecap: round;
   opacity: 0;
   pointer-events: none;
 }
 .sfg-act {
-  fill: var(--accent);
+  fill: var(--c, var(--accent));
   stroke: none;
   opacity: 0;
   pointer-events: none;
@@ -194,6 +201,21 @@
   fill: var(--ink-3);
 }
 .sfg-legend { margin: 0.4rem 0 0.2rem; }
+.sfg-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.4rem;
+  margin: 0.5rem 0 0.3rem;
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+.sfg-key span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.sfg-key i {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--c);
+  clip-path: circle(50%);
+}
 </style>
 
 <script is:inline>
@@ -507,6 +529,41 @@
       ACT[n] = hi > lo ? 0.15 + 0.85 * (raw[n] - lo) / (hi - lo) : 1;
     });
   }
+  // Domain colours: each output domain has its own hue, and every other
+  // neuron takes the colour of the domain it reaches by the most paths
+  // (traced forward to the outputs), so activation shows which skills
+  // feed which area. Edges take the colour of the neuron they feed.
+  var DOMAIN_COLOR = {
+    d_ams: 'var(--d-ams)', d_oss: 'var(--d-oss)',
+    d_research: 'var(--d-res)', d_ml: 'var(--d-ml)'
+  };
+  var DOMS = LAYERS[LAYERS.length - 1];
+  var contrib = {};
+  DOMS.forEach(function(d) { contrib[d] = {}; contrib[d][d] = 1; });
+  for (var LB = LAYERS.length - 2; LB >= 0; LB--) {
+    LAYERS[LB].forEach(function(n) {
+      contrib[n] = {};
+      DOMS.forEach(function(d) { contrib[n][d] = 0; });
+      EDGES.forEach(function(e, i) {
+        if (e[0] !== n || !contrib[e[1]]) return;
+        // structural path counts (not the random weights), so colours reflect
+        // how the skills actually connect; ties resolve in domain order.
+        DOMS.forEach(function(d) { contrib[n][d] += (contrib[e[1]][d] || 0); });
+      });
+    });
+  }
+  var DOM = {};
+  Object.keys(contrib).forEach(function(n) {
+    var best = null, bv = -1;
+    DOMS.forEach(function(d) { if (contrib[n][d] > bv) { bv = contrib[n][d]; best = d; } });
+    DOM[n] = best;
+  });
+  // Resolve ties that structure alone gets wrong.
+  DOM.p_oss = 'd_oss'; // open-source tapeouts belong to the open-source domain
+  function nodeColor(n) { return n === 'src' ? 'var(--accent)' : DOMAIN_COLOR[DOM[n]] || 'var(--accent)'; }
+  var edgeDom = EDGES.map(function(e) { return DOM[e[1]]; });
+  DOMS.forEach(function(d) { defs.appendChild(mkMarker('ar_' + d, DOMAIN_COLOR[d])); });
+
   var glowG = svgEl('g', { 'class': 'sfg-glows' });
   svg.appendChild(glowG);
   var pulseEls = [];
@@ -519,7 +576,8 @@
     var gl = svgEl('path', {
       d: src.getAttribute('d'), 'class': 'sfg-glow',
       style: '--d:' + (a.layer * HOP + 0.3 + hash(i + 99) * 0.15).toFixed(2) + 's;' +
-             '--w:' + (0.08 + 0.82 * signal).toFixed(2) + ';--sw:' + (0.8 + 1.6 * w).toFixed(2)
+             '--w:' + (0.08 + 0.82 * signal).toFixed(2) + ';--sw:' + (0.8 + 1.6 * w).toFixed(2) +
+             ';--c:' + DOMAIN_COLOR[edgeDom[i]]
     });
     glowG.appendChild(gl);
     pulseEls.push(gl);
@@ -559,7 +617,7 @@
 
     } else if (d.strong) {
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
-        fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': '2.2', 'class': 'sfg-nc' }));
+        fill: 'var(--paper)', stroke: DOMAIN_COLOR[id] || 'var(--ink)', 'stroke-width': '2.2', 'class': 'sfg-nc' }));
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r - 6,
         fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': '0.8' }));
 
@@ -606,7 +664,8 @@
     if (!p || !base) return;
     var act = svgEl('circle', {
       cx: p.x, cy: p.y, r: p.r - 2, 'class': 'sfg-act',
-      style: '--d:' + (p.layer * HOP).toFixed(2) + 's;--a:' + (0.06 + 0.44 * (ACT[id] || 0)).toFixed(2)
+      style: '--d:' + (p.layer * HOP).toFixed(2) + 's;--a:' + (0.06 + 0.44 * (ACT[id] || 0)).toFixed(2) +
+             ';--c:' + nodeColor(id)
     });
     g.insertBefore(act, base.nextSibling);
     actEls[id] = act;
@@ -658,7 +717,7 @@
       var d  = ND[id], p = NODE_POS[id];
       if (!nc || !d || !p) return;
       if (d.sigma)       { nc.setAttribute('stroke','var(--ink-3)'); nc.setAttribute('stroke-width','1.6'); }
-      else if (d.strong) { nc.setAttribute('stroke','var(--ink)'); nc.setAttribute('stroke-width','2.2'); }
+      else if (d.strong) { nc.setAttribute('stroke', DOMAIN_COLOR[id] || 'var(--ink)'); nc.setAttribute('stroke-width','2.2'); }
       else if (p.layer === 2) { nc.setAttribute('stroke','var(--ink-2)'); nc.setAttribute('stroke-width','1.8'); }
       else               { nc.setAttribute('stroke','var(--rule-strong)'); nc.setAttribute('stroke-width','1.2'); }
     });
@@ -689,16 +748,16 @@
         if (pulseEls[i]) pulseEls[i].classList.toggle('is-off', !onPath);
         if (!onPath) return;
         var direct = e[0] === id || e[1] === id;
-        el.setAttribute('stroke', 'var(--accent)');
+        el.setAttribute('stroke', DOMAIN_COLOR[edgeDom[i]] || 'var(--accent)');
         el.setAttribute('stroke-width', direct ? '2' : '1.2');
-        el.setAttribute('marker-end', 'url(#ar1)');
+        el.setAttribute('marker-end', 'url(#ar_' + edgeDom[i] + ')');
         edgeG.appendChild(el); // draw path edges above the faded mesh
       });
       var nc = nodeEls[id] && nodeEls[id].querySelector('.sfg-nc');
       var pd = ND[id], pp = NODE_POS[id];
       if (nc) {
         var sw = (pd && pd.strong) ? '3.5' : (pp && pp.layer === 2) ? '3' : '2.5';
-        nc.setAttribute('stroke', 'var(--accent)');
+        nc.setAttribute('stroke', nodeColor(id));
         nc.setAttribute('stroke-width', sw);
       }
     }

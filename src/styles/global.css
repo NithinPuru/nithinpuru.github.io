@@ -48,6 +48,11 @@
   --annot: #b42318;
   --annot-soft: #c4442f;
   --plate: #ffffff;
+  /* skills-graph domain hues (the one sanctioned exception to one accent) */
+  --d-ams: #1f4fd1;
+  --d-oss: #0b8a6b;
+  --d-res: #7b3fd0;
+  --d-ml: #b86200;
   --font-serif: "KaTeX_Main", Georgia, "Times New Roman", serif;
   --font-mono: "KaTeX_Typewriter", "Courier New", monospace;
   --nav-h: 3.4rem;
@@ -73,6 +78,10 @@
   --annot: #ff8a7a;
   --annot-soft: #f07563;
   --plate: #eef2f7;
+  --d-ams: #7aa7ff;
+  --d-oss: #4fd1a8;
+  --d-res: #b89bff;
+  --d-ml: #ffb357;
 }
 
 *,
