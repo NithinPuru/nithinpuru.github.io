@@ -655,8 +655,11 @@
     }
   }
 
-  // Start with the domain the page is about selected, so the panel is never empty.
+  // Pre-fill the panel with the domain the page is about, but leave the graph
+  // un-highlighted until the visitor hovers or picks a node.
   activate('d_ams', true);
+  active = null;
+  paint(null);
 
   // Attach events to nodes
   Object.keys(nodeEls).forEach(function(id) {

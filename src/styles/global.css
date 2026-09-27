@@ -1601,41 +1601,118 @@ a {
 }
 
 /* ── Education ───────────────────────────────────────────── */
-.cv-highlights .edu__k {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--ink);
-  line-height: 1.4;
+.edu {
+  position: relative;
+  padding: 0.2rem 0 0 1.4rem;
+  border-left: 2px solid var(--accent);
 }
-.cv-highlights .edu__when {
-  display: block;
-  margin-top: 0.4rem;
-  font-size: 0.86rem;
+.edu__meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
   color: var(--ink-3);
-  line-height: 1.6;
 }
-.edu__body,
-.award-body {
-  flex: 1;
-  min-width: 0;
+.edu__dates { color: var(--ink-2); }
+.edu__dur::before {
+  content: "\00b7";
+  margin-right: 0.75rem;
+}
+.edu__kind {
+  margin-left: auto;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .edu__degree {
-  margin: 0;
+  margin: 0.35rem 0 0;
   font-size: 1.2rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--ink);
 }
+.edu__school {
+  margin: 0.15rem 0 0;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
 .edu__gpa {
-  margin: 0.2rem 0 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-2);
+}
+.edu__gpa-k {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.edu__gpa-v {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+.edu__gpa-of {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--ink-3);
 }
 .edu__courses {
-  margin: 0.4rem 0 0;
-  line-height: 1.6;
-  text-align: justify;
-  hyphens: auto;
+  margin-top: 1.5rem;
+}
+.edu__courses-h {
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--rule);
+}
+.edu__groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 1.1rem 1.5rem;
+}
+.edu__group h5 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.edu__group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.edu__group li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.edu__group li + li {
+  margin-top: 0.3rem;
+}
+.edu__group li::before {
+  content: "\2013";
+  position: absolute;
+  left: 0;
+  color: var(--ink-3);
 }
 
 /* ── Awards ──────────────────────────────────────────────── */

@@ -67,6 +67,7 @@ typography:
     nav-name: "0.96rem"
     subhead: "1rem"
     grid-title: "1.12rem"
+    figure: "1.35rem"
     sidebar-name: "1.8rem"
 spacing:
   column: "46rem"
@@ -217,10 +218,13 @@ A plot-style **time axis**: a solid 1px ink rail with a triangular arrowhead and
 One 48×40 line-art set at 1.5px stroke in `currentColor` (Ink Three at rest, accent on hover): ADC / DAC, comparator (and POR comparator with supply ramp), op-amp, fully differential op-amp, class-AB push-pull stage (ring amplifier output), two-transistor reference (native NMOS over diode-tied NMOS), LDO (error amp driving a PMOS pass device with feedback), corner sweep, ground — and, for Quantitative Finance, candlesticks, a series with a dashed forecast past a "now" line, and a return distribution with the VaR tail filled. Circuit projects and finance entries set `symbol` in JSON and render it inside a 3.9rem square **schematic tile** (raised `paper-2` fill, hairline frame, accent on hover) beside the entry. The section heading rule ends in an open **terminal** (drawn in after the rule), and the document ends with a centred **ground** symbol above the footer.
 
 ### Skills Graph (`SkillsSFG.astro`)
-A four-layer signal-flow network (Source → Skills → Projects · Places → Domains) with typewriter layer headers above each column. Hover or keyboard focus previews a node by tracing **every signal path through it** — upstream to the Σ source and downstream to the domain outputs: edges touching the node are drawn boldest, the rest of its paths in accent with arrowheads (lifted above the mesh), and every node off those paths fades to 30% — and click pins it, filling the detail panel (and scrolling the panel into view if it is off-screen). The graph opens with "Analog / Mixed-Signal IC Design" selected so the panel is never empty; the legend sits directly under the graph. All strokes and fills read theme variables.
+A four-layer signal-flow network (Source → Skills → Projects · Places → Domains) with typewriter layer headers above each column. Hover or keyboard focus previews a node by tracing **every signal path through it** — upstream to the Σ source and downstream to the domain outputs: edges touching the node are drawn boldest, the rest of its paths in accent with arrowheads (lifted above the mesh), and every node off those paths fades to 30% — and click pins it, filling the detail panel (and scrolling the panel into view if it is off-screen). The panel opens pre-filled with "Analog / Mixed-Signal IC Design" while the graph stays un-highlighted until the visitor interacts; the legend sits directly under the graph. All strokes and fills read theme variables.
 
 ### Latest (news ticker, `News.astro` + `news.json`)
 Directly after the About masthead: an accent, arrow-ended "Latest" net label beside a ruled strip of dated items (typewriter accent date, optional red tag, serif text linking to the relevant section or source) scrolling right-to-left in a 70s loop; it pauses on hover and keyboard focus, the duplicate track is `aria-hidden`, and under reduced motion it becomes a static, horizontally scrollable row. Items must be real and dated from site content.
+
+### Education
+One entry hung off a 2px accent left rule: typewriter dates · duration with a right-aligned level label, the serif-bold degree, the university line, a single CGPA figure (typewriter label, bold 1.35rem value, "/ 10") in a hairline box on the raised surface, then "Courses taken" over a hairline and the course names grouped into auto-fitting columns (Circuits & VLSI, Signals & Systems, Communication & RF, Digital & Embedded) with accent typewriter group heads and hanging en-dash items.
 
 ### Contact Rows / CV Highlights
 Mono small-caps labels (`flex: 0 0 7.5–8.5rem`) followed by the value, separated by 1px top rules; links accent with a hairline underline. On mobile the row stacks to a column.

@@ -22,6 +22,13 @@ const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
 const email = "nithinpurushothama@gmail.com";
 // Datasheet-style revision stamp in the footer: the date of this build.
 const buildDate = new Date().toISOString().slice(0, 10);
+// Education coursework, grouped by area (course names as listed on the CV).
+const courseGroups = [
+  { title: "Circuits & VLSI", items: ["Circuit theory", "Analog electronics", "CMOS VLSI design"] },
+  { title: "Signals & Systems", items: ["Signals and systems", "Digital signal processing", "Control systems"] },
+  { title: "Communication & RF", items: ["Analog and digital communication", "Microwave and antenna theory", "Optical and wireless communication"] },
+  { title: "Digital & Embedded", items: ["Microprocessor and microcontrollers"] },
+];
 // Section list drives the sidebar pinout (laptop layout).
 const sections = [
   { id: "about", label: "About" },
@@ -154,21 +161,28 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <ul class="cv-highlights edu" data-reveal>
-        <li>
-          <span class="k edu__k">
-            <strong class="edu__school">Visvesvaraya Technological University</strong>
-            <span class="edu__when mono">Bengaluru, India<br />December 2021 – June 2025</span>
-          </span>
-          <div class="edu__body">
-            <h3 class="edu__degree">Bachelor of Engineering - Electronics and Communication Engineering</h3>
-            <p class="edu__gpa">CGPA: 8.6 / 10</p>
-            <p class="edu__courses">
-              Courses taken: Signals and systems, Control systems, Circuit theory, Analog electronics, Analog and digital communication, Digital signal processing, Microprocessor and microcontrollers, Microwave and antenna theory, CMOS VLSI design, Optical and wireless communication.
-            </p>
+      <article class="edu" data-reveal>
+        <p class="edu__meta">
+          <span class="edu__dates">Dec 2021 &ndash; Jun 2025</span>
+          <span class="edu__dur">3 yrs 7 mos</span>
+          <span class="edu__kind">Bachelor&rsquo;s</span>
+        </p>
+        <h3 class="edu__degree">Bachelor of Engineering &mdash; Electronics and Communication Engineering</h3>
+        <p class="edu__school">Visvesvaraya Technological University &middot; Bengaluru, India</p>
+        <p class="edu__gpa"><span class="edu__gpa-k">CGPA</span><span class="edu__gpa-v">8.6</span><span class="edu__gpa-of">/ 10</span></p>
+
+        <div class="edu__courses">
+          <h4 class="edu__courses-h">Courses taken</h4>
+          <div class="edu__groups">
+            {courseGroups.map((g) => (
+              <div class="edu__group">
+                <h5>{g.title}</h5>
+                <ul>{g.items.map((c) => <li>{c}</li>)}</ul>
+              </div>
+            ))}
           </div>
-        </li>
-      </ul>
+        </div>
+      </article>
     </section>
 
     <section class="section" id="skills" aria-labelledby="skills-h">
