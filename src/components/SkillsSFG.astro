@@ -7,8 +7,15 @@
 <div class="sfg-outer">
 
   <div class="sfg-scroll">
-    <svg viewBox="0 0 800 800" id="sfg" class="sfg-svg" role="group"
+    <svg viewBox="0 -34 800 834" id="sfg" class="sfg-svg" role="group"
          aria-label="Neural network of Nithin P's skills, projects, and output domains"></svg>
+  </div>
+
+<div class="sfg-legend">
+    <span><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1"/></svg> skill</span>
+    <span><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="0.6"/></svg> project / place</span>
+    <span><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> domain output</span>
+    <span><svg viewBox="0 0 24 16" width="20" height="14" aria-hidden="true"><path d="M2 8h17M15 4.5 19.5 8 15 11.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> applied in</span>
   </div>
 
   <!-- Skills detail panel -->
@@ -25,12 +32,7 @@
     </div>
   </div>
 
-  <div class="sfg-legend">
-    <span><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1"/></svg> skill</span>
-    <span><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="0.6"/></svg> project / place</span>
-    <span><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> domain output</span>
-    <span><svg viewBox="0 0 24 16" width="20" height="14" aria-hidden="true"><path d="M2 8h17M15 4.5 19.5 8 15 11.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> applied in</span>
-  </div>
+
 
 </div>
 
@@ -144,7 +146,14 @@
   color: var(--ink-3);
 }
 .sfg-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
-.sfg-nd { cursor: pointer; }
+.sfg-nd { cursor: pointer; transition: opacity 0.2s ease; }
+.sfg-nd.is-dim { opacity: 0.3; }
+.sfg-head {
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  fill: var(--ink-3);
+}
+.sfg-legend { margin: 0.4rem 0 0.2rem; }
 </style>
 
 <script is:inline>
@@ -496,6 +505,14 @@
     nodeEls[id] = g;
   });
 
+  // Column headers, like the layer labels of a network diagram.
+  var HEADS = ['Source', 'Skills', 'Projects \u00b7 Places', 'Domains'];
+  HEADS.forEach(function(h, li) {
+    var t = svgEl('text', { x: LX[li], y: -14, 'text-anchor': 'middle', 'font-size': '13', 'class': 'sfg-head' });
+    t.textContent = h.toUpperCase();
+    svg.appendChild(t);
+  });
+
   // Squeeze any label wider than its circle so text never spills over the rim.
   function fitLabels() {
     Object.keys(nodeEls).forEach(function(id) {
@@ -538,28 +555,39 @@
     });
   }
 
-  function activate(id) {
-    if (active === id) return;
-    deactivate(true);
-    active = id;
-
-    // Highlight connected edges
-    (ADJ[id] || []).forEach(function(i) {
-      var el = edgeEls[i];
-      if (!el) return;
-      el.setAttribute('stroke', 'var(--accent)');
-      el.setAttribute('stroke-width', '1.8');
-      el.setAttribute('marker-end', 'url(#ar1)');
-    });
-
-    // Highlight this node
-    var nc = nodeEls[id] && nodeEls[id].querySelector('.sfg-nc');
-    var d  = ND[id], p = NODE_POS[id];
-    if (nc) {
-      var sw = (d && d.strong) ? '3.5' : (p && p.layer === 2) ? '3' : '2.5';
-      nc.setAttribute('stroke', 'var(--accent)');
-      nc.setAttribute('stroke-width', sw);
+  // Highlight a node, its edges and its neighbours; fade everything else.
+  function paint(id) {
+    resetEdges();
+    resetNodes();
+    var near = {};
+    if (id) {
+      near[id] = true;
+      (ADJ[id] || []).forEach(function(i) {
+        var el = edgeEls[i];
+        if (!el) return;
+        el.setAttribute('stroke', 'var(--accent)');
+        el.setAttribute('stroke-width', '1.8');
+        el.setAttribute('marker-end', 'url(#ar1)');
+        near[EDGES[i][0]] = near[EDGES[i][1]] = true;
+      });
+      var nc = nodeEls[id] && nodeEls[id].querySelector('.sfg-nc');
+      var pd = ND[id], pp = NODE_POS[id];
+      if (nc) {
+        var sw = (pd && pd.strong) ? '3.5' : (pp && pp.layer === 2) ? '3' : '2.5';
+        nc.setAttribute('stroke', 'var(--accent)');
+        nc.setAttribute('stroke-width', sw);
+      }
     }
+    Object.keys(nodeEls).forEach(function(n) {
+      nodeEls[n].classList.toggle('is-dim', !!id && !near[n]);
+    });
+  }
+
+  function activate(id, quiet) {
+    if (active === id) return;
+    active = id;
+    paint(id);
+    var d = ND[id];
 
     // Populate panel
     if (!d) return;
@@ -592,6 +620,15 @@
       });
     }
     document.getElementById('sfg-desc').innerHTML = d.desc || '';
+
+    // Bring the detail panel into view when a click lands far above it.
+    if (!quiet) {
+      var panel = document.getElementById('sfg-panel');
+      var r = panel.getBoundingClientRect();
+      if (r.top > window.innerHeight - 120) {
+        panel.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+      }
+    }
   }
 
   function deactivate(skip) {
@@ -604,10 +641,17 @@
     }
   }
 
+  // Start with the domain the page is about selected, so the panel is never empty.
+  activate('d_ams', true);
+
   // Attach events to nodes
   Object.keys(nodeEls).forEach(function(id) {
     var el = nodeEls[id];
     el.addEventListener('click', function() { activate(id); });
+    el.addEventListener('mouseenter', function() { paint(id); });
+    el.addEventListener('mouseleave', function() { paint(active); });
+    el.addEventListener('focus', function() { paint(id); });
+    el.addEventListener('blur', function() { paint(active); });
     el.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(id); }
     });
