@@ -146,6 +146,32 @@
   color: var(--ink-3);
 }
 .sfg-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.sfg-pulse {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 14 100;
+  stroke-dashoffset: 14;
+  opacity: 0;
+  pointer-events: none;
+}
+.sfg-live .sfg-pulse {
+  animation: sfg-flow 4.4s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+.sfg-live .sfg-pulse.is-off {
+  animation: none;
+  opacity: 0;
+}
+/* one hop (~1.1s of the 4.4s cycle): fade in, travel start -> end, fade out */
+@keyframes sfg-flow {
+  0%   { stroke-dashoffset: 14;   opacity: 0; }
+  4%   { opacity: 0.9; }
+  21%  { opacity: 0.9; }
+  25%  { stroke-dashoffset: -100; opacity: 0; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
 .sfg-nd { cursor: pointer; transition: opacity 0.2s ease; }
 .sfg-nd.is-dim { opacity: 0.3; }
 .sfg-head {
@@ -440,6 +466,35 @@
     edgeEls.push(el);
   });
 
+  // Forward-propagation pulses: a short dash travels each edge, fading in and
+  // out, one layer after another (source -> skills -> places -> domains), the
+  // way signal flow is drawn on neural-network diagrams. Each pulse path is
+  // normalised to pathLength 100 so one dash/offset works for any edge.
+  var pulseG = svgEl('g', { 'class': 'sfg-pulses' });
+  svg.appendChild(pulseG);
+  var pulseEls = [];
+  var HOP = 1.1; // seconds per layer hop
+  EDGES.forEach(function(edge, i) {
+    var src = edgeEls[i];
+    var a = NODE_POS[edge[0]];
+    if (!src || !a) { pulseEls.push(null); return; }
+    var jitter = ((i * 37) % 10) / 10 * 0.35;
+    var pl = svgEl('path', {
+      d: src.getAttribute('d'), pathLength: '100', 'class': 'sfg-pulse',
+      style: '--d:' + (a.layer * HOP + jitter).toFixed(2) + 's'
+    });
+    pulseG.appendChild(pl);
+    pulseEls.push(pl);
+  });
+
+  // Run the pulses only while the graph is on screen (and never with
+  // reduced motion).
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(en) { svg.classList.toggle('sfg-live', en.isIntersecting); });
+    }, { threshold: 0.05 }).observe(svg);
+  }
+
   // Node group (in front)
   var nodeG = svgEl('g', {});
   svg.appendChild(nodeG);
@@ -535,6 +590,7 @@
   var active = null;
 
   function resetEdges() {
+    pulseEls.forEach(function(pl) { if (pl) pl.classList.remove('is-off'); });
     edgeEls.forEach(function(el) {
       if (!el) return;
       el.setAttribute('stroke', 'var(--rule)');
@@ -577,6 +633,7 @@
         var el = edgeEls[i];
         if (!el) return;
         var onPath = (up[e[0]] && up[e[1]]) || (down[e[0]] && down[e[1]]);
+        if (pulseEls[i]) pulseEls[i].classList.toggle('is-off', !onPath);
         if (!onPath) return;
         var direct = e[0] === id || e[1] === id;
         el.setAttribute('stroke', 'var(--accent)');
