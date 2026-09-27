@@ -33,6 +33,8 @@ src/
   components/
     WorkList.astro           # reusable JSON-driven entry list (Work/Tape-outs/Finance)
     PubList.astro            # numbered bibliography for Publications ([n], authors, italic venue)
+    Experience.astro         # time-axis Experience timeline from experience.json
+    ThemeToggle.astro        # light/dark switch (initial theme set pre-paint in Layout head)
     Gallery.astro            # open-by-default image strip; thumbnails open the shared lightbox
     SkillsSFG.astro          # interactive skills graph (keyboard-accessible nodes)
     Icon.astro               # 1.5px-stroke SVG line icons (external, down, close, expand, check, cross)
@@ -41,10 +43,12 @@ src/
     publications.json        # Publications & Tape-outs entries
     tapeouts.json            # Tape-outs (silicon-fabricated work) entries
     finance.json             # Quantitative Finance entries
+    experience.json          # Experience timeline (start/end YYYY-MM, role, org, specs, detail HTML)
     notebook.html            # nbconvert (JupyterLab) export served at /notebook
   styles/global.css          # all tokens + styling (single stylesheet)
   scripts/reveal.js          # scroll reveals, stagger, running-head scroll-spy (links need data-nav)
   scripts/lightbox.js        # shared <dialog> lightbox for any a[data-lightbox]
+  scripts/theme.js           # theme toggle handler (localStorage "theme")
   lib/github.ts              # build-time GitHub repo/star lookup (fails soft to no figures)
 public/
   fonts/                     # self-hosted KaTeX Computer Modern woff2

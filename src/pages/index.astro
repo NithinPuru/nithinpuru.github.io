@@ -6,6 +6,7 @@ import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
 import SkillsSFG from "../components/SkillsSFG.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import Experience from "../components/Experience.astro";
 import { githubStats } from "../lib/github";
 
 // Data hygiene: re-verify src/data/*.json when updating content (GitHub stars are fetched live).
@@ -139,86 +140,7 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <div class="exp-timeline" data-reveal>
-
-        <!-- Omni -->
-        <details class="exp-item exp-item--active">
-          <summary class="exp-summary">
-            <svg class="exp-node" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5.25" /><circle class="exp-node__dot" cx="7" cy="7" r="2.4" /></svg>
-            <span class="journey-year">Mar 2026 &ndash; Present</span>
-            <span class="exp-kind">Industry</span>
-            <span class="journey-role">Analog Design Engineer</span>
-            <span class="journey-org">Omni Design Technologies &middot; Bengaluru</span>
-            <span class="journey-detail">PVT Monitor &amp; Reference IPs &middot; Bandgap Core &middot; REF ANALOG &middot; TSMC 28&nbsp;nm CMOS</span>
-          </summary>
-          <div class="exp-detail">
-            <p><strong>Block Designs:</strong> Designed the Bandgap Core and Reference Analog blocks for the PVT Monitor and Reference IPs in TSMC 28&nbsp;nm CMOS.</p>
-            <ul>
-              <li>Replaced the BG CORE opamp with a self-biased folded-cascode OTA and a new always-on startup circuit, fixing a common-mode bug that latched the bandgap loop at VDD; reduced 8-bit I-DAC current mismatch to downstream SC-amp and ADC blocks.</li>
-              <li>Owned REF ANALOG: 5 temperature-compensated high-PSRR reference voltages and 8&times;200&nbsp;&mu;A current, adding trim-based programmability to compensate for process and mismatch to meet the &plusmn;3% output accuracy specification.</li>
-              <li>Mapped digital infrastructure from a 16&nbsp;nm reference IP onto the redesigned 28&nbsp;nm blocks, enabling block-level reuse and accelerating IP closure.</li>
-            </ul>
-          </div>
-        </details>
-
-        <!-- PhyTau -->
-        <details class="exp-item">
-          <summary class="exp-summary">
-            <svg class="exp-node" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5.25" /><circle class="exp-node__dot" cx="7" cy="7" r="2.4" /></svg>
-            <span class="journey-year">Oct 2025 &ndash; Feb 2026</span>
-            <span class="exp-kind">Industry</span>
-            <span class="journey-role">Analog Design Engineer</span>
-            <span class="journey-org">PhyTau Semiconductors &middot; Bengaluru</span>
-            <span class="journey-detail">PWM comparator &middot; programmable hysteresis &middot; UMC 55&nbsp;nm CMOS</span>
-          </summary>
-          <div class="exp-detail">
-            <p><strong>Block Designs:</strong> Designed a 4-input PWM comparator with programmable hysteresis for a multi-phase DC-DC converter SoC in UMC 55&nbsp;nm CMOS.</p>
-            <ul>
-              <li>Redesigned the comparator to introduce programmable hysteresis at the first stage, eliminating trip-point glitches and reducing propagation delay; reduced power consumption by 30%.</li>
-              <li>Debugged digital-induced glitches, identifying delay contributions from hysteresis control and de-glitching logic.</li>
-            </ul>
-          </div>
-        </details>
-
-        <!-- IITGN -->
-        <details class="exp-item">
-          <summary class="exp-summary">
-            <svg class="exp-node" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5.25" /><circle class="exp-node__dot" cx="7" cy="7" r="2.4" /></svg>
-            <span class="journey-year">Aug 2024 &ndash; Aug 2025</span>
-            <span class="exp-kind">Research</span>
-            <span class="journey-role">Research Intern</span>
-            <span class="journey-org">LP-CAS Lab &middot; IIT Gandhinagar</span>
-            <span class="journey-detail"><i>R<sub>on</sub>/g<sub>m</sub></i> methodology &middot; SKY130 tapeout &middot; ESSERC 2026</span>
-            <span class="exp-advisor">Advisor &middot; <a href="https://iitgn.ac.in/faculty/ee/fac-madhav" target="_blank" rel="noopener noreferrer">Prof. Madhav K. Pathak</a></span>
-          </summary>
-          <div class="exp-detail">
-            <p><strong>Block Designs:</strong> Dynamic Amplifiers and Ring Amplifier-based LDO at LP-CAS Lab, IITGN.</p>
-            <ul>
-              <li>Developed a design methodology for non-linear dynamic amplifiers modelling RC, large-signal, and small-signal settling stages; validated on an inverter-based switched-capacitor amplifier. (Published at ESSERC 2026.)</li>
-              <li>Proposed a Ring Amplifier-based LDO where the final stage serves as the pass transistor, using adaptive biasing and a deadzone regulation circuit for robust PVT performance.</li>
-              <li>Proposed a translinear circuit-based MAC architecture for analog neural networks using a digitally controlled subthreshold MOSFET cell with a current-steering DAC for programmable neuron weights.</li>
-              <li>Served as Teaching Assistant for the IIT Gandhinagar graduate course PMIC Design (EE660).</li>
-            </ul>
-            <p><strong>Tapeout:</strong> Designed a piecewise-compensated, high-PSRR Bandgap Reference with sub-5&nbsp;ppm/&deg;C TC in SKY130, including a low-power always-on startup circuit; fabricated through the TinyTapeout SKY130 shuttle.</p>
-          </div>
-        </details>
-
-        <!-- ISRO -->
-        <details class="exp-item">
-          <summary class="exp-summary">
-            <svg class="exp-node" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5.25" /><circle class="exp-node__dot" cx="7" cy="7" r="2.4" /></svg>
-            <span class="journey-year">Oct 2023 &ndash; Nov 2023</span>
-            <span class="exp-kind">Internship</span>
-            <span class="journey-role">Intern</span>
-            <span class="journey-org">ISRO &middot; SAC, Hassan</span>
-            <span class="journey-detail">C-Band antenna calibration &middot; GSAT-31 In-Orbit Testing</span>
-          </summary>
-          <div class="exp-detail">
-            <p>GeoSat-based satellite communication in the Antenna System for Satellite TTC within C-Band (6&nbsp;GHz) at the Baseband RF Division, Master Control Facility. Calibrated antenna systems to achieve Cross-Polar Discrimination (XPD) during In-Orbit Testing of GSAT-31.</p>
-          </div>
-        </details>
-
-      </div>
+      <Experience />
     </section>
 
     <section class="section" id="education" aria-labelledby="education-h">
