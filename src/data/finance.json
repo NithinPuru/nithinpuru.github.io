@@ -8,16 +8,15 @@
           "symbol": "candles",
           "url": "https://nithinpuru.github.io/quant-terminal/",
           "points": [
-            "Browser-based quantitative research terminal covering 70+ semiconductor companies across the US, Korea, Japan, Taiwan and Europe, with prices, fundamentals and ~3,000 past earnings reports refreshed automatically twice a day.",
-            "Implemented institutional models from scratch in JavaScript: a Barra-style multi-factor risk model, QMJ quality scores, hidden-Markov regime detection, Engle-Granger pairs screening with false-discovery-rate control, and relative rotation graphs.",
-            "Portfolio construction and risk: exact efficient frontier, risk parity, hierarchical risk parity and Black-Litterman; component VaR, historical crisis replays, regime-switching drawdown forecasts, volatility targeting and Brinson attribution.",
-            "Research tooling: walk-forward backtests with transaction costs, earnings event studies and information-coefficient analysis of the quant score; statistics validated against statsmodels, with unit and browser tests gating every release in CI."
+            "Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 70+ semiconductor companies.",
+            "Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine.",
+            "Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation."
           ],
           "preview": {
             "url": "/img/semi-quant-terminal.webp",
-            "caption": "Live app &middot; dashboard with its research, portfolio and signal tools"
+            "caption": "Live app &middot; terminal header with its model stack and analysis modules"
           },
-          "meta": "JavaScript · Python · Factor Models · Regime Detection · Portfolio Optimization · Event Studies",
+          "meta": "JavaScript · Semiconductor Equities · Monte Carlo · VaR/CVaR · Sharpe/Sortino",
           "tag": "Featured",
           "links": [
             {

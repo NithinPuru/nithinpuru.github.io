@@ -321,7 +321,7 @@
     's_python': {
       abbr: 'PY', label: 'Python \u0026 Automation',
       line1: 'Python', line2: 'Automation',
-      desc: '<p>Python used for EDA automation (parametric Ngspice scripting, LUT generation for R\u2092\u2099/g\u2098 methodology, batch-mode sweep control, metric extraction and cross-corner comparison plots) and financial data analysis (NumPy, Pandas, SciPy, Matplotlib, Scikit-learn, GBM-based Monte Carlo). Also developed the JavaScript analytics engine and the automated Python (yfinance) data pipeline for the Semi-Quant Terminal.</p>',
+      desc: '<p>Python used for EDA automation (parametric Ngspice scripting, LUT generation for R\u2092\u2099/g\u2098 methodology, batch-mode sweep control, metric extraction and cross-corner comparison plots) and financial data analysis (NumPy, Pandas, SciPy, Matplotlib, Scikit-learn, GBM-based Monte Carlo). Also developed the JavaScript analytics engine for the Semi-Quant Terminal.</p>',
       groups: [{ title: 'Applications', items: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation - R\u2092\u2099/g\u2098 methodology', 'SPICE-to-area estimation (Magic VLSI)', 'Semi-Quant Terminal analytics engine', 'Financial data modelling - GBM Monte Carlo'], accent: ['EDA / Ngspice automation (LP-CAS Lab)', 'LUT generation - R\u2092\u2099/g\u2098 methodology'] }]
     },
     's_matlab': {
@@ -339,8 +339,8 @@
     's_quant': {
       abbr: 'QF', label: 'Quantitative Finance',
       line1: 'Quant', line2: 'Finance',
-      desc: '<p>Developed the Semi-Quant Terminal - a browser-based quantitative research terminal for 70+ semiconductor companies. Implemented multi-factor risk models, hidden-Markov regime detection, cointegration-based pairs screening, Black-Litterman and hierarchical risk parity portfolio construction, VaR/CVaR decomposition, regime-switching Monte Carlo drawdown forecasts, earnings event studies and walk-forward backtesting, on an automated Python data pipeline.</p>',
-      groups: [{ title: 'Methods', items: ['Multi-factor risk models', 'Hidden Markov regime models', 'Portfolio optimization - B-L, HRP, risk parity', 'VaR / CVaR, stress testing', 'Monte Carlo simulation', 'Cointegration & event studies', 'ARIMA / Holt-Winters time-series'], accent: ['Multi-factor risk models', 'Hidden Markov regime models'] }]
+      desc: '<p>Developed the Semi-Quant Terminal - a zero-backend single-page web application providing institutional-grade quantitative analysis of 70+ semiconductor company stock portfolios. Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine. Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.</p>',
+      groups: [{ title: 'Methods', items: ['Monte Carlo - GBM-based', 'VaR / CVaR', 'Sharpe / Sortino ratios', 'RSI, MACD, Bollinger Bands', 'ARIMA / Holt-Winters time-series', 'Beta / correlation analysis'], accent: ['Monte Carlo - GBM-based', 'VaR / CVaR'] }]
     },
 
     // ─ Layer 2: Projects / Places ─────────────────────────
@@ -377,8 +377,8 @@
     'p_squant': {
       abbr: 'SQT', label: 'Semi-Quant Terminal',
       line1: 'Semi-Quant', line2: 'Terminal',
-      desc: '<p>Browser-based quantitative research terminal for 70+ semiconductor companies, with prices, fundamentals and earnings history refreshed twice a day by an automated Python pipeline. Covers factor and regime models, portfolio optimization and risk, pairs and rotation analysis, earnings event studies, walk-forward backtests and signal research, all computed in a pure-JavaScript analytics engine.</p>',
-      groups: [{ title: 'Features', items: ['Multi-factor model & QMJ quality scores', 'HMM regimes & correlation dynamics', 'Black-Litterman, HRP & risk-parity optimizer', 'VaR decomposition, crisis replays, drawdown forecasts', 'Earnings event studies & walk-forward backtests', '70+ semiconductor companies, auto-refreshed'], accent: ['Multi-factor model & QMJ quality scores', 'HMM regimes & correlation dynamics'] }]
+      desc: '<p>Zero-backend single-page web application providing institutional-grade quantitative analysis of stock portfolios of 70+ semiconductor companies. Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine. Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation.</p>',
+      groups: [{ title: 'Features', items: ['RSI, MACD, Bollinger Bands', 'VaR / CVaR, Beta, Sharpe / Sortino', 'GBM-based Monte Carlo simulation', '70+ semiconductor company portfolios', 'Zero-backend pure-JS analytics engine'], accent: ['GBM-based Monte Carlo simulation', 'Zero-backend pure-JS analytics engine'] }]
     },
     'p_spice': {
       abbr: 'SPY', label: 'SPICE Automation Framework',
@@ -419,8 +419,8 @@
       abbr: 'ML', label: 'ML \u0026 Quantitative Finance',
       line1: 'ML \u0026 Quant', line2: 'Finance',
       strong: true,
-      desc: '<p>Machine learning and quantitative finance skills applied in the Semi-Quant Terminal: multi-factor risk models, hidden-Markov regime detection, portfolio optimization (Black-Litterman, hierarchical risk parity), jump-diffusion and regime-switching Monte Carlo, VaR/CVaR risk decomposition, earnings event studies and walk-forward backtesting across 70+ semiconductor companies. ML stack: NumPy, Pandas, SciPy, Scikit-learn, PyTorch (basics).</p>',
-      groups: [{ title: 'Stack', items: ['NumPy / Pandas / SciPy / Scikit-learn', 'PyTorch (basics)', 'Factor & regime models (HMM)', 'Monte Carlo (jump-diffusion, regime-switching)', 'VaR / CVaR, Sharpe / Sortino', 'ARIMA / Holt-Winters'], accent: ['Factor & regime models (HMM)', 'NumPy / Pandas / SciPy / Scikit-learn'] }]
+      desc: '<p>Machine learning and quantitative finance skills applied in the Semi-Quant Terminal: institutional-grade portfolio analysis of 70+ semiconductor companies, GBM-based Monte Carlo simulation, RSI/MACD/Bollinger Band technical analysis, VaR/CVaR/Sharpe/Sortino risk metrics, all in a zero-backend pure-JavaScript analytics engine. ML stack: NumPy, Pandas, SciPy, Scikit-learn, PyTorch (basics).</p>',
+      groups: [{ title: 'Stack', items: ['NumPy / Pandas / SciPy / Scikit-learn', 'PyTorch (basics)', 'Monte Carlo (GBM-based)', 'VaR / CVaR, Sharpe / Sortino', 'ARIMA / Holt-Winters'], accent: ['Monte Carlo (GBM-based)', 'NumPy / Pandas / SciPy / Scikit-learn'] }]
     }
   };
 
