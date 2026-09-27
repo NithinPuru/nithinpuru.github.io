@@ -5,6 +5,20 @@
         {
           "title": "Piecewise-Compensated High-PSRR Bandgap Reference",
           "meta": "SKY130 · TinyTapeout · Bandgap reference",
+          "specs": [
+            {
+              "k": "TC",
+              "v": "4.4 ppm/°C"
+            },
+            {
+              "k": "Compensation",
+              "v": "Piecewise, higher-order"
+            },
+            {
+              "k": "PSRR boost",
+              "v": "Cascode mirrors"
+            }
+          ],
           "url": "https://github.com/Low-Power-Circuits-IoT-Systems-Group/LPCAS_TP1",
           "points": [
             "Implemented higher-order curvature correction using piecewise compensation technique to compensate for BJT non-idealities in Bandgap; achieved 4.4 ppm/°C Temperature Coefficient.",

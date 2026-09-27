@@ -409,8 +409,8 @@
     m.appendChild(svgEl('path', { d: 'M0,1 L7,3.5 L0,6 L1.2,3.5Z', fill: fill }));
     return m;
   }
-  defs.appendChild(mkMarker('ar0', 'rgba(25, 24, 20, 0.34)'));
-  defs.appendChild(mkMarker('ar1', '#2b4863'));
+  defs.appendChild(mkMarker('ar0', 'var(--rule-strong)'));
+  defs.appendChild(mkMarker('ar1', 'var(--accent)'));
   svg.appendChild(defs);
 
   // Edge group (behind nodes)
@@ -424,7 +424,7 @@
     var el = svgEl('path', {
       d: 'M ' + a.x + ' ' + a.y + ' C ' + (a.x + cx) + ' ' + a.y +
          ', ' + (b.x - cx) + ' ' + b.y + ', ' + b.x + ' ' + b.y,
-      fill: 'none', stroke: 'rgba(25, 24, 20, 0.16)', 'stroke-width': '0.9',
+      fill: 'none', stroke: 'var(--rule)', 'stroke-width': '0.9',
       'marker-end': 'url(#ar0)', 'class': 'sfg-br'
     });
     edgeG.appendChild(el);
@@ -445,32 +445,32 @@
 
     if (d.sigma) {
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
-        fill: '#faf9f4', stroke: '#6f6a5e', 'stroke-width': '1.6', 'class': 'sfg-nc' }));
+        fill: 'var(--paper)', stroke: 'var(--ink-3)', 'stroke-width': '1.6', 'class': 'sfg-nc' }));
       var st = svgEl('text', { x: p.x, y: p.y,
-        'font-family': 'var(--font-serif)', 'font-size': '20', fill: '#191814',
+        'font-family': 'var(--font-serif)', 'font-size': '20', fill: 'var(--ink)',
         'text-anchor': 'middle', 'dominant-baseline': 'middle' });
       st.textContent = '\u03a3';
       g.appendChild(st);
       var sub = svgEl('text', { x: p.x, y: p.y + p.r + 11,
-        'font-family': 'var(--font-mono)', 'font-size': '9', fill: '#6f6a5e', 'text-anchor': 'middle' });
+        'font-family': 'var(--font-mono)', 'font-size': '9', fill: 'var(--ink-3)', 'text-anchor': 'middle' });
       sub.textContent = 'source';
       g.appendChild(sub);
 
     } else if (d.strong) {
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
-        fill: '#faf9f4', stroke: '#191814', 'stroke-width': '2.2', 'class': 'sfg-nc' }));
+        fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': '2.2', 'class': 'sfg-nc' }));
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r - 6,
-        fill: 'none', stroke: '#6f6a5e', 'stroke-width': '0.8' }));
+        fill: 'none', stroke: 'var(--ink-3)', 'stroke-width': '0.8' }));
 
     } else if (p.layer === 2) {
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
-        fill: '#faf9f4', stroke: '#45413a', 'stroke-width': '1.8', 'class': 'sfg-nc' }));
+        fill: 'var(--paper)', stroke: 'var(--ink-2)', 'stroke-width': '1.8', 'class': 'sfg-nc' }));
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r - 5,
-        fill: 'none', stroke: 'rgba(25, 24, 20, 0.16)', 'stroke-width': '0.7' }));
+        fill: 'none', stroke: 'var(--rule)', 'stroke-width': '0.7' }));
 
     } else {
       g.appendChild(svgEl('circle', { cx: p.x, cy: p.y, r: p.r,
-        fill: '#faf9f4', stroke: 'rgba(25, 24, 20, 0.34)', 'stroke-width': '1.2', 'class': 'sfg-nc' }));
+        fill: 'var(--paper)', stroke: 'var(--rule-strong)', 'stroke-width': '1.2', 'class': 'sfg-nc' }));
     }
 
     // Text labels (2 lines)
@@ -478,14 +478,14 @@
       var dy1 = d.line2 ? '-6.5' : '0';
       var t1 = svgEl('text', { x: p.x, y: p.y, dy: dy1,
         'font-family': 'var(--font-serif)', 'font-size': fs, 'font-weight': '700',
-        fill: '#191814', 'text-anchor': 'middle', 'dominant-baseline': 'middle' });
+        fill: 'var(--ink)', 'text-anchor': 'middle', 'dominant-baseline': 'middle' });
       t1.textContent = d.line1;
       g.appendChild(t1);
       if (d.line2) {
         var t2 = svgEl('text', { x: p.x, y: p.y, dy: '6.5',
           'font-family': 'var(--font-serif)', 'font-size': fs,
           'font-weight': d.strong ? '700' : '600',
-          fill: d.strong ? '#191814' : '#45413a',
+          fill: d.strong ? 'var(--ink)' : 'var(--ink-2)',
           'text-anchor': 'middle', 'dominant-baseline': 'middle' });
         t2.textContent = d.line2;
         g.appendChild(t2);
@@ -520,7 +520,7 @@
   function resetEdges() {
     edgeEls.forEach(function(el) {
       if (!el) return;
-      el.setAttribute('stroke', 'rgba(25, 24, 20, 0.16)');
+      el.setAttribute('stroke', 'var(--rule)');
       el.setAttribute('stroke-width', '0.9');
       el.setAttribute('marker-end', 'url(#ar0)');
     });
@@ -531,10 +531,10 @@
       var nc = nodeEls[id].querySelector('.sfg-nc');
       var d  = ND[id], p = NODE_POS[id];
       if (!nc || !d || !p) return;
-      if (d.sigma)       { nc.setAttribute('stroke','#6f6a5e'); nc.setAttribute('stroke-width','1.6'); }
-      else if (d.strong) { nc.setAttribute('stroke','#191814'); nc.setAttribute('stroke-width','2.2'); }
-      else if (p.layer === 2) { nc.setAttribute('stroke','#45413a'); nc.setAttribute('stroke-width','1.8'); }
-      else               { nc.setAttribute('stroke','rgba(25, 24, 20, 0.34)'); nc.setAttribute('stroke-width','1.2'); }
+      if (d.sigma)       { nc.setAttribute('stroke','var(--ink-3)'); nc.setAttribute('stroke-width','1.6'); }
+      else if (d.strong) { nc.setAttribute('stroke','var(--ink)'); nc.setAttribute('stroke-width','2.2'); }
+      else if (p.layer === 2) { nc.setAttribute('stroke','var(--ink-2)'); nc.setAttribute('stroke-width','1.8'); }
+      else               { nc.setAttribute('stroke','var(--rule-strong)'); nc.setAttribute('stroke-width','1.2'); }
     });
   }
 
@@ -547,7 +547,7 @@
     (ADJ[id] || []).forEach(function(i) {
       var el = edgeEls[i];
       if (!el) return;
-      el.setAttribute('stroke', '#2b4863');
+      el.setAttribute('stroke', 'var(--accent)');
       el.setAttribute('stroke-width', '1.8');
       el.setAttribute('marker-end', 'url(#ar1)');
     });
@@ -557,7 +557,7 @@
     var d  = ND[id], p = NODE_POS[id];
     if (nc) {
       var sw = (d && d.strong) ? '3.5' : (p && p.layer === 2) ? '3' : '2.5';
-      nc.setAttribute('stroke', '#2b4863');
+      nc.setAttribute('stroke', 'var(--accent)');
       nc.setAttribute('stroke-width', sw);
     }
 

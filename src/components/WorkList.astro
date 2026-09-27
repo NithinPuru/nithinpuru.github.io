@@ -24,6 +24,7 @@ interface Entry {
   url?: string;
   desc?: string;
   points?: string[];
+  specs?: { k: string; v: string }[];
   meta?: string;
   tag?: string;
   tagHot?: boolean;
@@ -44,14 +45,15 @@ interface Group {
 
 interface Props {
   groups: Group[];
-  /** "grid" sets entries in two hairline-ruled columns on wide screens. */
-  layout?: "list" | "grid";
+  /** "grid" sets entries in two hairline-ruled columns on wide screens;
+   *  "chip" (tape-outs) leads each entry with its first image as a die plate. */
+  layout?: "list" | "grid" | "chip";
 }
 
 const { groups, layout = "list" } = Astro.props;
 const gh = await githubStats("chennakeshavadasa");
 ---
-<div class={"worklist" + (layout === "grid" ? " worklist--grid" : "")}>
+<div class={"worklist" + (layout !== "list" ? ` worklist--${layout}` : "")}>
   {
     groups.map((group) => (
       <div data-reveal-group>
@@ -69,8 +71,20 @@ const gh = await githubStats("chennakeshavadasa");
               const hasSource = entry.links?.some((l) => /source/i.test(l.label));
               const isRepo = /^https:\/\/github\.com\/[^/]+\/[^/#?]+/i.test(entry.url ?? "");
               const showSource = isRepo && !hasSource;
+              const chip = layout === "chip" && !!entry.images?.length;
+              const [die, ...extra] = chip ? entry.images! : [];
               return (
-              <li class="entry" data-reveal>
+              <li class={"entry" + (chip ? " entry--chip" : "")} data-reveal>
+                {chip && (
+                  <figure class="chip__die">
+                    <a href={die.url} data-lightbox data-caption={die.label ?? entry.title} aria-label={`Expand image: ${die.label ?? entry.title}`}>
+                      <img src={die.url} alt={die.label ?? entry.title} loading="lazy" decoding="async" />
+                      <span class="chip__zoom" aria-hidden="true"><Icon name="expand" size={12} /></span>
+                    </a>
+                    {die.label && <figcaption>{die.label}</figcaption>}
+                  </figure>
+                )}
+                <div class="entry__main">
                 <div class="entry__top">
                   <h4 class="entry__title">
                     {entry.url ? (
@@ -93,6 +107,14 @@ const gh = await githubStats("chennakeshavadasa");
                 </div>
 
                 {entry.meta && <p class="entry__kw">{entry.meta}</p>}
+
+                {entry.specs && (
+                  <dl class="entry__specs" aria-label="Key specifications">
+                    {entry.specs.map((sp) => (
+                      <div><dt set:html={sp.k} /><dd set:html={sp.v} /></div>
+                    ))}
+                  </dl>
+                )}
 
                 {entry.desc && <p class="entry__desc" set:html={entry.desc} />}
 
@@ -127,7 +149,20 @@ const gh = await githubStats("chennakeshavadasa");
                   </details>
                 )}
 
-                {entry.images && entry.images.length > 0 && (
+                {chip && extra.length > 0 && (
+                  <ul class="chip__thumbs" aria-label="Board and lab photos">
+                    {extra.map((img) => (
+                      <li>
+                        <a href={img.url} data-lightbox data-caption={img.label ?? entry.title} aria-label={`Expand image: ${img.label ?? entry.title}`}>
+                          <img src={img.url} alt={img.label ?? entry.title} loading="lazy" decoding="async" />
+                        </a>
+                        {img.label && <span>{img.label}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {!chip && entry.images && entry.images.length > 0 && (
                   <Gallery images={entry.images} title={entry.imagesTitle} alt={entry.title} />
                 )}
 
@@ -153,6 +188,7 @@ const gh = await githubStats("chennakeshavadasa");
                     ))}
                   </ul>
                 )}
+                </div>
               </li>
               );
             })

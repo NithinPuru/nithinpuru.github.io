@@ -5,6 +5,16 @@
         {
           "title": "Design of Power-on Reset Circuit",
           "meta": "SKY130 · Power-on reset",
+          "specs": [
+            {
+              "k": "Enable at",
+              "v": "V<sub>DD</sub> = 1.5 V"
+            },
+            {
+              "k": "Verified",
+              "v": "PVT corners"
+            }
+          ],
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/blob/main/POR/SKY130_POR_v1.sch",
           "points": [
             "Designed a POR circuit in SKY130 PDK using a current comparator with PMOS/NMOS current mirrors for supply threshold detection; VPOR asserts Enable at VDD = 1.5 V across PVT corners."
@@ -32,6 +42,16 @@
         {
           "title": "Ultra-Low Power Two-Transistor Subthreshold Voltage Reference",
           "meta": "SKY130 · Subthreshold reference",
+          "specs": [
+            {
+              "k": "TC",
+              "v": "60 ppm/°C"
+            },
+            {
+              "k": "Power",
+              "v": "≤ 2 pW"
+            }
+          ],
           "url": "https://github.com/chennakeshavadasa/LPCAS-Design-TT-10_SKY130/tree/main/2TBGR",
           "points": [
             "Designed a subthreshold-based Voltage reference current with current matching between a diode-tied NMOS and a native NMOS load transistor for reference generation without a dedicated bias circuit.",
@@ -41,6 +61,20 @@
         {
           "title": "Low Dropout Voltage Regulator (LDO)",
           "meta": "SKY130 · LDO",
+          "specs": [
+            {
+              "k": "Settling",
+              "v": "1 µs"
+            },
+            {
+              "k": "Load",
+              "v": "100 pF · 40 mA"
+            },
+            {
+              "k": "PSRR",
+              "v": "−60 dB"
+            }
+          ],
           "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
           "points": [
             "Designed LDO with 1 &mu;s transient settling for a 100 pF, 40 mA load at &minus;60 dB PSRR.",
@@ -51,6 +85,24 @@
         {
           "title": "Rail-to-Rail Input Swing OTA",
           "meta": "SKY130 · Folded-cascode OTA",
+          "specs": [
+            {
+              "k": "DC gain",
+              "v": "63–64 dB"
+            },
+            {
+              "k": "UGF",
+              "v": "2 MHz"
+            },
+            {
+              "k": "Phase margin",
+              "v": "85°"
+            },
+            {
+              "k": "Offset <span class=\"lc\">σ</span>",
+              "v": "1.54 mV"
+            }
+          ],
           "url": "https://github.com/chennakeshavadasa/SKY130_DESIGN_IPS/tree/main/OTAs/Rail_to_Rail_OTA_Inp_IP/without_internal_bias",
           "points": [
             "Implemented complementary PMOS/NMOS differential pair folding in a folded-cascode topology for full rail-to-rail input swing.",

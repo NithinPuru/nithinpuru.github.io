@@ -5,6 +5,7 @@ import PubList from "../components/PubList.astro";
 import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
 import SkillsSFG from "../components/SkillsSFG.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { githubStats } from "../lib/github";
 
 // Data hygiene: re-verify src/data/*.json when updating content (GitHub stars are fetched live).
@@ -16,40 +17,69 @@ import finance from "../data/finance.json";
 const github = "https://github.com/chennakeshavadasa";
 const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
 const email = "nithinpurushothama@gmail.com";
+// Datasheet-style revision stamp in the footer: the date of this build.
+const buildDate = new Date().toISOString().slice(0, 10);
+// Section list drives the sidebar pinout (laptop layout).
+const sections = [
+  { id: "about", label: "About" },
+  { id: "experience", label: "Experience" },
+  { id: "education", label: "Education" },
+  { id: "skills", label: "Skills" },
+  { id: "publications", label: "Publications" },
+  { id: "awards", label: "Awards" },
+  { id: "work", label: "Work" },
+  { id: "finance", label: "Quant Finance" },
+  { id: "cv", label: "Curriculum Vitae" },
+  { id: "contact", label: "Contact" },
+];
 // Live repo/star totals for the Work footer (null when GitHub is unreachable).
 const gh = await githubStats("chennakeshavadasa");
 
 ---
 <Layout>
+  <div class="shell">
+    <aside class="profile" aria-label="Profile">
+      <img
+        class="profile__photo"
+        src={`${import.meta.env.BASE_URL}img/nithin_headshot.jpg`}
+        alt="Portrait of Nithin Purushothama"
+        width="275"
+        height="275"
+        fetchpriority="high"
+      />
+      <div class="profile__id">
+        <h1>Nithin Purushothama</h1>
+        <p class="doc-meta">Analog &middot; Mixed-Signal IC Designer</p>
+        <p class="profile__status mono">Seeking PhD positions &middot; Fall 2027</p>
+        <ul class="profile__links" aria-label="Profiles and contact">
+          <li><a href={`mailto:${email}`}><Icon name="mail" size={16} /><span>Email</span></a></li>
+          <li><a href={github} target="_blank" rel="noopener noreferrer"><Icon name="github" size={16} /><span>GitHub</span></a></li>
+          <li><a href={linkedin} target="_blank" rel="noopener noreferrer"><Icon name="linkedin" size={16} /><span>LinkedIn</span></a></li>
+          <li><a href="#cv"><Icon name="file" size={16} /><span>CV</span></a></li>
+        </ul>
+      </div>
+      <nav class="pinout" aria-label="Sections">
+        <ol>
+          {sections.map((sec, i) => (
+            <li>
+              <a data-nav href={`#${sec.id}`}>
+                <span class="pinout__no">{String(i).padStart(2, "0")}</span>
+                <span class="pinout__stub" aria-hidden="true"></span>
+                <span class="pinout__label">{sec.label}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <div class="profile__foot">
+        <ThemeToggle />
+        <a class="profile__nb" href={`${import.meta.env.BASE_URL}rongm`}><i>R<sub>on</sub>/g<sub>m</sub></i> notebook</a>
+      </div>
+    </aside>
+
   <div class="sheet">
     <header class="masthead" id="about">
       <div class="masthead__grid">
-
-
-        <div class="masthead__head">
-          <div class="masthead__id">
-            <h1>Nithin Purushothama</h1>
-            <p class="doc-meta">
-              <span>Analog &middot; Mixed-Signal IC Designer</span>
-            </p>
-            <p class="masthead__status mono">Seeking PhD positions &middot; Fall 2027</p>
-            <ul class="masthead__links" aria-label="Profiles and contact">
-              <li><a href={`mailto:${email}`}><Icon name="mail" size={16} /><span>Email</span></a></li>
-              <li><a href={github} target="_blank" rel="noopener noreferrer"><Icon name="github" size={16} /><span>GitHub</span></a></li>
-              <li><a href={linkedin} target="_blank" rel="noopener noreferrer"><Icon name="linkedin" size={16} /><span>LinkedIn</span></a></li>
-              <li><a href="#cv"><Icon name="file" size={16} /><span>CV</span></a></li>
-            </ul>
-          </div>
-          <img
-            class="masthead__photo"
-            src={`${import.meta.env.BASE_URL}img/nithin_headshot.jpg`}
-            alt="Portrait of Nithin Purushothama"
-            width="275"
-            height="275"
-            fetchpriority="high"
-          />
-        </div>
-
         <div class="abstract">
           <span class="ab-label">About me</span>
           <p>
@@ -535,7 +565,7 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="subsec-no">6.1</span>Tape-outs
         <span class="group-count">{tapeouts.groups.reduce((n, g) => n + g.entries.length, 0)}</span>
       </h3>
-      <WorkList groups={tapeouts.groups} />
+      <WorkList groups={tapeouts.groups} layout="chip" />
 
       <h3 class="subsection-title" data-reveal>
         <span class="subsec-no">6.2</span>Projects
@@ -623,14 +653,17 @@ const gh = await githubStats("chennakeshavadasa");
     </section>
 
     <div class="site-footer" role="contentinfo">
-      <span>Typeset in Computer Modern</span>
+      <span>Nithin Purushothama &middot; Portfolio</span>
       <span aria-hidden="true">·</span>
-      <span>&copy; 2026 Nithin Purushothama</span>
+      <span>Rev. {buildDate}</span>
+      <span aria-hidden="true">·</span>
+      <span>Typeset in Computer Modern</span>
       <span aria-hidden="true">·</span>
       <a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>
       <span aria-hidden="true">·</span>
       <a href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </div>
+  </div>
   </div>
 
   <script is:inline>

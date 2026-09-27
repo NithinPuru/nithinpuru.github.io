@@ -2,15 +2,30 @@
 name: nithinpuru.github.io
 description: Portfolio of Nithin P, typeset like a freshly-compiled LaTeX document — Computer Modern serif, typewriter metadata, ink on paper.
 colors:
-  paper: "#faf9f4"
-  ink: "#191814"
+  paper: "#f7f4ec"
+  paper-2: "#efeadd"
+  ink: "#1a1916"
   ink-2: "#45413a"
-  ink-3: "#6f6a5e"
-  accent: "#2b4863"
+  ink-3: "#69645a"
+  accent: "#234766"
+  accent-wash: "rgba(35, 71, 102, 0.07)"
   annot: "#8f3526"
   annot-soft: "#a54837"
-  rule: "rgba(25, 24, 20, 0.16)"
-  rule-strong: "rgba(25, 24, 20, 0.34)"
+  plate: "#fbf9f3"
+  rule: "rgba(26, 25, 22, 0.16)"
+  rule-strong: "rgba(26, 25, 22, 0.34)"
+  dark-paper: "#16171b"
+  dark-paper-2: "#1d1f24"
+  dark-ink: "#ebe7dc"
+  dark-ink-2: "#c5c0b3"
+  dark-ink-3: "#9d978a"
+  dark-accent: "#93b6dc"
+  dark-annot: "#e2826d"
+  dark-annot-soft: "#d0705c"
+  dark-plate: "#ece8de"
+  dark-rule: "rgba(235, 231, 220, 0.13)"
+  dark-rule-strong: "rgba(235, 231, 220, 0.3)"
+  die-well: "#15161a"
 typography:
   display:
     fontFamily: '"KaTeX_Main", Georgia, "Times New Roman", serif'
@@ -49,6 +64,7 @@ typography:
     contact: "0.84rem"
     nav-name: "0.92rem"
     subhead: "1rem"
+    sidebar-name: "1.8rem"
 spacing:
   column: "46rem"
   section-block: "clamp(2.75rem, 6vw, 4.25rem)"
@@ -102,7 +118,7 @@ The page refuses the agency card grid and the hero-metric template outright. Den
 
 ## Colors
 
-One warm-paper field, near-black inks, one oxford-blue accent, and a red held for annotation.
+One warm-paper field, near-black inks, one oxford-blue accent, and a red held for annotation. A matching **dark theme** ("ink at night": charcoal field, warm off-white inks, a lightened blue accent and softened red) is selected on `<html data-theme>` by a pre-paint head script from the saved choice or the system preference, and flipped by the sun/moon `ThemeToggle` (top nav on small screens, sidebar foot on laptops). Every component reads colours from the variables; only image wells (the tape-out die plate `#15161a`) and photo overlays keep fixed dark values in both themes.
 
 ### Primary
 - **Oxford Ink Blue** (#2b4863): the single accent. Links, section numbers, nav active states, small arrow SVGs, and small-caps document labels.
@@ -141,6 +157,16 @@ One warm-paper field, near-black inks, one oxford-blue accent, and a red held fo
 **The Justified Measure Rule.** Body copy is justified with `hyphens: auto` inside the 46rem column; left-ragged prose where a typeset page could justify is a miss.
 
 ## Layout
+
+**Laptop (≥1200px):** a two-column shell — a sticky, full-height profile sidebar (15.5rem, hairline right edge: portrait, name at 1.8rem, role, red status, contact links, the **pinout** section menu, and the theme toggle + notebook link at its foot) beside the 46rem reading column; the top nav is hidden. The pinout draws each section as an IC pin: two-digit pin number, a pin stub that extends and turns accent on hover / for the scroll-spy's active section, and the net name. **Below 1200px:** the same profile block renders as the masthead head (name left, portrait right; portrait above the name under 600px) under the fixed running-head nav.
+
+**Section grammar:** each section opens with a schematic **net label** — the two-digit numeral reversed out of an accent, arrow-ended port tag — beside the title, over a 2px ink rule that draws in on reveal. Subsections carry a mono number and count over a `rule-strong` hairline; group rubrics sit over a hairline.
+
+**Tape-outs ("chip plates"):** the first image leads as a square die plate on a dark well (zoom-in to the lightbox), the datasheet body beside it; further images are 4:3 captioned thumbnails. **Key specifications** on tape-outs/projects render as a ruled datasheet strip of parameter/value cells (`specs` in JSON; values copied from the entry's own text).
+
+The footer reads like a datasheet foot: name · Portfolio · `Rev. <build date>` · typeset note · links.
+
+### Previous single-column notes
 
 A single centered column (`max-width: 46rem`, ≈736px, ≈74ch measure) with generous inline padding that collapses to 1.15rem below 600px. A fixed running-head nav (`3.4rem`) carries the name mark left and the section links right (plus the notebook link); below 760px the strip becomes horizontally scrollable with a hidden scrollbar and auto-scrolls to keep the scroll-spy's active link in view, and below 520px the name mark hides (the masthead carries the name). Sections stack, separated by 1px hairlines, each opening with the numeral + title + a flexed hairline that draws itself on reveal. Vertical rhythm: `padding-block: clamp(2.75rem, 6vw, 4.25rem)` per section, more space above a heading than below it, entries at 1.05rem per row under a 1px top rule. All anchors scroll with `scroll-margin-top` clearing the fixed nav.
 
