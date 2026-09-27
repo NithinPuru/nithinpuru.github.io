@@ -177,7 +177,7 @@
   </div>
 
   <footer style="margin-top:3.5rem">No cookies. Visitors are counted by a salted hash; raw IP addresses are never stored.
-    <p class="notrack"><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
+    <p class="notrack" id="notrack" hidden><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
   </footer>
 </main>
 
@@ -389,6 +389,8 @@ function renderNotrack() {
   try { off = localStorage.getItem("np_notrack") === "1"; } catch (e) {}
   $("notrack-status").textContent = off ? "Visits from this browser are not counted." : "Visits from this browser are counted.";
   $("notrack-toggle").textContent = off ? "Count this browser again" : "Stop counting this browser";
+  // only shown to the owner: an opted-out browser, or /analytics/?admin
+  $("notrack").hidden = !(off || /[?&]admin\b/.test(location.search));
 }
 $("notrack-toggle").addEventListener("click", () => {
   try {
