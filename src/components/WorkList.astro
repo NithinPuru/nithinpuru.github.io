@@ -129,7 +129,7 @@ const { groups } = Astro.props;
 
                 {/* Layout / PCB / silicon images */}
                 {entry.images && entry.images.length > 0 && (
-                  <details class="entry__abstract" open>
+                  <details class="entry__abstract" data-keep-open open>
                     <summary>{entry.imagesTitle ?? "Layout & PCB Images"}</summary>
                     <div class="abstract-content">
                       <div class="entry__images">
