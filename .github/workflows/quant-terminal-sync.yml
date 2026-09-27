@@ -2,7 +2,7 @@ name: Sync quant terminal code
 
 # Source of truth for the terminal's code is chennakeshavadasa/career-semi-quant.
 # This pulls the newest commit there that PASSED its Test workflow and mirrors
-#   public/quant-terminal/  (except market_data.json — the data bot here owns it)
+#   public/quant-terminal/  (except market_data.json and daily/ — the data bot here owns them)
 #   quant-terminal/
 # into this repo, then redeploys. Edits made directly to those folders here
 # will be overwritten — make them in career-semi-quant instead.
@@ -50,7 +50,7 @@ jobs:
           test -f /tmp/src/public/quant-terminal/index.html
           test -f /tmp/src/quant-terminal/update_data.py
           grep -q "const COS = \[" /tmp/src/public/quant-terminal/index.html
-          rsync -a --delete --exclude market_data.json /tmp/src/public/quant-terminal/ public/quant-terminal/
+          rsync -a --delete --exclude market_data.json --exclude daily/ /tmp/src/public/quant-terminal/ public/quant-terminal/
           rsync -a --delete /tmp/src/quant-terminal/ quant-terminal/
 
       - name: Commit and redeploy

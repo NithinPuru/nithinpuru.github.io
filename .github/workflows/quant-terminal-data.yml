@@ -1,7 +1,8 @@
 name: Update quant terminal data
 
-# Refreshes public/quant-terminal/market_data.json (weekly closes + fundamentals
-# from Yahoo Finance via yfinance). The page itself is static; this is its only
+# Refreshes public/quant-terminal/market_data.json (weekly closes, fundamentals,
+# earnings) and public/quant-terminal/daily/*.json (daily OHLCV for charts) from
+# Yahoo Finance via yfinance. The page itself is static; this is its only
 # data source. Commits made with GITHUB_TOKEN don't trigger other workflows, so
 # deploy.yml redeploys via its workflow_run trigger once this finishes.
 
@@ -43,7 +44,7 @@ jobs:
         run: |
           git config user.name "quant-terminal[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/quant-terminal/market_data.json
+          git add public/quant-terminal/market_data.json public/quant-terminal/daily
           if git diff --cached --quiet; then
             echo "No data changes."
             exit 0
