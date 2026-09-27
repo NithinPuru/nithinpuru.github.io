@@ -173,14 +173,16 @@ const gh = await githubStats("chennakeshavadasa");
 
         <div class="edu__courses">
           <h4 class="edu__courses-h">Courses taken</h4>
-          <div class="edu__groups">
+          <dl class="edu__rows">
             {courseGroups.map((g) => (
-              <div class="edu__group">
-                <h5>{g.title}</h5>
-                <ul>{g.items.map((c) => <li>{c}</li>)}</ul>
+              <div class="edu__row">
+                <dt>{g.title}</dt>
+                <dd>
+                  <ul>{g.items.map((c) => <li>{c}</li>)}</ul>
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </article>
     </section>
@@ -216,27 +218,45 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <ul class="cv-highlights award-list" data-reveal>
-        <li>
-          <span class="k award-k">
-            2026
-            <img
-              src={`${import.meta.env.BASE_URL}img/sscs.jpg`}
-              alt="IEEE Solid-State Circuits Society logo"
-              class="award-logo"
-              width="140"
-              height="140"
-              loading="lazy"
-            />
-          </span>
-          <div class="award-body">
+      <article class="award" data-reveal>
+        <div class="award__plate">
+          <img
+            src={`${import.meta.env.BASE_URL}img/sscs.jpg`}
+            alt="IEEE Solid-State Circuits Society logo"
+            width="140"
+            height="140"
+            loading="lazy"
+          />
+        </div>
+        <div class="award-body">
+            <p class="award__meta">
+              <span class="award__year">2026</span>
+              <span class="award__cat">Young Professional category</span>
+              <span class="award__kind">Travel grant</span>
+            </p>
             <h3 class="award-title">
               <a href="https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io/tree/main/VLSI26" target="_blank" rel="noopener noreferrer">IEEE SSCS &ldquo;Code-a-Chip&rdquo; Travel Grant Award 2026</a>
             </h3>
-            <p class="award-org mono">IEEE Solid-State Circuits Society (SSCS) &ndash; Open-Source Ecosystem (TC-OSE)</p>
+            <p class="award-org">IEEE Solid-State Circuits Society (SSCS) &ndash; Open-Source Ecosystem (TC-OSE)</p>
+            <p class="award__grant"><span class="award__grant-k">Grant</span><span class="award__grant-v">$5,000</span></p>
             <p class="award-desc">
-              Awarded $5,000 travel grant (Young Professional&rsquo;s category) for &ldquo;Ron/gm Based Design Methodology for Dynamic Amplifiers&rdquo; a notebook demonstrating a novel design methodology for Inverter-based dynamic amplifiers on IHP SG13G2 using open-source EDA tools. Award ceremony at ESSERC 2026, Palma de Mallorca, Spain.
+              Awarded for &ldquo;<i>R<sub>on</sub>/g<sub>m</sub></i> Based Design Methodology for Dynamic Amplifiers&rdquo;, a notebook demonstrating a novel design methodology for inverter-based dynamic amplifiers on IHP SG13G2 using open-source EDA tools. Award ceremony at ESSERC 2026, Palma de Mallorca, Spain.
             </p>
+            <a
+              class="award__photo"
+              href={`${import.meta.env.BASE_URL}img/esserc_talk_1.jpg`}
+              data-lightbox
+              data-caption="ESSERC 2026, Palma de Mallorca — Code-a-Chip award presentation"
+              aria-label="Expand photo: ESSERC 2026 award presentation"
+            >
+              <img src={`${import.meta.env.BASE_URL}img/esserc_talk_1.jpg`} alt="At ESSERC 2026 in Palma de Mallorca" loading="lazy" decoding="async" />
+              <span class="award__photo-cap">At ESSERC 2026, Palma de Mallorca</span>
+            </a>
+            <ul class="entry__links award__links">
+              <li><a href="https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io/tree/main/VLSI26" target="_blank" rel="noopener noreferrer"><Icon name="external" size={13} />Award listing</a></li>
+              <li><a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing" target="_blank" rel="noopener noreferrer"><Icon name="external" size={13} />Notebook</a></li>
+              <li><a href="#publications"><Icon name="external" size={13} />ESSERC talk</a></li>
+            </ul>
 
             <details class="fold">
               <summary>View Methodology &amp; Results</summary>
@@ -482,9 +502,8 @@ const gh = await githubStats("chennakeshavadasa");
                 </div>
               </div>
             </details>
-          </div>
-        </li>
-      </ul>
+        </div>
+      </article>
     </section>
 
     <section class="section" id="work" aria-labelledby="work-h">
@@ -526,10 +545,11 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        Apart from circuit design, I am also interested in quantitative finance.
+        Outside circuit design: macroeconomics and data-driven quantitative analysis of businesses and financial markets &mdash; using machine learning and large economic and financial datasets to study trends, business decisions, and investment opportunities.
       </p>
 
-      <WorkList groups={finance.groups} />
+      <WorkList groups={[finance.groups[0]]} />
+      <WorkList groups={[finance.groups[1]]} layout="grid" />
     </section>
 
     <section class="section" id="cv" aria-labelledby="cv-h">
@@ -569,19 +589,54 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <div data-reveal>
-        <div class="contact-row">
-          <span class="k">Email (preferred)</span>
-          <a href={`mailto:${email}`}>{email}</a>
+      <div class="contact" data-reveal>
+        <p class="contact__lede">
+          I am seeking PhD positions for Fall 2027 in analog and mixed-signal IC design. Email is the best way to reach me.
+        </p>
+        <div class="contact__actions">
+          <a class="btn btn--solid" href={`mailto:${email}`}>
+            <Icon name="mail" size={15} />
+            Email me
+          </a>
+          <button class="btn btn--ghost contact__copy" type="button" data-copy="contact-email">
+            Copy address
+          </button>
+          <span id="contact-email" hidden>{email}</span>
         </div>
-        <div class="contact-row">
-          <span class="k">GitHub</span>
-          <a href={github} target="_blank" rel="noopener noreferrer">github.com/chennakeshavadasa</a>
-        </div>
-        <div class="contact-row">
-          <span class="k">LinkedIn</span>
-          <a href={linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/nithin-purushothama-70664727b</a>
-        </div>
+        <ul class="contact__list">
+          <li>
+            <a href={`mailto:${email}`}>
+              <Icon name="mail" size={18} />
+              <span class="contact__k">Email</span>
+              <span class="contact__v">{email}</span>
+              <span class="contact__go" aria-hidden="true"><Icon name="external" size={14} /></span>
+            </a>
+          </li>
+          <li>
+            <a href={github} target="_blank" rel="noopener noreferrer">
+              <Icon name="github" size={18} />
+              <span class="contact__k">GitHub</span>
+              <span class="contact__v">github.com/chennakeshavadasa</span>
+              <span class="contact__go" aria-hidden="true"><Icon name="external" size={14} /></span>
+            </a>
+          </li>
+          <li>
+            <a href={linkedin} target="_blank" rel="noopener noreferrer">
+              <Icon name="linkedin" size={18} />
+              <span class="contact__k">LinkedIn</span>
+              <span class="contact__v">linkedin.com/in/nithin-purushothama-70664727b</span>
+              <span class="contact__go" aria-hidden="true"><Icon name="external" size={14} /></span>
+            </a>
+          </li>
+          <li>
+            <a href="https://drive.google.com/file/d/1u9SBAN4afHSnqbGC5mDJin0y14OM_jb-/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <Icon name="file" size={18} />
+              <span class="contact__k">CV</span>
+              <span class="contact__v">Curriculum vitae (PDF)</span>
+              <span class="contact__go" aria-hidden="true"><Icon name="external" size={14} /></span>
+            </a>
+          </li>
+        </ul>
       </div>
     </section>
 

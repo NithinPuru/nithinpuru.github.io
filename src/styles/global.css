@@ -649,6 +649,17 @@ a {
   display: inline-flex;
   align-items: center;
 }
+.btn--solid {
+  color: var(--paper);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.btn--solid svg { color: currentColor; }
+.btn--solid:hover,
+.btn--solid:focus-visible {
+  color: var(--accent);
+  background: transparent;
+}
 .btn--ghost {
   color: var(--ink);
   background: transparent;
@@ -801,6 +812,32 @@ a {
   letter-spacing: 0.03em;
   color: var(--ink-3);
 }
+/* Live-app preview strip (e.g. the Semi-Quant Terminal header). */
+.entry__preview {
+  margin: 0.9rem 0 0;
+}
+.entry__preview a {
+  display: block;
+  border: 1px solid var(--rule-strong);
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: border-color 0.2s var(--ease-out);
+}
+.entry__preview a:hover {
+  border-color: var(--accent);
+}
+.entry__preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.entry__preview figcaption {
+  margin-top: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+
 /* Circuit symbol beside a project entry, set in a small schematic tile. */
 .entry--sym {
   display: grid;
@@ -1094,30 +1131,78 @@ a {
 /* Contact                                                              */
 /* ------------------------------------------------------------------ */
 
-.contact-row {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding-block: 0.8rem;
-  border-top: 1px solid var(--rule);
-  font-family: var(--font-mono);
-  font-size: 0.96rem;
+.contact__lede {
+  margin: 0;
+  max-width: 38rem;
+  font-size: 1.12rem;
+  line-height: 1.6;
+  color: var(--ink);
 }
-.contact-row .k {
-  flex: 0 0 7.5rem;
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.2rem 0 1.8rem;
+}
+.contact__copy {
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+}
+.contact__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule-strong);
+}
+.contact__list a {
+  display: grid;
+  grid-template-columns: 1.4rem 6.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 0.9rem 0.25rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
+}
+.contact__list a > svg {
+  color: var(--accent);
+}
+.contact__k {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.9rem;
   color: var(--ink-3);
 }
-.contact-row a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule);
-  transition: border-color 0.2s var(--ease-out);
+.contact__v {
+  font-family: var(--font-mono);
+  font-size: 0.96rem;
+  overflow-wrap: anywhere;
 }
-.contact-row a:hover {
-  border-bottom-color: var(--accent);
+.contact__go {
+  display: inline-flex;
+  color: var(--ink-3);
+  transition: transform 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.contact__list a:hover {
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+.contact__list a:hover .contact__go {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+@media (max-width: 600px) {
+  .contact__list a {
+    grid-template-columns: 1.4rem minmax(0, 1fr) auto;
+    row-gap: 0.15rem;
+  }
+  .contact__k { grid-column: 2; grid-row: 1; }
+  .contact__v { grid-column: 2; grid-row: 2; font-size: 0.9rem; }
+  .contact__go { grid-column: 3; grid-row: 1 / span 2; }
 }
 
 /* ------------------------------------------------------------------ */
@@ -1199,13 +1284,7 @@ a {
   .cv-highlights .k {
     flex-basis: auto;
   }
-  .contact-row {
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-  .contact-row .k {
-    flex-basis: auto;
-  }
+
 }
 
 /* ── CV embed ─────────────────────────────────────────────── */
@@ -1669,7 +1748,7 @@ a {
   margin-top: 1.5rem;
 }
 .edu__courses-h {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.6rem;
   padding-bottom: 0.45rem;
   font-family: var(--font-mono);
   font-size: 0.84rem;
@@ -1679,80 +1758,192 @@ a {
   color: var(--ink-2);
   border-bottom: 1px solid var(--rule);
 }
-.edu__groups {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
-  gap: 1.1rem 1.5rem;
+/* Coursework: one aligned row per area — label column, courses flowing right. */
+.edu__rows {
+  margin: 0;
 }
-.edu__group h5 {
-  margin: 0 0 0.4rem;
+.edu__row {
+  display: grid;
+  grid-template-columns: 11.5rem minmax(0, 1fr);
+  column-gap: 1.5rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.edu__row:first-child {
+  padding-top: 0;
+}
+.edu__row:last-child {
+  border-bottom: none;
+}
+.edu__row dt {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 400;
+  font-size: 0.8rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
 }
-.edu__group ul {
+.edu__row dd {
+  margin: 0;
+}
+.edu__row ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.edu__group li {
-  position: relative;
-  padding-left: 1.1rem;
-  font-size: 0.95rem;
-  line-height: 1.45;
-  color: var(--ink-2);
+.edu__row li {
+  color: var(--ink);
+  line-height: 1.5;
 }
-.edu__group li + li {
-  margin-top: 0.3rem;
-}
-.edu__group li::before {
-  content: "\2013";
-  position: absolute;
-  left: 0;
+.edu__row li:not(:last-child)::after {
+  content: "\00b7";
+  margin: 0 0.6rem;
   color: var(--ink-3);
+}
+@media (max-width: 600px) {
+  .edu__row {
+    grid-template-columns: 1fr;
+    row-gap: 0.25rem;
+  }
 }
 
 /* ── Awards ──────────────────────────────────────────────── */
-.cv-highlights .award-k {
-  font-size: 0.9rem;
+.award {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  column-gap: 1.8rem;
+  align-items: start;
 }
-.award-logo {
-  display: block;
-  width: 100%;
-  max-width: 140px;
-  height: auto;
-  margin-top: 0.75rem;
+.award__plate {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.3rem;
+  padding: 0.5rem;
   border: 1px solid var(--rule);
+  background: var(--plate);
+}
+.award__plate img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.award-body {
+  min-width: 0;
+}
+.award__meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--ink-3);
+}
+.award__year { color: var(--accent); }
+.award__cat::before {
+  content: "\00b7";
+  margin-right: 0.75rem;
+}
+.award__kind {
+  margin-left: auto;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .award-title {
-  margin: 0;
+  margin: 0.3rem 0 0;
   font-size: 1.2rem;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 .award-title a {
   color: var(--ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--rule-strong);
-  text-underline-offset: 4px;
-  transition: color 0.2s var(--ease-out), text-decoration-color 0.2s var(--ease-out);
+  text-decoration: none;
+  transition: color 0.2s var(--ease-out);
 }
 .award-title a:hover {
   color: var(--accent);
-  text-decoration-color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
-.cv-highlights .award-org {
-  margin: 0.25rem 0 0;
-  font-size: 0.82rem;
+.award-org {
+  margin: 0.15rem 0 0;
+  color: var(--ink-2);
+  line-height: 1.45;
+}
+.award__grant {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin: 0.9rem 0 0;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-2);
+}
+.award__grant-k {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--ink-3);
 }
+.award__grant-v {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
 .award-desc {
-  margin: 0.5rem 0 0;
-  text-align: justify;
+  margin: 0.8rem 0 0;
+  color: var(--ink-2);
+  line-height: 1.65;
   hyphens: auto;
+}
+.award__photo {
+  display: block;
+  width: min(100%, 22rem);
+  margin-top: 1rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-2);
+  cursor: zoom-in;
+  text-decoration: none;
+  transition: border-color 0.2s var(--ease-out);
+}
+.award__photo:hover {
+  border-color: var(--accent);
+}
+.award__photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.award__photo-cap {
+  display: block;
+  padding: 0.35rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  border-top: 1px solid var(--rule);
+}
+.award__links {
+  margin-top: 0.9rem;
+}
+@media (max-width: 600px) {
+  .award {
+    grid-template-columns: 1fr;
+    row-gap: 0.8rem;
+  }
+  .award__plate {
+    width: 8rem;
+  }
 }
 .method__h {
   margin: 0.4rem 0 0.6rem;
@@ -1894,12 +2085,6 @@ a {
 .cmp-foot p {
   margin: 0 0 0.25rem;
 }
-@media (max-width: 600px) {
-  .award-k .award-logo {
-    max-width: 96px;
-  }
-}
-
 /* ── Section numbers ─────────────────────────────── */
 /* Section numeral as a schematic net label (arrow-ended port tag). */
 .sec-num {

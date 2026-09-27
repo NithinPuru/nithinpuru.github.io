@@ -224,9 +224,18 @@ A four-layer signal-flow network (Source → Skills → Projects · Places → D
 Directly after the About masthead: an accent, arrow-ended "Latest" net label beside a ruled strip of dated items (typewriter accent date, optional red tag, serif text linking to the relevant section or source) scrolling right-to-left in a 70s loop; it pauses on hover and keyboard focus, the duplicate track is `aria-hidden`, and under reduced motion it becomes a static, horizontally scrollable row. Items must be real and dated from site content.
 
 ### Education
-One entry hung off a 2px accent left rule: typewriter dates · duration with a right-aligned level label, the serif-bold degree, the university line, a single CGPA figure (typewriter label, bold 1.35rem value, "/ 10") in a hairline box on the raised surface, then "Courses taken" over a hairline and the course names grouped into auto-fitting columns (Circuits & VLSI, Signals & Systems, Communication & RF, Digital & Embedded) with accent typewriter group heads and hanging en-dash items.
+One entry hung off a 2px accent left rule: typewriter dates · duration with a right-aligned level label, the serif-bold degree, the university line, a single CGPA figure (typewriter label, bold 1.35rem value, "/ 10") in a hairline box on the raised surface, then "Courses taken" over a hairline and one aligned row per area (Circuits & VLSI, Signals & Systems, Communication & RF, Digital & Embedded): accent typewriter label in an 11.5rem column, course names flowing right separated by trailing middots, rows divided by hairlines (label stacks above on mobile).
 
-### Contact Rows / CV Highlights
+### Awards
+A bibliography-like entry: the SSCS logo in a 16:9 venue plate on the left; right, a typewriter meta line (accent year · category, right-aligned kind), the serif-bold award title (link, underline on hover), the society line, the grant as one figure box (typewriter "GRANT", bold 1.35rem "$5,000") on the raised surface, a left-aligned description, a captioned 16:9 ceremony photo (lightbox), a link row (award listing, notebook, talk), and the methodology fold with the booktabs comparison table.
+
+### Quantitative Finance
+The featured project (Semi-Quant Terminal) renders full-width with a finance symbol tile, keyword line, points, a framed **live-app preview strip** (the app's real header, lightbox on click) and Live app / Source links; "Quantitative Methods" render in the two-column grid. The lede is drawn from the About text.
+
+### Contact
+A lead sentence (PhD search, email preferred), a solid accent **Email me** button beside a ghost **Copy address** button (copies via `cite.js`, flips to "Copied"), then ruled rows — accent line icon, typewriter label, typewriter value, and an arrow that nudges up-right on hover over an accent wash — for Email, GitHub, LinkedIn and the CV PDF. On mobile the label stacks over the value.
+
+### Contact Rows / CV Highlights (legacy)
 Mono small-caps labels (`flex: 0 0 7.5–8.5rem`) followed by the value, separated by 1px top rules; links accent with a hairline underline. On mobile the row stacks to a column.
 
 ### Buttons

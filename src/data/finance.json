@@ -12,9 +12,17 @@
             "Implemented RSI, MACD, Bollinger Bands, VaR/CVaR, Beta, and Sharpe/Sortino ratios in a pure-JavaScript analytics engine.",
             "Integrated GBM-based Monte Carlo simulations with automated multi-source financial data aggregation."
           ],
+          "preview": {
+            "url": "/img/semi-quant-terminal.webp",
+            "caption": "Live app &middot; terminal header with its model stack and analysis modules"
+          },
           "meta": "JavaScript · Semiconductor Equities · Monte Carlo · VaR/CVaR · Sharpe/Sortino",
           "tag": "Featured",
           "links": [
+            {
+              "label": "Live app",
+              "url": "https://chennakeshavadasa.github.io/career-semi-quant/"
+            },
             {
               "label": "Source code",
               "url": "https://github.com/chennakeshavadasa/career-semi-quant"
