@@ -31,8 +31,6 @@ const gh = await githubStats("chennakeshavadasa");
             <h1>Nithin Purushothama</h1>
             <p class="doc-meta">
               <span>Analog &middot; Mixed-Signal IC Designer</span>
-              <span class="sep" aria-hidden="true">/</span>
-              <span>Omni Design Technologies, Bengaluru</span>
             </p>
             <p class="masthead__status mono">Seeking PhD positions &middot; Fall 2027</p>
             <ul class="masthead__links" aria-label="Profiles and contact">
@@ -528,11 +526,17 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <h3 class="subsection-title" data-reveal>Tape-outs</h3>
+      <h3 class="subsection-title" data-reveal>
+        <span class="subsec-no">6.1</span>Tape-outs
+        <span class="group-count">{tapeouts.groups.reduce((n, g) => n + g.entries.length, 0)}</span>
+      </h3>
       <WorkList groups={tapeouts.groups} />
 
-      <h3 class="subsection-title" data-reveal>Projects</h3>
-      <WorkList groups={projects.groups} />
+      <h3 class="subsection-title" data-reveal>
+        <span class="subsec-no">6.2</span>Projects
+        <span class="group-count">{projects.groups.reduce((n, g) => n + g.entries.length, 0)}</span>
+      </h3>
+      <WorkList groups={projects.groups} layout="grid" />
 
       <p class="section-foot" data-reveal>
         {gh ? (

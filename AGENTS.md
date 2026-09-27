@@ -71,6 +71,7 @@ All work/publication/finance entries are plain JSON — no markup changes needed
           "title": "Low-Dropout Voltage Regulator",
           "url": "https://github.com/chennakeshavadasa/Low-dropout-Voltage-Regulator-LDO-using-SKY130PDK",
           "desc": "LDO design in SKY130 covering regulation, dropout behaviour and stability.",
+          "points": ["optional bullet 1", "optional bullet 2"],  // hanging-dash list; use instead of &bull; in desc
           "meta": "SKY130 · LDO · 17 stars",
           "tag": "Tape-out",      // optional; rendered right of the title
           "tagHot": true,          // optional; renders the tag in annotation red
@@ -92,7 +93,9 @@ Rules for content:
 - **Never fabricate.** Every entry, star count, affiliation, and claim must be
   real and verifiable. Star counts and repository totals are fetched live at
   build time by `src/lib/github.ts` — never type them into JSON.
-- Keep `desc` as a real, faithful summary of the linked artifact.
+- Keep `desc` / `points` a real, faithful summary of the linked artifact.
+- Do not put the current employer in the masthead (personal site); it stays
+  only in the Experience timeline.
 - One JSON file per domain; `WorkList.astro` renders every group/entry
   (`PubList.astro` for `publications.json`, which also takes `authors` with the
   owner in `<strong>`, `venue`, `abstract`, and an optional venue `logo` +

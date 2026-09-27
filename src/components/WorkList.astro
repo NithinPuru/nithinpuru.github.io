@@ -23,6 +23,7 @@ interface Entry {
   title: string;
   url?: string;
   desc?: string;
+  points?: string[];
   meta?: string;
   tag?: string;
   tagHot?: boolean;
@@ -43,12 +44,14 @@ interface Group {
 
 interface Props {
   groups: Group[];
+  /** "grid" sets entries in two hairline-ruled columns on wide screens. */
+  layout?: "list" | "grid";
 }
 
-const { groups } = Astro.props;
+const { groups, layout = "list" } = Astro.props;
 const gh = await githubStats("chennakeshavadasa");
 ---
-<div class="worklist">
+<div class={"worklist" + (layout === "grid" ? " worklist--grid" : "")}>
   {
     groups.map((group) => (
       <div data-reveal-group>
@@ -61,19 +64,20 @@ const gh = await githubStats("chennakeshavadasa");
           {
             group.entries.map((entry) => {
               const repo = repoFor(gh, entry.url);
+              // A "Source" link is added for repository URLs unless the entry
+              // already lists its own source link.
+              const hasSource = entry.links?.some((l) => /source/i.test(l.label));
+              const isRepo = /^https:\/\/github\.com\/[^/]+\/[^/#?]+/i.test(entry.url ?? "");
+              const showSource = isRepo && !hasSource;
               return (
               <li class="entry" data-reveal>
-                <div class="entry__body">
                 <div class="entry__top">
                   <h4 class="entry__title">
-                    <a href={entry.url} target="_blank" rel="noopener noreferrer">
-                      {entry.title}
-                      {entry.url && (
-                        <span class="entry__arrow" aria-hidden="true">
-                          <Icon name="external" />
-                        </span>
-                      )}
-                    </a>
+                    {entry.url ? (
+                      <a href={entry.url} target="_blank" rel="noopener noreferrer">{entry.title}</a>
+                    ) : (
+                      entry.title
+                    )}
                   </h4>
                   <span class="entry__marks">
                     {repo && repo.stars > 0 && (
@@ -83,39 +87,33 @@ const gh = await githubStats("chennakeshavadasa");
                       </span>
                     )}
                     {entry.tag && (
-                      <span class={"entry__tag" + (entry.tagHot ? " is-hot" : "")}>
-                        {entry.tag}
-                      </span>
+                      <span class={"entry__tag" + (entry.tagHot ? " is-hot" : "")}>{entry.tag}</span>
                     )}
                   </span>
                 </div>
-                
-                {entry.desc && <p class="entry__desc" set:html={entry.desc}></p>}
 
-                {/* GIF animation */}
+                {entry.meta && <p class="entry__kw">{entry.meta}</p>}
+
+                {entry.desc && <p class="entry__desc" set:html={entry.desc} />}
+
+                {entry.points && (
+                  <ul class="entry__points">
+                    {entry.points.map((pt) => <li set:html={pt} />)}
+                  </ul>
+                )}
+
                 {entry.gif && (
                   <figure class="entry__gif">
-                    <img
-                      src={entry.gif}
-                      alt={entry.title + " - animation"}
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    <img src={entry.gif} alt={entry.title + " - animation"} loading="lazy" decoding="async" />
                     {entry.gifCaption && <figcaption set:html={entry.gifCaption} />}
                   </figure>
                 )}
 
-                {/* Notebook plots */}
                 {entry.plots && entry.plots.length > 0 && (
                   <div class="entry__plots">
                     {entry.plots.map((plot) => (
                       <figure class="entry__plot-item">
-                        <img
-                          src={plot.url}
-                          alt={plot.caption ?? "Notebook plot"}
-                          loading="lazy"
-                          decoding="async"
-                        />
+                        <img src={plot.url} alt={plot.caption ?? "Notebook plot"} loading="lazy" decoding="async" />
                         {plot.caption && <figcaption>{plot.caption}</figcaption>}
                       </figure>
                     ))}
@@ -133,25 +131,28 @@ const gh = await githubStats("chennakeshavadasa");
                   <Gallery images={entry.images} title={entry.imagesTitle} alt={entry.title} />
                 )}
 
-                {/* Silicon status badge */}
-                {entry.siliconStatus && (
-                  <p class="entry__silicon-status">{entry.siliconStatus}</p>
-                )}
+                {entry.siliconStatus && <p class="entry__silicon-status">{entry.siliconStatus}</p>}
 
-                <div class="entry__meta">
-                  {entry.meta && <span>{entry.meta}</span>}
-                  {entry.links && (
-                    <span class="entry__links">
-                      {entry.links.map((link) => (
+                {(showSource || entry.links) && (
+                  <ul class="entry__links">
+                    {showSource && (
+                      <li>
+                        <a href={entry.url} target="_blank" rel="noopener noreferrer">
+                          <Icon name="github" size={13} />
+                          Source
+                        </a>
+                      </li>
+                    )}
+                    {entry.links?.map((link) => (
+                      <li>
                         <a href={link.url} target="_blank" rel="noopener noreferrer">
-                          <Icon name="external" />
+                          <Icon name={/source/i.test(link.label) ? "github" : "external"} size={13} />
                           {link.label}
                         </a>
-                      ))}
-                    </span>
-                  )}
-                </div>
-                </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
               );
             })
@@ -168,19 +169,6 @@ const gh = await githubStats("chennakeshavadasa");
     margin: 0;
     padding: 0;
   }
-  .entry__arrow {
-    display: inline-block;
-    margin-left: 0.4rem;
-    vertical-align: 2px;
-    color: var(--accent);
-  }
-  .entry__links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-  .entry__links a svg { color: var(--accent); }
-
   /* ── GIF ──────────────────────────────────────────────── */
   .entry__gif {
     margin: 1rem 0;
