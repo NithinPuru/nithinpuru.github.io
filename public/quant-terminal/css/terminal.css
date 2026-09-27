@@ -410,6 +410,46 @@ footer { max-width: 1480px; margin: 36px auto 0; padding: 22px 28px 40px; border
 footer a { color: var(--ink-3); }
 footer a:hover { color: var(--accent); }
 
+/* ─── Text-size calibration ───────────────────────────────────────────────
+ * Computer Modern has a smaller x-height (0.435 em) than the fonts the terminal
+ * used before the redesign (Outfit 0.475, JetBrains Mono 0.55), so equal pixel
+ * sizes looked smaller. These sizes restore each element's pre-redesign visual
+ * size: new px = old px × old x-height ÷ 0.435 (measured in the browser). */
+h1.h-title { font-size: 22px; }
+.h-sub { font-size: 14px; }
+.h-ts, .pill, .tkr-chip, .det-meta, .fund-chip, .det-legend { font-size: 14px; }
+.home-link, .cnt, .chg-label, .c-foot, footer, .c-cta { font-size: 12.5px; }
+.stat-label, .tg-label, .kpi > span, .tbl th, .tbl.dense th { font-size: 11px; }
+.stat-val { font-size: 33px; }
+.tool b { font-size: 14px; }
+.tool small { font-size: 12px; }
+.btn, .seg .btn, details.more summary, .det-ctl .seg .btn { font-size: 14px; }
+.btn-xs { font-size: 12.5px; }
+.search, select.search, .tool-controls select.search { font-size: 15px; }
+.c-name { font-size: 17.5px; }
+.badge { font-size: 11.5px; }
+.price { font-size: 35.5px; }
+.chg { font-size: 16.5px; }
+.chip { font-size: 12.5px; }
+.quad-list .chip, .tool-body .chip { font-size: 12.5px; }
+.m-lbl, .q-lbl { font-size: 10px; }
+.m-val, .q-val { font-size: 16.5px; }
+.modal-box h2, #det-name { font-size: 24px; }
+.det-px { font-size: 25.5px; }
+.det-h, .modal-box h3.det-h, .sec-divider span { font-size: 12px; }
+.modal-box h3, #tool-title { font-size: 19.5px; }
+.tool-sub, .modal-box p.tool-sub, .tab { font-size: 13px; }
+.tool-note, .modal-box p.tool-note, .tbl.dense td.wrap, .modal-box p, .help-grid p, .modal-box .help-grid p { font-size: 13px; }
+.panel h4, .tool-body h4, .modal-box h4, .pf-head { font-size: 14px; }
+.tbl td { font-size: 15px; }
+.kpi b { font-size: 20px; }
+.kpi b small { font-size: 12.5px; }
+.pf-desc { font-size: 12px; }
+.pf-stats, .wbar .wv { font-size: 14px; }
+.wbar .wt, .bl-row, .bl-row input.search { font-size: 12.5px; }
+.data-banner, .toast { font-size: 14px; }
+.empty-state .es-sub { font-size: 13px; }
+
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 1200px) {
   .tools { grid-template-columns: 1fr 1fr; }
@@ -435,5 +475,6 @@ footer a:hover { color: var(--accent); }
   .stat:nth-child(4) { padding-left: 18px; border-left: 1px solid var(--rule); }
   .stat:nth-child(n + 3) { border-top: 1px solid var(--rule); }
   .grid { grid-template-columns: 1fr; }
-  .stat-val { font-size: 24px; }
+  .stat-val { font-size: 26px; }
+  .price { font-size: 30px; }
 }

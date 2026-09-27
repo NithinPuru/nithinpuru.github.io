@@ -54,11 +54,11 @@
     Chart.defaults.color = css('--ink-3');
     Chart.defaults.font.family = 'KaTeX_Typewriter, "Courier New", monospace';
     const grid = { color: cssA('--ink', 0.06) };
-    const tick = { font: { size: 9 }, maxRotation: 0, autoSkip: true };
+    const tick = { font: { size: 11.5 }, maxRotation: 0, autoSkip: true };
     const base = {
       responsive: true, maintainAspectRatio: false, animation: { duration: 250 },
       interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { labels: { boxWidth: 10, font: { size: 10 } } }, tooltip: { backgroundColor: css('--tooltip-bg'), titleColor: css('--tooltip-ink'), bodyColor: css('--tooltip-ink'), borderColor: css('--rule-strong'), borderWidth: 1, titleFont: { family: 'KaTeX_Main, serif', size: 12 }, bodyFont: { family: 'KaTeX_Typewriter, monospace', size: 11 } } },
+      plugins: { legend: { labels: { boxWidth: 10, font: { size: 12.5 } } }, tooltip: { backgroundColor: css('--tooltip-bg'), titleColor: css('--tooltip-ink'), bodyColor: css('--tooltip-ink'), borderColor: css('--rule-strong'), borderWidth: 1, titleFont: { family: 'KaTeX_Main, serif', size: 12 }, bodyFont: { family: 'KaTeX_Typewriter, monospace', size: 11 } } },
       scales: { x: { grid, ticks: { ...tick, maxTicksLimit: 8 } }, y: { grid, position: 'right', ticks: { ...tick } } },
     };
     // Merge axis options so per-chart overrides keep the default tick hygiene. Charts that
