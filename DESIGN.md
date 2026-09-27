@@ -69,6 +69,7 @@ typography:
     grid-title: "1.12rem"
     figure: "1.35rem"
     sidebar-name: "1.8rem"
+    sidebar-name-compact: "1.6rem"
 spacing:
   column: "46rem"
   section-block: "clamp(2.75rem, 6vw, 4.25rem)"
