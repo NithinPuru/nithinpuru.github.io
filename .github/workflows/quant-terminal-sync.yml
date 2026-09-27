@@ -1,0 +1,72 @@
+name: Sync quant terminal code
+
+# Source of truth for the terminal's code is chennakeshavadasa/career-semi-quant.
+# This pulls the newest commit there that PASSED its Test workflow and mirrors
+#   public/quant-terminal/  (except market_data.json — the data bot here owns it)
+#   quant-terminal/
+# into this repo, then redeploys. Edits made directly to those folders here
+# will be overwritten — make them in career-semi-quant instead.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write   # to dispatch deploy.yml (GITHUB_TOKEN pushes don't trigger it)
+
+concurrency:
+  group: quant-terminal-sync
+  cancel-in-progress: false
+
+env:
+  SOURCE: chennakeshavadasa/career-semi-quant
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Find latest tested commit
+        id: src
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sha=$(gh api "repos/$SOURCE/actions/workflows/test.yml/runs?branch=master&status=success&per_page=1" --jq '.workflow_runs[0].head_sha // ""')
+          if [ -z "$sha" ]; then echo "No successful Test run found; nothing to sync."; echo "sha=" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "Latest tested commit: $sha"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Mirror folders
+        if: steps.src.outputs.sha != ''
+        run: |
+          set -euo pipefail
+          git clone --quiet --filter=blob:none "https://github.com/$SOURCE.git" /tmp/src
+          git -C /tmp/src checkout --quiet "${{ steps.src.outputs.sha }}"
+          test -f /tmp/src/public/quant-terminal/index.html
+          test -f /tmp/src/quant-terminal/update_data.py
+          grep -q "const COS = \[" /tmp/src/public/quant-terminal/index.html
+          rsync -a --delete --exclude market_data.json /tmp/src/public/quant-terminal/ public/quant-terminal/
+          rsync -a --delete /tmp/src/quant-terminal/ quant-terminal/
+
+      - name: Commit and redeploy
+        if: steps.src.outputs.sha != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "quant-terminal[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A public/quant-terminal quant-terminal
+          if git diff --cached --quiet; then echo "Already in sync with ${{ steps.src.outputs.sha }}."; exit 0; fi
+          git commit -m "Sync quant terminal from career-semi-quant@${{ steps.src.outputs.sha }}"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            if git push origin HEAD:main; then pushed=1; break; fi
+            sleep $((i * 5)); git pull --rebase origin main
+          done
+          [ "$pushed" = 1 ] || exit 1
+          gh workflow run deploy.yml --ref main
