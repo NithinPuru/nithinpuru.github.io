@@ -242,16 +242,28 @@ const gh = await githubStats("chennakeshavadasa");
             <p class="award-desc">
               Awarded for &ldquo;<i>R<sub>on</sub>/g<sub>m</sub></i> Based Design Methodology for Dynamic Amplifiers&rdquo;, a notebook demonstrating a novel design methodology for inverter-based dynamic amplifiers on IHP SG13G2 using open-source EDA tools. Award ceremony at ESSERC 2026, Palma de Mallorca, Spain.
             </p>
-            <a
-              class="award__photo"
-              href={`${import.meta.env.BASE_URL}img/esserc_talk_1.jpg`}
-              data-lightbox
-              data-caption="ESSERC 2026, Palma de Mallorca - Code-a-Chip award presentation"
-              aria-label="Expand photo: ESSERC 2026 award presentation"
-            >
-              <img src={`${import.meta.env.BASE_URL}img/esserc_talk_1.jpg`} alt="At ESSERC 2026 in Palma de Mallorca" loading="lazy" decoding="async" />
-              <span class="award__photo-cap">At ESSERC 2026, Palma de Mallorca</span>
-            </a>
+            <div class="award__photos">
+              <a
+                class="award__photo award__photo--doc"
+                href={`${import.meta.env.BASE_URL}img/sscs_cac_award_certificate.jpg`}
+                data-lightbox
+                data-caption="IEEE SSCS TC-OSE Code-a-Chip Travel Grant Award certificate"
+                aria-label="Expand image: award certificate"
+              >
+                <img src={`${import.meta.env.BASE_URL}img/sscs_cac_award_certificate.jpg`} alt="IEEE SSCS Code-a-Chip Travel Grant Award certificate presented to Nithin Purushothama et al. for Ron/gm Based Design Methodology for Dynamic Amplifiers" width="800" height="639" loading="lazy" decoding="async" />
+                <span class="award__photo-cap">Award certificate</span>
+              </a>
+              <a
+                class="award__photo"
+                href={`${import.meta.env.BASE_URL}img/esserc_talk_1.jpg`}
+                data-lightbox
+                data-caption="ESSERC 2026, Palma de Mallorca - Code-a-Chip award presentation"
+                aria-label="Expand photo: ESSERC 2026 award presentation"
+              >
+                <img src={`${import.meta.env.BASE_URL}img/esserc_talk_1.jpg`} alt="At ESSERC 2026 in Palma de Mallorca" loading="lazy" decoding="async" />
+                <span class="award__photo-cap">At ESSERC 2026, Palma de Mallorca</span>
+              </a>
+            </div>
             <ul class="entry__links award__links">
               <li><a href="https://github.com/sscs-ose/sscs-ose-code-a-chip.github.io/tree/main/VLSI26" target="_blank" rel="noopener noreferrer"><Icon name="external" size={13} />Award listing</a></li>
               <li><a href="https://colab.research.google.com/drive/1q6r7tg8RoyLBaMS3b7EONwkPCBzEM2c1?usp=sharing" target="_blank" rel="noopener noreferrer"><Icon name="external" size={13} />Notebook</a></li>

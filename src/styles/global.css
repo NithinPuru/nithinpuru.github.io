@@ -1907,10 +1907,15 @@ a {
   line-height: 1.65;
   hyphens: auto;
 }
+.award__photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
 .award__photo {
   display: block;
-  width: min(100%, 22rem);
-  margin-top: 1rem;
+  min-width: 0;
   border: 1px solid var(--rule-strong);
   background: var(--paper-2);
   cursor: zoom-in;
@@ -1923,8 +1928,14 @@ a {
 .award__photo img {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+.award__photo--doc img {
+  object-fit: contain;
+  padding: 0.4rem;
+  background: var(--paper-2);
 }
 .award__photo-cap {
   display: block;
@@ -1944,6 +1955,9 @@ a {
   }
   .award__plate {
     width: 8rem;
+  }
+  .award__photos {
+    grid-template-columns: 1fr;
   }
 }
 .method__h {
