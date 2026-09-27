@@ -1,11 +1,11 @@
 import type { APIRoute } from "astro";
 
-// PWA manifest — served as a route so icon/start URLs inherit the base path
+// PWA manifest - served as a route so icon/start URLs inherit the base path
 // (correct for both local builds and a GitHub Pages project site).
 export const GET: APIRoute = () => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   const manifest = {
-    name: "Nithin Purushothama — Analog/Mixed-Signal IC Designer",
+    name: "Nithin Purushothama - Analog/Mixed-Signal IC Designer",
     short_name: "Nithin P",
     description:
       "Analog/Mixed-Signal IC designer with tapeout experience in SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, and TSMC 28 nm.",

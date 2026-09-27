@@ -57,7 +57,7 @@
   --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
-/* Dark theme — deep navy with raised navy surfaces. Set on <html> by the head script from the
+/* Dark theme - deep navy with raised navy surfaces. Set on <html> by the head script from the
    saved choice or the system preference. */
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -743,7 +743,7 @@ a {
   letter-spacing: 0.04em;
 }
 .group-head::before {
-  content: "\2014  ";
+  content: "-  ";
   color: var(--annot-soft);
 }
 
@@ -1758,7 +1758,7 @@ a {
   color: var(--ink-2);
   border-bottom: 1px solid var(--rule);
 }
-/* Coursework: one aligned row per area — label column, courses flowing right. */
+/* Coursework: one aligned row per area - label column, courses flowing right. */
 .edu__rows {
   margin: 0;
 }
@@ -1999,7 +1999,7 @@ a {
   color: var(--ink-3);
 }
 
-/* Comparison table — booktabs: heavy top/bottom rules, light midrules. */
+/* Comparison table - booktabs: heavy top/bottom rules, light midrules. */
 .cmp-wrap {
   overflow-x: auto;
   margin-bottom: 1rem;
@@ -2445,7 +2445,7 @@ a {
   }
 
 
-  /* Section number — stagger slightly behind the heading */
+  /* Section number - stagger slightly behind the heading */
   .sec-num {
     transition: opacity 0.5s ease 0s, transform 0.5s ease 0s;
   }
@@ -2464,7 +2464,7 @@ a {
 
 }
 
-/* Reading progress — 1px hairline at top */
+/* Reading progress - 1px hairline at top */
 #read-line {
   position: fixed;
   top: 0;
