@@ -129,7 +129,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     </script>
     <script is:inline>
     (function () {
-      var ENDPOINT = "https://nithin-analytics.YOUR-SUBDOMAIN.workers.dev/collect";
+      var ENDPOINT = "https://nithin-analytics.nithin-analytics-worker.workers.dev/collect";
       var h = location.hostname;
       if (h === "localhost" || h === "127.0.0.1" || location.protocol === "file:") return;
       if (location.pathname.indexOf("/analytics") === 0) return; // don't count the dashboard itself
