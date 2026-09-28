@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-28T14:42:53Z",
+ "generated_at": "2026-09-28T14:51:26Z",
  "domains": {
   "ai": {
    "arxiv": "ok",
@@ -7,7 +7,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 421
+   "papers": 411
   },
   "ai-chips": {
    "arxiv": "ok",
