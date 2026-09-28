@@ -34,6 +34,12 @@ const cvId = "1u9SBAN4afHSnqbGC5mDJin0y14OM_jb-";
 const cvPreview = `https://drive.google.com/file/d/${cvId}/preview`;
 const cvView = `https://drive.google.com/file/d/${cvId}/view?usp=sharing`;
 const cvDownload = `https://drive.google.com/uc?export=download&id=${cvId}`;
+// Hobbies (exactly as described by Nithin).
+const hobbies = [
+  { icon: "book", title: "Reading history", note: "especially classical history" },
+  { icon: "nondual", title: "Non-dualistic philosophy" },
+  { icon: "compass", title: "Travelling" },
+] as const;
 // Section list drives the sidebar pinout (laptop layout).
 const sections = [
   { id: "about", label: "About" },
@@ -44,6 +50,7 @@ const sections = [
   { id: "awards", label: "Awards" },
   { id: "work", label: "Work" },
   { id: "finance", label: "Quant Finance" },
+  { id: "hobbies", label: "Hobbies" },
   { id: "cv", label: "Curriculum Vitae" },
   { id: "contact", label: "Contact" },
 ];
@@ -126,10 +133,6 @@ const gh = await githubStats("chennakeshavadasa");
 
           <p>
             I hope to build practical circuit and system-level technologies with real-world impact, especially in healthcare, therapy, sensing, and assistive technologies, where integrated circuits can help improve people's lives.
-          </p>
-
-          <p>
-            Outside of circuit design, my primary interests lie in macroeconomics and data-driven quantitative analysis of businesses and financial markets, particularly the use of machine learning and large-scale economic and financial datasets to study economic trends, business decisions, and investment opportunities.
           </p>
 
           <p>
@@ -565,16 +568,36 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
       <p class="section-lede" data-reveal>
-        Outside circuit design: macroeconomics and data-driven quantitative analysis of businesses and financial markets - using machine learning and large economic and financial datasets to study trends, business decisions, and investment opportunities.
+        Outside of circuit design, my primary interests lie in macroeconomics and data-driven quantitative analysis of businesses and financial markets, particularly the use of machine learning and large-scale economic and financial datasets to study economic trends, business decisions, and investment opportunities.
       </p>
 
       <WorkList groups={[finance.groups[0]]} />
       <WorkList groups={[finance.groups[1]]} layout="grid" />
     </section>
 
-    <section class="section" id="cv" aria-labelledby="cv-h">
+    <section class="section" id="hobbies" aria-labelledby="hobbies-h">
       <header class="section-head" data-reveal>
         <span class="sec-num">08</span>
+        <h2 class="section-title" id="hobbies-h">Hobbies</h2>
+        <span class="section-rule" aria-hidden="true"></span>
+      </header>
+
+      <ul class="hobbies" data-reveal-group>
+        {hobbies.map((h) => (
+          <li class="hobby" data-reveal>
+            <span class="hobby__icon" aria-hidden="true"><Icon name={h.icon} size={26} /></span>
+            <span class="hobby__text">
+              <span class="hobby__title">{h.title}</span>
+              {h.note && <span class="hobby__note">{h.note}</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="section" id="cv" aria-labelledby="cv-h">
+      <header class="section-head" data-reveal>
+        <span class="sec-num">09</span>
         <h2 class="section-title" id="cv-h">Curriculum Vitae</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>
@@ -613,7 +636,7 @@ const gh = await githubStats("chennakeshavadasa");
 
     <section class="section" id="contact" aria-labelledby="contact-h">
       <header class="section-head" data-reveal>
-        <span class="sec-num">09</span>
+        <span class="sec-num">10</span>
         <h2 class="section-title" id="contact-h">Contact</h2>
         <span class="section-rule" aria-hidden="true"></span>
       </header>

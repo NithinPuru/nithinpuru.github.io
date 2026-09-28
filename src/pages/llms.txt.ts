@@ -16,7 +16,7 @@ export const GET: APIRoute = ({ site }) => {
 A single-page portfolio typeset like a LaTeX document. All sections are
 anchors on the homepage:
 
-- [Home - About, Experience, Education, Publications, Awards, Projects, Tape-outs, Finance, CV, Contact](${origin}/)
+- [Home - About, Experience, Education, Publications, Awards, Projects, Tape-outs, Finance, Hobbies, CV, Contact](${origin}/)
 
 ## Notebook
 
