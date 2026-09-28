@@ -3,11 +3,22 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Research Radar refresh (was research-radar-data.yml). Its snapshots are
+  # never committed - they're rewritten wholesale each run and would grow the
+  # repo by ~1 GB a year - so this build fetches them and they live only in
+  # the deployed site. Other deploys copy the live snapshots back in.
+  schedule:
+    - cron: "41 */3 * * *"
   workflow_dispatch:
+    inputs:
+      refresh_radar:
+        description: "Refetch Research Radar sources"
+        type: boolean
+        default: false
   # Commits pushed by the tracker workflows use GITHUB_TOKEN, which does not
   # trigger other workflows - redeploy explicitly once they finish.
   workflow_run:
-    workflows: ["Track conferences", "Resolve review", "Update quant terminal data", "Research Radar data", "FX Quant data"]
+    workflows: ["Track conferences", "Resolve review", "Update quant terminal data", "FX Quant data"]
     types: [completed]
     branches: [main]
 
@@ -26,6 +37,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: research-radar/requirements.txt
+
+      - name: Research Radar snapshots
+        timeout-minutes: 30
+        env:
+          REFRESH: ${{ github.event_name == 'schedule' || inputs.refresh_radar == true }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RADAR_EXPLAINERS: ${{ vars.RADAR_EXPLAINERS }}   # "1" enables precomputed explainers
+        run: |
+          # Copy the deployed snapshots; refetch on schedule, or if the copy failed.
+          if [ "$REFRESH" = true ] || ! python research-radar/fetch.py --seed-only; then
+            pip install -r research-radar/requirements.txt
+            python research-radar/fetch.py --seed
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -59,3 +90,30 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Smoke test of exactly what was published: every page loads without script
+  # errors, no horizontal overflow at phone / desktop-site / laptop widths in
+  # both themes, data bots still fresh, design detector clean. Runs beside the
+  # deploy - a red run flags a problem (and emails you), it never blocks it.
+  checks:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Unpack the built site
+        uses: actions/download-artifact@v5
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/pages
+      - run: mkdir -p dist && tar -xf "$RUNNER_TEMP/pages/artifact.tar" -C dist
+      - name: Design detector (core page)
+        run: node .agents/skills/impeccable/scripts/detect.mjs --json src/pages/index.astro src/components src/styles src/layouts/Layout.astro
+      - run: npx playwright-core install --with-deps --only-shell chromium
+      - name: Smoke test
+        run: npm run smoke

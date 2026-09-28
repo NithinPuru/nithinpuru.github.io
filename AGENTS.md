@@ -26,7 +26,7 @@ npm run preview   # serve dist/ (use: node node_modules/astro/astro.js preview -
 ```
 src/
   pages/index.astro          # the entire page: masthead + 7 sections
-  pages/notebook.astro       # /notebook route — re-slices the nbconvert export
+  pages/rongm.md             # /rongm/ - the Ron/gm methodology notebook (NotebookLayout)
   pages/404.astro            # generated 404 page (base-path aware)
   pages/robots.txt.ts        # dynamic robots.txt -> sitemap-index.xml
   layouts/Layout.astro       # head, meta, JSON-LD, direction contract, running-head nav, reveal script
@@ -47,7 +47,9 @@ src/
     finance.json             # Quantitative Finance entries
     experience.json          # Experience timeline (start/end YYYY-MM, role, org, symbol, specs, detail HTML)
     news.json                # "Latest" ticker items (date, text, optional tag/href) — real events only
-    notebook.html            # nbconvert (JupyterLab) export served at /notebook
+    tools.json               # Work 6.3 "Tools I built for myself"
+    hobbies.json             # Hobbies (books, travel)
+    notebook.html            # old nbconvert export - no longer served (unused)
   styles/global.css          # all tokens + styling (single stylesheet)
   scripts/reveal.js          # scroll reveals, stagger, running-head scroll-spy (links need data-nav)
   scripts/lightbox.js        # shared <dialog> lightbox for any a[data-lightbox]
@@ -114,12 +116,11 @@ Rules for content:
 
 ## Notebook
 
-`src/data/notebook.html` is the JupyterLab nbconvert export served at
-`/notebook` by `src/pages/notebook.astro`, which slices it into head + body
-and themes the body background to the site paper (removing the export's page
-padding/margins). To update it, re-export from JupyterLab (notebook: HTML)
-and overwrite the file — no route changes needed. `src/data/Wrøngm.ipynb` is
-the upstream source notebook.
+`/rongm/` is `src/pages/rongm.md` (markdown + KaTeX) rendered by
+`src/layouts/NotebookLayout.astro`, a deliberately GitHub-README look - it is
+exempt from the design system, so the CI detector skips it. `src/data/Wrøngm.ipynb`
+is the upstream source notebook; `src/data/notebook.html` is an older nbconvert
+export that nothing imports.
 
 ## Migrated tools (public/)
 
@@ -129,12 +130,12 @@ page from `src/data/tools.json` (Work -> 6.3 "Tools I built for myself").
 
 | Path | Source repo (commit copied) | Notes |
 |---|---|---|
-| `/gmid/` | gmid-hub@4dd4cae | only change: its three PDK URLs point at the local sub-pages below |
-| `/gmid/sky130a/` | gmid_SKY130A@9fe3a6f | byte-identical |
-| `/gmid/gf180mcu-d/` | gmid_GF180MCUD@636ee89 | byte-identical |
-| `/gmid/ihp-sg13g2/` | gmid_IHP130_Tool@35abc75 | byte-identical |
+| `/gmid/` | gmid-hub@4dd4cae | PDK iframe URLs point at the local sub-pages below (with `?v=` cache tags); themed, `injectTheme: false` |
+| `/gmid/sky130a/` | gmid_SKY130A@9fe3a6f | no longer a verbatim copy: theme block, lazy per-device data, plotly-basic (see below) |
+| `/gmid/gf180mcu-d/` | gmid_GF180MCUD@636ee89 | no longer a verbatim copy: theme block, lazy per-device data, plotly-basic (see below) |
+| `/gmid/ihp-sg13g2/` | gmid_IHP130_Tool@35abc75 | no longer a verbatim copy: theme block, lazy per-device data, plotly-basic (see below) |
 | `/fx-quant/` | rebuilt from FOREX_QUANT@0f404ba | Quant-Terminal-styled rewrite (`css/fx.css`, `js/fx.js`; models unchanged). Data: `fx_data.json` from `fx-quant/update_fx.py` via `fx-quant-data.yml` (weekdays after the ECB fixing) - the page calls no external API |
-| `/research-radar/` | Research-Radar@ee84a10 | loads `data/<domain>.json` snapshots (abstracts trimmed to 280-char excerpts; full text in `data/<domain>-abstracts.json`, fetched lazily for the detail panel and explainer) from `research-radar/fetch.py` via `research-radar-data.yml` (every 3 h; sources in `research-radar/sources.json`); live SerpApi Scholar and the Claude explainer (`claude-sonnet-5`) stay in-browser; keys in localStorage `rr_*`. Re-skinned to the shared palette (light/dark, KaTeX fonts) with a stacked layout under 820px |
+| `/research-radar/` | Research-Radar@ee84a10 | loads snapshots from `research-radar/fetch.py`: `data/<domain>.json` (abstracts trimmed to 280-char excerpts), `data/<domain>-abstracts.json` (full text, fetched lazily for the detail panel, search and explainer) and `data/<domain>-explainers.json` (precomputed expert explainers, opt-in: repo variable `RADAR_EXPLAINERS=1` plus the `ANTHROPIC_API_KEY` secret; 10 newest papers per domain, at most 40 new calls per run). **The data is never committed** (`.gitignore`): `deploy.yml` refetches it on its 3-hourly schedule (or `workflow_dispatch` with `refresh_radar`), seeding from the live site so a failed source keeps its items; other deploys copy the live files back (`fetch.py --seed-only`; locally `npm run radar-data`). Sources in `research-radar/sources.json`; the explainer's system prompt is read from the page, so edit it only there. Live SerpApi Scholar and the in-browser Claude explainer (`claude-sonnet-5`) stay; keys in localStorage `rr_*`. Re-skinned to the shared palette (light/dark, KaTeX fonts) with a stacked layout under 820px |
 | `/quant-terminal/` | career-semi-quant | synced by `quant-terminal-sync.yml`; data by `quant-terminal-data.yml` - do not hand-edit |
 | `/deadline/` | Conf_Deadline_Tracker | driven by the `tracker-*` workflows; `assets/style.css` re-skinned to the shared palette (light/dark, KaTeX fonts) - bump its `?v=` in both HTML pages when it changes |
 
@@ -153,8 +154,8 @@ first time a device is shown - `replot()` / `runHelper()` wrap the tools'
 original `_replotSync()` / `_runHelperSync()`. Bump `DATA_V` in the page when
 the data files change. Pages load Plotly's `plotly-basic` build (scatter only).
 
-To update a copied tool, re-copy its `index.html` from the repo, then re-apply
-the gm/ID hub URL rewrite and (for gm/ID pages) the theme block and links.
+The gm/ID pages have diverged from their repos (theme, lazy data), so don't
+re-copy them wholesale: port upstream fixes into the local files by hand.
 When a PDK page changes, bump the `?v=` tag on its iframe URL in
 `public/gmid/index.html` - GitHub Pages lets browsers cache pages for 10
 minutes and iframes otherwise keep showing the old copy. The original repos and their Pages sites are untouched.
@@ -195,6 +196,15 @@ rounded corners).
   is a mechanical hairline.
 
 ## Verification
+
+CI does most of this on every deploy: the `checks` job in `deploy.yml` runs the
+design detector over the core page and `npm run smoke` (`scripts/smoke.mjs`)
+against the published build - every page in both themes at phone and laptop
+widths (plus 768/980 for the home page): no script errors, no broken
+same-origin requests, no horizontal overflow, direction contract present, and
+the data bots fresh (FX <= 6 days, Quant Terminal <= 4 days, Research Radar
+<= 12 h, deadline tracker <= 3 days). It runs beside the deploy and never
+blocks it. Run it locally after a build with `npm run smoke`.
 
 - Build before finishing: `npm run build`.
 - Run the impeccable design detector over changed files:

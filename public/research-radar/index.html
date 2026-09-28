@@ -350,6 +350,7 @@
     .mode-btn.active { border-color:var(--current-domain-color); color:var(--current-domain-color); }
     .mode-btn:hover { color:var(--text-primary); border-color:var(--text-secondary); }
 
+    .explainer-pre-note { font-family:"KaTeX_Typewriter",monospace; font-size:10px; color:var(--text-dim); margin:0 0 10px; }
     .abstract-section { margin-top:4px; }
     .abstract-toggle {
       font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:500;
@@ -1297,17 +1298,34 @@ Rules:
   /* The snapshot feed carries abstract excerpts (abstract_trimmed); full
      abstracts live in data/<domain>-abstracts.json, fetched once per domain
      in the background and patched into the shared paper objects. */
-  const ABSTRACTS = new Map();
+  const ABSTRACTS = new Map(), ABSTRACTS_PENDING = new Set();
   function ensureAbstracts(domain) {
     if (!ABSTRACTS.has(domain)) {
+      ABSTRACTS_PENDING.add(domain);
       ABSTRACTS.set(domain, fetchTimeout(`data/${domain}-abstracts.json`, { cache: 'no-cache' }, 15000)
         .then(r => r.ok ? r.json() : {})
-        .catch(() => { ABSTRACTS.delete(domain); return {}; }));
+        .catch(() => { ABSTRACTS.delete(domain); return {}; })
+        .finally(() => ABSTRACTS_PENDING.delete(domain)));
     }
     return ABSTRACTS.get(domain);
   }
   function patchAbstracts(papers, full) {
     papers.forEach(p => { if (p.abstract_trimmed && full[p.id]) { p.abstract = full[p.id]; delete p.abstract_trimmed; } });
+  }
+  // Expert-mode explainers precomputed by the data bot (data/<domain>-explainers.json).
+  const PRE_EXPLAINERS = new Map();
+  function ensureExplainers(domain) {
+    if (!PRE_EXPLAINERS.has(domain)) {
+      PRE_EXPLAINERS.set(domain, fetchTimeout(`data/${domain}-explainers.json`, { cache: 'no-cache' }, 15000)
+        .then(r => r.ok ? r.json() : {})
+        .catch(() => { PRE_EXPLAINERS.delete(domain); return {}; }));
+    }
+    return PRE_EXPLAINERS.get(domain);
+  }
+  async function preExplainer(paper) {
+    if (STATE.explainerMode !== 'expert') return null;
+    const e = (await ensureExplainers(paper.domain || STATE.currentDomain))[paper.id];
+    return e ? { ...e, precomputed: true } : null;
   }
   async function fullAbstract(paper) {
     if (!paper.abstract_trimmed) return paper;
@@ -1330,7 +1348,11 @@ Rules:
                               s2: prog('s2'), blog: prog('blog'), scholar: STATE.serpApiKey ? null : 'skip' };
       ingestPapers(applyDomainFilter(snap.papers, domain), domain);
       updateFetchStatus();
-      ensureAbstracts(domain).then(full => patchAbstracts(snap.papers, full));
+      ensureAbstracts(domain).then(full => {
+        patchAbstracts(snap.papers, full);
+        if (STATE.filterText && STATE.currentDomain === domain) setTimeout(renderFeed);
+      });
+      ensureExplainers(domain);
       if (STATE.serpApiKey) {
         await fetchAllScholarAuthors(domain, STATE.serpApiKey)
           .then(papers => { if (!isCurrent()) return; STATE.fetchProgress.scholar = papers.length ? true : 'empty'; ingestPapers(papers, domain); })
@@ -1670,6 +1692,8 @@ Rules:
     const total=STATE.sourceFilter==='saved'?STATE.savedIds.size:STATE.papers.length;
     const badge=document.getElementById('feed-count-badge');
     badge.textContent=papers.length<total?`${papers.length} / ${total}`:`${papers.length}`;
+    // until the full abstracts arrive, the filter only sees the excerpts
+    if(STATE.filterText&&ABSTRACTS_PENDING.has(STATE.currentDomain))badge.textContent+=' \u00b7 searching full abstracts\u2026';
 
     if(papers.length===0){
       if(STATE.loading&&STATE.papers.length===0)return;
@@ -1754,13 +1778,14 @@ Rules:
 
   function renderExplainerSection(explainer, loading) {
     if(loading)return`<div class="detail-divider"></div><div class="explainer-loading"><div class="spinner"></div><span>GENERATING ANALYSIS...</span></div>`;
-    if(!STATE.apiKey)return`<div class="detail-divider"></div><div class="explainer-placeholder"><div class="section-label">AI EXPLAINER</div><div class="explainer-text">Enter an Anthropic API key (KEY button) to generate structured analysis. Press e to trigger.</div></div>`;
+    if(!STATE.apiKey&&!explainer)return`<div class="detail-divider"></div><div class="explainer-placeholder"><div class="section-label">AI EXPLAINER</div><div class="explainer-text">Enter an Anthropic API key (KEY button) to generate structured analysis. Press e to trigger.</div></div>`;
     if(!explainer)return`<div class="detail-divider"></div><div class="explainer-placeholder"><div class="section-label">AI EXPLAINER</div><div class="explainer-text">Analysis unavailable. Try again or check your API key.</div></div>`;
+    const preNote=explainer.precomputed?`<div class="explainer-pre-note">Precomputed by the data bot (claude-sonnet-5)${STATE.apiKey?'':' - add a key for SIMPLE mode or other papers'}</div>`:'';
     return`<div class="detail-divider"></div>
-      <div class="explainer-mode-row">
+      ${STATE.apiKey?`<div class="explainer-mode-row">
         <button class="mode-btn ${STATE.explainerMode==='expert'?'active':''}" data-mode="expert">EXPERT</button>
         <button class="mode-btn ${STATE.explainerMode==='simple'?'active':''}" data-mode="simple">SIMPLE</button>
-      </div>
+      </div>`:''}${preNote}
       <div class="explainer-card"><div class="section-label">WHAT THEY ARE DOING</div><div class="explainer-text">${esc(explainer.what_doing)}</div></div>
       <div class="detail-divider"></div>
       <div class="explainer-card"><div class="section-label">PROBLEM BEING SOLVED</div><div class="explainer-text">${esc(explainer.problem_solved)}</div></div>
@@ -1933,11 +1958,17 @@ Rules:
       if(STATE.selectedPaper?.id!==paper.id)return;
       renderDetailPanel(paper,null,false);
     }
+    const pre=await preExplainer(paper);
+    if(STATE.selectedPaper?.id!==paper.id)return;
+    if(pre){STATE.explainer=pre;renderDetailPanel(paper,pre,false);return;}
     if(STATE.apiKey)await triggerExplainer(paper);
   }
 
   async function triggerExplainer(paper) {
-    if(!STATE.apiKey||!paper.abstract)return;
+    if(!paper.abstract)return;
+    const pre=await preExplainer(paper);
+    if(pre){STATE.explainer=pre;if(STATE.selectedPaper?.id===paper.id)renderDetailPanel(paper,pre,false);return;}
+    if(!STATE.apiKey)return;
     await fullAbstract(paper);
     const cacheKey=`explainer_${paper.id}_${STATE.explainerMode}`;
     try {

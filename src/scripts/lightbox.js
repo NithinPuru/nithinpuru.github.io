@@ -9,6 +9,7 @@
   // an empty src attribute.
   var img = document.createElement("img");
   img.className = "lightbox__img";
+  img.alt = ""; // set to the caption on open
   cap.parentNode.insertBefore(img, cap);
   var closeBtn = dlg.querySelector(".lightbox__close");
   var opener = null;

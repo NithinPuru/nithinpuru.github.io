@@ -772,6 +772,7 @@
     if (active === id) return;
     active = id;
     paint(id);
+    Object.keys(nodeEls).forEach(function(k) { nodeEls[k].setAttribute('aria-pressed', String(k === id && !quiet)); });
     var d = ND[id];
 
     // Populate panel
@@ -821,6 +822,7 @@
     resetNodes();
     if (!skip) {
       active = null;
+      Object.keys(nodeEls).forEach(function(k) { nodeEls[k].setAttribute('aria-pressed', 'false'); });
       document.getElementById('sfg-empty').style.display   = 'block';
       document.getElementById('sfg-content').style.display = 'none';
     }
@@ -831,6 +833,8 @@
   activate('d_ams', true);
   active = null;
   paint(null);
+  // announce later panel changes to screen readers (not the pre-fill above)
+  document.getElementById('sfg-panel').setAttribute('aria-live', 'polite');
 
   // Attach events to nodes
   Object.keys(nodeEls).forEach(function(id) {

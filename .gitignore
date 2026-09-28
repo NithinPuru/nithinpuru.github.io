@@ -6,3 +6,5 @@ dist/
 npm-debug.log*
 .DS_Store
 __pycache__/
+# Research Radar snapshots: built in deploy.yml, never committed (npm run radar-data)
+public/research-radar/data/

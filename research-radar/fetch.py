@@ -2,9 +2,15 @@
 """Research Radar data bot.
 
 Fetches every source server-side (no browser CORS limits, no public proxies)
-and writes one snapshot per domain to public/research-radar/data/<domain>.json,
-which the page loads instantly. Run on a schedule by
-.github/workflows/research-radar-data.yml.
+and writes one snapshot per domain to public/research-radar/data/:
+  <domain>.json             feed (abstracts trimmed to excerpts)
+  <domain>-abstracts.json   full abstracts, loaded lazily by the page
+  <domain>-explainers.json  precomputed Claude explainers for the newest papers
+                            (opt-in: RADAR_EXPLAINERS=1 plus ANTHROPIC_API_KEY)
+The files are not committed: deploy.yml runs this on a schedule during the
+build, first seeding the data folder from the live site (--seed) so a failed
+source keeps its previous items. Ordinary deploys run `--seed-only`
+(also `npm run radar-data` for local development).
 
 Sources per domain (lists in research-radar/sources.json):
   arxiv    newest submissions in the domain's arXiv categories
@@ -30,7 +36,6 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-import feedparser
 
 ROOT = Path(__file__).resolve().parent.parent
 CFG = json.loads((ROOT / "research-radar" / "sources.json").read_text())
@@ -39,6 +44,10 @@ UA = "research-radar-bot/1.0 (+https://nithinpuru.github.io/research-radar/; mai
 NOW = dt.datetime.now(dt.timezone.utc)
 ABSTRACT_MAX = 1800
 EXCERPT_MAX = 280  # feed-file excerpt; full text in <domain>-abstracts.json
+LIVE = "https://nithinpuru.github.io/research-radar/data/"
+EXPLAIN_PER_DOMAIN = 10   # newest papers per domain that get a precomputed explainer
+EXPLAIN_MAX_NEW = 40      # cap on new Claude calls per run (bounds cost)
+EXPLAIN_MODEL = "claude-sonnet-5"  # same model as the page's in-browser explainer
 
 
 def log(*a):
@@ -218,6 +227,7 @@ def fetch_s2(domain: str) -> list[dict]:
 
 # ── RSS / Atom feeds ────────────────────────────────────────────────────
 def _one_feed(feed: dict, domain: str) -> list[dict]:
+    import feedparser  # only the fetch path needs it; --seed-only runs without deps
     parsed = feedparser.parse(get(feed["url"], timeout=20, retries=1))
     items = []
     for e in parsed.entries[:10]:
@@ -291,13 +301,119 @@ def run_domain(domain: str) -> dict:
     return {"domain": domain, "generated_at": iso(None), "sources": sources, "papers": uniq}
 
 
+def seed() -> bool:
+    """Copy the currently deployed snapshots into OUT (best effort)."""
+    OUT.mkdir(parents=True, exist_ok=True)
+    try:
+        idx = json.loads(get(LIVE + "index.json", retries=1))
+    except Exception as e:
+        log(f"seed: no live index ({e})")
+        return False
+    (OUT / "index.json").write_text(json.dumps(idx, indent=1))
+    n = 0
+    for d in idx.get("domains", {}):
+        for suffix in ("", "-abstracts", "-explainers"):
+            try:
+                body = get(f"{LIVE}{d}{suffix}.json", retries=1)
+                json.loads(body)  # never seed a truncated / non-JSON file
+                (OUT / f"{d}{suffix}.json").write_bytes(body)
+                n += 1
+            except Exception as e:
+                if suffix == "-explainers":  # optional; keep the page's fetch from 404ing
+                    (OUT / f"{d}{suffix}.json").write_text("{}")
+                else:
+                    log(f"seed: {d}{suffix}.json: {e}")
+    log(f"seed: {n} files from {LIVE}")
+    return all((OUT / f"{d}.json").exists() for d in idx.get("domains", {}))
+
+
+def page_system_prompt() -> str | None:
+    """The explainer system prompt, read from the page so the two never drift."""
+    page = (ROOT / "public" / "research-radar" / "index.html").read_text()
+    m = re.search(r"const EXPLAINER_SYSTEM_PROMPT = `(.*?)`;", page, re.S)
+    return m.group(1) if m else None
+
+
+class Explainer:
+    """Precomputes expert-mode explainers with the same prompt as the page."""
+
+    def __init__(self) -> None:
+        import os
+        self.client = None
+        self.budget = EXPLAIN_MAX_NEW
+        self.system = page_system_prompt()
+        if os.environ.get("RADAR_EXPLAINERS") != "1" or not os.environ.get("ANTHROPIC_API_KEY"):
+            log("explainers: off (needs RADAR_EXPLAINERS=1 and ANTHROPIC_API_KEY)")
+            return
+        if not self.system:
+            log("explainers: system prompt not found in page - skipped")
+            return
+        import anthropic
+        self.client = anthropic.Anthropic(max_retries=3)
+
+    def one(self, p: dict) -> dict | None:
+        auth = ", ".join(p["authors"][:3]) + (" et al." if len(p["authors"]) > 3 else "")
+        msg = (f"Title: {p['title']}\nAuthors: {auth}\nVenue: {p.get('venue') or 'Unknown'}\n"
+               f"Year: {p.get('year') or ''}\nDomain: {p['domain']}\n\nAbstract:\n{p['abstract']}")
+        keys = ("what_doing", "problem_solved", "key_contribution")
+        r = self.client.messages.create(
+            model=EXPLAIN_MODEL, max_tokens=1000, thinking={"type": "disabled"},
+            system=self.system, messages=[{"role": "user", "content": msg}],
+            output_config={"format": {"type": "json_schema", "schema": {
+                "type": "object", "properties": {k: {"type": "string"} for k in keys},
+                "required": list(keys), "additionalProperties": False}}})
+        if r.stop_reason != "end_turn":  # refusal / max_tokens: skip, the page can still ask live
+            return None
+        e = json.loads(next(b.text for b in r.content if b.type == "text"))
+        if not all(e.get(k) for k in keys):
+            return None
+        return {k: e[k] for k in keys}
+
+    def domain(self, d: str, papers: list[dict]) -> dict:
+        """Previous explainers still in the feed, plus new ones for the newest papers."""
+        path = OUT / f"{d}-explainers.json"
+        prev = json.loads(path.read_text()) if path.exists() else {}
+        eligible = [p for p in papers if p["source"] != "blog" and len(p.get("abstract") or "") >= 200]
+        newest = eligible[:EXPLAIN_PER_DOMAIN]
+        # keep earlier explainers while their papers are still near the top of the feed
+        keep = {p["id"] for p in eligible[:EXPLAIN_PER_DOMAIN * 2]}
+        out = {k: v for k, v in prev.items() if k in keep}
+        if not self.client:
+            return out
+        made = 0
+        for p in newest:
+            if p["id"] in out:
+                continue
+            if self.budget <= 0:
+                break
+            self.budget -= 1
+            try:
+                e = self.one(p)
+            except Exception as ex:
+                log(f"  explainer {p['id']}: {ex}")
+                continue
+            if e:
+                out[p["id"]] = e
+                made += 1
+        log(f"  {d}/explainers: {made} new, {len(out)} total")
+        return out
+
+
 def main(argv: list[str]) -> int:
+    if "--seed-only" in argv:
+        return 0 if seed() else 1
+    if "--seed" in argv:
+        seed()
+    argv = [a for a in argv if not a.startswith("--")]
     OUT.mkdir(parents=True, exist_ok=True)
     domains = argv or CFG["domains"]
     summary = {}
+    explainer = Explainer()
     for d in domains:
         log(f"== {d}")
         snap = run_domain(d)
+        exps = explainer.domain(d, snap["papers"])
+        (OUT / f"{d}-explainers.json").write_text(json.dumps(exps, ensure_ascii=False, separators=(",", ":")))
         # Split: the feed carries an excerpt (list, search); full abstracts go to
         # a side file the page loads lazily for the detail panel and explainer.
         full = {}
