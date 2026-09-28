@@ -11,8 +11,8 @@
   color-scheme:light;
   --bg:#f4f6f9; --card:#ffffff; --well:#eef1f6; --ink:#131c28; --ink2:#3d4756; --muted:#5b6676; --rule:rgba(19,28,40,.16); --rule2:rgba(19,28,40,.09);
   --accent:#1f4fd1; --accent-bg:rgba(31,79,209,.08); --on-accent:#ffffff;
-  --open:#0b8a6b; --open-bg:rgba(11,138,107,.1); --gap-open:rgba(11,138,107,.28);
-  --soon:#8a5300; --soon-bg:rgba(184,98,0,.12); --soon-mark:#b86200; --gap-soon:rgba(184,98,0,.3);
+  --open:#077a5d; --open-bg:rgba(11,138,107,.1); --gap-open:rgba(11,138,107,.28);
+  --soon:#8a5300; --soon-bg:rgba(184,98,0,.12); --soon-mark:#a15600; --gap-soon:rgba(184,98,0,.3);
   --closed:#5b6676; --closed-bg:rgba(19,28,40,.06); --closed-mark:#a5aebb; --gap-closed:rgba(19,28,40,.12); --conf-closed:#5a74d6;
   --tba:#6a35c0; --tba-bg:rgba(123,63,208,.1);
   --today:#b42318; --changed-bg:rgba(180,35,24,.1);

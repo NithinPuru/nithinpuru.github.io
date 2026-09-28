@@ -103,7 +103,7 @@ def fetch_arxiv(domain: str) -> list[dict]:
         return []
     q = "+OR+".join(f"cat:{c}" for c in cats)
     url = (f"https://export.arxiv.org/api/query?search_query={q}"
-           "&sortBy=submittedDate&sortOrder=descending&max_results=60")
+           "&sortBy=submittedDate&sortOrder=descending&max_results=100")
     root = ET.fromstring(get(url, timeout=40))
     out = []
     for e in root.findall("a:entry", ATOM):

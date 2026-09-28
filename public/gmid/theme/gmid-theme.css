@@ -13,10 +13,10 @@
 :root, :root[data-theme="light"] {
   color-scheme: light;
   --qt-page: #f4f6f9;  --qt-card: #ffffff;  --qt-well: #f4f6f9;  --qt-raise: #eef1f6;
-  --qt-ink: #131c28;   --qt-ink-2: #3d4756; --qt-ink-3: #5b6676; --qt-ink-4: #8a93a1;
+  --qt-ink: #131c28;   --qt-ink-2: #3d4756; --qt-ink-3: #5b6676; --qt-ink-4: #6c7584;
   --qt-rule: rgba(19, 28, 40, 0.12);     --qt-rule-strong: rgba(19, 28, 40, 0.26);
   --qt-accent: #1f4fd1; --qt-accent-wash: rgba(31, 79, 209, 0.07);
-  --qt-up: #0b8a6b; --qt-down: #b42318; --qt-warn: #b86200; --qt-violet: #7b3fd0; --qt-teal: #0e7490; --qt-pink: #b83280;
+  --qt-up: #077a5d; --qt-down: #b42318; --qt-warn: #a15600; --qt-violet: #7b3fd0; --qt-teal: #0e7490; --qt-pink: #b83280;
   --qt-ink-rgb: 19, 28, 40; --qt-accent-rgb: 31, 79, 209; --qt-up-rgb: 11, 138, 107; --qt-down-rgb: 180, 35, 24; --qt-warn-rgb: 184, 98, 0; --qt-violet-rgb: 123, 63, 208;
   --qt-tooltip-bg: #131c28; --qt-tooltip-ink: #f2f5fa;
   --qt-shadow: 0 1px 2px rgba(19, 28, 40, 0.05), 0 6px 18px rgba(19, 28, 40, 0.06);
@@ -26,7 +26,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --qt-page: #0f1620;  --qt-card: #172131;  --qt-well: #131c2a;  --qt-raise: #1d2940;
-  --qt-ink: #f2f5fa;   --qt-ink-2: #cfd7e3; --qt-ink-3: #95a1b3; --qt-ink-4: #6b778a;
+  --qt-ink: #f2f5fa;   --qt-ink-2: #cfd7e3; --qt-ink-3: #95a1b3; --qt-ink-4: #8792a5;
   --qt-rule: rgba(242, 245, 250, 0.1);   --qt-rule-strong: rgba(242, 245, 250, 0.22);
   --qt-accent: #7aa7ff; --qt-accent-wash: rgba(122, 167, 255, 0.1);
   --qt-up: #4fd1a8; --qt-down: #ff8a7a; --qt-warn: #ffb357; --qt-violet: #b89bff; --qt-teal: #5fc9d8; --qt-pink: #f58fc4;
@@ -58,3 +58,11 @@ body { -webkit-font-smoothing: antialiased; font-variant-numeric: lining-nums ta
 html.gm-embedded .gm-theme-btn { display: none; }
 .gm-home { font: 11px var(--qt-mono); letter-spacing: 0.06em; color: var(--qt-ink-3); text-decoration: none; }
 .gm-home:hover { color: var(--qt-accent); }
+
+/* narrow screens: let the tools' header rows wrap instead of overflowing */
+@media (max-width: 700px) {
+  header { flex-wrap: wrap; row-gap: 8px; height: auto; }
+  .header-nav { margin-left: 0 !important; flex-wrap: wrap; }
+  .hdr { flex-wrap: wrap; row-gap: 10px; }
+  .hdr-bdg { flex-wrap: wrap; }
+}

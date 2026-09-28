@@ -52,7 +52,7 @@
     @font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
     @font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
     @font-face{font-family:"KaTeX_Typewriter";src:url("/fonts/KaTeX_Typewriter-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
-    :root,:root[data-theme="light"]{color-scheme:light; --bg-primary:#f4f6f9; --bg-secondary:#ffffff; --bg-tertiary:#eef1f6; --bg-highlight:rgba(31,79,209,.07); --text-primary:#131c28; --text-secondary:#5b6676; --text-accent:#1f4fd1; --text-link:#1f4fd1; --text-dim:#6b7482; --border-primary:rgba(19,28,40,.14); --border-accent:#1f4fd1; --domain-ai:#1f4fd1; --domain-finance:#0e7490; --domain-quant:#0b8a6b; --domain-hft:#b42318; --domain-computing:#7b3fd0; --domain-vlsi:#b86200; --domain-ams:#b83280; --domain-serdes:#8a5300; --domain-aichips:#2a6f8a; --tag-arxiv-bg:rgba(11,138,107,.1); --tag-arxiv-fg:#0b7a5f; --tag-s2-bg:rgba(31,79,209,.08); --tag-s2-fg:#1f4fd1; --tag-blog-bg:rgba(184,98,0,.1); --tag-blog-fg:#8a5300; --tag-oa-bg:rgba(123,63,208,.1); --tag-oa-fg:#6a35c0; --tag-cr-bg:rgba(14,116,144,.1); --tag-cr-fg:#0e6a83; --tag-scholar-bg:rgba(11,138,107,.1); --tag-scholar-fg:#0b7a5f; --tag-journal-bg:rgba(123,63,208,.1); --tag-journal-fg:#6a35c0; --tag-hf-bg:rgba(184,98,0,.12); --tag-hf-fg:#8a5300; --oa-bg:rgba(11,138,107,.1); --oa-fg:#0b7a5f; --saved-btn-bg:rgba(31,79,209,.07); --warning-bg:rgba(184,98,0,.1); --warning-fg:#8a5300; --color-error:#b42318; --age-new:#0b8a6b; --age-recent:#8a5300; --age-old:#6b7482}
+    :root,:root[data-theme="light"]{color-scheme:light; --bg-primary:#f4f6f9; --bg-secondary:#ffffff; --bg-tertiary:#eef1f6; --bg-highlight:rgba(31,79,209,.07); --text-primary:#131c28; --text-secondary:#56606e; --text-accent:#1f4fd1; --text-link:#1f4fd1; --text-dim:#5f6877; --border-primary:rgba(19,28,40,.14); --border-accent:#1f4fd1; --domain-ai:#1f4fd1; --domain-finance:#0e7490; --domain-quant:#0b8a6b; --domain-hft:#b42318; --domain-computing:#7b3fd0; --domain-vlsi:#b86200; --domain-ams:#b83280; --domain-serdes:#8a5300; --domain-aichips:#2a6f8a; --tag-arxiv-bg:rgba(11,138,107,.1); --tag-arxiv-fg:#076b53; --tag-s2-bg:rgba(31,79,209,.08); --tag-s2-fg:#1f4fd1; --tag-blog-bg:rgba(184,98,0,.1); --tag-blog-fg:#8a5300; --tag-oa-bg:rgba(123,63,208,.1); --tag-oa-fg:#6a35c0; --tag-cr-bg:rgba(14,116,144,.1); --tag-cr-fg:#0e6a83; --tag-scholar-bg:rgba(11,138,107,.1); --tag-scholar-fg:#076b53; --tag-journal-bg:rgba(123,63,208,.1); --tag-journal-fg:#6a35c0; --tag-hf-bg:rgba(184,98,0,.12); --tag-hf-fg:#8a5300; --oa-bg:rgba(11,138,107,.1); --oa-fg:#076b53; --saved-btn-bg:rgba(31,79,209,.07); --warning-bg:rgba(184,98,0,.1); --warning-fg:#8a5300; --color-error:#b42318; --age-new:#077a5d; --age-recent:#8a5300; --age-old:#6b7482}
     :root[data-theme="dark"]{color-scheme:dark; --bg-primary:#0f1620; --bg-secondary:#172131; --bg-tertiary:#1d2940; --bg-highlight:rgba(122,167,255,.1); --text-primary:#f2f5fa; --text-secondary:#95a1b3; --text-accent:#7aa7ff; --text-link:#7aa7ff; --text-dim:#7c8799; --border-primary:rgba(242,245,250,.12); --border-accent:#7aa7ff; --domain-ai:#7aa7ff; --domain-finance:#5fc9d8; --domain-quant:#4fd1a8; --domain-hft:#ff8a7a; --domain-computing:#b89bff; --domain-vlsi:#ffb357; --domain-ams:#f58fc4; --domain-serdes:#e0b070; --domain-aichips:#7fd0e8; --tag-arxiv-bg:rgba(79,209,168,.12); --tag-arxiv-fg:#4fd1a8; --tag-s2-bg:rgba(122,167,255,.12); --tag-s2-fg:#7aa7ff; --tag-blog-bg:rgba(255,179,87,.12); --tag-blog-fg:#ffb357; --tag-oa-bg:rgba(184,155,255,.12); --tag-oa-fg:#b89bff; --tag-cr-bg:rgba(95,201,216,.12); --tag-cr-fg:#5fc9d8; --tag-scholar-bg:rgba(79,209,168,.12); --tag-scholar-fg:#4fd1a8; --tag-journal-bg:rgba(184,155,255,.12); --tag-journal-fg:#b89bff; --tag-hf-bg:rgba(255,179,87,.14); --tag-hf-fg:#ffcc4d; --oa-bg:rgba(79,209,168,.12); --oa-fg:#4fd1a8; --saved-btn-bg:rgba(122,167,255,.1); --warning-bg:rgba(255,179,87,.1); --warning-fg:#ffb357; --color-error:#ff8a7a; --age-new:#4fd1a8; --age-recent:#ffb357; --age-old:#7c8799}
     body{transition:background .25s,color .25s;-webkit-font-smoothing:antialiased}
     ::selection{background:var(--text-accent);color:var(--bg-secondary)}
@@ -458,11 +458,20 @@
       #kbd-panel { min-width: 0; width: calc(100vw - 32px); padding: 24px; }
     }
   </style>
+  <meta name="description" content="Live feed of the newest papers and posts in AI, finance and chip design: arXiv, Hugging Face trending papers, the latest IEEE circuits journals, Semantic Scholar and research blogs, refreshed every 3 hours.">
+  <link rel="canonical" href="https://nithinpuru.github.io/research-radar/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nithinpuru.github.io/research-radar/">
+  <meta property="og:title" content="Research Radar">
+  <meta property="og:description" content="Live feed of the newest papers and posts in AI, finance and chip design: arXiv, Hugging Face trending papers, the latest IEEE circuits journals, Semantic Scholar and research blogs, refreshed every 3 hours.">
+  <meta property="og:image" content="https://nithinpuru.github.io/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
   <header id="header">
-    <a id="home-link" href="/">&larr; home</a>
+    <a id="home-link" href="/#tools">&larr; home</a>
     <div id="logo">RESEARCH RADAR</div>
     <nav id="domain-nav"></nav>
     <div id="api-key-section">
@@ -1674,7 +1683,8 @@ Rules:
 
     const arxivN=STATE.papers.filter(p=>p.source==='arxiv').length;
     // Show "load more" when arXiv has returned papers AND we're not in saved mode AND not currently loading
-    document.getElementById('load-more').classList.toggle('hidden', arxivN===0 || STATE.sourceFilter==='saved' || STATE.loading);
+    // The snapshot already holds the newest arXiv papers; live paging needs the CORS proxies, so only offer it without a snapshot.
+    document.getElementById('load-more').classList.toggle('hidden', !!STATE.snapshotAt || arxivN===0 || STATE.sourceFilter==='saved' || STATE.loading);
     if(STATE.selectedPaper)highlightFeedItem(STATE.selectedPaper.id);
   }
 

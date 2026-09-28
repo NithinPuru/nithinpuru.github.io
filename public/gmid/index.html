@@ -165,17 +165,28 @@
 #gm-theme { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1 var(--qt-serif); color: var(--qt-ink-2); padding: 6px 10px; border-radius: 7px; border: 1px solid var(--qt-rule-strong); background: var(--qt-card); cursor: pointer; }
 #gm-theme:hover { color: var(--qt-accent); border-color: var(--qt-accent); }
 .gm-home { margin-right: 14px; }
+#tabs .badge { background: var(--qt-well) !important; color: var(--qt-ink-3) !important; border: 1px solid var(--qt-rule); }
+#tabs .tab.active .badge { background: var(--qt-accent-wash) !important; color: var(--qt-accent) !important; border-color: transparent; }
 /* gmid theme: map this tool's variables onto the shared tokens */
 :root, :root[data-theme] { --bg: var(--qt-page); --surface: var(--qt-card); --surface2: var(--qt-well); --border: var(--qt-rule); --muted: var(--qt-ink-4); --text: var(--qt-ink); --text-dim: var(--qt-ink-3); --ihp-hue: var(--qt-accent); --sky-hue: var(--qt-up); --gf-hue: var(--qt-warn); }
 body { font-family: var(--qt-serif); }
 </style>
 <link rel="stylesheet" href="/gmid/theme/gmid-theme.css">
 <script src="/gmid/theme/gmid-theme.js"></script>
+  <meta name="description" content="Interactive gm/ID MOSFET characterisation for three open-source PDKs: IHP SG13G2, SkyWater SKY130A and GlobalFoundries GF180MCU-D.">
+  <link rel="canonical" href="https://nithinpuru.github.io/gmid/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nithinpuru.github.io/gmid/">
+  <meta property="og:title" content="gm/ID Explorer - Open PDK Hub">
+  <meta property="og:description" content="Interactive gm/ID MOSFET characterisation for three open-source PDKs: IHP SG13G2, SkyWater SKY130A and GlobalFoundries GF180MCU-D.">
+  <meta property="og:image" content="https://nithinpuru.github.io/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 
 <div id="topbar">
-  <a class="gm-home" href="/" title="nithinpuru.github.io">&larr; home</a>
+  <a class="gm-home" href="/#tools" title="nithinpuru.github.io">&larr; home</a>
   <div id="wordmark">gm/ID<span> Explorer</span></div>
   <div class="vdiv"></div>
 

@@ -82,7 +82,11 @@ function mc(closes, h, np=5000) {
   const mu=mean(lr), sig=std(lr);
   const drift=mu-0.5*sig*sig;
   const S0=closes[closes.length-1];
-  function rn(){let u,v,s;do{u=Math.random()*2-1;v=Math.random()*2-1;s=u*u+v*v;}while(s>=1||s===0);return u*Math.sqrt(-2*Math.log(s)/s);}
+  // Seeded PRNG (mulberry32): the same pair and data give the same paths, so the
+  // forecast and 'best date' only change when the inputs do.
+  let seed = S.seed >>> 0;
+  const rand = () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  function rn(){let u,v,s;do{u=rand()*2-1;v=rand()*2-1;s=u*u+v*v;}while(s>=1||s===0);return u*Math.sqrt(-2*Math.log(s)/s);}
   const byDay=Array.from({length:h},()=>[]);
   for(let p=0;p<np;p++){let S=S0;for(let d=0;d<h;d++){S*=Math.exp(drift+sig*rn());byDay[d].push(S);}}
   const p5=[],p50=[],p95=[];
@@ -386,8 +390,27 @@ function renderStats(closes){
   ];
   document.getElementById('stat-grid').innerHTML = cells.map(([l, v, s]) => `<div class="mcell"><div class="label">${l}</div><div class="mv">${v}</div><div class="ms">${s}</div></div>`).join('');
 }
+function renderCalc(){
+  const c = S.calc; if (!c) return;
+  const amt = Math.max(0, parseFloat(document.getElementById('calc-amt').value) || 0);
+  const base = PAIRS.find(p => p.id === S.pair).label.split('/')[0], selling = S.dir === 'FX_TO_INR';
+  const inr = v => new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits: 0 }).format(v);
+  const today = amt * c.current, best = amt * c.best, diff = selling ? best - today : today - best;
+  document.getElementById('calc-lbl').textContent = `Amount in ${base} to ${selling ? 'sell' : 'buy'}`;
+  document.getElementById('calc-today').textContent = inr(today);
+  document.getElementById('calc-best-lbl').textContent = `On ${c.date ? c.date.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : 'the best date'} (forecast)`;
+  document.getElementById('calc-best').textContent = inr(best);
+  // A negative difference means every forecast day is worse than today.
+  document.getElementById('calc-diff-lbl').textContent = diff >= 0 ? (selling ? 'Extra INR received' : 'INR saved') : (selling ? 'Selling today is better by' : 'Buying today is better by');
+  const d = document.getElementById('calc-diff');
+  d.textContent = inr(Math.abs(diff));
+  d.className = 'mv ' + (diff > 0 ? 'g' : diff < 0 ? 'y' : '');
+  document.getElementById('calc-meta').textContent = `${selling ? 'INR received' : 'INR cost'} · today vs the best ${S.horizon} forecast date · estimate, not advice`;
+}
 function renderKPIs(ens, fDates, current){
   const best = bestDate(ens, fDates), inv = S.dir === 'FX_TO_INR';
+  S.calc = { current, best: best.rate, date: best.date };
+  renderCalc();
   const disp = inv ? 1 / current : current, bestDisp = inv ? 1 / best.rate : best.rate;
   const gain = Math.abs(bestDisp - disp) / disp * 100, lbl = PAIRS.find(p => p.id === S.pair).label;
   document.getElementById('k-date').textContent = best.date ? best.date.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }) : '-';
@@ -401,6 +424,8 @@ function renderKPIs(ens, fDates, current){
 // ── pipeline ───────────────────────────────────────────────────────────
 function analyse(){
   const hz = HORIZONS.find(h => h.id === S.horizon), raw = series(S.pair), n = raw.closes.length;
+  // seed: pair + horizon + last fixing date (FNV-1a)
+  S.seed = [...`${S.pair}|${S.horizon}|${S.data.meta.last_observation}`].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619), 2166136261);
   S.full = raw;
   const histN = Math.min(n, hz.hd), h = hz.td, fDates = futureDays(h);
   const mcF = mc(raw.closes, h, 5000), ens = ensemble(arima(raw.closes, h), hw(raw.closes, h), mcF.p50);
@@ -440,10 +465,12 @@ async function boot(){
     return;
   }
   const meta = S.data.meta, lastObs = new Date(meta.last_observation + 'T12:00:00Z');
-  status.innerHTML = `<span class="dot ok"></span>ECB reference rates · last fixing ${lastObs.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })} · synced ${ago(meta.generated_at)}`;
+  const stale = (Date.now() - lastObs) / 86400000 > 5;
+  status.innerHTML = `<span class="dot ${stale ? 'warn' : 'ok'}"></span>${stale ? 'Data may be out of date · ' : ''}ECB reference rates · last fixing ${lastObs.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })} · synced ${ago(meta.generated_at)}`;
   segment('hz-seg', HORIZONS, 'horizon', analyse);
   segment('dir-seg', [{ id:'INR_TO_FX', label:'INR → FX' }, { id:'FX_TO_INR', label:'FX → INR' }], 'dir', analyse);
   segment('seas-seg', [{ id:'dow', label:'Day of week' }, { id:'mon', label:'Month' }], 'seas', () => renderSeas(seasonality(S.full.dates, S.full.closes)));
+  document.getElementById('calc-amt').addEventListener('input', renderCalc);
   renderPairs();
   analyse();
 }
