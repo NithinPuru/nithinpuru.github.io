@@ -66,3 +66,10 @@ html.gm-embedded .gm-theme-btn { display: none; }
   .hdr { flex-wrap: wrap; row-gap: 10px; }
   .hdr-bdg { flex-wrap: wrap; }
 }
+
+/* lazy data loading (per-device JSON) */
+html.gm-loading .js-plotly-plot { opacity: .45; transition: opacity .15s; }
+html.gm-loading, html.gm-loading * { cursor: progress; }
+#gm-load-toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 10000; max-width: min(92vw, 560px);
+  padding: 10px 14px; border-radius: 7px; font: 400 13.5px/1.4 var(--qt-serif); color: var(--qt-card); background: var(--qt-down); box-shadow: var(--qt-shadow); }
+html:not(.gm-load-error) #gm-load-toast { display: none; }

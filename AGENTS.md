@@ -146,6 +146,13 @@ maps its own colour variables onto `--qt-*` in a block at the end of its
 `<style>`; Google Fonts were removed and the hub's old dark-theme injection is
 disabled (`injectTheme: false`).
 
+gm/ID data is lazy-loaded: each PDK page embeds only a small device index
+(`const DATA = {device: {labels, type}}`) and fetches `data/<device>.json`
+(the curve arrays, values identical to the original embedded dataset) the
+first time a device is shown - `replot()` / `runHelper()` wrap the tools'
+original `_replotSync()` / `_runHelperSync()`. Bump `DATA_V` in the page when
+the data files change. Pages load Plotly's `plotly-basic` build (scatter only).
+
 To update a copied tool, re-copy its `index.html` from the repo, then re-apply
 the gm/ID hub URL rewrite and (for gm/ID pages) the theme block and links.
 When a PDK page changes, bump the `?v=` tag on its iframe URL in
