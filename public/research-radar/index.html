@@ -1382,7 +1382,7 @@ Rules:
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:600, stream:true, system:EXPLAINER_SYSTEM_PROMPT, messages:[{role:'user',content:buildExplainerPrompt(paper,mode)}] }),
+      body: JSON.stringify({ model:'claude-sonnet-5', max_tokens:1000, thinking:{type:'disabled'}, stream:true, system:EXPLAINER_SYSTEM_PROMPT, messages:[{role:'user',content:buildExplainerPrompt(paper,mode)}] }),
     });
     if (resp.status===401) throw new Error('Invalid API key.');
     if (resp.status===529) throw new Error('CLAUDE_OVERLOADED');

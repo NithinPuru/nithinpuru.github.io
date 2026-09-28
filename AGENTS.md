@@ -133,8 +133,8 @@ page from `src/data/tools.json` (Work -> 6.3 "Tools I built for myself").
 | `/gmid/sky130a/` | gmid_SKY130A@9fe3a6f | byte-identical |
 | `/gmid/gf180mcu-d/` | gmid_GF180MCUD@636ee89 | byte-identical |
 | `/gmid/ihp-sg13g2/` | gmid_IHP130_Tool@35abc75 | byte-identical |
-| `/fx-quant/` | FOREX_QUANT@0f404ba | byte-identical |
-| `/research-radar/` | Research-Radar@ee84a10 | byte-identical; keys live in localStorage `rr_*` |
+| `/fx-quant/` | FOREX_QUANT@0f404ba | + Frankfurter URL moved to `api.frankfurter.dev/v1` (the old `.app` host 301s without CORS) |
+| `/research-radar/` | Research-Radar@ee84a10 | + explainer model `claude-sonnet-5`, `max_tokens` 1000, thinking disabled; keys live in localStorage `rr_*` |
 | `/quant-terminal/` | career-semi-quant | synced by `quant-terminal-sync.yml`; data by `quant-terminal-data.yml` - do not hand-edit |
 | `/deadline/` | Conf_Deadline_Tracker | driven by the `tracker-*` workflows |
 

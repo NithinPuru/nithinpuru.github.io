@@ -333,7 +333,8 @@ async function fetchFrankfurter(base, target) {
   const start = new Date();
   start.setFullYear(start.getFullYear() - 3);
   const startStr = start.toISOString().slice(0,10);
-  const url = `https://api.frankfurter.app/${startStr}..?from=${base}&to=${target}`;
+  // frankfurter.app now 301-redirects (without CORS headers) to frankfurter.dev/v1
+  const url = `https://api.frankfurter.dev/v1/${startStr}..?from=${base}&to=${target}`;
   const r = await fetch(url);
   if (!r.ok) throw new Error(`Frankfurter HTTP ${r.status}`);
   const data = await r.json();
