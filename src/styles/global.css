@@ -420,10 +420,19 @@ a {
   margin-bottom: 0.5rem;
   break-inside: avoid;
 }
+/* Two even columns filled top-to-bottom (items 1-3 left, 4-6 right),
+   split by item count rather than by text height. */
 @media (min-width: 760px) {
   .abstract-list {
-    columns: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, auto);
+    grid-auto-flow: column;
     column-gap: 2.5rem;
+    padding-left: 1.75rem;
+  }
+  .abstract-list li:nth-child(n + 4) {
+    margin-left: 1.25rem;
   }
 }
 
