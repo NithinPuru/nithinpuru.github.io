@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RESEARCH RADAR</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+  <title>Research Radar</title>
   <style>
     :root {
       --bg-primary:    #0a0a0a;
@@ -45,12 +45,27 @@
       --tag-journal-bg:#1f1630; --tag-journal-fg:#b99cff;
       --tag-hf-bg:#2a2208; --tag-hf-fg:#ffcc4d;
     }
+
+    /* ── Site theme: Quant Terminal palette + Computer Modern, light/dark via
+       html[data-theme] (shared "theme" key with nithinpuru.github.io). ── */
+    @font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+    @font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+    @font-face{font-family:"KaTeX_Typewriter";src:url("/fonts/KaTeX_Typewriter-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+    :root,:root[data-theme="light"]{color-scheme:light; --bg-primary:#f4f6f9; --bg-secondary:#ffffff; --bg-tertiary:#eef1f6; --bg-highlight:rgba(31,79,209,.07); --text-primary:#131c28; --text-secondary:#5b6676; --text-accent:#1f4fd1; --text-link:#1f4fd1; --text-dim:#6b7482; --border-primary:rgba(19,28,40,.14); --border-accent:#1f4fd1; --domain-ai:#1f4fd1; --domain-finance:#0e7490; --domain-quant:#0b8a6b; --domain-hft:#b42318; --domain-computing:#7b3fd0; --domain-vlsi:#b86200; --domain-ams:#b83280; --domain-serdes:#8a5300; --domain-aichips:#2a6f8a; --tag-arxiv-bg:rgba(11,138,107,.1); --tag-arxiv-fg:#0b7a5f; --tag-s2-bg:rgba(31,79,209,.08); --tag-s2-fg:#1f4fd1; --tag-blog-bg:rgba(184,98,0,.1); --tag-blog-fg:#8a5300; --tag-oa-bg:rgba(123,63,208,.1); --tag-oa-fg:#6a35c0; --tag-cr-bg:rgba(14,116,144,.1); --tag-cr-fg:#0e6a83; --tag-scholar-bg:rgba(11,138,107,.1); --tag-scholar-fg:#0b7a5f; --tag-journal-bg:rgba(123,63,208,.1); --tag-journal-fg:#6a35c0; --tag-hf-bg:rgba(184,98,0,.12); --tag-hf-fg:#8a5300; --oa-bg:rgba(11,138,107,.1); --oa-fg:#0b7a5f; --saved-btn-bg:rgba(31,79,209,.07); --warning-bg:rgba(184,98,0,.1); --warning-fg:#8a5300; --color-error:#b42318; --age-new:#0b8a6b; --age-recent:#8a5300; --age-old:#6b7482}
+    :root[data-theme="dark"]{color-scheme:dark; --bg-primary:#0f1620; --bg-secondary:#172131; --bg-tertiary:#1d2940; --bg-highlight:rgba(122,167,255,.1); --text-primary:#f2f5fa; --text-secondary:#95a1b3; --text-accent:#7aa7ff; --text-link:#7aa7ff; --text-dim:#7c8799; --border-primary:rgba(242,245,250,.12); --border-accent:#7aa7ff; --domain-ai:#7aa7ff; --domain-finance:#5fc9d8; --domain-quant:#4fd1a8; --domain-hft:#ff8a7a; --domain-computing:#b89bff; --domain-vlsi:#ffb357; --domain-ams:#f58fc4; --domain-serdes:#e0b070; --domain-aichips:#7fd0e8; --tag-arxiv-bg:rgba(79,209,168,.12); --tag-arxiv-fg:#4fd1a8; --tag-s2-bg:rgba(122,167,255,.12); --tag-s2-fg:#7aa7ff; --tag-blog-bg:rgba(255,179,87,.12); --tag-blog-fg:#ffb357; --tag-oa-bg:rgba(184,155,255,.12); --tag-oa-fg:#b89bff; --tag-cr-bg:rgba(95,201,216,.12); --tag-cr-fg:#5fc9d8; --tag-scholar-bg:rgba(79,209,168,.12); --tag-scholar-fg:#4fd1a8; --tag-journal-bg:rgba(184,155,255,.12); --tag-journal-fg:#b89bff; --tag-hf-bg:rgba(255,179,87,.14); --tag-hf-fg:#ffcc4d; --oa-bg:rgba(79,209,168,.12); --oa-fg:#4fd1a8; --saved-btn-bg:rgba(122,167,255,.1); --warning-bg:rgba(255,179,87,.1); --warning-fg:#ffb357; --color-error:#ff8a7a; --age-new:#4fd1a8; --age-recent:#ffb357; --age-old:#7c8799}
+    body{transition:background .25s,color .25s;-webkit-font-smoothing:antialiased}
+    ::selection{background:var(--text-accent);color:var(--bg-secondary)}
+    #home-link{font-family:"KaTeX_Typewriter",monospace;font-size:11px;letter-spacing:.06em;color:var(--text-secondary);text-decoration:none;margin-right:14px;white-space:nowrap}
+    #home-link:hover{color:var(--text-accent)}
+    #theme-btn svg{width:12px;height:12px;vertical-align:-1px;margin-right:5px}
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg-primary);
       color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -66,7 +81,7 @@
       background: var(--bg-primary); flex-shrink: 0;
     }
     #logo {
-      font-family: 'Libre Baskerville', serif;
+      font-family: "KaTeX_Main","Latin Modern Roman",Georgia,serif;
       font-size: 16px; font-weight: 700; letter-spacing: 4px;
       color: var(--text-accent); white-space: nowrap;
       padding-right: 24px; border-right: 1px solid var(--border-primary);
@@ -75,7 +90,7 @@
     #domain-nav { display: flex; flex: 1; overflow-x: auto; height: 100%; scrollbar-width: none; }
     #domain-nav::-webkit-scrollbar { display: none; }
     .domain-tab {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace;
       font-size: 12px; font-weight: 500; letter-spacing: 1px;
       padding: 0 20px; height: 100%; display: flex; align-items: center;
       cursor: pointer; color: var(--text-secondary);
@@ -105,39 +120,39 @@
       padding: 0 16px; height: 100%;
       border-left: 1px solid var(--border-primary); flex-shrink: 0;
     }
-    #help-btn, #api-key-btn {
-      font-family: 'JetBrains Mono', monospace;
+    #help-btn, #api-key-btn, #theme-btn {
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace;
       font-size: 11px; font-weight: 500; letter-spacing: 1px;
       color: var(--text-secondary); background: none;
       border: 1px solid var(--border-primary); padding: 4px 11px;
       cursor: pointer; transition: color 0.1s, border-color 0.1s;
     }
-    #help-btn:hover, #api-key-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+    #help-btn:hover, #api-key-btn:hover, #theme-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
     #api-key-drawer { display: flex; align-items: center; gap: 6px; }
     #api-key-drawer.hidden { display: none; }
     #api-key-input {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 12px;
       background: var(--bg-tertiary); border: 1px solid var(--border-primary);
       color: var(--text-primary); padding: 5px 10px; width: 240px; outline: none;
     }
     #api-key-input:focus { border-color: var(--text-accent); }
     #api-key-save {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; font-weight: 600;
       background: none; border: 1px solid var(--border-accent);
       color: var(--text-accent); padding: 4px 12px; cursor: pointer;
     }
     #api-key-save:hover { background: var(--bg-tertiary); }
-    #api-key-status, #serp-key-status { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+    #api-key-status, #serp-key-status { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
     #api-key-status.active, #serp-key-status.active { color: var(--text-link); }
-    #api-key-error { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--color-error); display: none; }
+    #api-key-error { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--color-error); display: none; }
     #api-key-error.visible { display: block; }
-    #serp-key-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: var(--tag-scholar-fg); background: none; border: 1px solid var(--border-primary); padding: 4px 10px; cursor: pointer; transition: color 0.1s, border-color 0.1s; }
+    #serp-key-btn { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: var(--tag-scholar-fg); background: none; border: 1px solid var(--border-primary); padding: 4px 10px; cursor: pointer; transition: color 0.1s, border-color 0.1s; }
     #serp-key-btn:hover { border-color: var(--tag-scholar-fg); }
     #serp-key-drawer { display: flex; align-items: center; gap: 6px; }
     #serp-key-drawer.hidden { display: none; }
-    #serp-key-input { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg-tertiary); border: 1px solid var(--border-primary); color: var(--text-primary); padding: 4px 10px; width: 200px; outline: none; }
+    #serp-key-input { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; background: var(--bg-tertiary); border: 1px solid var(--border-primary); color: var(--text-primary); padding: 4px 10px; width: 200px; outline: none; }
     #serp-key-input:focus { border-color: var(--tag-scholar-fg); }
-    #serp-key-save { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; background: none; border: 1px solid var(--tag-scholar-fg); color: var(--tag-scholar-fg); padding: 4px 12px; cursor: pointer; }
+    #serp-key-save { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 10px; font-weight: 600; background: none; border: 1px solid var(--tag-scholar-fg); color: var(--tag-scholar-fg); padding: 4px 12px; cursor: pointer; }
     #serp-key-save:hover { background: var(--bg-tertiary); }
 
     /* ── FEED PANEL ── */
@@ -157,7 +172,7 @@
 
     /* Fetch progress bar — shows what's streaming in */
     #fetch-status-row {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px;
       color: var(--text-dim); display: flex; align-items: center; gap: 8px; min-height: 18px;
     }
     .spinner-sm {
@@ -176,19 +191,19 @@
     /* Filter row */
     #filter-row { display: flex; align-items: center; gap: 8px; }
     #feed-filter {
-      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 13px;
       background: var(--bg-tertiary); border: 1px solid var(--border-primary);
       color: var(--text-primary); padding: 7px 12px; outline: none; flex: 1;
     }
     #feed-filter:focus { border-color: var(--current-domain-color); }
     #feed-filter::placeholder { color: var(--text-dim); }
-    #feed-count-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+    #feed-count-badge { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
 
     /* Secondary controls — sort and source narrow */
     #controls-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .ctrl-lbl { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+    .ctrl-lbl { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
     .ctrl-btn {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 10px; font-weight: 500;
       letter-spacing: 1px; background: none; border: 1px solid var(--border-primary);
       color: var(--text-secondary); padding: 3px 10px; cursor: pointer;
       transition: color 0.1s, border-color 0.1s, background 0.1s;
@@ -199,7 +214,7 @@
     .ctrl-btn.saved-btn.active { opacity: 1; background: var(--saved-btn-bg); }
     .ctrl-sep { width: 1px; height: 16px; background: var(--border-primary); flex-shrink: 0; margin: 0 2px; }
     .ctrl-select {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 10px; font-weight: 500;
       letter-spacing: 1px; background: var(--bg-tertiary); border: 1px solid var(--border-primary);
       color: var(--text-secondary); padding: 3px 8px; cursor: pointer; outline: none;
       transition: color 0.1s, border-color 0.1s;
@@ -208,7 +223,7 @@
 
     #feed-list { flex: 1; overflow-y: auto; min-height: 0; }
     #load-more {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; font-weight: 500;
       letter-spacing: 1px; background: none; border: none;
       border-top: 1px solid var(--border-primary);
       color: var(--text-secondary); padding: 13px; cursor: pointer; width: 100%; flex-shrink: 0;
@@ -230,18 +245,18 @@
     .feed-item-top-right { display: flex; align-items: center; gap: 7px; margin-left: auto; }
 
     .feed-title {
-      font-family: 'Libre Baskerville', serif;
+      font-family: "KaTeX_Main","Latin Modern Roman",Georgia,serif;
       font-size: 14px; line-height: 1.5; color: var(--text-primary); margin-bottom: 7px;
     }
     .feed-meta {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px;
       color: var(--text-secondary); display: flex; gap: 10px; flex-wrap: wrap; line-height: 1.4;
     }
     .feed-venue { color: var(--text-dim); }
     .feed-footer { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
-    .feed-citations { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-accent); }
-    .feed-influential { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-accent); opacity: 0.65; }
-    .feed-date { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+    .feed-citations { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-accent); }
+    .feed-influential { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-accent); opacity: 0.65; }
+    .feed-date { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); }
 
     .age-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
     .age-dot.new    { background: var(--age-new); }
@@ -249,7 +264,7 @@
     .age-dot.old    { background: var(--age-old); }
 
     .new-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 9px; font-weight: 600;
       padding: 1px 5px; background: var(--age-new); color: var(--bg-primary); flex-shrink: 0;
     }
 
@@ -262,7 +277,7 @@
     .bookmark-btn.saved { color: var(--text-accent); }
 
     .source-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 10px; font-weight: 600;
       letter-spacing: 0.5px; padding: 2px 7px; text-transform: uppercase; flex-shrink: 0;
     }
     .source-badge.large { font-size: 11px; padding: 3px 10px; }
@@ -275,38 +290,38 @@
     .source-journal  { background: var(--tag-journal-bg); color: var(--tag-journal-fg); }
     .source-hf       { background: var(--tag-hf-bg); color: var(--tag-hf-fg); }
     .src-fresh { color: var(--text-dim); margin-left: 6px; }
-    .oa-badge { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; background:var(--oa-bg); color:var(--oa-fg); }
+    .oa-badge { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:10px; font-weight:500; padding:2px 7px; background:var(--oa-bg); color:var(--oa-fg); }
 
     .cat-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
-    .cat-chip { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-dim); border:1px solid var(--border-primary); padding:2px 8px; }
+    .cat-chip { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:10px; color:var(--text-dim); border:1px solid var(--border-primary); padding:2px 8px; }
 
     /* ── DETAIL PANEL ── */
     #detail-panel { flex: 1; overflow-y: auto; min-height: 0; background: var(--bg-primary); }
     #detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:16px; padding:48px; }
-    .empty-logo { font-family:'Libre Baskerville',serif; font-size:32px; font-weight:700; letter-spacing:8px; color:var(--text-dim); }
-    .empty-domain { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--current-domain-color); letter-spacing:3px; }
-    .empty-hint { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-secondary); }
-    .empty-keys { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); text-align:center; line-height:2.2; }
+    .empty-logo { font-family:"KaTeX_Main","Latin Modern Roman",Georgia,serif; font-size:32px; font-weight:700; letter-spacing:8px; color:var(--text-dim); }
+    .empty-domain { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:13px; color:var(--current-domain-color); letter-spacing:3px; }
+    .empty-hint { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:13px; color:var(--text-secondary); }
+    .empty-keys { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-dim); text-align:center; line-height:2.2; }
 
     #detail-content { padding: 30px 40px 56px; }
     #detail-content.hidden { display: none; }
 
     .detail-source-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-    .detail-cite-count { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-accent); }
-    .detail-influential-count { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-accent); opacity:0.65; }
+    .detail-cite-count { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-accent); }
+    .detail-influential-count { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-accent); opacity:0.65; }
 
     .detail-title {
-      font-family: 'Libre Baskerville', serif; font-style: italic;
+      font-family: "KaTeX_Main","Latin Modern Roman",Georgia,serif; font-style: italic;
       font-size: 20px; font-weight: 700; line-height: 1.4;
       color: var(--text-primary); margin-bottom: 14px;
     }
-    .detail-authors { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:300; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
-    .detail-meta-row { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); display:flex; gap:18px; margin-bottom:20px; flex-wrap:wrap; }
+    .detail-authors { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:300; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+    .detail-meta-row { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-dim); display:flex; gap:18px; margin-bottom:20px; flex-wrap:wrap; }
     .detail-venue { color: var(--text-secondary); }
 
     .detail-links { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
     .detail-link {
-      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
+      font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:500;
       letter-spacing:1px; padding:6px 16px; text-decoration:none; cursor:pointer;
       background:none; border:none; transition:color 0.1s, border-color 0.1s, background 0.1s; display:inline-block;
     }
@@ -320,31 +335,31 @@
 
     .detail-divider { height:1px; background:var(--border-primary); margin:20px 0; }
     .section-label {
-      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;
+      font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:600;
       letter-spacing:2.5px; color:var(--current-domain-color); margin-bottom:14px; text-transform:uppercase;
     }
     .explainer-card { margin-bottom:24px; }
-    .explainer-text { font-family:'Spectral',serif; font-size:15px; font-weight:300; line-height:1.85; color:var(--text-primary); }
+    .explainer-text { font-family:"KaTeX_Main","Latin Modern Roman",Georgia,serif; font-size:15px; font-weight:300; line-height:1.85; color:var(--text-primary); }
 
-    .explainer-loading { display:flex; align-items:center; gap:14px; padding:30px 0; color:var(--text-secondary); font-family:'JetBrains Mono',monospace; font-size:12px; }
+    .explainer-loading { display:flex; align-items:center; gap:14px; padding:30px 0; color:var(--text-secondary); font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:12px; }
     .explainer-placeholder .section-label { color:var(--current-domain-color); }
     .explainer-placeholder .explainer-text { color:var(--text-dim); font-style:italic; }
 
     .explainer-mode-row { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
-    .mode-btn { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; letter-spacing:1px; background:none; border:1px solid var(--border-primary); color:var(--text-secondary); padding:4px 12px; cursor:pointer; }
+    .mode-btn { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:10px; font-weight:500; letter-spacing:1px; background:none; border:1px solid var(--border-primary); color:var(--text-secondary); padding:4px 12px; cursor:pointer; }
     .mode-btn.active { border-color:var(--current-domain-color); color:var(--current-domain-color); }
     .mode-btn:hover { color:var(--text-primary); border-color:var(--text-secondary); }
 
     .abstract-section { margin-top:4px; }
     .abstract-toggle {
-      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
+      font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:500;
       letter-spacing:1px; color:var(--text-secondary); cursor:pointer;
       background:none; border:none; padding:0; margin-bottom:14px;
       display:flex; align-items:center; gap:10px;
     }
     .abstract-toggle:hover { color:var(--text-primary); }
     .abstract-word-count { color:var(--text-dim); font-weight:300; font-size:10px; }
-    .abstract-text { font-family:'Spectral',serif; font-size:14px; font-weight:300; line-height:1.8; color:var(--text-secondary); display:none; }
+    .abstract-text { font-family:"KaTeX_Main","Latin Modern Roman",Georgia,serif; font-size:14px; font-weight:300; line-height:1.8; color:var(--text-secondary); display:none; }
     .abstract-text.visible { display:block; }
 
     /* ── STATUS BAR ── */
@@ -354,7 +369,7 @@
       background: var(--bg-secondary); flex-shrink: 0;
       border-left: 4px solid var(--current-domain-color); transition: border-color 0.2s;
     }
-    #status-bar span { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); white-space:nowrap; }
+    #status-bar span { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-dim); white-space:nowrap; }
     #status-counts { color: var(--text-secondary); }
     #status-api.active { color: var(--text-link); }
     #status-keys { margin-left: auto; }
@@ -363,7 +378,7 @@
     #cors-warning {
       background: var(--warning-bg); border-bottom: 1px solid var(--warning-fg);
       padding: 10px 18px; display: none; flex-shrink: 0;
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px;
       color: var(--warning-fg); line-height: 1.6;
     }
     #cors-warning.visible { display: block; }
@@ -396,15 +411,15 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
     * { scrollbar-width: thin; scrollbar-color: var(--border-primary) var(--bg-primary); }
 
-    .toast { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); background:var(--bg-tertiary); border:1px solid var(--border-accent); color:var(--text-accent); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1px; padding:9px 24px; z-index:1000; pointer-events:none; animation:fadeIn 0.2s ease; }
+    .toast { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); background:var(--bg-tertiary); border:1px solid var(--border-accent); color:var(--text-accent); font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:12px; letter-spacing:1px; padding:9px 24px; z-index:1000; pointer-events:none; animation:fadeIn 0.2s ease; }
 
     .feed-error { padding: 28px 18px; display:flex; flex-direction:column; gap:16px; align-items:flex-start; }
-    .feed-error-msg { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--color-error); line-height:1.7; max-width:360px; }
-    .feed-error-retry { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; letter-spacing:1px; border:1px solid var(--color-error); color:var(--color-error); background:none; padding:5px 16px; cursor:pointer; }
+    .feed-error-msg { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:12px; color:var(--color-error); line-height:1.7; max-width:360px; }
+    .feed-error-retry { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:500; letter-spacing:1px; border:1px solid var(--color-error); color:var(--color-error); background:none; padding:5px 16px; cursor:pointer; }
     .feed-error-retry:hover { background: rgba(200,80,80,0.1); }
-    .feed-empty { padding:28px 18px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); line-height:1.7; }
+    .feed-empty { padding:28px 18px; font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:12px; color:var(--text-dim); line-height:1.7; }
 
-    .explainer-retry { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-link); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; }
+    .explainer-retry { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-link); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; }
     .explainer-retry:hover { color:var(--text-primary); }
 
     /* Resize handle */
@@ -415,24 +430,43 @@
     #drag-overlay.active { display:block; }
 
     /* Keyboard help */
-    #kbd-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:200; align-items:center; justify-content:center; }
+    #kbd-overlay { display:none; position:fixed; inset:0; background:rgba(15,22,32,0.6); z-index:200; align-items:center; justify-content:center; }
     #kbd-overlay.visible { display:flex; }
     #kbd-panel { background:var(--bg-secondary); border:1px solid var(--border-primary); padding:36px 44px; min-width:480px; max-width:600px; }
-    #kbd-panel h2 { font-family:'Libre Baskerville',serif; font-size:15px; font-weight:700; letter-spacing:3px; color:var(--text-accent); margin-bottom:24px; }
-    .kbd-section-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--text-dim); margin-bottom:10px; margin-top:20px; }
+    #kbd-panel h2 { font-family:"KaTeX_Main","Latin Modern Roman",Georgia,serif; font-size:15px; font-weight:700; letter-spacing:3px; color:var(--text-accent); margin-bottom:24px; }
+    .kbd-section-title { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:10px; letter-spacing:2px; color:var(--text-dim); margin-bottom:10px; margin-top:20px; }
     .kbd-row { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-primary); }
-    .kbd-key { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; background:var(--bg-tertiary); border:1px solid var(--border-primary); color:var(--current-domain-color); padding:2px 10px; display:inline-block; min-width:36px; text-align:center; }
-    .kbd-desc { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-secondary); }
-    #kbd-close { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; background:none; border:1px solid var(--border-primary); color:var(--text-secondary); padding:6px 18px; cursor:pointer; margin-top:24px; letter-spacing:1px; }
+    .kbd-key { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:500; background:var(--bg-tertiary); border:1px solid var(--border-primary); color:var(--current-domain-color); padding:2px 10px; display:inline-block; min-width:36px; text-align:center; }
+    .kbd-desc { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; color:var(--text-secondary); }
+    #kbd-close { font-family:"KaTeX_Typewriter","Latin Modern Mono",monospace; font-size:11px; font-weight:500; background:none; border:1px solid var(--border-primary); color:var(--text-secondary); padding:6px 18px; cursor:pointer; margin-top:24px; letter-spacing:1px; }
     #kbd-close:hover { color:var(--text-primary); border-color:var(--text-secondary); }
+      /* narrow screens: header wraps, domain tabs scroll sideways */
+    @media (max-width: 820px) {
+      #header { flex-wrap: wrap; height: auto; min-height: 0; row-gap: 6px; padding-top: 8px; padding-bottom: 8px; }
+      #logo { height: auto; border-right: none; padding-right: 0; font-size: 15px; letter-spacing: 3px; }
+      #api-key-section { height: auto; margin-left: 0; flex: 1 1 100%; justify-content: flex-start; padding-right: 12px; }
+      #domain-nav { order: 3; flex: 1 1 100%; min-width: 0; height: 40px; overflow-x: auto; scrollbar-width: none; }
+      #domain-nav::-webkit-scrollbar { display: none; }
+      #api-key-section { flex-wrap: wrap; row-gap: 6px; max-width: 100%; }
+      #serp-key-input, #api-key-input { width: 150px; }
+      #main { flex-direction: column; }
+      #feed-panel { width: 100% !important; min-width: 0; max-width: none; height: 58vh; flex-shrink: 0; border-right: none; border-bottom: 1px solid var(--border-primary); }
+      #detail-panel { min-height: 42vh; }
+      #status-bar { overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+      #status-bar::-webkit-scrollbar { display: none; }
+      #resize-handle { display: none; }
+      #kbd-panel { min-width: 0; width: calc(100vw - 32px); padding: 24px; }
+    }
   </style>
 </head>
 <body>
 
   <header id="header">
+    <a id="home-link" href="/">&larr; home</a>
     <div id="logo">RESEARCH RADAR</div>
     <nav id="domain-nav"></nav>
     <div id="api-key-section">
+      <button id="theme-btn" type="button" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>THEME</button>
       <button id="help-btn">?</button>
       <button id="api-key-btn">CLAUDE KEY</button>
       <div id="api-key-drawer" class="hidden">
@@ -2143,5 +2177,8 @@ Rules:
 
   document.addEventListener('DOMContentLoaded',init);
   </script>
+<script>
+  document.getElementById('theme-btn').addEventListener('click',function(){var r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}});
+</script>
 </body>
 </html>
