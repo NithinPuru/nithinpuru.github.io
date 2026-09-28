@@ -3,7 +3,8 @@ interface Props {
   name:
     | "external" | "down" | "close" | "expand" | "check" | "cross"
     | "github" | "linkedin" | "mail" | "file" | "star"
-    | "book" | "nondual" | "compass" | "pin";
+    | "book" | "nondual" | "compass" | "pin"
+    | "column" | "lotus" | "globe";
   size?: number;
 }
 const { name, size } = Astro.props;
@@ -27,6 +28,27 @@ const paths: Record<string, string[]> = {
   nondual: ["M3.5 12a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0", "M9.5 12a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0"],
   // compass
   compass: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z", "M15.5 8.5l-2 5-5 2 2-5z"],
+  // Roman (Ionic) column: volute capital, fluted shaft, stepped base
+  column: [
+    "M3.5 4h17",
+    "M5 4c0 2 1.2 3.2 3 3.2h8c1.8 0 3-1.2 3-3.2",
+    "M6.5 8.5h11",
+    "M8 8.5V18M10.7 8.5V18M13.3 8.5V18M16 8.5V18",
+    "M6 18h12", "M4.5 20.5h15",
+  ],
+  // lotus - classic Vedantic image of the awakened mind
+  lotus: [
+    "M12 4.5c-2.2 3.2-2.2 8.3 0 12 2.2-3.7 2.2-8.8 0-12z",
+    "M12 16.5c-1.4-4.2-4.6-6.6-8.5-6.8.3 4.3 3.8 6.8 8.5 6.8z",
+    "M12 16.5c1.4-4.2 4.6-6.6 8.5-6.8-.3 4.3-3.8 6.8-8.5 6.8z",
+    "M4 19.5h16",
+  ],
+  // globe with meridians and equator
+  globe: [
+    "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z",
+    "M12 3c-3.2 2.6-3.2 15.4 0 18M12 3c3.2 2.6 3.2 15.4 0 18",
+    "M3.5 9h17M3.5 15h17",
+  ],
   pin: ["M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z", "M12 7.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"],
   star: ["M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"],
 };
