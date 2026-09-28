@@ -640,9 +640,12 @@ const gh = await githubStats("chennakeshavadasa");
                     </>
                   ) : (
                     /* city-states: the country is the place */
-                    <span class="travel__places">
-                      <span class="travel__place"><Icon name="pin" size={13} />{c.country}</span>
-                    </span>
+                    <>
+                      <span class="travel__country">{c.country}</span>
+                      <span class="travel__places">
+                        <span class="travel__place"><Icon name="pin" size={13} />City-state</span>
+                      </span>
+                    </>
                   )}
                 </li>
               ))}
