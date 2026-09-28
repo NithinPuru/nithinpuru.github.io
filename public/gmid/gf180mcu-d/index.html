@@ -215,13 +215,13 @@ body { font-family: var(--qt-serif); }
   <div class="badge">GF 180nm MCU</div>
   <div class="badge">BSIM4 · 9 variants</div>
   <div class="header-nav">
-    <button class="nav-btn active" onclick="showPage('pdk')">📋 PDK Reference</button>
-    <button class="nav-btn" onclick="showPage('explorer')">📈 gm/ID Explorer</button>
+    <button class="nav-btn active" onclick="showPage('explorer')">📈 gm/ID Explorer</button>
+    <button class="nav-btn" onclick="showPage('pdk')">📋 PDK Reference</button>
   </div>
 </header>
 
 <!-- ═══════════════════════ PDK REFERENCE PAGE ═══════════════════════ -->
-<div id="page-pdk" class="page active">
+<div id="page-pdk" class="page">
 <div class="pdk-page">
 
   <div class="pdk-hero">
@@ -556,7 +556,7 @@ body { font-family: var(--qt-serif); }
 </div>
 
 <!-- ═══════════════════════ EXPLORER PAGE ═══════════════════════ -->
-<div id="page-explorer" class="page">
+<div id="page-explorer" class="page active">
 <div class="explorer-layout">
   <aside>
     <div>
@@ -774,6 +774,10 @@ const ro=new ResizeObserver(()=>{
   else OVERVIEW_PLOTS.forEach((_,i)=>Plotly.Plots.resize(`mini${i}`));
 });
 ro.observe(document.querySelector('.plot-area'));
+</script>
+<script>
+  // Open on the gm/ID Explorer (like the IHP tool); the PDK reference is one click away.
+  window.addEventListener('load', function () { showPage('explorer'); });
 </script>
 </body>
 </html>
