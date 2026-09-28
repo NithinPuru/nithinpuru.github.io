@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>gm/ID Explorer — Open PDK Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0b0e11;
+    --surface:   #111518;
+    --surface2:  #161c24;
+    --border:    #1e2530;
+    --muted:     #3a4352;
+    --text:      #c8d6e5;
+    --text-dim:  #6b7a8d;
+
+    --ihp-hue:  #00c8ff;
+    --sky-hue:  #4de88a;
+    --gf-hue:   #ff8c42;
+
+    --bar-h: 52px;
+  }
+
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; }
+
+  /* ── TOP BAR ─────────────────────────────────────────────── */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: var(--bar-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 16px;
+    gap: 0;
+  }
+
+  #wordmark {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px; font-weight: 600; letter-spacing: .09em;
+    color: var(--text); white-space: nowrap; margin-right: 18px; flex-shrink: 0;
+  }
+  #wordmark span { color: var(--text-dim); font-weight: 400; }
+
+  .vdiv { width: 1px; height: 20px; background: var(--border); margin: 0 12px; flex-shrink: 0; }
+
+  #tabs { display: flex; align-items: center; gap: 4px; }
+
+  .tab {
+    position: relative;
+    display: flex; align-items: center; gap: 7px;
+    height: 34px; padding: 0 13px;
+    border-radius: 5px; border: 1px solid transparent;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 500; letter-spacing: .05em;
+    color: var(--text-dim); background: transparent;
+    transition: background .14s, border-color .14s, color .14s;
+    white-space: nowrap; user-select: none;
+  }
+  .tab:hover { background: #1a2030; color: var(--text); border-color: var(--muted); }
+  .tab.active { color: var(--text); border-color: var(--muted); background: #151c27; }
+  .tab.active::after {
+    content: ''; position: absolute; bottom: -1px; left: 4px; right: 4px;
+    height: 2px; border-radius: 2px 2px 0 0;
+  }
+
+  /* per-PDK colours */
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; transition: box-shadow .2s; }
+  .tab[data-pdk="ihp"]  .dot { background: var(--ihp-hue); }
+  .tab[data-pdk="sky"]  .dot { background: var(--sky-hue); }
+  .tab[data-pdk="gf"]   .dot { background: var(--gf-hue);  }
+
+  .tab.active[data-pdk="ihp"]  { border-color: color-mix(in srgb, var(--ihp-hue) 35%, var(--border)); }
+  .tab.active[data-pdk="ihp"]::after { background: var(--ihp-hue); }
+  .tab.active[data-pdk="ihp"]  .dot  { box-shadow: 0 0 5px 2px color-mix(in srgb, var(--ihp-hue) 55%, transparent); }
+
+  .tab.active[data-pdk="sky"]  { border-color: color-mix(in srgb, var(--sky-hue) 35%, var(--border)); }
+  .tab.active[data-pdk="sky"]::after { background: var(--sky-hue); }
+  .tab.active[data-pdk="sky"]  .dot  { box-shadow: 0 0 5px 2px color-mix(in srgb, var(--sky-hue) 55%, transparent); }
+
+  .tab.active[data-pdk="gf"]   { border-color: color-mix(in srgb, var(--gf-hue) 35%, var(--border)); }
+  .tab.active[data-pdk="gf"]::after  { background: var(--gf-hue); }
+  .tab.active[data-pdk="gf"]   .dot  { box-shadow: 0 0 5px 2px color-mix(in srgb, var(--gf-hue) 55%, transparent); }
+
+  .badge {
+    font-size: 9px; font-family: 'IBM Plex Mono', monospace;
+    padding: 1px 5px; border-radius: 3px;
+    background: var(--muted); color: var(--text-dim); letter-spacing: .02em;
+  }
+  .tab.active[data-pdk="ihp"] .badge { background: color-mix(in srgb, var(--ihp-hue) 15%, #111); color: var(--ihp-hue); }
+  .tab.active[data-pdk="sky"] .badge { background: color-mix(in srgb, var(--sky-hue) 15%, #111); color: var(--sky-hue); }
+  .tab.active[data-pdk="gf"]  .badge { background: color-mix(in srgb, var(--gf-hue)  15%, #111); color: var(--gf-hue);  }
+
+  /* right side */
+  #info-pill {
+    margin-left: auto; flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim);
+    letter-spacing: .04em;
+  }
+  #corner-label { opacity: .7; }
+  #info-pill a {
+    color: var(--text-dim); text-decoration: none;
+    border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;
+    transition: color .14s, border-color .14s;
+  }
+  #info-pill a:hover { color: var(--text); border-color: var(--muted); }
+
+  /* theme-injection status chip */
+  #theme-chip {
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border);
+    color: var(--text-dim); opacity: 0; transition: opacity .3s;
+    white-space: nowrap;
+  }
+  #theme-chip.visible { opacity: 1; }
+  #theme-chip .chip-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+  /* ── IFRAME LAYER ─────────────────────────────────────────── */
+  #frames {
+    position: fixed;
+    top: var(--bar-h); left: 0; right: 0; bottom: 0;
+  }
+
+  .wrap {
+    position: absolute; inset: 0;
+    display: none; background: var(--bg);
+  }
+  .wrap.active { display: block; }
+
+  .loading {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; background: var(--bg); transition: opacity .4s;
+  }
+  .loading.gone { opacity: 0; pointer-events: none; }
+
+  .spinner {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid var(--border);
+    animation: spin .65s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px; letter-spacing: .1em; color: var(--text-dim);
+  }
+
+  .wrap iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+
+  @media (max-width: 600px) {
+    #wordmark, .vdiv { display: none; }
+    .badge { display: none; }
+    #info-pill { display: none; }
+    .tab { padding: 0 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div id="wordmark">gm/ID<span> EXPLORER</span></div>
+  <div class="vdiv"></div>
+
+  <div id="tabs">
+    <div class="tab active" data-pdk="ihp" onclick="switchTab(this)">
+      <span class="dot"></span>
+      IHP SG13G2
+      <span class="badge">130nm BiCMOS</span>
+    </div>
+    <div class="tab" data-pdk="sky" onclick="switchTab(this)">
+      <span class="dot"></span>
+      SKY130A
+      <span class="badge">130nm CMOS</span>
+    </div>
+    <div class="tab" data-pdk="gf" onclick="switchTab(this)">
+      <span class="dot"></span>
+      GF180MCU-D
+      <span class="badge">180nm CMOS</span>
+    </div>
+  </div>
+
+  <div id="info-pill">
+    <span id="corner-label">TT · 27°C · VDS=VDD/2</span>
+    <div id="theme-chip">
+      <span class="chip-dot" id="chip-dot"></span>
+      <span id="chip-label">theme applied</span>
+    </div>
+    <a id="gh-link" href="https://github.com/chennakeshavadasa" target="_blank" rel="noopener">↗ GitHub</a>
+  </div>
+</div>
+
+<div id="frames">
+  <div class="wrap active" id="wrap-ihp">
+    <div class="loading" id="load-ihp">
+      <div class="spinner" style="border-top-color:var(--ihp-hue)"></div>
+      <div class="loading-text">LOADING IHP SG13G2…</div>
+    </div>
+  </div>
+  <div class="wrap" id="wrap-sky">
+    <div class="loading" id="load-sky">
+      <div class="spinner" style="border-top-color:var(--sky-hue)"></div>
+      <div class="loading-text">LOADING SKY130A…</div>
+    </div>
+  </div>
+  <div class="wrap" id="wrap-gf">
+    <div class="loading" id="load-gf">
+      <div class="spinner" style="border-top-color:var(--gf-hue)"></div>
+      <div class="loading-text">LOADING GF180MCU-D…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ──────────────────────────────────────────────────────────────
+   PDK config
+────────────────────────────────────────────────────────────── */
+const PDKS = {
+  ihp: {
+    wrap:   'wrap-ihp',
+    load:   'load-ihp',
+    url:    '/gmid/ihp-sg13g2/',
+    ghUrl:  'https://github.com/chennakeshavadasa/gmid_IHP130_Tool',
+    corner: 'TT · 27°C · VDS=VDD/2 · PSP103',
+    accent: '#00c8ff',
+    injectTheme: false   // reference tool — no injection needed
+  },
+  sky: {
+    wrap:   'wrap-sky',
+    load:   'load-sky',
+    url:    '/gmid/sky130a/',
+    ghUrl:  'https://github.com/chennakeshavadasa/gmid_SKY130A',
+    corner: 'TT · 27°C · VDS=VDD/2 · BSIM',
+    accent: '#4de88a',
+    injectTheme: true
+  },
+  gf: {
+    wrap:   'wrap-gf',
+    load:   'load-gf',
+    url:    '/gmid/gf180mcu-d/',
+    ghUrl:  'https://github.com/chennakeshavadasa/gmid_GF180MCUD',
+    corner: 'TT · 27°C · VDS=VDD/2 · BSIM3v3',
+    accent: '#ff8c42',
+    injectTheme: true
+  }
+};
+
+/* ──────────────────────────────────────────────────────────────
+   IHP Design System — this gets injected into SKY130 & GF180
+   Same-origin injection: all three live on chennakeshavadasa.github.io
+────────────────────────────────────────────────────────────── */
+function buildThemeCSS(accent) {
+  return `
+/* ========================================================
+   IHP Design-System Theme — injected by gmid-hub
+   Normalises UI to match IHP SG13G2 explorer
+   ======================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --bg:        #0b0e11 !important;
+  --surface:   #111518 !important;
+  --surface2:  #161c24 !important;
+  --panel:     #0f1318 !important;
+  --border:    #1e2530 !important;
+  --muted:     #3a4352 !important;
+  --text:      #c8d6e5 !important;
+  --text-dim:  #6b7a8d !important;
+  --accent:    ${accent} !important;
+  --accent-dim: color-mix(in srgb, ${accent} 18%, transparent) !important;
+  --font-mono: 'IBM Plex Mono', monospace !important;
+  --font-sans: 'IBM Plex Sans', sans-serif !important;
+}
+
+/* ── Base ── */
+html, body {
+  background: #0b0e11 !important;
+  color: #c8d6e5 !important;
+  font-family: 'IBM Plex Sans', sans-serif !important;
+}
+
+/* ── Typography global reset ── */
+body *, body *::before, body *::after {
+  font-family: inherit !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Mono elements */
+code, kbd, pre, tt, samp,
+.mono, [class*="mono"], [class*="code"],
+.label, .stat, .value, .number,
+h1, h2, h3, select, option {
+  font-family: 'IBM Plex Mono', monospace !important;
+}
+
+/* ── Page / Wrapper backgrounds ── */
+#app, #root, .app, .container, .wrapper,
+main, .main, .content, .page,
+.tool-container, .explorer {
+  background: #0b0e11 !important;
+}
+
+/* ── Header / Top-nav ── */
+header, .header, .navbar, .nav-header,
+.top-bar, .topbar, .app-header, nav {
+  background: #111518 !important;
+  border-bottom: 1px solid #1e2530 !important;
+  box-shadow: none !important;
+}
+
+header *, .header *, .navbar * {
+  font-family: 'IBM Plex Mono', monospace !important;
+  color: #c8d6e5 !important;
+}
+
+header h1, header h2,
+.header h1, .header h2,
+.app-title, .tool-title, .page-title {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: .08em !important;
+  text-transform: none !important;
+  color: #c8d6e5 !important;
+}
+
+/* ── Sidebar / Left panel ── */
+.sidebar, .left-panel, .control-panel,
+.controls, .panel-left, aside,
+[class*="sidebar"], [class*="controls"],
+[class*="left-panel"] {
+  background: #111518 !important;
+  border-right: 1px solid #1e2530 !important;
+  box-shadow: none !important;
+}
+
+/* ── Inner panels / cards ── */
+.card, .panel, .section, .box,
+.info-box, .stat-box, .detail-box,
+[class*="card"], [class*="panel"]:not(.control-panel) {
+  background: #111c26 !important;
+  border: 1px solid #1e2530 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+/* ── Buttons ── */
+button, .btn, [role="button"],
+input[type="button"], input[type="submit"],
+[class*="btn"], [class*="button"] {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: .05em !important;
+  font-weight: 500 !important;
+  border-radius: 5px !important;
+  transition: background .15s, border-color .15s, color .15s !important;
+  cursor: pointer !important;
+}
+
+/* default (unselected) button */
+button:not(.active):not(.selected):not([data-active="true"]):not(.btn-primary),
+.btn:not(.active):not(.selected) {
+  background: transparent !important;
+  border: 1px solid #1e2530 !important;
+  color: #6b7a8d !important;
+}
+button:not(.active):not(.selected):hover {
+  background: #1a2030 !important;
+  border-color: #3a4352 !important;
+  color: #c8d6e5 !important;
+}
+
+/* active / selected button */
+button.active, button.selected, button[data-active="true"],
+.btn.active, .btn.selected,
+button[class*="active"], .btn[class*="active"] {
+  background: #101820 !important;
+  border: 1px solid color-mix(in srgb, ${accent} 40%, #1e2530) !important;
+  color: ${accent} !important;
+  box-shadow: none !important;
+}
+
+/* Primary / accent buttons */
+.btn-primary, button[class*="primary"], .run-btn, .export-btn {
+  background: color-mix(in srgb, ${accent} 12%, #111518) !important;
+  border: 1px solid color-mix(in srgb, ${accent} 40%, #1e2530) !important;
+  color: ${accent} !important;
+}
+.btn-primary:hover, button[class*="primary"]:hover {
+  background: color-mix(in srgb, ${accent} 20%, #111518) !important;
+}
+
+/* ── Tab navigation ── */
+.tabs, .tab-list, .nav-tabs, [role="tablist"] {
+  border-bottom: 1px solid #1e2530 !important;
+  background: transparent !important;
+  gap: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.tab, [role="tab"], .nav-tab {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: .04em !important;
+  color: #6b7a8d !important;
+  border: 1px solid transparent !important;
+  border-radius: 5px 5px 0 0 !important;
+  padding: 6px 14px !important;
+  background: transparent !important;
+  transition: color .14s !important;
+  cursor: pointer !important;
+}
+.tab:hover, [role="tab"]:hover { color: #c8d6e5 !important; }
+
+.tab.active, [role="tab"][aria-selected="true"],
+.tab[class*="active"], [role="tab"][class*="active"],
+.nav-tab.active {
+  color: ${accent} !important;
+  border-color: #1e2530 #1e2530 transparent !important;
+  background: #111518 !important;
+  border-bottom-color: #111518 !important;
+  box-shadow: 0 2px 0 ${accent} !important;
+}
+
+/* ── Form inputs / selects ── */
+input, select, textarea {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important;
+  background: #0d1117 !important;
+  border: 1px solid #1e2530 !important;
+  color: #c8d6e5 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+input:focus, select:focus {
+  border-color: color-mix(in srgb, ${accent} 50%, #1e2530) !important;
+}
+input[type="range"] {
+  accent-color: ${accent} !important;
+}
+
+/* ── Labels / stat text ── */
+label, .label, .stat-label, .control-label {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10.5px !important;
+  letter-spacing: .06em !important;
+  color: #6b7a8d !important;
+  text-transform: uppercase !important;
+}
+
+/* ── Plot area ── */
+.js-plotly-plot, .plotly, #chart, .chart-container,
+.plot-container, [class*="plot"], .chart {
+  background: #0b0e11 !important;
+  border: 1px solid #1e2530 !important;
+  border-radius: 6px !important;
+}
+
+/* Plotly modebar */
+.modebar, .modebar-container {
+  background: #111518 !important;
+}
+.modebar-btn { color: #6b7a8d !important; }
+.modebar-btn:hover { color: ${accent} !important; }
+
+/* ── Scrollbars ── */
+* { scrollbar-width: thin; scrollbar-color: #1e2530 transparent; }
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #1e2530; border-radius: 3px; }
+*::-webkit-scrollbar-thumb:hover { background: #3a4352; }
+
+/* ── Tables ── */
+table { border-collapse: collapse !important; width: 100% !important; }
+th {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px !important; letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+  color: #6b7a8d !important;
+  background: #111518 !important;
+  border-bottom: 1px solid #1e2530 !important;
+  padding: 8px 12px !important;
+}
+td {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important;
+  color: #c8d6e5 !important;
+  border-bottom: 1px solid #1a2028 !important;
+  padding: 7px 12px !important;
+}
+tr:hover td { background: #111c26 !important; }
+
+/* ── Checkboxes ── */
+input[type="checkbox"] {
+  accent-color: ${accent} !important;
+  width: 13px !important; height: 13px !important;
+}
+
+/* ── Status / info text ── */
+.status, .info, .meta, .footnote, .caption, footer, .footer {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px !important;
+  color: #6b7a8d !important;
+  letter-spacing: .04em !important;
+}
+
+/* ── Links ── */
+a { color: ${accent} !important; text-decoration: none !important; }
+a:hover { opacity: .8 !important; }
+
+/* ── Dividers ── */
+hr { border: none !important; border-top: 1px solid #1e2530 !important; }
+
+/* ── Number display values ── */
+.value, .reading, .metric, .number,
+[class*="value"], [class*="reading"] {
+  font-family: 'IBM Plex Mono', monospace !important;
+  color: ${accent} !important;
+}
+
+/* ── Overview / mini-plot grid ── */
+.overview-grid, .grid, .mini-plots,
+[class*="overview"], [class*="grid"] {
+  gap: 8px !important;
+}
+
+/* ── Channel length toggle buttons specifically ── */
+[class*="length"], [class*="chan"],
+.length-btn, .chan-btn {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px !important;
+}
+
+/* ── Crosshair/tooltip ── */
+.crosshair-tooltip, .hover-label, .tooltip,
+[class*="tooltip"], [class*="crosshair"] {
+  background: #111c26 !important;
+  border: 1px solid #1e2530 !important;
+  color: #c8d6e5 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10.5px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.5) !important;
+}
+
+/* Ensure Plotly paper/plot bg stays transparent/dark */
+.bg, .plotbg { fill: #0b0e11 !important; }
+`;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   State
+────────────────────────────────────────────────────────────── */
+const iframeMap  = {};   // key → HTMLIFrameElement
+const loadedMap  = {};   // key → bool (iframe injected)
+const themedMap  = {};   // key → bool (CSS injected)
+
+/* ──────────────────────────────────────────────────────────────
+   Theme injection
+────────────────────────────────────────────────────────────── */
+function injectTheme(key) {
+  const cfg = PDKS[key];
+  if (!cfg.injectTheme || themedMap[key]) return;
+
+  const frame = iframeMap[key];
+  if (!frame) return;
+
+  let doc;
+  try { doc = frame.contentDocument || frame.contentWindow.document; }
+  catch(e) { console.warn(`Theme inject: cross-origin guard hit for ${key}`, e); return; }
+
+  if (!doc || !doc.head) return;
+
+  /* remove any existing light-mode or conflicting stylesheets */
+  Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).forEach(l => {
+    const href = l.href || '';
+    /* Keep Plotly and Google Fonts; remove any other third-party theme */
+    if (!href.includes('plotly') && !href.includes('fonts.googleapis') &&
+        !href.includes('fonts.gstatic') && href !== '') {
+      l.disabled = true;
+    }
+  });
+
+  const style = doc.createElement('style');
+  style.id    = 'ihp-hub-theme';
+  style.textContent = buildThemeCSS(cfg.accent);
+  doc.head.appendChild(style);
+  themedMap[key] = true;
+
+  showChip(cfg.accent);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Chip indicator
+────────────────────────────────────────────────────────────── */
+let chipTimeout;
+function showChip(accent) {
+  const chip = document.getElementById('theme-chip');
+  const dot  = document.getElementById('chip-dot');
+  clearTimeout(chipTimeout);
+  dot.style.background = accent;
+  chip.classList.add('visible');
+  chipTimeout = setTimeout(() => chip.classList.remove('visible'), 3500);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Iframe creation
+────────────────────────────────────────────────────────────── */
+function createIframe(key) {
+  if (loadedMap[key]) return;
+  loadedMap[key] = true;
+
+  const cfg    = PDKS[key];
+  const wrap   = document.getElementById(cfg.wrap);
+  const loading= document.getElementById(cfg.load);
+
+  const frame = document.createElement('iframe');
+  frame.src   = cfg.url;
+  frame.title = `gm/ID Explorer — ${key.toUpperCase()}`;
+  frame.setAttribute('loading', 'eager');
+  frame.setAttribute('allow', 'fullscreen');
+  iframeMap[key] = frame;
+
+  frame.addEventListener('load', () => {
+    /* slight delay so Plotly has rendered before we paint over */
+    setTimeout(() => {
+      if (cfg.injectTheme) injectTheme(key);
+      loading.classList.add('gone');
+    }, 600);
+  });
+
+  wrap.appendChild(frame);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Tab switching
+────────────────────────────────────────────────────────────── */
+function switchTab(tabEl) {
+  const key = tabEl.dataset.pdk;
+  const cfg = PDKS[key];
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+
+  document.querySelectorAll('.wrap').forEach(w => w.classList.remove('active'));
+  document.getElementById(cfg.wrap).classList.add('active');
+
+  document.getElementById('corner-label').textContent = cfg.corner;
+  document.getElementById('gh-link').href = cfg.ghUrl;
+
+  createIframe(key);
+
+  /* If already themed, briefly flash chip to confirm */
+  if (themedMap[key]) showChip(cfg.accent);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Init — load IHP immediately
+────────────────────────────────────────────────────────────── */
+createIframe('ihp');
+
+/* Keyboard: 1/2/3 to switch tabs */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const k = { '1':'ihp', '2':'sky', '3':'gf' }[e.key];
+  if (k) switchTab(document.querySelector(`.tab[data-pdk="${k}"]`));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESEARCH RADAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary:    #0a0a0a;
+      --bg-secondary:  #111111;
+      --bg-tertiary:   #1a1a1a;
+      --bg-highlight:  #1e2a1e;
+      --text-primary:  #e8e0d0;
+      --text-secondary:#8a8070;
+      --text-accent:   #c8b85a;
+      --text-link:     #6ab0c8;
+      --text-dim:      #4a4540;
+      --border-primary:#2a2520;
+      --border-accent: #c8b85a;
+      --tag-arxiv-bg:  #1a2a1a; --tag-arxiv-fg: #8ab870;
+      --tag-s2-bg:     #1a1a2a; --tag-s2-fg:    #6ab0c8;
+      --tag-blog-bg:   #2a1a0a; --tag-blog-fg:  #c8b85a;
+      --domain-ai:       #c8b85a;
+      --domain-finance:  #6ab0c8;
+      --domain-quant:    #8ab870;
+      --domain-hft:      #c87860;
+      --domain-computing:#a888c8;
+      --domain-vlsi:     #c8a060;
+      --domain-ams:      #70a8c8;
+      --domain-serdes:   #c87898;
+      --domain-aichips:  #78c8a8;
+      --current-domain-color: #c8b85a;
+      --oa-bg: #1a2a1a; --oa-fg: #6ab870;
+      --saved-btn-bg:  #2a2010;
+      --warning-bg:    #1a1000;
+      --warning-fg:    #c8a030;
+      --color-error: #c85050;
+      --age-new: #6ab870; --age-recent: #c8b85a; --age-old: #4a4540;
+      --tag-oa-bg:  #1a1a2e; --tag-oa-fg:  #a070e0;
+      --tag-cr-bg:  #0a1a2a; --tag-cr-fg:  #60b0d8;
+      --tag-scholar-bg:#1a2410; --tag-scholar-fg:#7fc855;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #main { display: flex; flex: 1; overflow: hidden; min-height: 0; position: relative; }
+
+    /* ── HEADER ── */
+    #header {
+      height: 56px; min-height: 56px;
+      display: flex; align-items: center; padding: 0 0 0 20px;
+      border-bottom: 1px solid var(--border-primary);
+      background: var(--bg-primary); flex-shrink: 0;
+    }
+    #logo {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px; font-weight: 700; letter-spacing: 4px;
+      color: var(--text-accent); white-space: nowrap;
+      padding-right: 24px; border-right: 1px solid var(--border-primary);
+      height: 100%; display: flex; align-items: center;
+    }
+    #domain-nav { display: flex; flex: 1; overflow-x: auto; height: 100%; scrollbar-width: none; }
+    #domain-nav::-webkit-scrollbar { display: none; }
+    .domain-tab {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 500; letter-spacing: 1px;
+      padding: 0 20px; height: 100%; display: flex; align-items: center;
+      cursor: pointer; color: var(--text-secondary);
+      border-bottom: 2px solid transparent;
+      border-right: 1px solid var(--border-primary);
+      transition: color 0.12s, border-color 0.12s, background 0.12s;
+      white-space: nowrap; user-select: none;
+      background: none; border-top: none; border-left: none;
+      position: relative;
+    }
+    .domain-tab:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+    .domain-tab.active { color: var(--text-primary); border-bottom-color: var(--current-domain-color); background: var(--bg-secondary); }
+    .domain-tab::after {
+      content: attr(data-desc);
+      position: absolute; top: calc(100% + 4px); left: 0;
+      background: var(--bg-tertiary); border: 1px solid var(--border-primary);
+      color: var(--text-secondary); font-size: 11px; letter-spacing: 0;
+      font-weight: 400; padding: 7px 14px; white-space: nowrap;
+      pointer-events: none; opacity: 0; transform: translateY(-4px);
+      transition: opacity 0.15s, transform 0.15s; z-index: 100;
+    }
+    .domain-tab:hover::after { opacity: 1; transform: translateY(0); }
+
+    /* ── API KEY ── */
+    #api-key-section {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 16px; height: 100%;
+      border-left: 1px solid var(--border-primary); flex-shrink: 0;
+    }
+    #help-btn, #api-key-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500; letter-spacing: 1px;
+      color: var(--text-secondary); background: none;
+      border: 1px solid var(--border-primary); padding: 4px 11px;
+      cursor: pointer; transition: color 0.1s, border-color 0.1s;
+    }
+    #help-btn:hover, #api-key-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+    #api-key-drawer { display: flex; align-items: center; gap: 6px; }
+    #api-key-drawer.hidden { display: none; }
+    #api-key-input {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      background: var(--bg-tertiary); border: 1px solid var(--border-primary);
+      color: var(--text-primary); padding: 5px 10px; width: 240px; outline: none;
+    }
+    #api-key-input:focus { border-color: var(--text-accent); }
+    #api-key-save {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      background: none; border: 1px solid var(--border-accent);
+      color: var(--text-accent); padding: 4px 12px; cursor: pointer;
+    }
+    #api-key-save:hover { background: var(--bg-tertiary); }
+    #api-key-status, #serp-key-status { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+    #api-key-status.active, #serp-key-status.active { color: var(--text-link); }
+    #api-key-error { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--color-error); display: none; }
+    #api-key-error.visible { display: block; }
+    #serp-key-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: var(--tag-scholar-fg); background: none; border: 1px solid var(--border-primary); padding: 4px 10px; cursor: pointer; transition: color 0.1s, border-color 0.1s; }
+    #serp-key-btn:hover { border-color: var(--tag-scholar-fg); }
+    #serp-key-drawer { display: flex; align-items: center; gap: 6px; }
+    #serp-key-drawer.hidden { display: none; }
+    #serp-key-input { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg-tertiary); border: 1px solid var(--border-primary); color: var(--text-primary); padding: 4px 10px; width: 200px; outline: none; }
+    #serp-key-input:focus { border-color: var(--tag-scholar-fg); }
+    #serp-key-save { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; background: none; border: 1px solid var(--tag-scholar-fg); color: var(--tag-scholar-fg); padding: 4px 12px; cursor: pointer; }
+    #serp-key-save:hover { background: var(--bg-tertiary); }
+
+    /* ── FEED PANEL ── */
+    #feed-panel {
+      width: 40%; min-width: 320px; max-width: 600px;
+      border-right: 1px solid var(--border-primary);
+      display: flex; flex-direction: column; overflow: hidden;
+      flex-shrink: 0; position: relative;
+    }
+
+    /* ── FEED CONTROLS ── */
+    #feed-controls {
+      padding: 10px 14px; border-bottom: 1px solid var(--border-primary);
+      display: flex; flex-direction: column; gap: 8px;
+      background: var(--bg-secondary); flex-shrink: 0;
+    }
+
+    /* Fetch progress bar — shows what's streaming in */
+    #fetch-status-row {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-dim); display: flex; align-items: center; gap: 8px; min-height: 18px;
+    }
+    .spinner-sm {
+      width: 11px; height: 11px;
+      border: 1.5px solid var(--border-primary); border-top-color: var(--current-domain-color);
+      border-radius: 50%; animation: spin 0.75s linear infinite;
+      display: inline-block; flex-shrink: 0;
+    }
+    .src-status { display: inline-flex; align-items: center; gap: 4px; }
+    .src-status.done    { color: var(--age-new); }
+    .src-status.empty   { color: var(--text-dim); }
+    .src-status.fail    { color: var(--color-error); }
+    .src-status.pending { color: var(--text-dim); }
+    .src-status.skip    { color: var(--text-dim); opacity: 0.4; }
+
+    /* Filter row */
+    #filter-row { display: flex; align-items: center; gap: 8px; }
+    #feed-filter {
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      background: var(--bg-tertiary); border: 1px solid var(--border-primary);
+      color: var(--text-primary); padding: 7px 12px; outline: none; flex: 1;
+    }
+    #feed-filter:focus { border-color: var(--current-domain-color); }
+    #feed-filter::placeholder { color: var(--text-dim); }
+    #feed-count-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+
+    /* Secondary controls — sort and source narrow */
+    #controls-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .ctrl-lbl { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; }
+    .ctrl-btn {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 1px; background: none; border: 1px solid var(--border-primary);
+      color: var(--text-secondary); padding: 3px 10px; cursor: pointer;
+      transition: color 0.1s, border-color 0.1s, background 0.1s;
+    }
+    .ctrl-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+    .ctrl-btn.active { color: var(--current-domain-color); border-color: var(--current-domain-color); background: var(--bg-tertiary); }
+    .ctrl-btn.saved-btn { border-color: var(--text-accent); color: var(--text-accent); opacity: 0.55; }
+    .ctrl-btn.saved-btn.active { opacity: 1; background: var(--saved-btn-bg); }
+    .ctrl-sep { width: 1px; height: 16px; background: var(--border-primary); flex-shrink: 0; margin: 0 2px; }
+    .ctrl-select {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 1px; background: var(--bg-tertiary); border: 1px solid var(--border-primary);
+      color: var(--text-secondary); padding: 3px 8px; cursor: pointer; outline: none;
+      transition: color 0.1s, border-color 0.1s;
+    }
+    .ctrl-select:hover, .ctrl-select:focus { color: var(--text-primary); border-color: var(--text-secondary); }
+
+    #feed-list { flex: 1; overflow-y: auto; min-height: 0; }
+    #load-more {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: 1px; background: none; border: none;
+      border-top: 1px solid var(--border-primary);
+      color: var(--text-secondary); padding: 13px; cursor: pointer; width: 100%; flex-shrink: 0;
+    }
+    #load-more:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+    #load-more.hidden { display: none; }
+
+    /* ── FEED ITEM ── */
+    .feed-item {
+      padding: 14px 16px; border-bottom: 1px solid var(--border-primary);
+      cursor: pointer; transition: background 0.08s;
+      border-left: 3px solid transparent;
+      animation: slideInUp 0.16s ease both;
+    }
+    .feed-item:hover { background: var(--bg-tertiary); }
+    .feed-item.selected { background: var(--bg-highlight); border-left-color: var(--current-domain-color); }
+
+    .feed-item-top { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+    .feed-item-top-right { display: flex; align-items: center; gap: 7px; margin-left: auto; }
+
+    .feed-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 14px; line-height: 1.5; color: var(--text-primary); margin-bottom: 7px;
+    }
+    .feed-meta {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-secondary); display: flex; gap: 10px; flex-wrap: wrap; line-height: 1.4;
+    }
+    .feed-venue { color: var(--text-dim); }
+    .feed-footer { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .feed-citations { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-accent); }
+    .feed-influential { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-accent); opacity: 0.65; }
+    .feed-date { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+
+    .age-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .age-dot.new    { background: var(--age-new); }
+    .age-dot.recent { background: var(--age-recent); }
+    .age-dot.old    { background: var(--age-old); }
+
+    .new-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
+      padding: 1px 5px; background: var(--age-new); color: var(--bg-primary); flex-shrink: 0;
+    }
+
+    .bookmark-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 15px; color: var(--text-dim); padding: 0 2px; line-height: 1;
+      transition: color 0.1s, transform 0.1s; flex-shrink: 0;
+    }
+    .bookmark-btn:hover { color: var(--text-accent); transform: scale(1.15); }
+    .bookmark-btn.saved { color: var(--text-accent); }
+
+    .source-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.5px; padding: 2px 7px; text-transform: uppercase; flex-shrink: 0;
+    }
+    .source-badge.large { font-size: 11px; padding: 3px 10px; }
+    .source-arxiv    { background: var(--tag-arxiv-bg);    color: var(--tag-arxiv-fg); }
+    .source-s2       { background: var(--tag-s2-bg);       color: var(--tag-s2-fg); }
+    .source-blog     { background: var(--tag-blog-bg);      color: var(--tag-blog-fg); }
+    .source-openalex { background: var(--tag-oa-bg); color: var(--tag-oa-fg); }
+    .source-crossref { background: var(--tag-cr-bg); color: var(--tag-cr-fg); }
+    .source-scholar  { background: var(--tag-scholar-bg); color: var(--tag-scholar-fg); }
+    .oa-badge { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; background:var(--oa-bg); color:var(--oa-fg); }
+
+    .cat-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
+    .cat-chip { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-dim); border:1px solid var(--border-primary); padding:2px 8px; }
+
+    /* ── DETAIL PANEL ── */
+    #detail-panel { flex: 1; overflow-y: auto; min-height: 0; background: var(--bg-primary); }
+    #detail-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:16px; padding:48px; }
+    .empty-logo { font-family:'Libre Baskerville',serif; font-size:32px; font-weight:700; letter-spacing:8px; color:var(--text-dim); }
+    .empty-domain { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--current-domain-color); letter-spacing:3px; }
+    .empty-hint { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-secondary); }
+    .empty-keys { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); text-align:center; line-height:2.2; }
+
+    #detail-content { padding: 30px 40px 56px; }
+    #detail-content.hidden { display: none; }
+
+    .detail-source-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .detail-cite-count { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-accent); }
+    .detail-influential-count { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-accent); opacity:0.65; }
+
+    .detail-title {
+      font-family: 'Libre Baskerville', serif; font-style: italic;
+      font-size: 20px; font-weight: 700; line-height: 1.4;
+      color: var(--text-primary); margin-bottom: 14px;
+    }
+    .detail-authors { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:300; color:var(--text-secondary); line-height:1.6; margin-bottom:10px; }
+    .detail-meta-row { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); display:flex; gap:18px; margin-bottom:20px; flex-wrap:wrap; }
+    .detail-venue { color: var(--text-secondary); }
+
+    .detail-links { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
+    .detail-link {
+      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
+      letter-spacing:1px; padding:6px 16px; text-decoration:none; cursor:pointer;
+      background:none; border:none; transition:color 0.1s, border-color 0.1s, background 0.1s; display:inline-block;
+    }
+    .detail-link.primary { border:1px solid var(--current-domain-color); color:var(--current-domain-color); }
+    .detail-link.primary:hover { background: var(--bg-tertiary); }
+    .detail-link.secondary { border:1px solid var(--border-primary); color:var(--text-secondary); }
+    .detail-link.secondary:hover { color:var(--text-primary); border-color:var(--text-secondary); }
+    .detail-link.bookmark-link { border:1px solid var(--border-primary); color:var(--text-dim); }
+    .detail-link.bookmark-link.saved { border-color:var(--text-accent); color:var(--text-accent); }
+    .detail-link.bookmark-link:hover { color:var(--text-accent); border-color:var(--text-accent); }
+
+    .detail-divider { height:1px; background:var(--border-primary); margin:20px 0; }
+    .section-label {
+      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;
+      letter-spacing:2.5px; color:var(--current-domain-color); margin-bottom:14px; text-transform:uppercase;
+    }
+    .explainer-card { margin-bottom:24px; }
+    .explainer-text { font-family:'Spectral',serif; font-size:15px; font-weight:300; line-height:1.85; color:var(--text-primary); }
+
+    .explainer-loading { display:flex; align-items:center; gap:14px; padding:30px 0; color:var(--text-secondary); font-family:'JetBrains Mono',monospace; font-size:12px; }
+    .explainer-placeholder .section-label { color:var(--current-domain-color); }
+    .explainer-placeholder .explainer-text { color:var(--text-dim); font-style:italic; }
+
+    .explainer-mode-row { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+    .mode-btn { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; letter-spacing:1px; background:none; border:1px solid var(--border-primary); color:var(--text-secondary); padding:4px 12px; cursor:pointer; }
+    .mode-btn.active { border-color:var(--current-domain-color); color:var(--current-domain-color); }
+    .mode-btn:hover { color:var(--text-primary); border-color:var(--text-secondary); }
+
+    .abstract-section { margin-top:4px; }
+    .abstract-toggle {
+      font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
+      letter-spacing:1px; color:var(--text-secondary); cursor:pointer;
+      background:none; border:none; padding:0; margin-bottom:14px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .abstract-toggle:hover { color:var(--text-primary); }
+    .abstract-word-count { color:var(--text-dim); font-weight:300; font-size:10px; }
+    .abstract-text { font-family:'Spectral',serif; font-size:14px; font-weight:300; line-height:1.8; color:var(--text-secondary); display:none; }
+    .abstract-text.visible { display:block; }
+
+    /* ── STATUS BAR ── */
+    #status-bar {
+      height: 32px; min-height: 32px; display: flex; align-items: center;
+      padding: 0 18px; gap: 20px; border-top: 1px solid var(--border-primary);
+      background: var(--bg-secondary); flex-shrink: 0;
+      border-left: 4px solid var(--current-domain-color); transition: border-color 0.2s;
+    }
+    #status-bar span { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); white-space:nowrap; }
+    #status-counts { color: var(--text-secondary); }
+    #status-api.active { color: var(--text-link); }
+    #status-keys { margin-left: auto; }
+
+    /* CORS warning banner */
+    #cors-warning {
+      background: var(--warning-bg); border-bottom: 1px solid var(--warning-fg);
+      padding: 10px 18px; display: none; flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--warning-fg); line-height: 1.6;
+    }
+    #cors-warning.visible { display: block; }
+    #cors-warning strong { color: var(--text-accent); }
+    #cors-warning code { background: var(--bg-tertiary); padding: 1px 6px; font-size: 10px; }
+
+    /* Animations */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton-item { padding: 14px 16px; border-bottom: 1px solid var(--border-primary); }
+    .skeleton-line {
+      height: 12px;
+      background: linear-gradient(90deg, var(--bg-secondary) 0%, var(--bg-tertiary) 50%, var(--bg-secondary) 100%);
+      background-size: 400px 100%; animation: shimmer 1.4s infinite linear; margin-bottom: 8px;
+    }
+    .skeleton-line.title { height: 15px; }
+    .skeleton-line.meta  { height: 11px; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px; border: 2px solid var(--border-primary);
+      border-top-color: var(--current-domain-color); border-radius: 50%;
+      animation: spin 0.75s linear infinite; display: inline-block; flex-shrink: 0;
+    }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideInUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-primary); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+    * { scrollbar-width: thin; scrollbar-color: var(--border-primary) var(--bg-primary); }
+
+    .toast { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); background:var(--bg-tertiary); border:1px solid var(--border-accent); color:var(--text-accent); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1px; padding:9px 24px; z-index:1000; pointer-events:none; animation:fadeIn 0.2s ease; }
+
+    .feed-error { padding: 28px 18px; display:flex; flex-direction:column; gap:16px; align-items:flex-start; }
+    .feed-error-msg { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--color-error); line-height:1.7; max-width:360px; }
+    .feed-error-retry { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; letter-spacing:1px; border:1px solid var(--color-error); color:var(--color-error); background:none; padding:5px 16px; cursor:pointer; }
+    .feed-error-retry:hover { background: rgba(200,80,80,0.1); }
+    .feed-empty { padding:28px 18px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); line-height:1.7; }
+
+    .explainer-retry { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-link); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; }
+    .explainer-retry:hover { color:var(--text-primary); }
+
+    /* Resize handle */
+    #resize-handle { position:absolute; right:-4px; top:0; width:8px; height:100%; cursor:col-resize; z-index:50; display:flex; align-items:center; justify-content:center; }
+    #resize-handle::after { content:''; width:1px; height:56px; background:var(--border-primary); transition:background 0.15s, width 0.15s; }
+    #resize-handle:hover::after, #resize-handle.dragging::after { background:var(--current-domain-color); width:2px; }
+    #drag-overlay { display:none; position:fixed; inset:0; z-index:999; cursor:col-resize; }
+    #drag-overlay.active { display:block; }
+
+    /* Keyboard help */
+    #kbd-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:200; align-items:center; justify-content:center; }
+    #kbd-overlay.visible { display:flex; }
+    #kbd-panel { background:var(--bg-secondary); border:1px solid var(--border-primary); padding:36px 44px; min-width:480px; max-width:600px; }
+    #kbd-panel h2 { font-family:'Libre Baskerville',serif; font-size:15px; font-weight:700; letter-spacing:3px; color:var(--text-accent); margin-bottom:24px; }
+    .kbd-section-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--text-dim); margin-bottom:10px; margin-top:20px; }
+    .kbd-row { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border-primary); }
+    .kbd-key { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; background:var(--bg-tertiary); border:1px solid var(--border-primary); color:var(--current-domain-color); padding:2px 10px; display:inline-block; min-width:36px; text-align:center; }
+    .kbd-desc { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-secondary); }
+    #kbd-close { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; background:none; border:1px solid var(--border-primary); color:var(--text-secondary); padding:6px 18px; cursor:pointer; margin-top:24px; letter-spacing:1px; }
+    #kbd-close:hover { color:var(--text-primary); border-color:var(--text-secondary); }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <div id="logo">RESEARCH RADAR</div>
+    <nav id="domain-nav"></nav>
+    <div id="api-key-section">
+      <button id="help-btn">?</button>
+      <button id="api-key-btn">CLAUDE KEY</button>
+      <div id="api-key-drawer" class="hidden">
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+        <button id="api-key-save">SET</button>
+        <span id="api-key-error">INVALID FORMAT</span>
+      </div>
+      <span id="api-key-status">NO KEY</span>
+      <button id="serp-key-btn" title="SerpApi key for Google Scholar — free 100/mo at serpapi.com">SCHOLAR KEY</button>
+      <div id="serp-key-drawer" class="hidden">
+        <input type="password" id="serp-key-input" placeholder="serpapi key..." autocomplete="off" spellcheck="false">
+        <button id="serp-key-save">SET</button>
+      </div>
+      <span id="serp-key-status">NO KEY</span>
+    </div>
+  </header>
+
+  <!-- CORS warning — shown when opened from file:// -->
+  <div id="cors-warning">
+    <strong>⚠ FILE:// PROTOCOL DETECTED.</strong> APIs require a web server to work. Fix:
+    <br>1. Open a terminal in the <strong>folder containing this file</strong> (e.g. <code>cd ~/Downloads</code>)
+    <br>2. Run: <code>python3 -m http.server 8080</code>
+    <br>3. Open: <code>http://localhost:8080/research_radar.html</code> &nbsp; (note: <strong>no trailing slash on the folder</strong>)
+    <br>Getting a 404? Your terminal is in the wrong directory — <code>cd</code> to where the .html file is first.
+  </div>
+
+  <main id="main">
+    <section id="feed-panel">
+      <div id="feed-controls">
+        <!-- Source fetch status — streams in as each source arrives -->
+        <div id="fetch-status-row"></div>
+
+        <!-- Filter — full-text search across title, authors, abstract, venue -->
+        <div id="filter-row">
+          <input type="text" id="feed-filter" placeholder="/ filter — title · authors · abstract · venue..." autocomplete="off">
+          <span id="feed-count-badge"></span>
+        </div>
+
+        <!-- Sort + narrow — secondary tools, feeds already fully loaded -->
+        <div id="controls-row">
+          <span class="ctrl-lbl">SORT</span>
+          <button class="ctrl-btn active" data-sort="date">DATE ↓</button>
+          <button class="ctrl-btn" data-sort="citations">CITED ↓</button>
+          <div class="ctrl-sep"></div>
+          <span class="ctrl-lbl">NARROW</span>
+          <button class="ctrl-btn active" data-src="all">ALL</button>
+          <button class="ctrl-btn" data-src="arxiv">arXiv</button>
+          <button class="ctrl-btn" data-src="s2">PROFS</button>
+          <button class="ctrl-btn" data-src="blog">BLOG</button>
+          <button class="ctrl-btn" data-src="scholar">Scholar</button>
+        <div class="ctrl-sep"></div>
+          <span class="ctrl-lbl">SINCE</span>
+          <select id="year-filter" class="ctrl-select">
+            <option value="all">ALL</option>
+            <option value="1">1Y</option>
+            <option value="2">2Y</option>
+            <option value="3">3Y</option>
+            <option value="5">5Y</option>
+          </select>
+          <div class="ctrl-sep"></div>
+          <button class="ctrl-btn saved-btn" data-src="saved">★ SAVED</button>
+        </div>
+      </div>
+      <div id="feed-list"></div>
+      <button id="load-more" class="hidden">LOAD MORE FROM arXiv</button>
+      <div id="resize-handle"></div>
+    </section>
+
+    <section id="detail-panel">
+      <div id="detail-empty">
+        <div class="empty-logo">RESEARCH RADAR</div>
+        <div class="empty-domain" id="empty-domain-label"></div>
+        <div class="empty-hint">Select a paper — everything loads automatically.</div>
+        <div class="empty-keys">
+          j / k &nbsp; navigate &nbsp;·&nbsp; Enter &nbsp; open URL &nbsp;·&nbsp; o &nbsp; open PDF<br>
+          s &nbsp; bookmark &nbsp;·&nbsp; e &nbsp; explain &nbsp;·&nbsp; c &nbsp; bibtex &nbsp;·&nbsp; / &nbsp; filter &nbsp;·&nbsp; r &nbsp; refresh &nbsp;·&nbsp; ? &nbsp; help
+        </div>
+      </div>
+      <div id="detail-content" class="hidden"></div>
+    </section>
+  </main>
+
+  <footer id="status-bar">
+    <span id="status-counts">--</span>
+    <span id="status-time"></span>
+    <span id="status-cache"></span>
+    <span id="status-api">NO KEY</span>
+    <span id="status-keys">j/k · Enter · o · s · e · c · / · r · ?</span>
+  </footer>
+
+  <div id="kbd-overlay">
+    <div id="kbd-panel">
+      <h2>KEYBOARD SHORTCUTS</h2>
+      <div class="kbd-section-title">NAVIGATION</div>
+      <div class="kbd-row"><span class="kbd-key">j / ↓</span><span class="kbd-desc">Next paper in feed</span></div>
+      <div class="kbd-row"><span class="kbd-key">k / ↑</span><span class="kbd-desc">Previous paper in feed</span></div>
+      <div class="kbd-row"><span class="kbd-key">Enter</span><span class="kbd-desc">Open paper URL in new tab</span></div>
+      <div class="kbd-row"><span class="kbd-key">o</span><span class="kbd-desc">Open PDF (falls back to URL)</span></div>
+      <div class="kbd-section-title">ACTIONS</div>
+      <div class="kbd-row"><span class="kbd-key">s</span><span class="kbd-desc">Bookmark / unbookmark selected paper</span></div>
+      <div class="kbd-row"><span class="kbd-key">e</span><span class="kbd-desc">Run AI explainer on selected paper</span></div>
+      <div class="kbd-row"><span class="kbd-key">c</span><span class="kbd-desc">Copy BibTeX citation to clipboard</span></div>
+      <div class="kbd-row"><span class="kbd-key">/</span><span class="kbd-desc">Focus filter input</span></div>
+      <div class="kbd-row"><span class="kbd-key">r</span><span class="kbd-desc">Refresh — bypass cache, re-fetch domain</span></div>
+      <div class="kbd-section-title">UI</div>
+      <div class="kbd-row"><span class="kbd-key">?</span><span class="kbd-desc">Toggle this overlay</span></div>
+      <div class="kbd-row"><span class="kbd-key">Esc</span><span class="kbd-desc">Close overlay / blur filter</span></div>
+      <div class="kbd-section-title" style="margin-top:20px">KEYS TO ENTER</div>
+      <div class="kbd-row"><span class="kbd-key">CLAUDE KEY</span><span class="kbd-desc">Anthropic API key for AI explainer</span></div>
+      <div class="kbd-row"><span class="kbd-key">SCHOLAR KEY</span><span class="kbd-desc">SerpApi key for Google Scholar — <a href="https://serpapi.com/users/sign_up?plan=free" target="_blank" style="color:var(--tag-scholar-fg)">free 100/mo</a></span></div>
+      <button id="kbd-close">CLOSE</button>
+    </div>
+  </div>
+  <div id="drag-overlay"></div>
+
+  <script>
+  'use strict';
+
+  /* ════════════════════════════════════════════════════════
+     A · CONSTANTS
+  ════════════════════════════════════════════════════════ */
+
+  const DOMAINS = [
+    { key:'ai',        label:'AI',        color:'--domain-ai',       desc:'NeurIPS · ICML · ICLR · JMLR · TPAMI · foundation models · alignment' },
+    { key:'ai-finance',label:'AI×FINANCE',color:'--domain-finance',  desc:'JFDS · q-fin · ML for trading · NLP on filings · credit risk · MLP de Prado' },
+    { key:'quant',     label:'QUANT',     color:'--domain-quant',    desc:'Factor models · AQR · Two Sigma · Man AHL · Risk.net · portfolio construction' },
+    { key:'hft',       label:'HFT',       color:'--domain-hft',      desc:'Market microstructure · Jane Street · order book · latency · SSRN q-fin.TR' },
+    { key:'computing', label:'COMPUTING', color:'--domain-computing',desc:'ISCA · MICRO · HPCA · ASPLOS · IEEE Micro · Chips & Cheese · memory systems' },
+    { key:'vlsi',      label:'VLSI',      color:'--domain-vlsi',     desc:'DAC · ICCAD · IEEE TCAD · EDA · place & route · SemiAnalysis · Cadence/Synopsys' },
+    { key:'ams',       label:'AMS/RF',    color:'--domain-ams',      desc:'ISSCC · JSSC · TCAS-I/II · CICC · ESSCIRC · ADCs · PLLs · amplifiers · bandgap' },
+    { key:'serdes',    label:'SERDES',    color:'--domain-serdes',   desc:'ISSCC · DesignCon · OFC · CDR · PAM4 · Signal Integrity Journal · OIF CEI' },
+    { key:'ai-chips',  label:'AI CHIPS',  color:'--domain-aichips', desc:'ISSCC · Hot Chips · MLSys · JSSC · SemiAnalysis · NPUs · systolic · CIM' },
+  ];
+
+  const ARXIV_CATS = {
+    // AI/ML — core ML theory, deep learning, NLP, CV, statistics
+    'ai':        ['cs.LG','cs.AI','cs.CL','cs.CV','cs.NE','stat.ML'],
+    // AI × Finance — quantitative finance + ML categories
+    'ai-finance':['q-fin.CP','q-fin.TR','q-fin.MF','q-fin.PM','q-fin.RM','cs.LG','stat.ML','cs.CE'],
+    // Quant — all quantitative finance tracks
+    'quant':     ['q-fin.TR','q-fin.PM','q-fin.MF','q-fin.PR','q-fin.CP','q-fin.RM','q-fin.ST','q-fin.EC'],
+    // HFT / Market Microstructure — trading + statistical finance
+    'hft':       ['q-fin.TR','q-fin.ST','q-fin.MF','q-fin.EC'],
+    // Computing / Computer Architecture — arch, distributed, OS, perf, compilers
+    'computing': ['cs.AR','cs.DC','cs.OS','cs.PF','cs.PL','cs.SY','cs.NI'],
+    // VLSI / EDA — emerging technologies, CAD, hardware architecture
+    'vlsi':      ['cs.ET','cs.AR','eess.SP','cs.PF'],
+    // AMS/RF — signal processing, systems, circuits (eess.SP is closest on arXiv)
+    'ams':       ['eess.SP','eess.SY','eess.AS','physics.ins-det'],
+    // SerDes / High-Speed IO — signal processing + networking + RF
+    'serdes':    ['eess.SP','eess.SY','cs.NI','cs.AR'],
+    // AI Chips — hardware architecture + ML + emerging tech
+    'ai-chips':  ['cs.AR','cs.LG','cs.ET','cs.NE','cs.DC'],
+  };
+
+  // Semantic Scholar author IDs — top researchers per domain, drawn from resources doc
+  const PROF_AUTHORS = {
+    'ai': [
+      { name:'Yoshua Bengio',      id:'1751762'    },  // Turing Award, Mila
+      { name:'Geoffrey Hinton',    id:'1695689'    },  // Nobel Physics 2024
+      { name:'Yann LeCun',         id:'1716555'    },  // Turing Award, Meta AI
+      { name:'Kaiming He',         id:'39353098'   },  // ResNet, MAE — Meta FAIR
+      { name:'Ilya Sutskever',     id:'2010485'    },  // GPT, SSI
+      { name:'Percy Liang',        id:'1800034'    },  // Stanford HELM, CRFM
+      { name:'Chelsea Finn',       id:'46234526'   },  // Meta-learning, Stanford
+      { name:'Andrej Karpathy',    id:'2082939'    },  // Tesla, OpenAI, Stanford
+      { name:'Jacob Steinhardt',   id:'2054534'    },  // UC Berkeley, alignment
+    ],
+    'ai-finance': [
+      { name:'Marcos Lopez de Prado', id:'1740859347' }, // MLFA, Cornell
+      { name:'Andrew Lo',          id:'1783590'    },  // MIT Sloan, adaptive markets
+      { name:'Campbell Harvey',    id:'2113490'    },  // Duke, factor zoo
+      { name:'Stefan Jansen',      id:'2093564384' },  // ML for Algorithmic Trading
+    ],
+    'quant': [
+      { name:'Marcos Lopez de Prado', id:'1740859347' },
+      { name:'Andrew Lo',          id:'1783590'    },
+      { name:'Campbell Harvey',    id:'2113490'    },  // Duke, factor zoo
+      { name:'Eugene Fama',        id:'3071038'    },  // Chicago, EMH Nobel
+      { name:'Robert Shiller',     id:'2044437'    },  // Yale, CAPE, Nobel
+    ],
+    'hft': [
+      { name:'Marcos Lopez de Prado', id:'1740859347' },
+      { name:'Albert Kyle',        id:'2008481'    },  // Kyle model, market impact
+      { name:'Thierry Foucault',   id:'2080498'    },  // HEC Paris, order book
+      { name:'Maureen O\'Hara',    id:'2034283'    },  // Cornell, market microstructure
+      { name:'Lawrence Harris',    id:'2083019'    },  // USC, trading theory
+    ],
+    'computing': [
+      { name:'David Patterson',    id:'1760423'    },  // RISC, Turing Award
+      { name:'John Hennessy',      id:'1780870'    },  // ARM, Turing Award
+      { name:'Onur Mutlu',         id:'1780512'    },  // ETH Zurich, memory systems
+      { name:'Ion Stoica',         id:'1734083'    },  // Spark, Ray, Berkeley
+      { name:'Tim Kraska',         id:'2074961'    },  // learned index structures, MIT
+      { name:'Matei Zaharia',      id:'1887870'    },  // Databricks, Spark, Stanford
+    ],
+    'vlsi': [
+      { name:'David Pan',          id:'1769593'    },  // UT Austin, ML for EDA
+      { name:'Sachin Sapatnekar',  id:'1791558'    },  // Minnesota, physical design
+      { name:'Rob Rutenbar',       id:'1769400'    },  // UIUC, EDA
+      { name:'Evangeline Young',   id:'2110484'    },  // CUHK, placement
+      { name:'Yibo Lin',           id:'2145831698' },  // PKU, DREAMPlace, ML-EDA
+    ],
+    'ams': [
+      { name:'Boris Murmann',      id:'1698147'    },  // Stanford, ADC surveys
+      { name:'Behzad Razavi',      id:'1752422'    },  // UCLA, RF CMOS
+      { name:'Elad Alon',          id:'1690845'    },  // Berkeley, mixed-signal
+      { name:'Pieter Harpe',       id:'2063802'    },  // TU/e, ultra-low-power ADC
+      { name:'Willy Sansen',       id:'1706218'    },  // KU Leuven, analog IC
+      { name:'Robert Walden',      id:'2082384'    },  // ADC performance survey
+    ],
+    'serdes': [
+      { name:'Pavan Hanumolu',     id:'1770635'    },  // UIUC, PLLs CDR
+      { name:'Elad Alon',          id:'1690845'    },  // Berkeley, wireline
+      { name:'Vladimir Stojanovic',id:'2163491'    },  // Berkeley, silicon photonics
+      { name:'Azita Emami',        id:'1706382'    },  // Caltech, high-speed links
+      { name:'Frank O\'Mahony',    id:'2162748'    },  // Intel, high-speed I/O
+    ],
+    'ai-chips': [
+      { name:'Joel Emer',          id:'1775477'    },  // MIT/NVIDIA, Timeloop/Eyeriss
+      { name:'Vivienne Sze',       id:'2055372'    },  // MIT, energy-efficient ML
+      { name:'Tushar Krishna',     id:'2163054'    },  // Georgia Tech, NoC/systolic
+      { name:'Onur Mutlu',         id:'1780512'    },  // ETH Zurich, PIM/memory
+      { name:'Bill Dally',         id:'1709588'    },  // Stanford/NVIDIA Chief Scientist
+      { name:'Kunle Olukotun',     id:'1770437'    },  // Stanford, parallel arch
+    ],
+  };
+
+  // Google Scholar author IDs for SerpApi integration
+  // scholar.google.com/citations?user=<SCHOLAR_ID>
+  const SCHOLAR_AUTHORS = {
+    'ai': [
+      { name:'Yoshua Bengio',      id:'kukA0LcAAAAJ', affil:'Mila / U Montréal' },
+      { name:'Geoffrey Hinton',    id:'JicYPdAAAAAJ', affil:'U Toronto / Nobel 2024' },
+      { name:'Yann LeCun',         id:'WLN3QrAAAAAJ', affil:'NYU / Meta' },
+      { name:'Andrej Karpathy',    id:'l8WuQJgAAAAJ', affil:'Stanford / OpenAI' },
+      { name:'Kaiming He',         id:'DhtAFkwAAAAJ', affil:'Meta FAIR' },
+      { name:'Chelsea Finn',       id:'vr_8BBUAAAAJ', affil:'Stanford' },
+      { name:'Jacob Steinhardt',   id:'qFsXt88AAAAJ', affil:'UC Berkeley' },
+    ],
+    'ai-finance': [
+      { name:'Marcos Lopez de Prado', id:'xYEXDpIAAAAJ', affil:'Cornell / ADIA' },
+      { name:'Andrew Lo',          id:'DX1vk68AAAAJ', affil:'MIT Sloan' },
+      { name:'Campbell Harvey',    id:'C4QhWvQAAAAJ', affil:'Duke / NBER' },
+      { name:'Stefan Jansen',      id:'qJxiMdQAAAAJ', affil:'ML for Algo Trading' },
+    ],
+    'quant': [
+      { name:'Marcos Lopez de Prado', id:'xYEXDpIAAAAJ', affil:'Cornell / ADIA' },
+      { name:'Andrew Lo',          id:'DX1vk68AAAAJ', affil:'MIT Sloan' },
+      { name:'Eugene Fama',        id:'PUhMqq4AAAAJ', affil:'Chicago Booth' },
+      { name:'Campbell Harvey',    id:'C4QhWvQAAAAJ', affil:'Duke / NBER' },
+    ],
+    'hft': [
+      { name:'Marcos Lopez de Prado', id:'xYEXDpIAAAAJ', affil:'Cornell / ADIA' },
+      { name:'Thierry Foucault',   id:'w3OyEFkAAAAJ', affil:'HEC Paris' },
+      { name:'Albert Kyle',        id:'jSLgDsEAAAAJ', affil:'U Maryland' },
+    ],
+    'computing': [
+      { name:'David Patterson',    id:'sdfVEq4AAAAJ', affil:'Berkeley / Google' },
+      { name:'Onur Mutlu',         id:'0Kk1NMIAAAAJ', affil:'ETH Zurich' },
+      { name:'Matei Zaharia',      id:'I1EvjZsAAAAJ', affil:'Stanford / Databricks' },
+      { name:'Ion Stoica',         id:'S28NepoAAAAJ', affil:'Berkeley / Anyscale' },
+    ],
+    'vlsi': [
+      { name:'David Pan',          id:'V4VNbOkAAAAJ', affil:'UT Austin' },
+      { name:'Yibo Lin',           id:'b0dF804AAAAJ', affil:'PKU / DREAMPlace' },
+    ],
+    'ams': [
+      { name:'Boris Murmann',      id:'KqcKi4QAAAAJ', affil:'Stanford' },
+      { name:'Behzad Razavi',      id:'s3Mk0JIAAAAJ', affil:'UCLA' },
+      { name:'Elad Alon',          id:'d7hF7VEAAAAJ', affil:'Berkeley' },
+      { name:'Pieter Harpe',       id:'pHBSPPsAAAAJ', affil:'TU Eindhoven' },
+    ],
+    'serdes': [
+      { name:'Pavan Hanumolu',     id:'HdALolMAAAAJ', affil:'UIUC' },
+      { name:'Vladimir Stojanovic',id:'0pNPTdIAAAAJ', affil:'Berkeley' },
+      { name:'Elad Alon',          id:'d7hF7VEAAAAJ', affil:'Berkeley' },
+    ],
+    'ai-chips': [
+      { name:'Joel Emer',          id:'E3IUP8AAAAAJ', affil:'MIT / NVIDIA' },
+      { name:'Vivienne Sze',       id:'6WZQA6cAAAAJ', affil:'MIT' },
+      { name:'Tushar Krishna',     id:'P__ztgcAAAAJ', affil:'Georgia Tech' },
+      { name:'Bill Dally',         id:'HFVLTHEAAAAJ', affil:'Stanford / NVIDIA' },
+    ],
+  };
+
+  // RSS blog feeds — curated from resources_v2.md: top labs, top practitioners, no junk
+  const BLOG_FEEDS = {
+    'ai': [
+      // Top lab research blogs
+      { name:'Google DeepMind',        url:'https://deepmind.google/blog/rss.xml' },
+      { name:'Google Research',        url:'https://research.google/blog/rss/' },
+      { name:'Meta AI (FAIR)',         url:'https://ai.meta.com/blog/feed/' },
+      { name:'Microsoft Research',     url:'https://www.microsoft.com/en-us/research/feed/' },
+      { name:'OpenAI Research',        url:'https://openai.com/news/rss.xml' },
+      { name:'Anthropic Research',     url:'https://www.anthropic.com/news/rss' },
+      { name:'Apple ML Research',      url:'https://machinelearning.apple.com/rss.xml' },
+      { name:'Hugging Face Blog',      url:'https://huggingface.co/blog/feed.xml' },
+      { name:'Amazon Science',         url:'https://www.amazon.science/index.rss' },
+      // Expert practitioner blogs (from resources doc)
+      { name:'Lil\'Log (Lilian Weng)', url:'https://lilianweng.github.io/index.xml' },
+      { name:'Ahead of AI (Raschka)',  url:'https://magazine.sebastianraschka.com/feed' },
+      { name:'The Gradient',           url:'https://thegradient.pub/rss/' },
+      { name:'Distill.pub',            url:'https://distill.pub/rss.xml' },
+      // Newsletters with RSS
+      { name:'Import AI (Jack Clark)', url:'https://importai.substack.com/feed' },
+      { name:'Last Week in AI',        url:'https://lastweekin.ai/feed' },
+    ],
+    'ai-finance': [
+      // Premier systematic/ML finance research sources
+      { name:'Two Sigma Insights',     url:'https://www.twosigma.com/topic/insights/feed/' },
+      { name:'Man Institute (AHL)',    url:'https://www.man.com/maninstitute/rss' },
+      { name:'AQR Insights',           url:'https://www.aqr.com/Insights/Research/rss' },
+      { name:'Alpha Architect',        url:'https://alphaarchitect.com/feed/' },
+      { name:'Hudson & Thames',        url:'https://hudsonthames.org/blog/feed/' },
+      { name:'Flirting With Models',   url:'https://blog.thinknewfound.com/feed/' },
+      { name:'Quantocracy',            url:'https://quantocracy.com/feed/' },
+      // Finance-specific arXiv-like preprints via blog
+      { name:'Goldman Sachs Intelligence', url:'https://www.goldmansachs.com/intelligence/rss.xml' },
+    ],
+    'quant': [
+      { name:'Two Sigma Insights',     url:'https://www.twosigma.com/topic/insights/feed/' },
+      { name:'Man Institute (AHL)',    url:'https://www.man.com/maninstitute/rss' },
+      { name:'AQR Insights',           url:'https://www.aqr.com/Insights/Research/rss' },
+      { name:'Alpha Architect',        url:'https://alphaarchitect.com/feed/' },
+      { name:'Flirting With Models',   url:'https://blog.thinknewfound.com/feed/' },
+      { name:'Quantocracy',            url:'https://quantocracy.com/feed/' },
+      { name:'QuantStart',             url:'https://www.quantstart.com/articles/feed/' },
+      { name:'Ernie Chan Blog',        url:'https://epchan.blogspot.com/feeds/posts/default' },
+    ],
+    'hft': [
+      // Elite HFT practitioner and research blogs
+      { name:'Jane Street Tech Blog',  url:'https://blog.janestreet.com/feed.xml' },
+      { name:'Databento Blog',         url:'https://databento.com/blog/rss.xml' },
+      { name:'Two Sigma Insights',     url:'https://www.twosigma.com/topic/insights/feed/' },
+      { name:'Man Institute (AHL)',    url:'https://www.man.com/maninstitute/rss' },
+      { name:'Matt Godbolt\'s Blog',   url:'https://xania.org/feed.xml' },
+      { name:'Quantocracy',            url:'https://quantocracy.com/feed/' },
+    ],
+    'computing': [
+      // Top arch/systems blogs from resources doc
+      { name:'Chips and Cheese',       url:'https://chipsandcheese.com/feed/' },
+      { name:'Google Research',        url:'https://research.google/blog/rss/' },
+      { name:'Microsoft Research',     url:'https://www.microsoft.com/en-us/research/feed/' },
+      { name:'Arm Developer Blog',     url:'https://community.arm.com/arm-community-blogs/rss/' },
+      { name:'Cerebras Blog',          url:'https://www.cerebras.net/blog/rss.xml' },
+      { name:'IEEE Spectrum',          url:'https://spectrum.ieee.org/feeds/feed.rss' },
+      { name:'The Morning Paper',      url:'https://blog.acolyer.org/feed/' },
+      { name:'AWS Architecture Blog',  url:'https://aws.amazon.com/blogs/architecture/feed/' },
+    ],
+    'vlsi': [
+      // EDA, physical design, process — top sources from resources doc
+      { name:'SemiAnalysis',           url:'https://www.semianalysis.com/feed' },
+      { name:'Semiengineering',        url:'https://semiengineering.com/feed/' },
+      { name:'Chips and Cheese',       url:'https://chipsandcheese.com/feed/' },
+      { name:'IEEE Spectrum',          url:'https://spectrum.ieee.org/feeds/feed.rss' },
+      { name:'EETimes',                url:'https://www.eetimes.com/feed/' },
+      { name:'Synopsys Chip Design',   url:'https://www.synopsys.com/blogs/chip-design/rss.xml' },
+      { name:'Cadence Community',      url:'https://community.cadence.com/cadence_blogs_8/rss' },
+    ],
+    'ams': [
+      // AMS/RF — precisely the sources from resources doc, no generic tech noise
+      { name:'IEEE Spectrum',          url:'https://spectrum.ieee.org/feeds/feed.rss' },
+      { name:'EDN Network',            url:'https://www.edn.com/feed/' },
+      { name:'EETimes Analog',         url:'https://www.eetimes.com/category/analog/feed/' },
+      { name:'Electronic Design',      url:'https://www.electronicdesign.com/rss.xml' },
+      { name:'Semiengineering',        url:'https://semiengineering.com/feed/' },
+      { name:'Analog Devices Dialogue',url:'https://www.analog.com/en/analog-dialogue/articles/rss.xml' },
+      { name:'SemiAnalysis',           url:'https://www.semianalysis.com/feed' },
+    ],
+    'serdes': [
+      // Wireline/SerDes — DesignCon, SI Journal, OIF, vendor blogs
+      { name:'Signal Integrity Journal',url:'https://www.signalintegrityjournal.com/rss/articles' },
+      { name:'Synopsys Chip Design',   url:'https://www.synopsys.com/blogs/chip-design/rss.xml' },
+      { name:'Cadence SI/PI Blog',     url:'https://community.cadence.com/cadence_blogs_8/b/cds_signal_power_integrity/rss' },
+      { name:'IEEE Spectrum',          url:'https://spectrum.ieee.org/feeds/feed.rss' },
+      { name:'SemiAnalysis',           url:'https://www.semianalysis.com/feed' },
+      { name:'EETimes',                url:'https://www.eetimes.com/feed/' },
+      { name:'EDN Network',            url:'https://www.edn.com/feed/' },
+    ],
+    'ai-chips': [
+      // AI chips — SemiAnalysis, Hot Chips, NVIDIA, Tenstorrent, Groq, Cerebras
+      { name:'SemiAnalysis',           url:'https://www.semianalysis.com/feed' },
+      { name:'NVIDIA Tech Blog',       url:'https://developer.nvidia.com/blog/feed/' },
+      { name:'Tenstorrent Blog',       url:'https://tenstorrent.com/blog/rss' },
+      { name:'Groq Blog',              url:'https://groq.com/blog/feed/' },
+      { name:'Cerebras Blog',          url:'https://www.cerebras.net/blog/rss.xml' },
+      { name:'Chips and Cheese',       url:'https://chipsandcheese.com/feed/' },
+      { name:'The Next Platform',      url:'https://www.nextplatform.com/feed/' },
+      { name:'Semiengineering',        url:'https://semiengineering.com/feed/' },
+      { name:'Google Research',        url:'https://research.google/blog/rss/' },
+      { name:'IEEE Spectrum',          url:'https://spectrum.ieee.org/feeds/feed.rss' },
+    ],
+  };
+
+  // Venue allowlists — ONLY papers from these venues pass through for professor S2 papers
+  // Resources: ISSCC, JSSC, NeurIPS, ICML, ISCA, MICRO, etc. from resources_v2.md
+  const VENUE_ALLOWLISTS = {
+    'ai': new Set([
+      'neurips','nips','icml','iclr','cvpr','eccv','iccv','emnlp','acl','naacl','aaai','aistats','uai',
+      'jmlr','journal of machine learning research',
+      'tpami','ieee transactions on pattern analysis',
+      'neural networks and learning systems','tnnls',
+      'nature machine intelligence','nature communications',
+      'artificial intelligence','foundations and trends',
+      'science','nature','cell','proceedings of the national academy',
+    ]),
+    'ai-finance': new Set([
+      'journal of financial data science','jfds',
+      'quantitative finance','journal of portfolio management',
+      'journal of financial economics','review of financial studies',
+      'mathematical finance','finance and stochastics',
+      'journal of finance','review of financial studies',
+      'q-fin','ssrn','management science','operations research',
+      'risk','journal of risk',
+    ]),
+    'quant': new Set([
+      'journal of portfolio management','quantitative finance',
+      'journal of financial data science','risk','risk.net',
+      'journal of systematic trading','journal of computational finance',
+      'wilmott','journal of finance','review of financial studies',
+      'management science','operations research','ssrn',
+      'mathematical finance','journal of financial markets',
+    ]),
+    'hft': new Set([
+      'journal of trading','journal of financial markets',
+      'review of asset pricing studies','journal of finance',
+      'review of financial studies','journal of financial economics',
+      'management science','operations research','ssrn',
+      'quantitative finance','market microstructure',
+    ]),
+    'computing': new Set([
+      'isca','micro','hpca','asplos','sc','supercomputing','osdi','sosp','eurosys',
+      'ieee micro','acm tocs','acm taco','ieee transactions on computers',
+      'ieee tcad','acm computing surveys','ieeemicro',
+      'computer architecture','sigarch','sigops',
+      'usenix','atc','fast','nsdi','sigcomm','vldb','sigmod',
+    ]),
+    'vlsi': new Set([
+      'dac','iccad','ispd','date','aspdac','fpl','fccm',
+      'ieee tcad','transactions on computer-aided design',
+      'ieee transactions on vlsi','tvlsi',
+      'integration the vlsi journal','microelectronics journal',
+      'semiengineering',
+    ]),
+    'ams': new Set([
+      'isscc','jssc','journal of solid-state circuits',
+      'tcas','tcas-i','tcas-ii','transactions on circuits and systems',
+      'cicc','esscirc','vlsi','vlsi symposium',
+      'rfic','ims','ieee tmtt','microwave theory',
+      'analog integrated circuits and signal processing',
+      'ieee solid-state circuits','solid-state circuits letters',
+      'jeds','ieee jeds',
+    ]),
+    'serdes': new Set([
+      'isscc','jssc','journal of solid-state circuits',
+      'designcon','ofc','ecoc','tcas','cicc',
+      'ieee transactions on microwave','tmtt',
+      'signal integrity journal','ieee access',
+      'journal of lightwave technology',
+    ]),
+    'ai-chips': new Set([
+      'isscc','jssc','journal of solid-state circuits',
+      'hot chips','mlsys','isca','micro','hpca','asplos',
+      'iccad','dac','vlsi','vlsi symposium',
+      'tpami','ieee micro','tc','ieee transactions on computers',
+    ]),
+  };
+
+  // Check if a paper's venue is in the allowlist for this domain
+  function isAllowedVenue(venue, domain) {
+    if (!venue) return false;
+    const vl = venue.toLowerCase();
+    const allowed = VENUE_ALLOWLISTS[domain];
+    if (!allowed) return true; // no list = pass all
+    return [...allowed].some(v => vl.includes(v));
+  }
+
+  // Domain keyword filters — used to post-filter CrossRef and OpenAlex (which return broad results)
+  // arXiv, S2, blogs, and Scholar are already domain-targeted and skip this filter
+  const DOMAIN_KEYWORDS = {
+    'ai':        ['neural network','transformer','language model','diffusion model','reinforcement learning','llm','gpt','bert','attention mechanism','deep learning','machine learning','gradient descent','embedding','fine-tuning','prompt','alignment','rlhf','foundation model','generative model','image recognition','text classification','object detection'],
+    'ai-finance':['machine learning finance','deep learning trading','nlp financial','credit risk','fraud detection','portfolio machine learning','sentiment financial','neural network price','algorithmic trading','fintech','risk model','earnings prediction','market prediction','robo-advisor','loan default','financial nlp'],
+    'quant':     ['factor model','quantitative trading','systematic strategy','portfolio optimization','alpha','sharpe ratio','backtest','momentum factor','mean reversion','risk premia','return prediction','cross-sectional','smart beta','portfolio construction','asset pricing','drawdown','kelly criterion','factor zoo'],
+    'hft':       ['high-frequency trading','market microstructure','order book','bid-ask spread','latency','execution quality','arbitrage','limit order','price impact','tick data','hft','market making','adverse selection','mid-price','order flow'],
+    'computing': ['processor architecture','cache hierarchy','memory system','compiler optimization','operating system','distributed computing','gpu architecture','cpu design','fpga','instruction set architecture','pipeline','branch prediction','out-of-order execution','scheduling','hypervisor','kernel','multicore','cpu cache','memory bandwidth'],
+    'vlsi':      ['place and route','eda tool','floorplan','timing closure','physical design','formal verification','gdsii','lithography','design rule','static timing','cell library','power grid','logic synthesis','design automation','vlsi','parasitic extraction','crosstalk','timing analysis'],
+    'ams':       ['adc','dac','pll','amplifier','bandgap','analog cmos','oscillator','comparator','sar adc','delta-sigma','sigma-delta','noise figure','linearity','enob','sndr','snr','op-amp','transconductance','gm/id','switched-capacitor','isscc','jssc','cicc','esscirc','active filter','mixer','lna','vco','voltage reference','bias circuit','current mirror','operational amplifier','analog circuit'],
+    'serdes':    ['serdes','cdr','equalization','pam4','wireline','transceiver','jitter','eye diagram','ffe','dfe','ctle','clock recovery','optical transceiver','coherent optical','baud rate','nrz','serial link','high-speed link','bang-bang pll','phase detector','pre-emphasis'],
+    'ai-chips':  ['neural network accelerator','npu','compute-in-memory','chiplet','dataflow architecture','systolic array','inference accelerator','sparse neural','quantization hardware','neural hardware','pim','in-memory computing','eyeriss','tpu','wafer scale','hardware ml','ai processor','deep learning hardware','edge inference'],
+  };
+
+  const EXPLAINER_SYSTEM_PROMPT = `You are a research intelligence analyst. Your audience are domain experts: IC designers (ISSCC/JSSC/TCAS), ML researchers (NeurIPS/ICML/ICLR), computer architects (ISCA/MICRO/HPCA), and quant researchers (AQR/Man/Two Sigma caliber).
+Given a paper's metadata and abstract, produce a JSON object with exactly these three fields:
+
+{
+  "what_doing": "2-3 sentences describing what the authors built, proved, measured, or demonstrated. Be specific and technical. Start with a concrete verb: 'The authors propose...', 'This work demonstrates...', 'The team trains...'",
+  "problem_solved": "1-2 sentences on what specific gap or pain point this addresses. Name the prior state of the art or benchmark if inferable (e.g., 'Prior SAR ADCs at this speed consumed...', 'ResNet-50 achieves...', 'Classical factor models fail to...').",
+  "key_contribution": "1-2 sentences on the specific advance. Always include numbers if present in abstract (e.g., '3× lower power', '94.2% accuracy on ImageNet', '0.5 LSB INL at 12b', '47 dB SFDR', 'Sharpe ratio of 1.8 in backtest')."
+}
+
+Rules:
+- Return ONLY valid JSON. No markdown, no backticks, no preamble, no trailing text.
+- If abstract is insufficient, write "Insufficient abstract detail to determine."
+- Preserve all domain terms exactly: gm/ID, Ron/gm, CDR, ENOB, SNDR, PAM4, RLHF, Sharpe, HRP, CXL, HBM — the reader is a domain expert who will notice sloppy paraphrasing.
+- For finance papers, always name the strategy type (momentum, mean-reversion, factor, pairs trading) if determinable.
+- For hardware papers, always state the process node, supply voltage, or figure-of-merit if stated.`;
+
+  /* ════════════════════════════════════════════════════════
+     B · STATE
+  ════════════════════════════════════════════════════════ */
+
+  const STATE = {
+    currentDomain: 'ai',
+    papers: [],
+    selectedPaper: null,
+    explainer: null,
+    explainerLoading: false,
+    explainerMode: 'expert',
+    loading: false,
+    apiKey: '',
+    domainCache: new Map(),
+    domainFetchTime: new Map(),
+    filterText: '',
+    sortMode: 'date',
+    sourceFilter: 'all',
+    arXivStart: 0,
+    fetchStartTime: 0,
+    savedIds: new Set(),
+    serpApiKey: '',     // SerpApi key — get free 100/mo at serpapi.com
+    fetchProgress: { arxiv:null, s2:null, blog:null, scholar:null },
+    yearFilter: 'all',
+    fetchEpoch: 0,      // Incremented on each new domain fetch to cancel stale in-flight updates
+  };
+
+
+  // Cross-browser fetch with timeout — works in all browsers including Firefox
+  function fetchTimeout(url, options = {}, ms = 14000) {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { ...options, signal: ctrl.signal })
+      .finally(() => clearTimeout(tid));
+  }
+
+  /* ════════════════════════════════════════════════════════
+     C · FETCH HELPERS  (arXiv · S2 · OpenAlex · CrossRef · Blogs)
+  ════════════════════════════════════════════════════════ */
+
+  // arXiv: try direct first (works from localhost), then proxies for file://
+  const CORS_PROXIES = [
+    url => url,
+    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    url => `https://cors-proxy.fringe.zone/${url}`,
+  ];
+
+  async function fetchWithProxies(url) {
+    let lastErr;
+    for (const makeUrl of CORS_PROXIES) {
+      try {
+        const r = await fetchTimeout(makeUrl(url), {}, 14000);
+        if (r.ok) return r;
+      } catch (e) { lastErr = e; }
+    }
+    throw new Error(`All proxies failed (${lastErr?.message || 'network error'})`);
+  }
+
+  // RSS proxy fallback chain — rss2json is primary, feed2json as backup
+  const RSS_PROXIES = [
+    url => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&count=10`,
+    url => `https://feed2json.org/convert?url=${encodeURIComponent(url)}`,
+  ];
+
+  async function fetchRSS(feedUrl) {
+    for (const makeProxy of RSS_PROXIES) {
+      try {
+        const r = await fetchTimeout(makeProxy(feedUrl), {}, 10000);
+        if (!r.ok) continue;
+        const data = await r.json();
+        // rss2json returns {status, items}, feed2json returns {items}
+        const items = data.items || data.entries || [];
+        if (items.length > 0) return items;
+      } catch (_) {}
+    }
+    return [];
+  }
+
+  function parseArxivEntry(entry, domain) {
+    const getText = sel => entry.querySelector(sel)?.textContent?.trim() ?? '';
+    const authors = Array.from(entry.querySelectorAll('author name')).map(n => n.textContent.trim());
+    const pdfLink = entry.querySelector('link[title="pdf"]')?.getAttribute('href')
+                 || entry.querySelector('link[rel="related"]')?.getAttribute('href');
+    const altLink = entry.querySelector('link[rel="alternate"]')?.getAttribute('href');
+    return {
+      id: getText('id'),
+      source: 'arxiv', domain,
+      title: getText('title').replace(/\s+/g, ' '),
+      authors,
+      abstract: getText('summary').replace(/\s+/g, ' '),
+      venue: 'arXiv preprint',
+      published: getText('published'),
+      year: parseInt(getText('published').substring(0, 4)) || null,
+      url: altLink || getText('id'),
+      pdfUrl: pdfLink || null,
+      categories: Array.from(entry.querySelectorAll('category')).map(c => c.getAttribute('term')),
+      isOpenAccess: true,
+      citationCount: undefined,
+      influentialCitations: undefined,
+    };
+  }
+
+  async function fetchArxiv(domain, start = 0) {
+    const cats = ARXIV_CATS[domain];
+    if (!cats?.length) return [];
+    const catQuery = cats.map(c => `cat:${c}`).join('+OR+');
+    // Fetch 50 results instead of 25
+    const directUrl = `https://export.arxiv.org/api/query?search_query=${catQuery}&sortBy=submittedDate&sortOrder=descending&max_results=50&start=${start}`;
+    const resp = await fetchWithProxies(directUrl);
+    const text = await resp.text();
+    const xml = new DOMParser().parseFromString(text, 'application/xml');
+    if (xml.querySelector('parsererror')) throw new Error('arXiv XML parse error');
+    return Array.from(xml.querySelectorAll('entry')).map(e => parseArxivEntry(e, domain));
+  }
+
+  function parseS2Paper(p, domain) {
+    return {
+      id: p.paperId, source: 's2', domain,
+      title: p.title || '',
+      authors: (p.authors || []).map(a => a.name),
+      abstract: p.abstract || '',
+      venue: p.venue || 'Unknown venue',
+      published: p.publicationDate || `${p.year || 2024}-01-01`,
+      year: p.year || null,
+      url: `https://www.semanticscholar.org/paper/${p.paperId}`,
+      pdfUrl: p.openAccessPdf?.url || null,
+      isOpenAccess: !!p.openAccessPdf,
+      citationCount: p.citationCount ?? 0,
+      influentialCitations: p.influentialCitationCount ?? 0,
+      categories: [],
+    };
+  }
+
+  async function fetchAuthorPapers(authorId, domain) {
+    const fields = 'paperId,title,year,venue,publicationDate,citationCount,influentialCitationCount,abstract,openAccessPdf,authors';
+    // Sort by publication date descending, fetch more to survive venue filtering
+    const url = `https://api.semanticscholar.org/graph/v1/author/${authorId}/papers?fields=${fields}&limit=50&sort=publicationDate:desc`;
+    const resp = await fetchTimeout(url, {}, 12000);
+    if (resp.status === 429) throw new Error('S2_RATE_LIMIT');
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    const cutoffYear = new Date().getFullYear() - 6; // keep last 6 years
+    return (data.data || [])
+      .filter(p => p.abstract && p.title && (p.year || 0) >= cutoffYear)
+      .map(p => parseS2Paper(p, domain));
+  }
+
+  async function fetchOneBlog(feed, domain) {
+    try {
+      const items = await fetchRSS(feed.url);
+      return items
+        .filter(item => item.title && (item.link || item.url || item.guid))
+        .map(item => ({
+          id: item.link || item.url || item.guid || `blog-${Math.random()}`,
+          source: 'blog', domain,
+          title: (item.title || '').replace(/<[^>]+>/g,'').trim(),
+          authors: [item.author || item['dc:creator'] || feed.name].filter(Boolean),
+          abstract: (item.description || item.content || item.content_html || item.summary || '')
+                      .replace(/<[^>]+>/g,'').substring(0, 1200).trim(),
+          venue: feed.name,
+          published: item.pubDate || item.published || item.date_published || new Date().toISOString(),
+          year: new Date(item.pubDate || item.published || Date.now()).getFullYear(),
+          url: item.link || item.url || item.guid || '',
+          pdfUrl: null, isOpenAccess: true,
+          citationCount: undefined, categories: [],
+        }));
+    } catch (_) { return []; }
+  }
+
+  async function fetchBlogFeeds(domain) {
+    const feeds = BLOG_FEEDS[domain] || [];
+    if (!feeds.length) return [];
+    const results = await Promise.allSettled(feeds.map(f => fetchOneBlog(f, domain)));
+    return results.flatMap(r => r.status==='fulfilled' ? r.value : []);
+  }
+
+  /* ── OpenAlex ── 250M papers, free, no auth, CORS: * */
+
+
+  /* ── CrossRef ── 130M papers, free, no auth, CORS: * */
+
+
+
+  /* ── SerpApi Google Scholar Author API ──
+     Free: 100 searches/month (no credit card needed)
+     Sign up: https://serpapi.com/users/sign_up?plan=free
+     Used when serpApiKey is set in STATE — gives real-time Google Scholar data
+     including papers from the last few days that S2/OA haven't indexed yet */
+
+  function parseSerpApiPaper(article, authorName, domain) {
+    const resources = article.resources || [];
+    const pdfRes = resources.find(r => r.file_format === 'PDF');
+    const citedBy = article.inline_links?.cited_by?.total || 0;
+    const pubInfo = article.publication_info?.summary || '';
+    // Extract year from publication summary string like "Author - Journal, 2024"
+    const yearMatch = pubInfo.match(/(20\d{2}|19\d{2})/);
+    const year = yearMatch ? parseInt(yearMatch[1]) : null;
+    const venueMatch = pubInfo.match(/- ([^,]+),?\s*\d{4}/);
+    const venue = venueMatch ? venueMatch[1].trim() : (pubInfo.split(' - ')[1] || 'Google Scholar');
+    return {
+      id: `scholar-${article.result_id || Math.random()}`,
+      source: 'scholar', domain,
+      title: (article.title || '').trim(),
+      authors: (article.publication_info?.authors || [{ name: authorName }]).map(a => a.name),
+      abstract: article.snippet || '',
+      venue,
+      published: year ? `${year}-01-01` : '2024-01-01',
+      year,
+      url: article.link || `https://scholar.google.com/scholar?q=${encodeURIComponent(article.title||'')}`,
+      pdfUrl: pdfRes?.link || null,
+      isOpenAccess: !!pdfRes,
+      citationCount: citedBy,
+      influentialCitations: 0,
+      categories: [],
+    };
+  }
+
+  async function fetchScholarAuthor(author, domain, apiKey) {
+    // SerpApi endpoint — CORS: * allowed
+    const url = `https://serpapi.com/search.json?engine=google_scholar_author&author_id=${encodeURIComponent(author.id)}&num=10&sort=pubdate&api_key=${encodeURIComponent(apiKey)}`;
+    try {
+      const resp = await fetchTimeout(url, {}, 12000);
+      if (!resp.ok) {
+        if (resp.status === 401) throw new Error('SERPAPI_INVALID_KEY');
+        throw new Error(`SerpApi HTTP ${resp.status}`);
+      }
+      const data = await resp.json();
+      if (data.error) throw new Error(`SerpApi: ${data.error}`);
+      // articles array contains the author's papers sorted by date
+      const articles = data.articles || [];
+      return articles
+        .filter(a => a.title && a.title.length > 5)
+        .slice(0, 10)
+        .map(a => parseSerpApiPaper(a, author.name, domain));
+    } catch (e) {
+      if (e.message === 'SERPAPI_INVALID_KEY') throw e;
+      console.warn(`Scholar fetch for ${author.name}:`, e.message);
+      return [];
+    }
+  }
+
+  async function fetchAllScholarAuthors(domain, apiKey) {
+    const authors = SCHOLAR_AUTHORS[domain] || [];
+    if (!authors.length || !apiKey) return [];
+    // Fetch up to 4 authors per domain to stay within free tier budget (100/month)
+    // Each domain switch costs 4 credits; 9 domains × 4 = 36 credits — leaves budget for caching
+    const toFetch = authors.slice(0, 4);
+    const results = await Promise.allSettled(toFetch.map(a => fetchScholarAuthor(a, domain, apiKey)));
+    const all = [];
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled') all.push(...r.value);
+      else if (r.reason?.message === 'SERPAPI_INVALID_KEY') {
+        showToast('SERPAPI KEY INVALID — check key');
+      } else {
+        console.warn(`Scholar ${toFetch[i].name}:`, r.reason?.message);
+      }
+    });
+    return all;
+  }
+
+  // Filter papers to curated sources only:
+  // - arXiv: already domain-specific by category
+  // - blog: pre-curated feeds from resources_v2.md
+  // - scholar: curated author lists
+  // - s2 (prof papers): must be from an approved venue; unknown/junk venues are dropped
+  function applyDomainFilter(papers, domain) {
+    const kws = DOMAIN_KEYWORDS[domain];
+    const kwl = kws ? kws.map(k => k.toLowerCase()) : [];
+    return papers.filter(p => {
+      if (p.source === 'blog') return true;
+      if (p.source === 'arxiv') return true;
+      if (p.source === 'scholar') return true;
+      if (p.source === 's2') {
+        // Venue in allowlist → keep
+        if (isAllowedVenue(p.venue, domain)) return true;
+        // No venue or unknown → drop
+        if (!p.venue || p.venue === 'Unknown venue' || p.venue === '') return false;
+        // Fallback: keyword match on title only (strict)
+        const t = (p.title + ' ' + (p.venue||'')).toLowerCase();
+        return kwl.length > 0 && kwl.some(k => t.includes(k));
+      }
+      return false; // drop openalex, crossref — eliminated from pipeline
+    });
+  }
+
+  /* ════════════════════════════════════════════════════════
+     FETCH PIPELINE — curated sources only:
+     1. arXiv        — by domain categories (already specific)
+     2. S2 Profs     — top professor papers, venue-filtered to allowlist
+     3. Blogs        — curated RSS feeds from resources_v2.md
+     4. Scholar      — curated author papers via SerpApi (optional)
+     No S2 general search, no OpenAlex, no CrossRef.
+  ════════════════════════════════════════════════════════ */
+  async function fetchAllSourcesProgressive(domain) {
+    const myEpoch = STATE.fetchEpoch;
+    const isCurrent = () => STATE.fetchEpoch === myEpoch && STATE.currentDomain === domain;
+
+    STATE.fetchProgress = { arxiv: null, s2: null, blog: null, scholar: STATE.serpApiKey ? null : 'skip' };
+    updateFetchStatus();
+
+    // ── 1. arXiv — domain categories ──
+    const arxivP = fetchArxiv(domain)
+      .then(papers => {
+        if (!isCurrent()) return;
+        STATE.fetchProgress.arxiv = papers.length > 0 ? true : 'empty';
+        ingestPapers(papers, domain);
+        updateFetchStatus();
+      })
+      .catch(e => {
+        if (!isCurrent()) return;
+        STATE.fetchProgress.arxiv = false;
+        console.warn('arXiv:', e.message);
+        updateFetchStatus();
+        if (STATE.papers.length === 0) showFeedError(e.message);
+      });
+
+    // ── 2. Semantic Scholar — professor papers only, venue-filtered ──
+    const profList = PROF_AUTHORS[domain] || [];
+    const s2Tasks = profList.map(a => fetchAuthorPapers(a.id, domain));
+    const s2P = Promise.allSettled(s2Tasks).then(results => {
+      if (!isCurrent()) return;
+      const all = [];
+      let rateLimited = false;
+      results.forEach((r, i) => {
+        if (r.status === 'fulfilled') all.push(...r.value);
+        else if (r.reason?.message === 'S2_RATE_LIMIT') rateLimited = true;
+        else console.warn(`S2 prof ${profList[i]?.name}:`, r.reason?.message);
+      });
+      if (rateLimited) showToast('S2 RATE LIMITED — try again in 60s');
+      const filtered = applyDomainFilter(all, domain);
+      STATE.fetchProgress.s2 = filtered.length > 0 ? true : (rateLimited ? false : 'empty');
+      ingestPapers(filtered, domain);
+      updateFetchStatus();
+    });
+
+    // ── 3. Curated blog feeds from resources_v2.md ──
+    const blogP = fetchBlogFeeds(domain)
+      .then(papers => {
+        if (!isCurrent()) return;
+        STATE.fetchProgress.blog = papers.length > 0 ? true : 'empty';
+        ingestPapers(papers, domain);
+        updateFetchStatus();
+      })
+      .catch(() => {
+        if (!isCurrent()) return;
+        STATE.fetchProgress.blog = false;
+        updateFetchStatus();
+      });
+
+    // ── 4. Google Scholar via SerpApi (optional) ──
+    let scholarP = Promise.resolve();
+    if (STATE.serpApiKey) {
+      scholarP = fetchAllScholarAuthors(domain, STATE.serpApiKey)
+        .then(papers => {
+          if (!isCurrent()) return;
+          STATE.fetchProgress.scholar = papers.length > 0 ? true : 'empty';
+          ingestPapers(papers, domain);
+          updateFetchStatus();
+        })
+        .catch(e => {
+          if (!isCurrent()) return;
+          STATE.fetchProgress.scholar = false;
+          console.warn('Scholar:', e.message);
+          updateFetchStatus();
+        });
+    } else {
+      STATE.fetchProgress.scholar = 'skip';
+    }
+
+    await Promise.allSettled([arxivP, s2P, blogP, scholarP]);
+    if (!isCurrent()) return;
+    STATE.loading = false;
+    STATE.domainFetchTime.set(domain, Date.now());
+    STATE.domainCache.set(domain, [...STATE.papers]);
+    updateFetchStatus();
+    updateStatusBar();
+  }
+
+  // Merge new papers into STATE.papers and re-render the feed live
+  function ingestPapers(newPapers, domain) {
+    if (!newPapers.length) return;
+    if (STATE.currentDomain !== domain) return; // stale
+
+    const existing = new Map();
+    STATE.papers.forEach(p => existing.set(normTitle(p.title), p));
+
+    let added = 0;
+    newPapers.forEach(p => {
+      if (!p.title) return;
+      const key = normTitle(p.title);
+      if (!existing.has(key)) {
+        existing.set(key, p);
+        STATE.papers.push(p);
+        added++;
+      } else {
+        const ex = existing.get(key);
+        if ((p.citationCount ?? 0) > (ex.citationCount ?? 0)) {
+          ex.citationCount = p.citationCount;
+          ex.influentialCitations = p.influentialCitations;
+        }
+        // Prefer arXiv source (has categories, PDF)
+        if (ex.source !== 'arxiv' && p.source === 'arxiv') {
+          Object.assign(ex, p, { citationCount: ex.citationCount, influentialCitations: ex.influentialCitations });
+        }
+      }
+    });
+
+    if (added > 0) {
+      sortPapers();
+      renderFeed();
+      updateStatusBar();
+    }
+  }
+
+  function normTitle(t) { return (t || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+
+  function sortPapers() {
+    if (STATE.sortMode === 'citations') {
+      STATE.papers.sort((a,b) => (b.citationCount??0) - (a.citationCount??0));
+    } else {
+      STATE.papers.sort((a,b) => new Date(b.published) - new Date(a.published));
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     D · CLAUDE API
+  ════════════════════════════════════════════════════════ */
+
+  function buildExplainerPrompt(paper, mode) {
+    const auth = paper.authors.slice(0,3).join(', ') + (paper.authors.length>3?' et al.':'');
+    let msg = `Title: ${paper.title}\nAuthors: ${auth}\nVenue: ${paper.venue||'Unknown'}\nYear: ${paper.year||''}\nDomain: ${paper.domain}\n\nAbstract:\n${paper.abstract||'(No abstract)'}`;
+    if (mode==='simple') msg += '\n\nNote: Explain for a smart non-specialist. Define acronyms on first use.';
+    return msg;
+  }
+
+  async function getExplainer(paper, apiKey, mode) {
+    if (!paper.abstract || paper.abstract.length < 50) return {
+      what_doing:'No abstract available.',problem_solved:'Insufficient abstract detail.',key_contribution:'Insufficient abstract detail.',
+    };
+    const cacheKey = `explainer_${paper.id}_${mode}`;
+    try { const c = sessionStorage.getItem(cacheKey); if (c) return JSON.parse(c); } catch(_) {}
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:600, stream:true, system:EXPLAINER_SYSTEM_PROMPT, messages:[{role:'user',content:buildExplainerPrompt(paper,mode)}] }),
+    });
+    if (resp.status===401) throw new Error('Invalid API key.');
+    if (resp.status===529) throw new Error('CLAUDE_OVERLOADED');
+    if (!resp.ok) { const d=await resp.json().catch(()=>({})); throw new Error(`Claude: ${d.error?.message||resp.status}`); }
+
+    // Stream tokens in real-time
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let raw = '';
+    let buf = '';
+
+    const ph = document.querySelector('#detail-content .explainer-placeholder');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop(); // keep incomplete line
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const payload = line.slice(6).trim();
+        if (payload === '[DONE]') continue;
+        try {
+          const evt = JSON.parse(payload);
+          if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+            raw += evt.delta.text;
+            // Live-stream partial JSON into placeholder
+            if (ph) {
+              ph.innerHTML = `<div class="section-label">AI EXPLAINER — STREAMING</div><div class="explainer-text" style="color:var(--text-dim);white-space:pre-wrap;font-family:'JetBrains Mono',monospace;font-size:11px">${esc(raw)}</div>`;
+            }
+          }
+        } catch(_) {}
+      }
+      // Guard: if paper changed while streaming, abort
+      if (STATE.selectedPaper?.id !== paper.id) { reader.cancel(); return null; }
+    }
+
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json\n?|\n?```/g,'').trim()); }
+    catch(_) { parsed = {what_doing:raw,problem_solved:'JSON parse failed.',key_contribution:'JSON parse failed.'}; }
+    try { sessionStorage.setItem(cacheKey,JSON.stringify(parsed)); } catch(_) {}
+    return parsed;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     E · FILTER
+  ════════════════════════════════════════════════════════ */
+
+  function getFilteredPapers() {
+    let papers = STATE.papers;
+
+    if (STATE.sourceFilter==='saved') {
+      const all=[];
+      STATE.domainCache.forEach(ps=>all.push(...ps));
+      const seen=new Set();
+      papers = all.filter(p=>STATE.savedIds.has(p.id)&&!seen.has(p.id)&&seen.add(p.id));
+    } else if (STATE.sourceFilter!=='all') {
+      papers = papers.filter(p=>p.source===STATE.sourceFilter);
+    }
+
+    if (STATE.filterText) {
+      const q = STATE.filterText.toLowerCase();
+      papers = papers.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.authors.join(' ').toLowerCase().includes(q) ||
+        (p.venue||'').toLowerCase().includes(q) ||
+        (p.abstract||'').toLowerCase().includes(q)
+      );
+    }
+
+    if (STATE.yearFilter !== 'all') {
+      const cutoff = new Date();
+      cutoff.setFullYear(cutoff.getFullYear() - parseInt(STATE.yearFilter));
+      papers = papers.filter(p => p.published && new Date(p.published) >= cutoff);
+    }
+
+    return papers;
+  }
+
+  /* ════════════════════════════════════════════════════════
+     F · BOOKMARKS
+  ════════════════════════════════════════════════════════ */
+
+  function loadBookmarks() {
+    try { const r=localStorage.getItem('rr_bookmarks'); if(r) STATE.savedIds=new Set(JSON.parse(r)); } catch(_) {}
+  }
+  function saveBookmarks() {
+    try { localStorage.setItem('rr_bookmarks',JSON.stringify([...STATE.savedIds])); } catch(_) {}
+  }
+  function toggleBookmark(id) {
+    if (STATE.savedIds.has(id)) { STATE.savedIds.delete(id); showToast('BOOKMARK REMOVED'); }
+    else { STATE.savedIds.add(id); showToast('★ BOOKMARKED'); }
+    saveBookmarks();
+    const bm = document.querySelector(`.feed-item[data-id="${CSS.escape(id)}"] .bookmark-btn`);
+    if (bm) { bm.textContent=STATE.savedIds.has(id)?'★':'☆'; bm.classList.toggle('saved',STATE.savedIds.has(id)); }
+    const dbm = document.getElementById('detail-bookmark-btn');
+    if (dbm&&STATE.selectedPaper?.id===id) {
+      dbm.textContent=STATE.savedIds.has(id)?'★ SAVED':'☆ SAVE';
+      dbm.classList.toggle('saved',STATE.savedIds.has(id));
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     G · RENDER
+  ════════════════════════════════════════════════════════ */
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function relDate(iso) {
+    if (!iso) return '';
+    try {
+      const d=new Date(iso),diff=Date.now()-d.getTime();
+      const h=Math.floor(diff/3600000),dy=Math.floor(diff/86400000);
+      if(h<1)return'just now';if(h<24)return`${h}h ago`;if(dy===1)return'1d ago';
+      if(dy<7)return`${dy}d ago`;if(dy<30)return`${Math.floor(dy/7)}w ago`;
+      if(dy<365)return`${Math.floor(dy/30)}mo ago`;return`${Math.floor(dy/365)}y ago`;
+    } catch(_){return '';}
+  }
+  function ageCls(iso) {
+    if(!iso)return'old';const d=(Date.now()-new Date(iso).getTime())/86400000;
+    return d<3?'new':d<30?'recent':'old';
+  }
+  function isNew(iso){return iso&&(Date.now()-new Date(iso).getTime())<3*86400000;}
+  const SOURCE_LABELS = { arxiv:'arXiv', s2:'S2', openalex:'OpenAlex', crossref:'CrossRef', blog:'BLOG', scholar:'Scholar' };
+  function badgeHtml(src,large=false){
+    return `<span class="source-badge source-${src}${large?' large':''}">${SOURCE_LABELS[src]||src.toUpperCase()}</span>`;
+  }
+
+  function renderFeedItem(paper, idx) {
+    const el = document.createElement('div');
+    el.className='feed-item'; el.dataset.id=paper.id;
+    el.style.animationDelay=`${Math.min(idx,24)*0.018}s`;
+    const auth=paper.authors.length?paper.authors.slice(0,2).join(', ')+(paper.authors.length>2?' et al.':''):'Unknown';
+    const citeH=paper.citationCount>0?`<span class="feed-citations">↑ ${paper.citationCount.toLocaleString()}</span>`:'';
+    const inflH=paper.influentialCitations>0?`<span class="feed-influential">★ ${paper.influentialCitations}</span>`:'';
+    const saved=STATE.savedIds.has(paper.id);
+    el.innerHTML=`
+      <div class="feed-item-top">
+        ${badgeHtml(paper.source)}
+        ${isNew(paper.published)?'<span class="new-badge">NEW</span>':''}
+        <div class="feed-item-top-right">
+          <span class="age-dot ${ageCls(paper.published)}"></span>
+          <span class="feed-date">${paper.year ? esc(String(paper.year)) + ' · ' : ''}${esc(relDate(paper.published))}</span>
+          <button class="bookmark-btn${saved?' saved':''}" data-id="${esc(paper.id)}">${saved?'★':'☆'}</button>
+        </div>
+      </div>
+      <div class="feed-title">${esc(paper.title)}</div>
+      <div class="feed-meta"><span>${esc(auth)}</span><span class="feed-venue">${esc(paper.venue||'')}</span></div>
+      ${citeH||inflH?`<div class="feed-footer">${citeH}${inflH}</div>`:''}
+    `;
+    el.addEventListener('click',e=>{if(!e.target.closest('.bookmark-btn'))selectPaper(paper);});
+    el.querySelector('.bookmark-btn').addEventListener('click',e=>{e.stopPropagation();toggleBookmark(paper.id);});
+    return el;
+  }
+
+  function renderSkeletonFeed() {
+    const list=document.getElementById('feed-list'); list.innerHTML='';
+    for(let i=0;i<10;i++){
+      const item=document.createElement('div'); item.className='skeleton-item';
+      item.innerHTML=`<div class="skeleton-line meta" style="width:${25+Math.random()*20}%"></div><div class="skeleton-line title" style="width:${65+Math.random()*25}%"></div><div class="skeleton-line meta" style="width:${35+Math.random()*25}%"></div>`;
+      list.appendChild(item);
+    }
+  }
+
+  function renderFeed() {
+    const list=document.getElementById('feed-list');
+    const papers=getFilteredPapers();
+    const total=STATE.sourceFilter==='saved'?STATE.savedIds.size:STATE.papers.length;
+    const badge=document.getElementById('feed-count-badge');
+    badge.textContent=papers.length<total?`${papers.length} / ${total}`:`${papers.length}`;
+
+    if(papers.length===0){
+      if(STATE.loading&&STATE.papers.length===0)return;
+      if(STATE.sourceFilter==='saved'){list.innerHTML='<div class="feed-empty">No bookmarked papers yet — press s on any paper.</div>';}
+      else if(STATE.papers.length===0){list.innerHTML='<div class="feed-empty">No results yet. Sources are loading...</div>';}
+      else{list.innerHTML='<div class="feed-empty">No papers match this filter.</div>';}
+      document.getElementById('load-more').classList.add('hidden');
+      return;
+    }
+
+    // Smart diff: reuse existing DOM elements, but always re-insert in correct sorted order
+    const rendered = new Map();
+    list.querySelectorAll('.feed-item[data-id]').forEach(el => rendered.set(el.dataset.id, el));
+    const targetIds = new Set(papers.map(p => p.id));
+
+    // Build ordered array of elements (reuse existing, create new as needed)
+    const orderedEls = papers.map((p, i) => {
+      let el = rendered.get(p.id);
+      if (!el) {
+        el = renderFeedItem(p, i);
+      }
+      return el;
+    });
+
+    // Remove elements no longer needed
+    rendered.forEach((el, id) => { if (!targetIds.has(id)) el.remove(); });
+
+    // Re-insert all in correct order using replaceChildren (maintains sort, no flicker)
+    // Remove any stale skeleton items first
+    list.querySelectorAll('.skeleton-item').forEach(el => el.remove());
+    const frag = document.createDocumentFragment();
+    orderedEls.forEach(el => frag.appendChild(el));
+    list.appendChild(frag);
+
+    const arxivN=STATE.papers.filter(p=>p.source==='arxiv').length;
+    // Show "load more" when arXiv has returned papers AND we're not in saved mode AND not currently loading
+    document.getElementById('load-more').classList.toggle('hidden', arxivN===0 || STATE.sourceFilter==='saved' || STATE.loading);
+    if(STATE.selectedPaper)highlightFeedItem(STATE.selectedPaper.id);
+  }
+
+  function updateFetchStatus() {
+    const row = document.getElementById('fetch-status-row');
+    const p = STATE.fetchProgress;
+    // Only show spinner if actively loading AND at least one source still pending
+    const anyPending = STATE.loading && Object.values(p).some(v => v === null);
+
+    const sep = `<span style="color:var(--border-primary)"> · </span>`;
+    const srcSpan = (label, state) => {
+      // state: null=pending, true=got results, 'empty'=done/no results, false=error, 'skip'=not configured
+      const cls = state === null ? 'pending' : state === true ? 'done' : state === 'empty' ? 'empty' : state === 'skip' ? 'skip' : 'fail';
+      const icon = state === null ? '…' : state === true ? '✓' : state === 'empty' ? '–' : state === 'skip' ? '·' : '✗';
+      return `<span class="src-status ${cls}">${icon} ${label}</span>`;
+    };
+
+    const parts = [
+      srcSpan('arXiv', p.arxiv),
+      srcSpan('Profs', p.s2),
+      srcSpan('Blog', p.blog),
+      ...(STATE.serpApiKey ? [srcSpan('Scholar', p.scholar)] : []),
+    ];
+
+    row.innerHTML = anyPending
+      ? `<span class="spinner-sm"></span>${parts.join(sep)}`
+      : `${parts.join(sep)}`;
+  }
+
+  function renderDetailEmpty() {
+    document.getElementById('detail-empty').style.display='';
+    document.getElementById('detail-content').classList.add('hidden');
+    const dom=DOMAINS.find(d=>d.key===STATE.currentDomain);
+    const lbl=document.getElementById('empty-domain-label');
+    if(lbl&&dom)lbl.textContent=dom.label;
+  }
+
+  function renderExplainerSection(explainer, loading) {
+    if(loading)return`<div class="detail-divider"></div><div class="explainer-loading"><div class="spinner"></div><span>GENERATING ANALYSIS...</span></div>`;
+    if(!STATE.apiKey)return`<div class="detail-divider"></div><div class="explainer-placeholder"><div class="section-label">AI EXPLAINER</div><div class="explainer-text">Enter an Anthropic API key (KEY button) to generate structured analysis. Press e to trigger.</div></div>`;
+    if(!explainer)return`<div class="detail-divider"></div><div class="explainer-placeholder"><div class="section-label">AI EXPLAINER</div><div class="explainer-text">Analysis unavailable. Try again or check your API key.</div></div>`;
+    return`<div class="detail-divider"></div>
+      <div class="explainer-mode-row">
+        <button class="mode-btn ${STATE.explainerMode==='expert'?'active':''}" data-mode="expert">EXPERT</button>
+        <button class="mode-btn ${STATE.explainerMode==='simple'?'active':''}" data-mode="simple">SIMPLE</button>
+      </div>
+      <div class="explainer-card"><div class="section-label">WHAT THEY ARE DOING</div><div class="explainer-text">${esc(explainer.what_doing)}</div></div>
+      <div class="detail-divider"></div>
+      <div class="explainer-card"><div class="section-label">PROBLEM BEING SOLVED</div><div class="explainer-text">${esc(explainer.problem_solved)}</div></div>
+      <div class="detail-divider"></div>
+      <div class="explainer-card"><div class="section-label">KEY CONTRIBUTION</div><div class="explainer-text">${esc(explainer.key_contribution)}</div></div>`;
+  }
+
+  function renderDetailPanel(paper, explainer, loading) {
+    document.getElementById('detail-empty').style.display='none';
+    const content=document.getElementById('detail-content');
+    content.classList.remove('hidden');
+    document.getElementById('detail-panel').scrollTop=0;
+
+    const auth=paper.authors.slice(0,6).join(' · ')+(paper.authors.length>6?' · et al.':'');
+    const year=paper.year||paper.published?.substring(0,4)||'';
+    const citeStr=paper.citationCount>0?`<span class="detail-cite-count">↑ ${paper.citationCount.toLocaleString()} citations</span>`:'';
+    const inflStr=paper.influentialCitations>0?`<span class="detail-influential-count">★ ${paper.influentialCitations} influential</span>`:'';
+    const oaHtml=paper.isOpenAccess?'<span class="oa-badge">OA</span>':'';
+    const pdfHtml=paper.pdfUrl?`<a href="${esc(paper.pdfUrl)}" class="detail-link secondary" target="_blank" rel="noopener">PDF</a>`:'';
+    const catHtml=paper.categories?.length?`<div class="cat-chips">${paper.categories.slice(0,6).map(c=>`<span class="cat-chip">${esc(c)}</span>`).join('')}</div>`:'';
+    const wc=(paper.abstract||'').trim().split(/\s+/).length;
+    const wcStr=wc>5?`<span class="abstract-word-count">${wc} words</span>`:'';
+    const saved=STATE.savedIds.has(paper.id);
+    const ageDot=`<span class="age-dot ${ageCls(paper.published)}"></span>`;
+
+    content.innerHTML=`
+      <div class="detail-source-row">${badgeHtml(paper.source,true)}${oaHtml}${citeStr}${inflStr}</div>
+      <div class="detail-title">${esc(paper.title)}</div>
+      <div class="detail-authors">${esc(auth)}</div>
+      <div class="detail-meta-row">
+        <span class="detail-venue">${esc(paper.venue||'')}</span>
+        <span>${esc(year)}</span>
+        <span>${ageDot} ${esc(relDate(paper.published))}</span>
+      </div>
+      <div class="detail-links">
+        <a href="${esc(paper.url)}" class="detail-link primary" target="_blank" rel="noopener">OPEN PAPER</a>
+        ${pdfHtml}
+        <button class="detail-link secondary" id="copy-md-btn">COPY MD</button>
+        <button class="detail-link secondary" id="copy-bib-btn">BIBTEX</button>
+        <button class="detail-link bookmark-link${saved?' saved':''}" id="detail-bookmark-btn">${saved?'★ SAVED':'☆ SAVE'}</button>
+      </div>
+      ${catHtml}
+      ${renderExplainerSection(explainer,loading)}
+      <div class="detail-divider"></div>
+      ${paper.abstract?`<div class="abstract-section">
+        <button class="abstract-toggle" id="abstract-toggle">▶ ABSTRACT ${wcStr}</button>
+        <div class="abstract-text" id="abstract-text">${esc(paper.abstract)}</div>
+      </div>`:''}
+    `;
+
+    const tog=content.querySelector('#abstract-toggle');
+    const abEl=content.querySelector('#abstract-text');
+    if(tog&&abEl)tog.addEventListener('click',()=>{const v=abEl.classList.toggle('visible');tog.innerHTML=`${v?'▼':'▶'} ABSTRACT ${wcStr}`;});
+    content.querySelector('#copy-md-btn')?.addEventListener('click',()=>copyPaperAsMd(paper,STATE.explainer));
+    content.querySelector('#copy-bib-btn')?.addEventListener('click',()=>copyBibtex(paper));
+    content.querySelector('#detail-bookmark-btn')?.addEventListener('click',()=>toggleBookmark(paper.id));
+    content.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{
+      if(btn.dataset.mode===STATE.explainerMode)return;
+      STATE.explainerMode=btn.dataset.mode;STATE.explainer=null;triggerExplainer(paper);
+    }));
+  }
+
+  function showFeedError(msg) {
+    if(STATE.papers.length>0)return;
+    const list=document.getElementById('feed-list');
+    const el=document.createElement('div'); el.className='feed-error';
+    // Provide actionable help for CORS errors
+    const isNetwork=msg.toLowerCase().includes('networkerror')||msg.toLowerCase().includes('failed to fetch')||msg.toLowerCase().includes('proxies failed');
+    const hint=isNetwork
+      ?`<br><br><strong>Getting 404?</strong> Your terminal must be in the same folder as the .html file.<br>Run: <code>cd ~/Downloads && python3 -m http.server 8080</code><br>Then open: <code>http://localhost:8080/research_radar.html</code>`
+      :'';
+    el.innerHTML=`<div class="feed-error-msg">FETCH ERROR: ${esc(msg)}${hint}</div><button class="feed-error-retry">RETRY</button>`;
+    el.querySelector('.feed-error-retry').addEventListener('click',()=>{STATE.domainCache.delete(STATE.currentDomain);selectDomain(STATE.currentDomain);});
+    list.innerHTML=''; list.appendChild(el);
+  }
+
+  function updateStatusBar() {
+    const counts = {};
+    STATE.papers.forEach(p => { counts[p.source] = (counts[p.source]||0)+1; });
+    const total = STATE.papers.length;
+    let countStr = '--';
+    if (total > 0) {
+      const parts = [];
+      if (counts.arxiv)    parts.push(`arXiv:${counts.arxiv}`);
+      if (counts.s2)       parts.push(`Profs:${counts.s2}`);
+      if (counts.blog)     parts.push(`Blog:${counts.blog}`);
+      if (counts.scholar)  parts.push(`Scholar:${counts.scholar}`);
+      parts.push(`TOTAL:${total}`);
+      if (STATE.savedIds.size > 0) parts.push(`★${STATE.savedIds.size}`);
+      countStr = parts.join('  ');
+    } else if (STATE.loading) { countStr = 'FETCHING...'; }
+    document.getElementById('status-counts').textContent=countStr;
+
+    const timeEl=document.getElementById('status-time');
+    if(STATE.fetchStartTime&&!STATE.loading&&total>0){timeEl.textContent=`${((Date.now()-STATE.fetchStartTime)/1000).toFixed(1)}s`;}
+    else{timeEl.textContent=STATE.loading?'...':'';}
+
+    const cacheEl=document.getElementById('status-cache');
+    const ft=STATE.domainFetchTime.get(STATE.currentDomain);
+    cacheEl.textContent=ft?`cached ${relDate(new Date(ft).toISOString())}`:'';
+
+    const apiEl=document.getElementById('status-api');
+    apiEl.textContent=STATE.apiKey?'KEY ACTIVE':'NO KEY';
+    apiEl.classList.toggle('active',!!STATE.apiKey);
+  }
+
+  function updateDomainColor(key) {
+    const dom=DOMAINS.find(d=>d.key===key); if(!dom)return;
+    const val=getComputedStyle(document.documentElement).getPropertyValue(dom.color).trim();
+    document.documentElement.style.setProperty('--current-domain-color',val);
+  }
+  function updateDomainNav() {
+    document.querySelectorAll('.domain-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.key===STATE.currentDomain));
+  }
+  function buildDomainNav() {
+    const nav=document.getElementById('domain-nav'); nav.innerHTML='';
+    DOMAINS.forEach((d,i)=>{
+      const tab=document.createElement('button');
+      tab.className='domain-tab'; tab.textContent=d.label;
+      tab.dataset.key=d.key; tab.dataset.desc=d.desc;
+      tab.style.animation='fadeIn 0.35s ease forwards';
+      tab.style.animationDelay=`${i*0.04}s`; tab.style.opacity='0';
+      tab.addEventListener('click',()=>selectDomain(d.key));
+      nav.appendChild(tab);
+    });
+  }
+  function highlightFeedItem(id) {
+    document.querySelectorAll('.feed-item').forEach(el=>el.classList.toggle('selected',el.dataset.id===id));
+    document.querySelector('.feed-item.selected')?.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+
+  /* ════════════════════════════════════════════════════════
+     H · FLOW
+  ════════════════════════════════════════════════════════ */
+
+  async function selectDomain(key) {
+    // Allow switching domains at any time — increment epoch so in-flight fetches self-cancel
+    STATE.fetchEpoch = (STATE.fetchEpoch || 0) + 1;
+    STATE.loading = false;
+    STATE.currentDomain=key; STATE.selectedPaper=null; STATE.explainer=null;
+    STATE.papers=[]; STATE.arXivStart=0;
+    updateDomainColor(key); updateDomainNav(); renderDetailEmpty();
+    renderSkeletonFeed();
+    document.getElementById('load-more').classList.add('hidden');
+    document.getElementById('feed-filter').value=''; STATE.filterText='';
+    document.getElementById('feed-count-badge').textContent='';
+
+    if(STATE.domainCache.has(key)){
+      STATE.papers=[...STATE.domainCache.get(key)];
+      // Reset fetch progress to all-done so spinner doesn't show
+      STATE.fetchProgress = { arxiv:true, s2:true, blog:true, scholar: STATE.serpApiKey ? true : 'skip' };
+      sortPapers(); renderFeed(); updateFetchStatus(); updateStatusBar();
+      return;
+    }
+
+    STATE.loading=true; STATE.fetchStartTime=Date.now();
+    updateStatusBar();
+    await fetchAllSourcesProgressive(key);
+  }
+
+  async function selectPaper(paper) {
+    STATE.selectedPaper=paper; STATE.explainer=null; STATE.explainerLoading=false;
+    highlightFeedItem(paper.id);
+    renderDetailPanel(paper,null,false);
+    if(STATE.apiKey)await triggerExplainer(paper);
+  }
+
+  async function triggerExplainer(paper) {
+    if(!STATE.apiKey||!paper.abstract)return;
+    const cacheKey=`explainer_${paper.id}_${STATE.explainerMode}`;
+    try {
+      const c=sessionStorage.getItem(cacheKey);
+      if(c){STATE.explainer=JSON.parse(c);if(STATE.selectedPaper?.id===paper.id)renderDetailPanel(paper,STATE.explainer,false);return;}
+    } catch(_) {}
+
+    STATE.explainerLoading=true;
+    if(STATE.selectedPaper?.id===paper.id)renderDetailPanel(paper,null,true);
+    try {
+      const exp=await getExplainer(paper,STATE.apiKey,STATE.explainerMode);
+      if(STATE.selectedPaper?.id===paper.id){STATE.explainer=exp;STATE.explainerLoading=false;renderDetailPanel(paper,exp,false);}
+    } catch(e) {
+      if(STATE.selectedPaper?.id!==paper.id)return;
+      STATE.explainerLoading=false;
+      renderDetailPanel(paper,null,false);
+      const ph=document.querySelector('#detail-content .explainer-placeholder');
+      if(!ph)return;
+      if(e.message==='CLAUDE_OVERLOADED'){
+        ph.innerHTML=`<div class="section-label">AI EXPLAINER</div><div class="explainer-text" style="color:var(--text-dim)">Claude is busy. <button class="explainer-retry" id="explainer-retry">Click to retry.</button></div>`;
+        ph.querySelector('#explainer-retry')?.addEventListener('click',()=>triggerExplainer(paper));
+      } else if(e.message.includes('Invalid API key')){
+        ph.innerHTML=`<div class="section-label">AI EXPLAINER</div><div class="explainer-text" style="color:var(--color-error)">Invalid API key. Re-enter a valid key.</div>`;
+      } else {
+        ph.innerHTML=`<div class="section-label">AI EXPLAINER</div><div class="explainer-text" style="color:var(--text-dim)">Error: ${esc(e.message)}</div>`;
+      }
+    }
+  }
+
+  async function loadMore() {
+    if(STATE.loading)return;
+    STATE.arXivStart+=50;
+    STATE.loading=true;
+    const btn=document.getElementById('load-more'); btn.textContent='LOADING...';
+    try {
+      const more=await fetchArxiv(STATE.currentDomain,STATE.arXivStart);
+      ingestPapers(applyDomainFilter(more,STATE.currentDomain),STATE.currentDomain);
+      STATE.domainCache.set(STATE.currentDomain,[...STATE.papers]);
+    } catch(e){showToast('LOAD MORE FAILED');}
+    finally{STATE.loading=false;btn.textContent='LOAD MORE FROM arXiv';updateStatusBar();}
+  }
+
+  /* ════════════════════════════════════════════════════════
+     I · EVENT HANDLERS
+  ════════════════════════════════════════════════════════ */
+
+  function setSerpApiKey() {
+    const input = document.getElementById('serp-key-input');
+    const key = input.value.trim();
+    if (!key || key.length < 10) { showToast('KEY TOO SHORT'); return; }
+    STATE.serpApiKey = key;
+    input.value = '';
+    try { localStorage.setItem('rr_serp_key', key); } catch(_) {}
+    document.getElementById('serp-key-drawer').classList.add('hidden');
+    const st = document.getElementById('serp-key-status');
+    st.textContent = 'ACTIVE'; st.classList.add('active');
+    showToast('SCHOLAR KEY SET — persisted locally');
+    // Re-fetch current domain to get Scholar papers
+    if (STATE.currentDomain) {
+      const cached = STATE.domainCache.get(STATE.currentDomain);
+      if (cached) {
+        // Append Scholar papers without full re-fetch
+        fetchAllScholarAuthors(STATE.currentDomain, STATE.serpApiKey).then(papers => {
+          if (papers.length > 0) {
+            ingestPapers(papers, STATE.currentDomain);
+            showToast(`SCHOLAR: +${papers.length} papers from top professors`);
+          } else {
+            showToast('Scholar: no new papers found');
+          }
+        }).catch(e => showToast('Scholar fetch failed: ' + e.message));
+      }
+    }
+    updateStatusBar();
+  }
+
+  function setApiKey() {
+    const input=document.getElementById('api-key-input');
+    const err=document.getElementById('api-key-error');
+    const key=input.value.trim();
+    if(!key.startsWith('sk-ant-')&&!key.startsWith('sk-')){err.classList.add('visible');return;}
+    err.classList.remove('visible');
+    STATE.apiKey=key; input.value='';
+    try { localStorage.setItem('rr_api_key', key); } catch(_) {}
+    document.getElementById('api-key-drawer').classList.add('hidden');
+    const st=document.getElementById('api-key-status'); st.textContent='ACTIVE'; st.classList.add('active');
+    updateStatusBar(); showToast('API KEY SET — persisted locally');
+    if(STATE.selectedPaper&&!STATE.explainer)triggerExplainer(STATE.selectedPaper);
+  }
+
+  function handleKeydown(e) {
+    const inInput=['INPUT','TEXTAREA'].includes(document.activeElement.tagName);
+    if(e.key==='?'&&!inInput){toggleKbd();return;}
+    if(e.key==='Escape'){
+      const ov=document.getElementById('kbd-overlay');
+      if(ov.classList.contains('visible')){ov.classList.remove('visible');return;}
+      if(inInput){document.activeElement.value='';document.activeElement.blur();STATE.filterText='';renderFeed();}
+      return;
+    }
+    if(inInput)return;
+    const papers=getFilteredPapers();
+    const idx=papers.findIndex(p=>p.id===STATE.selectedPaper?.id);
+    if(e.key==='j'||e.key==='ArrowDown'){e.preventDefault();const n=papers[idx+1]||(idx===-1?papers[0]:null);if(n)selectPaper(n);}
+    if(e.key==='k'||e.key==='ArrowUp'){e.preventDefault();if(idx>0)selectPaper(papers[idx-1]);else if(idx===-1&&papers.length)selectPaper(papers[0]);}
+    if(e.key==='Enter'&&STATE.selectedPaper)window.open(STATE.selectedPaper.url,'_blank','noopener');
+    if(e.key==='o'&&STATE.selectedPaper)window.open(STATE.selectedPaper.pdfUrl||STATE.selectedPaper.url,'_blank','noopener');
+    if(e.key==='s'&&STATE.selectedPaper)toggleBookmark(STATE.selectedPaper.id);
+    if(e.key==='c'&&STATE.selectedPaper)copyBibtex(STATE.selectedPaper);
+    if(e.key==='e'&&STATE.selectedPaper&&STATE.apiKey&&!STATE.explainer&&!STATE.explainerLoading)triggerExplainer(STATE.selectedPaper);
+    if(e.key==='/'){ e.preventDefault(); const f=document.getElementById('feed-filter'); f.focus(); f.select(); }
+    if(e.key==='r'&&!e.ctrlKey&&!e.metaKey){STATE.domainCache.delete(STATE.currentDomain);STATE.domainFetchTime.delete(STATE.currentDomain);selectDomain(STATE.currentDomain);}
+  }
+
+  function toggleKbd(){document.getElementById('kbd-overlay').classList.toggle('visible');}
+
+  function initResizeHandle() {
+    const handle=document.getElementById('resize-handle');
+    const panel=document.getElementById('feed-panel');
+    const overlay=document.getElementById('drag-overlay');
+    let dragging=false,startX=0,startW=0;
+    handle.addEventListener('mousedown',e=>{dragging=true;startX=e.clientX;startW=panel.offsetWidth;handle.classList.add('dragging');overlay.classList.add('active');e.preventDefault();});
+    document.addEventListener('mousemove',e=>{
+      if(!dragging)return;
+      const mainW=document.getElementById('main').offsetWidth;
+      const newW=Math.max(300,Math.min(startW+(e.clientX-startX),mainW*0.65));
+      panel.style.width=newW+'px'; panel.style.maxWidth='';
+      try{sessionStorage.setItem('rr_feed_width',newW);}catch(_){}
+    });
+    document.addEventListener('mouseup',()=>{if(!dragging)return;dragging=false;handle.classList.remove('dragging');overlay.classList.remove('active');});
+    try{const w=sessionStorage.getItem('rr_feed_width');if(w){panel.style.width=w+'px';panel.style.maxWidth='';}}catch(_){}
+  }
+
+  function bindGlobalEvents() {
+    // API key
+    document.getElementById('api-key-btn').addEventListener('click',()=>{
+      const d=document.getElementById('api-key-drawer');
+      d.classList.toggle('hidden');
+      if(!d.classList.contains('hidden'))document.getElementById('api-key-input').focus();
+    });
+    document.getElementById('api-key-save').addEventListener('click',setApiKey);
+    document.getElementById('api-key-input').addEventListener('keydown',e=>{
+      if(e.key==='Enter')setApiKey();
+      if(e.key==='Escape'){document.getElementById('api-key-drawer').classList.add('hidden');document.getElementById('api-key-error').classList.remove('visible');}
+    });
+
+    // Help
+    document.getElementById('help-btn').addEventListener('click',toggleKbd);
+    document.getElementById('kbd-close').addEventListener('click',toggleKbd);
+    document.getElementById('kbd-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('kbd-overlay'))toggleKbd();});
+
+    // Filter — debounced 120ms
+    let ft=null;
+    document.getElementById('feed-filter').addEventListener('input',e=>{
+      clearTimeout(ft);ft=setTimeout(()=>{STATE.filterText=e.target.value.trim();renderFeed();},120);
+    });
+
+    // Sort buttons (data-sort)
+    document.querySelectorAll('[data-sort]').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('[data-sort]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); STATE.sortMode=btn.dataset.sort;
+      sortPapers(); renderFeed();
+    }));
+
+    // Source narrow buttons (data-src)
+    document.querySelectorAll('[data-src]').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('[data-src]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); STATE.sourceFilter=btn.dataset.src; renderFeed();
+    }));
+
+    // Load more
+    document.getElementById('load-more').addEventListener('click',loadMore);
+
+    // Year filter
+    document.getElementById('year-filter').addEventListener('change', e => {
+      STATE.yearFilter = e.target.value;
+      renderFeed();
+    });
+
+    // SerpApi Scholar key
+    document.getElementById('serp-key-btn').addEventListener('click', () => {
+      const d = document.getElementById('serp-key-drawer');
+      d.classList.toggle('hidden');
+      if (!d.classList.contains('hidden')) document.getElementById('serp-key-input').focus();
+    });
+    document.getElementById('serp-key-save').addEventListener('click', setSerpApiKey);
+    document.getElementById('serp-key-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') setSerpApiKey();
+      if (e.key === 'Escape') document.getElementById('serp-key-drawer').classList.add('hidden');
+    });
+
+    // Keyboard
+    document.addEventListener('keydown',handleKeydown);
+
+    // Resize
+    initResizeHandle();
+  }
+
+  /* ════════════════════════════════════════════════════════
+     J · UTILITIES
+  ════════════════════════════════════════════════════════ */
+
+  function copyBibtex(paper) {
+    const key = (paper.authors[0]?.split(' ').pop() || 'Unknown') + (paper.year || '') + paper.title.split(' ')[0].replace(/[^a-zA-Z]/g,'');
+    const auth = paper.authors.slice(0,6).join(' and ');
+    const fields = [
+      `  author    = {${auth}}`,
+      `  title     = {${paper.title.replace(/[{}]/g,'')}}`,
+      `  year      = {${paper.year || ''}}`,
+      paper.venue ? `  journal   = {${paper.venue}}` : null,
+      paper.url   ? `  url       = {${paper.url}}` : null,
+      paper.source === 'arxiv' ? `  note      = {arXiv preprint}` : null,
+    ].filter(Boolean).join(',\n');
+    const bib = `@article{${key},\n${fields}\n}`;
+    navigator.clipboard.writeText(bib)
+      .then(()=>showToast('BIBTEX COPIED')).catch(()=>showToast('CLIPBOARD FAILED'));
+  }
+
+  function copyPaperAsMd(paper,explainer) {
+    const lines=[
+      `# ${paper.title}`,'',
+      `**Authors**: ${paper.authors.join(', ')}`,
+      `**Venue**: ${paper.venue} (${paper.year||''})`,
+      `**URL**: ${paper.url}`,
+      paper.pdfUrl?`**PDF**: ${paper.pdfUrl}`:null,
+      paper.citationCount?`**Citations**: ${paper.citationCount}`:null,'',
+    ];
+    if(explainer){
+      lines.push('## What They Are Doing',explainer.what_doing,'');
+      lines.push('## Problem Being Solved',explainer.problem_solved,'');
+      lines.push('## Key Contribution',explainer.key_contribution,'');
+    }
+    lines.push('## Abstract',paper.abstract||'');
+    navigator.clipboard.writeText(lines.filter(l=>l!==null).join('\n'))
+      .then(()=>showToast('COPIED AS MARKDOWN')).catch(()=>showToast('CLIPBOARD FAILED'));
+  }
+
+  function showToast(msg) {
+    document.querySelector('.toast')?.remove();
+    const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+    document.body.appendChild(t); setTimeout(()=>t.remove(),2500);
+  }
+
+  /* ════════════════════════════════════════════════════════
+     K · INIT
+  ════════════════════════════════════════════════════════ */
+
+  async function init() {
+    loadBookmarks();
+
+    // Restore persisted keys from localStorage
+    try {
+      const savedApiKey = localStorage.getItem('rr_api_key');
+      if (savedApiKey && (savedApiKey.startsWith('sk-ant-') || savedApiKey.startsWith('sk-'))) {
+        STATE.apiKey = savedApiKey;
+        const st = document.getElementById('api-key-status');
+        if (st) { st.textContent = 'ACTIVE'; st.classList.add('active'); }
+      }
+      const savedSerpKey = localStorage.getItem('rr_serp_key');
+      if (savedSerpKey && savedSerpKey.length >= 10) {
+        STATE.serpApiKey = savedSerpKey;
+        const st = document.getElementById('serp-key-status');
+        if (st) { st.textContent = 'ACTIVE'; st.classList.add('active'); }
+      }
+    } catch(_) {}
+
+    buildDomainNav();
+    bindGlobalEvents();
+
+    // Show CORS warning if opened from file://
+    if(location.protocol==='file:'){
+      document.getElementById('cors-warning').classList.add('visible');
+    }
+
+    updateStatusBar();
+    await selectDomain('ai');
+  }
+
+  document.addEventListener('DOMContentLoaded',init);
+  </script>
+</body>
+</html>

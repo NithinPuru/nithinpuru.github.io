@@ -16,6 +16,7 @@ import projects from "../data/projects.json";
 import publications from "../data/publications.json";
 import tapeouts from "../data/tapeouts.json";
 import finance from "../data/finance.json";
+import tools from "../data/tools.json";
 import hobbies from "../data/hobbies.json";
 
 const github = "https://github.com/chennakeshavadasa";
@@ -542,6 +543,15 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="group-count">{projects.groups.reduce((n, g) => n + g.entries.length, 0)}</span>
       </h3>
       <WorkList groups={projects.groups} layout="grid" />
+
+      <h3 class="subsection-title" id="tools" data-reveal>
+        <span class="subsec-no">6.3</span>Tools I built for myself
+        <span class="group-count">{tools.groups.reduce((n, g) => n + g.entries.length, 0)}</span>
+      </h3>
+      <p class="section-lede tools-lede" data-reveal>
+        Browser-based tools I built for my own work in circuit design, research and finance. All run entirely in your browser.
+      </p>
+      <WorkList groups={tools.groups} layout="grid" />
 
       <p class="section-foot" data-reveal>
         {gh ? (

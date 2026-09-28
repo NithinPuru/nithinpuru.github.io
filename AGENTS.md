@@ -121,6 +121,26 @@ padding/margins). To update it, re-export from JupyterLab (notebook: HTML)
 and overwrite the file — no route changes needed. `src/data/Wrøngm.ipynb` is
 the upstream source notebook.
 
+## Migrated tools (public/)
+
+Standalone single-file tools copied verbatim from their chennakeshavadasa
+repos and served as-is (Astro copies `public/` untouched). Listed on the home
+page from `src/data/tools.json` (Work -> 6.3 "Tools I built for myself").
+
+| Path | Source repo (commit copied) | Notes |
+|---|---|---|
+| `/gmid/` | gmid-hub@4dd4cae | only change: its three PDK URLs point at the local sub-pages below |
+| `/gmid/sky130a/` | gmid_SKY130A@9fe3a6f | byte-identical |
+| `/gmid/gf180mcu-d/` | gmid_GF180MCUD@636ee89 | byte-identical |
+| `/gmid/ihp-sg13g2/` | gmid_IHP130_Tool@35abc75 | byte-identical |
+| `/fx-quant/` | FOREX_QUANT@0f404ba | byte-identical |
+| `/research-radar/` | Research-Radar@ee84a10 | byte-identical; keys live in localStorage `rr_*` |
+| `/quant-terminal/` | career-semi-quant | synced by `quant-terminal-sync.yml`; data by `quant-terminal-data.yml` - do not hand-edit |
+| `/deadline/` | Conf_Deadline_Tracker | driven by the `tracker-*` workflows |
+
+To update a copied tool, re-copy its `index.html` from the repo (and keep the
+gm/ID hub URL rewrite). The original repos and their Pages sites are untouched.
+
 ## Brand assets
 
 `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png`,

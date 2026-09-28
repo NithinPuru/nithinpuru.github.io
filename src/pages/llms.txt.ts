@@ -22,6 +22,14 @@ anchors on the homepage:
 
 - [Ron/gm Design Methodology - ESSERC 2026](${origin}/notebook): full Jupyter notebook comparing the R_on/g_m methodology against g_m/I_D and the Conrad et al. [TCAS-I 2020] optimizer for dynamic amplifier design.
 
+## Tools
+
+- [gm/ID Explorer - Open PDK Hub](${origin}/gmid/): interactive gm/ID MOSFET characterisation for SKY130A, GF180MCU-D and IHP SG13G2.
+- [Career Semi-Quant Terminal](${origin}/quant-terminal/): in-browser quantitative analytics of semiconductor equities.
+- [FX Quant Terminal](${origin}/fx-quant/): client-side quantitative analysis of seven INR currency pairs.
+- [Research Radar](${origin}/research-radar/): live feed of papers and posts in AI, finance and chip design.
+- [Conference Deadline Tracker](${origin}/deadline/): analog, VLSI and CAS conference deadlines.
+
 ## Profiles
 
 - [GitHub - chennakeshavadasa](https://github.com/chennakeshavadasa)

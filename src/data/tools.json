@@ -1,0 +1,100 @@
+{
+  "groups": [
+    {
+      "entries": [
+        {
+          "title": "gm/ID Explorer - Open PDK Hub",
+          "meta": "IHP SG13G2 · SKY130A · GF180MCU-D",
+          "url": "/gmid/",
+          "desc": "Unified gm/ID explorer for three open-source PDKs: interactive MOSFET characterisation curves (gm/ID, fT, gm/gds and more versus V<sub>GS</sub>, V<sub>ov</sub> and channel length) for gm/ID-based analog design.",
+          "links": [
+            {
+              "label": "Open tool",
+              "url": "/gmid/"
+            },
+            {
+              "label": "SKY130A",
+              "url": "/gmid/sky130a/"
+            },
+            {
+              "label": "GF180MCU-D",
+              "url": "/gmid/gf180mcu-d/"
+            },
+            {
+              "label": "IHP SG13G2",
+              "url": "/gmid/ihp-sg13g2/"
+            },
+            {
+              "label": "Source code",
+              "url": "https://github.com/chennakeshavadasa/gmid-hub"
+            }
+          ]
+        },
+        {
+          "title": "Career Semi-Quant Terminal",
+          "meta": "Semiconductor equities · in-browser analytics",
+          "url": "/quant-terminal/",
+          "desc": "Quantitative stock analytics for semiconductor professionals evaluating equity offers. Runs entirely in the browser.",
+          "links": [
+            {
+              "label": "Open tool",
+              "url": "/quant-terminal/"
+            },
+            {
+              "label": "Source code",
+              "url": "https://github.com/chennakeshavadasa/career-semi-quant"
+            }
+          ]
+        },
+        {
+          "title": "FX Quant Terminal",
+          "meta": "Seven INR pairs · 100% client-side",
+          "url": "/fx-quant/",
+          "desc": "Zero-server quantitative FX analysis for seven INR currency pairs (EUR, USD, GBP, JPY, CNY, SGD, HKD): ensemble forecasting, technical indicators, risk analytics and seasonality.",
+          "links": [
+            {
+              "label": "Open tool",
+              "url": "/fx-quant/"
+            },
+            {
+              "label": "Source code",
+              "url": "https://github.com/chennakeshavadasa/FOREX_QUANT"
+            }
+          ]
+        },
+        {
+          "title": "Research Radar",
+          "meta": "AI · Finance · Chip design",
+          "url": "/research-radar/",
+          "desc": "Aggregates papers, preprints and blog posts on AI, finance and chip design from arXiv, Semantic Scholar, OpenAlex, CrossRef and research blogs into one live feed, with an optional Claude-powered paper explainer and Google Scholar author feeds via SerpApi.",
+          "links": [
+            {
+              "label": "Open tool",
+              "url": "/research-radar/"
+            },
+            {
+              "label": "Source code",
+              "url": "https://github.com/chennakeshavadasa/Research-Radar"
+            }
+          ]
+        },
+        {
+          "title": "Conference Deadline Tracker",
+          "meta": "Analog · VLSI · CAS conferences",
+          "url": "/deadline/",
+          "desc": "Tracks conference information such as submission deadlines, with a calendar feed and change log.",
+          "links": [
+            {
+              "label": "Open tool",
+              "url": "/deadline/"
+            },
+            {
+              "label": "Source code",
+              "url": "https://github.com/chennakeshavadasa/Conf_Deadline_Tracker"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
