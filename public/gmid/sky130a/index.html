@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKY130 gm/ID Explorer</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<link rel="stylesheet" href="/gmid/theme/gmid-theme.css">
+<script src="/gmid/theme/gmid-theme.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
   :root {
     --bg: #0b0e11;
     --surface: #111518;
@@ -14,7 +16,7 @@
     --border: #1e2530;
     --accent: #38bdf8;
     --accent2: #818cf8;
-    --accent3: #34d399;
+    --accent3: var(--qt-up);
     --warn: #fb923c;
     --red: #f87171;
     --green: #4ade80;
@@ -23,7 +25,7 @@
     --muted: #6b7a8d;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Mono', monospace; min-height: 100vh; }
+  body { background: var(--bg); color: var(--text); font-family: var(--qt-mono); min-height: 100vh; }
 
   header { display:flex; align-items:center; gap:14px; padding:13px 26px; background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:200; }
   .logo { font-size:1.1rem; font-weight:700; letter-spacing:0.05em; color:var(--sky);  }
@@ -55,9 +57,9 @@
   .dc-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
   .dc-name { font-size:0.88rem; font-weight:700; color:var(--text); }
   .dc-type { font-size:0.52rem; padding:2px 7px; border-radius:2px; font-weight:700; }
-  .dc-type-n { background:rgba(52,211,153,0.15); color:#34d399; }
-  .dc-type-p { background:rgba(129,140,248,0.15); color:#a5b4fc; }
-  .dc-type-hvt { background:rgba(251,146,60,0.12); color:#fdba74; }
+  .dc-type-n { background:rgba(52,211,153,0.15); color:var(--qt-up); }
+  .dc-type-p { background:rgba(129,140,248,0.15); color:var(--qt-violet); }
+  .dc-type-hvt { background:rgba(251,146,60,0.12); color:var(--qt-warn); }
   .dc-type-hv { background:rgba(248,113,113,0.12); color:#fca5a5; }
   .dc-desc { font-size:0.71rem; color:var(--muted); margin-bottom:12px; line-height:1.6; }
   .dc-specs { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
@@ -123,8 +125,8 @@
   .device-btn:hover { border-color:var(--sky); color:var(--sky); }
   .device-btn.active { background:rgba(56,189,248,0.07); border-color:var(--sky); color:var(--sky); }
   .pill { font-size:0.51rem; padding:2px 5px; border-radius:2px; font-weight:700; }
-  .pill-n { background:rgba(52,211,153,0.15); color:#34d399; }
-  .pill-p { background:rgba(129,140,248,0.15); color:#a5b4fc; }
+  .pill-n { background:rgba(52,211,153,0.15); color:var(--qt-up); }
+  .pill-p { background:rgba(129,140,248,0.15); color:var(--qt-violet); }
   .plot-tabs { display:flex; flex-wrap:wrap; gap:3px; padding:8px 18px; align-items:center; background:var(--surface2); border-bottom:1px solid var(--border); }
   .tab-btn { padding:5px 10px; border:1px solid transparent; background:transparent; color:var(--muted); font-family:inherit; font-size:0.68rem; cursor:pointer; border-radius:4px; transition:all 0.14s; white-space:nowrap; letter-spacing:0.02em; }
   .tab-btn:hover { border-color:var(--accent); color:var(--accent); }
@@ -208,6 +210,10 @@
   }
   .mmode-btn.active-x { background:rgba(56,189,248,0.1); border-color:var(--sky); color:var(--sky); }
   .mmode-btn.active-y { background:rgba(251,146,60,0.1); border-color:var(--warn); color:var(--warn); }
+
+/* gmid theme: map this tool's variables onto the shared tokens */
+:root, :root[data-theme] { --bg: var(--qt-page); --surface: var(--qt-card); --surface2: var(--qt-well); --border: var(--qt-rule); --accent: var(--qt-accent); --accent2: var(--qt-violet); --accent3: var(--qt-up); --warn: var(--qt-warn); --red: var(--qt-down); --green: var(--qt-up); --sky: var(--qt-accent); --text: var(--qt-ink); --muted: var(--qt-ink-3); }
+body { font-family: var(--qt-serif); }
 </style>
 </head>
 <body>

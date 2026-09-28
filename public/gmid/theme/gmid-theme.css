@@ -1,0 +1,60 @@
+/* Shared theme for the gm/ID tools (/gmid/...).
+ * Re-skins the original tools without touching their logic: Quant Terminal
+ * tokens (prefixed --qt- so they never clash with the tools' own variable
+ * names), Computer Modern fonts, and the site's light/dark switch
+ * (html[data-theme], localStorage "theme"). Each page maps its own colour
+ * variables onto these tokens in a small inline block after its styles. */
+@font-face { font-family: "KaTeX_Main"; src: url("/fonts/KaTeX_Main-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "KaTeX_Main"; src: url("/fonts/KaTeX_Main-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "KaTeX_Main"; src: url("/fonts/KaTeX_Main-Italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "KaTeX_Typewriter"; src: url("/fonts/KaTeX_Typewriter-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+/* ─── Tokens ─────────────────────────────────────────────────────────────── */
+:root, :root[data-theme="light"] {
+  color-scheme: light;
+  --qt-page: #f4f6f9;  --qt-card: #ffffff;  --qt-well: #f4f6f9;  --qt-raise: #eef1f6;
+  --qt-ink: #131c28;   --qt-ink-2: #3d4756; --qt-ink-3: #5b6676; --qt-ink-4: #8a93a1;
+  --qt-rule: rgba(19, 28, 40, 0.12);     --qt-rule-strong: rgba(19, 28, 40, 0.26);
+  --qt-accent: #1f4fd1; --qt-accent-wash: rgba(31, 79, 209, 0.07);
+  --qt-up: #0b8a6b; --qt-down: #b42318; --qt-warn: #b86200; --qt-violet: #7b3fd0; --qt-teal: #0e7490; --qt-pink: #b83280;
+  --qt-ink-rgb: 19, 28, 40; --qt-accent-rgb: 31, 79, 209; --qt-up-rgb: 11, 138, 107; --qt-down-rgb: 180, 35, 24; --qt-warn-rgb: 184, 98, 0; --qt-violet-rgb: 123, 63, 208;
+  --qt-tooltip-bg: #131c28; --qt-tooltip-ink: #f2f5fa;
+  --qt-shadow: 0 1px 2px rgba(19, 28, 40, 0.05), 0 6px 18px rgba(19, 28, 40, 0.06);
+  --qt-shadow-hi: 0 2px 4px rgba(19, 28, 40, 0.06), 0 14px 34px rgba(19, 28, 40, 0.1);
+  --qt-overlay: rgba(19, 28, 40, 0.38);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --qt-page: #0f1620;  --qt-card: #172131;  --qt-well: #131c2a;  --qt-raise: #1d2940;
+  --qt-ink: #f2f5fa;   --qt-ink-2: #cfd7e3; --qt-ink-3: #95a1b3; --qt-ink-4: #6b778a;
+  --qt-rule: rgba(242, 245, 250, 0.1);   --qt-rule-strong: rgba(242, 245, 250, 0.22);
+  --qt-accent: #7aa7ff; --qt-accent-wash: rgba(122, 167, 255, 0.1);
+  --qt-up: #4fd1a8; --qt-down: #ff8a7a; --qt-warn: #ffb357; --qt-violet: #b89bff; --qt-teal: #5fc9d8; --qt-pink: #f58fc4;
+  --qt-ink-rgb: 242, 245, 250; --qt-accent-rgb: 122, 167, 255; --qt-up-rgb: 79, 209, 168; --qt-down-rgb: 255, 138, 122; --qt-warn-rgb: 255, 179, 87; --qt-violet-rgb: 184, 155, 255;
+  --qt-tooltip-bg: #0b111a; --qt-tooltip-ink: #f2f5fa;
+  --qt-shadow: 0 1px 0 rgba(255, 255, 255, 0.025) inset, 0 8px 24px rgba(0, 0, 0, 0.28);
+  --qt-shadow-hi: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 16px 40px rgba(0, 0, 0, 0.42);
+  --qt-overlay: rgba(4, 8, 14, 0.62);
+}
+:root {
+  --qt-serif: "KaTeX_Main", "Latin Modern Roman", Georgia, "Times New Roman", serif;
+  --qt-mono: "KaTeX_Typewriter", "Latin Modern Mono", "Courier New", monospace;
+}
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { -webkit-font-smoothing: antialiased; font-variant-numeric: lining-nums tabular-nums; transition: background 0.25s, color 0.25s; }
+::selection { background: var(--qt-accent); color: var(--qt-card); }
+* { scrollbar-width: thin; scrollbar-color: var(--qt-rule-strong) transparent; }
+
+/* floating theme switch (standalone pages; hidden inside the hub's iframe) */
+.gm-theme-btn {
+  position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+  display: inline-flex; align-items: center; gap: 7px;
+  font: 400 13.5px/1 var(--qt-serif); color: var(--qt-ink-2);
+  padding: 8px 12px; border-radius: 7px; cursor: pointer;
+  border: 1px solid var(--qt-rule-strong); background: var(--qt-card); box-shadow: var(--qt-shadow);
+}
+.gm-theme-btn:hover { color: var(--qt-accent); border-color: var(--qt-accent); }
+.gm-theme-btn svg { width: 14px; height: 14px; }
+html.gm-embedded .gm-theme-btn { display: none; }
+.gm-home { font: 11px var(--qt-mono); letter-spacing: 0.06em; color: var(--qt-ink-3); text-decoration: none; }
+.gm-home:hover { color: var(--qt-accent); }

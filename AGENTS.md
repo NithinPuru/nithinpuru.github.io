@@ -138,8 +138,16 @@ page from `src/data/tools.json` (Work -> 6.3 "Tools I built for myself").
 | `/quant-terminal/` | career-semi-quant | synced by `quant-terminal-sync.yml`; data by `quant-terminal-data.yml` - do not hand-edit |
 | `/deadline/` | Conf_Deadline_Tracker | driven by the `tracker-*` workflows |
 
-To update a copied tool, re-copy its `index.html` from the repo (and keep the
-gm/ID hub URL rewrite). The original repos and their Pages sites are untouched.
+The gm/ID pages are re-skinned, not rewritten: `public/gmid/theme/gmid-theme.css`
+(Quant Terminal tokens prefixed `--qt-`, Computer Modern fonts) and
+`gmid-theme.js` (pre-paint theme, `Plotly.react` wrapper that themes every
+chart, floating Theme button, cross-iframe sync via the `theme` key). Each page
+maps its own colour variables onto `--qt-*` in a block at the end of its
+`<style>`; Google Fonts were removed and the hub's old dark-theme injection is
+disabled (`injectTheme: false`).
+
+To update a copied tool, re-copy its `index.html` from the repo, then re-apply
+the gm/ID hub URL rewrite and (for gm/ID pages) the theme block and links. The original repos and their Pages sites are untouched.
 
 ## Brand assets
 

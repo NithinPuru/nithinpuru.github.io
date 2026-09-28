@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GF180MCU gm/ID Explorer</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<link rel="stylesheet" href="/gmid/theme/gmid-theme.css">
+<script src="/gmid/theme/gmid-theme.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
   :root {
     --bg: #0b0e11;
     --surface: #111518;
@@ -25,7 +27,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--qt-mono);
     min-height: 100vh;
   }
 
@@ -82,9 +84,9 @@
   .dc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .dc-name { font-size: 0.9rem; font-weight: 700; color: var(--text); }
   .dc-type { font-size: 0.55rem; padding: 2px 7px; border-radius: 2px; font-weight: 700; }
-  .dc-type-n { background: rgba(16,185,129,0.2); color: #34d399; }
-  .dc-type-p { background: rgba(124,58,237,0.2); color: #a78bfa; }
-  .dc-type-dss { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .dc-type-n { background: rgba(16,185,129,0.2); color: var(--qt-up); }
+  .dc-type-p { background: rgba(124,58,237,0.2); color: var(--qt-violet); }
+  .dc-type-dss { background: rgba(245,158,11,0.15); color: var(--qt-warn); }
   .dc-desc { font-size: 0.72rem; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
   .dc-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .dc-spec { background: var(--surface2); border-radius: 4px; padding: 7px 10px; }
@@ -98,7 +100,7 @@
   .ep-card-title { padding: 10px 16px; background: var(--surface2); font-size: 0.72rem; font-weight: 600; color: var(--accent); border-bottom: 1px solid var(--border); }
   .ep-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; }
   .ep-table th { padding: 7px 12px; background: rgba(0,0,0,0.3); color: var(--muted); text-align: center; font-weight: 600; letter-spacing: 0.05em; font-size: 0.6rem; text-transform: uppercase; }
-  .ep-table td { padding: 6px 12px; border-top: 1px solid rgba(30,58,95,0.5); text-align: center; }
+  .ep-table td { padding: 6px 12px; border-top: 1px solid var(--qt-rule); text-align: center; }
   .ep-table tr.slow td { color: #ef4444; }
   .ep-table tr.typ td { color: var(--accent3); font-weight: 600; }
   .ep-table tr.fast td { color: var(--accent); }
@@ -171,8 +173,8 @@
   .device-btn:hover { border-color: var(--accent); color: var(--accent); }
   .device-btn.active { background: rgba(0,212,255,0.08); border-color: var(--accent); color: var(--accent); }
   .pill { font-size: 0.52rem; padding: 2px 5px; border-radius: 2px; font-weight: 700; }
-  .pill-n { background: rgba(16,185,129,0.2); color: #34d399; }
-  .pill-p { background: rgba(124,58,237,0.2); color: #a78bfa; }
+  .pill-n { background: rgba(16,185,129,0.2); color: var(--qt-up); }
+  .pill-p { background: rgba(124,58,237,0.2); color: var(--qt-violet); }
 
   .plot-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
   .tab-btn { padding:5px 10px; border:1px solid transparent; background:transparent; color:var(--muted); font-family:inherit; font-size:0.68rem; cursor:pointer; border-radius:4px; transition:all 0.14s; white-space:nowrap; letter-spacing:0.02em; }
@@ -200,6 +202,10 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* gmid theme: map this tool's variables onto the shared tokens */
+:root, :root[data-theme] { --bg: var(--qt-page); --surface: var(--qt-card); --surface2: var(--qt-well); --border: var(--qt-rule); --accent: var(--qt-accent); --accent2: var(--qt-violet); --accent3: var(--qt-up); --text: var(--qt-ink); --muted: var(--qt-ink-3); --warn: var(--qt-warn); --red: var(--qt-down); --green: var(--qt-up); }
+body { font-family: var(--qt-serif); }
 </style>
 </head>
 <body>

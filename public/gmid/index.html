@@ -4,9 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>gm/ID Explorer — Open PDK Hub</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,7 +24,7 @@
     --bar-h: 52px;
   }
 
-  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--qt-serif); }
 
   /* ── TOP BAR ─────────────────────────────────────────────── */
   #topbar {
@@ -41,7 +38,7 @@
   }
 
   #wordmark {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--qt-mono);
     font-size: 12.5px; font-weight: 600; letter-spacing: .09em;
     color: var(--text); white-space: nowrap; margin-right: 18px; flex-shrink: 0;
   }
@@ -57,14 +54,14 @@
     height: 34px; padding: 0 13px;
     border-radius: 5px; border: 1px solid transparent;
     cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--qt-mono);
     font-size: 11px; font-weight: 500; letter-spacing: .05em;
     color: var(--text-dim); background: transparent;
     transition: background .14s, border-color .14s, color .14s;
     white-space: nowrap; user-select: none;
   }
-  .tab:hover { background: #1a2030; color: var(--text); border-color: var(--muted); }
-  .tab.active { color: var(--text); border-color: var(--muted); background: #151c27; }
+  .tab:hover { background: var(--qt-raise); color: var(--text); border-color: var(--muted); }
+  .tab.active { color: var(--text); border-color: var(--muted); background: var(--qt-well); }
   .tab.active::after {
     content: ''; position: absolute; bottom: -1px; left: 4px; right: 4px;
     height: 2px; border-radius: 2px 2px 0 0;
@@ -89,7 +86,7 @@
   .tab.active[data-pdk="gf"]   .dot  { box-shadow: 0 0 5px 2px color-mix(in srgb, var(--gf-hue) 55%, transparent); }
 
   .badge {
-    font-size: 9px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-family: var(--qt-mono);
     padding: 1px 5px; border-radius: 3px;
     background: var(--muted); color: var(--text-dim); letter-spacing: .02em;
   }
@@ -101,7 +98,7 @@
   #info-pill {
     margin-left: auto; flex-shrink: 0;
     display: flex; align-items: center; gap: 8px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim);
+    font-family: var(--qt-mono); font-size: 10px; color: var(--text-dim);
     letter-spacing: .04em;
   }
   #corner-label { opacity: .7; }
@@ -115,7 +112,7 @@
   /* theme-injection status chip */
   #theme-chip {
     display: flex; align-items: center; gap: 5px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    font-family: var(--qt-mono); font-size: 9px;
     padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border);
     color: var(--text-dim); opacity: 0; transition: opacity .3s;
     white-space: nowrap;
@@ -150,7 +147,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .loading-text {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--qt-mono);
     font-size: 10.5px; letter-spacing: .1em; color: var(--text-dim);
   }
 
@@ -164,12 +161,22 @@
     #info-pill { display: none; }
     .tab { padding: 0 10px; }
   }
+
+#gm-theme { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1 var(--qt-serif); color: var(--qt-ink-2); padding: 6px 10px; border-radius: 7px; border: 1px solid var(--qt-rule-strong); background: var(--qt-card); cursor: pointer; }
+#gm-theme:hover { color: var(--qt-accent); border-color: var(--qt-accent); }
+.gm-home { margin-right: 14px; }
+/* gmid theme: map this tool's variables onto the shared tokens */
+:root, :root[data-theme] { --bg: var(--qt-page); --surface: var(--qt-card); --surface2: var(--qt-well); --border: var(--qt-rule); --muted: var(--qt-ink-4); --text: var(--qt-ink); --text-dim: var(--qt-ink-3); --ihp-hue: var(--qt-accent); --sky-hue: var(--qt-up); --gf-hue: var(--qt-warn); }
+body { font-family: var(--qt-serif); }
 </style>
+<link rel="stylesheet" href="/gmid/theme/gmid-theme.css">
+<script src="/gmid/theme/gmid-theme.js"></script>
 </head>
 <body>
 
 <div id="topbar">
-  <div id="wordmark">gm/ID<span> EXPLORER</span></div>
+  <a class="gm-home" href="/" title="nithinpuru.github.io">&larr; home</a>
+  <div id="wordmark">gm/ID<span> Explorer</span></div>
   <div class="vdiv"></div>
 
   <div id="tabs">
@@ -192,10 +199,8 @@
 
   <div id="info-pill">
     <span id="corner-label">TT · 27°C · VDS=VDD/2</span>
-    <div id="theme-chip">
-      <span class="chip-dot" id="chip-dot"></span>
-      <span id="chip-label">theme applied</span>
-    </div>
+    <div id="theme-chip" hidden><span class="chip-dot" id="chip-dot"></span><span id="chip-label"></span></div>
+    <button type="button" id="gm-theme" data-gm-theme-inline onclick="gmToggleTheme()" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>Theme</button>
     <a id="gh-link" href="https://github.com/chennakeshavadasa" target="_blank" rel="noopener">↗ GitHub</a>
   </div>
 </div>
@@ -242,7 +247,7 @@ const PDKS = {
     ghUrl:  'https://github.com/chennakeshavadasa/gmid_SKY130A',
     corner: 'TT · 27°C · VDS=VDD/2 · BSIM',
     accent: '#4de88a',
-    injectTheme: true
+    injectTheme: false  // pages share /gmid/theme/ now; the old dark-theme injection would override it
   },
   gf: {
     wrap:   'wrap-gf',
@@ -251,7 +256,7 @@ const PDKS = {
     ghUrl:  'https://github.com/chennakeshavadasa/gmid_GF180MCUD',
     corner: 'TT · 27°C · VDS=VDD/2 · BSIM3v3',
     accent: '#ff8c42',
-    injectTheme: true
+    injectTheme: false  // pages share /gmid/theme/ now; the old dark-theme injection would override it
   }
 };
 
