@@ -1983,13 +1983,13 @@ a {
   color: var(--ink-3);
 }
 .edu__courses {
-  margin-top: 1.2rem;
+  margin-top: 1rem;
 }
 .edu__courses-h {
-  margin: 0 0 0.6rem;
-  padding-bottom: 0.45rem;
+  margin: 0 0 0.35rem;
+  padding-bottom: 0.3rem;
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2002,21 +2002,18 @@ a {
 }
 .edu__row {
   display: grid;
-  grid-template-columns: 10rem minmax(0, 1fr);
-  column-gap: 1.25rem;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  column-gap: 1rem;
   align-items: baseline;
-  padding: 0.35rem 0;
+  padding: 0.15rem 0;
   border-bottom: 1px solid var(--rule);
 }
-.edu__row:first-child {
-  padding-top: 0;
-}
-.edu__row:last-child {
+.edu__row {
   border-bottom: none;
 }
 .edu__row dt {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
@@ -2033,9 +2030,9 @@ a {
   list-style: none;
 }
 .edu__row li {
-  font-size: 0.95rem;
+  font-size: 0.86rem;
   color: var(--ink-2);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 .edu__row li:not(:last-child)::after {
   content: "\00b7";
