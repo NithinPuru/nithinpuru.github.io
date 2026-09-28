@@ -587,6 +587,8 @@ const gh = await githubStats("chennakeshavadasa");
                 <p class="hobby__note">{h.note}</p>
               </div>
             </header>
+            <details class="fold hobby__fold">
+              <summary>Book recommendations</summary>
             <div class="shelves">
               {h.shelves.map((sh) => (
                 <div class="shelf">
@@ -608,6 +610,7 @@ const gh = await githubStats("chennakeshavadasa");
                 </div>
               ))}
             </div>
+            </details>
           </article>
         ))}
 
@@ -619,6 +622,8 @@ const gh = await githubStats("chennakeshavadasa");
               <p class="hobby__note">{hobbies.travel.note}</p>
             </div>
           </header>
+          <details class="fold hobby__fold">
+            <summary>Places visited</summary>
           <div class="travel">
             <span class="travel__k">Visited so far</span>
             <ul class="travel__list">
@@ -634,6 +639,7 @@ const gh = await githubStats("chennakeshavadasa");
               ))}
             </ul>
           </div>
+          </details>
         </article>
       </div>
     </section>

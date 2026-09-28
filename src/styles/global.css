@@ -1462,6 +1462,19 @@ a {
   font-size: 0.95rem;
   color: var(--ink-2);
 }
+.hobby__fold {
+  margin-top: 0.8rem;
+}
+.hobby__fold > .shelves,
+.hobby__fold > .travel {
+  margin-top: 0.9rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hobby__fold[open] > .shelves,
+  .hobby__fold[open] > .travel {
+    animation: detail-slide-in 0.25s ease forwards;
+  }
+}
 /* reading lists: shelves side by side, each a small bibliography */
 .shelves {
   display: grid;
