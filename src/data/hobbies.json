@@ -130,7 +130,9 @@
       },
       {
         "country": "Vatican City",
-        "places": []
+        "places": [
+          "St. Peter's Basilica"
+        ]
       },
       {
         "country": "United Arab Emirates",
