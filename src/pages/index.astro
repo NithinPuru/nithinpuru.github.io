@@ -16,6 +16,7 @@ import projects from "../data/projects.json";
 import publications from "../data/publications.json";
 import tapeouts from "../data/tapeouts.json";
 import finance from "../data/finance.json";
+import hobbies from "../data/hobbies.json";
 
 const github = "https://github.com/chennakeshavadasa";
 const linkedin = "https://www.linkedin.com/in/nithin-purushothama-70664727b/";
@@ -34,12 +35,6 @@ const cvId = "1u9SBAN4afHSnqbGC5mDJin0y14OM_jb-";
 const cvPreview = `https://drive.google.com/file/d/${cvId}/preview`;
 const cvView = `https://drive.google.com/file/d/${cvId}/view?usp=sharing`;
 const cvDownload = `https://drive.google.com/uc?export=download&id=${cvId}`;
-// Hobbies (exactly as described by Nithin).
-const hobbies = [
-  { icon: "book", title: "Reading history", note: "especially classical history" },
-  { icon: "nondual", title: "Non-dualistic philosophy" },
-  { icon: "compass", title: "Travelling" },
-] as const;
 // Section list drives the sidebar pinout (laptop layout).
 const sections = [
   { id: "about", label: "About" },
@@ -582,17 +577,65 @@ const gh = await githubStats("chennakeshavadasa");
         <span class="section-rule" aria-hidden="true"></span>
       </header>
 
-      <ul class="hobbies" data-reveal-group>
-        {hobbies.map((h) => (
-          <li class="hobby" data-reveal>
-            <span class="hobby__icon" aria-hidden="true"><Icon name={h.icon} size={26} /></span>
-            <span class="hobby__text">
-              <span class="hobby__title">{h.title}</span>
-              {h.note && <span class="hobby__note">{h.note}</span>}
-            </span>
-          </li>
+      <div class="hobbies">
+        {[hobbies.reading, hobbies.philosophy].map((h, k) => (
+          <article class="hobby" data-reveal>
+            <header class="hobby__head">
+              <span class="hobby__icon" aria-hidden="true"><Icon name={k === 0 ? "book" : "nondual"} size={24} /></span>
+              <div>
+                <h3 class="hobby__title">{h.title}</h3>
+                <p class="hobby__note">{h.note}</p>
+              </div>
+            </header>
+            <div class="shelves">
+              {h.shelves.map((sh) => (
+                <div class="shelf">
+                  <h4 class="shelf__h">{sh.heading}</h4>
+                  <ol class="shelf__list">
+                    {sh.books.map((bk) => (
+                      <li>
+                        <span class="book__title">{bk.title}</span>
+                        {bk.orig && <span class="book__orig">{bk.orig}</span>}
+                        {bk.author && <span class="book__author">{bk.author}</span>}
+                      </li>
+                    ))}
+                  </ol>
+                  {sh.link && (
+                    <a class="shelf__link" href={sh.link.url} target="_blank" rel="noopener noreferrer">
+                      <Icon name="external" size={12} />{sh.link.label}
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </article>
         ))}
-      </ul>
+
+        <article class="hobby" data-reveal>
+          <header class="hobby__head">
+            <span class="hobby__icon" aria-hidden="true"><Icon name="compass" size={24} /></span>
+            <div>
+              <h3 class="hobby__title">{hobbies.travel.title}</h3>
+              <p class="hobby__note">{hobbies.travel.note}</p>
+            </div>
+          </header>
+          <div class="travel">
+            <span class="travel__k">Visited so far</span>
+            <ul class="travel__list">
+              {hobbies.travel.visited.map((c) => (
+                <li>
+                  <span class="travel__country">{c.country}</span>
+                  <span class="travel__places">
+                    {c.places.map((pl) => (
+                      <span class="travel__place"><Icon name="pin" size={13} />{pl}</span>
+                    ))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section class="section" id="cv" aria-labelledby="cv-h">

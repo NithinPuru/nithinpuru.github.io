@@ -245,8 +245,8 @@ A bibliography-like entry: the SSCS logo in a 16:9 venue plate on the left; righ
 ### Quantitative Finance
 The featured project (Semi-Quant Terminal) renders full-width with a finance symbol tile, keyword line, points, a framed **live-app preview strip** (the app's real header, lightbox on click) and Live app / Source links; "Quantitative Methods" render in the two-column grid. The lede is drawn from the About text.
 
-### Hobbies
-After Quantitative Finance (§08): a ruled three-column row (single column on mobile) - accent 1.5px line icon (open book, two overlapping circles for non-duality, compass), serif-bold hobby name, optional quieter note - with hairline dividers between items. Content exactly as supplied: reading history (especially classical history), non-dualistic philosophy, travelling.
+### Hobbies (`hobbies.json`)
+Three stacked blocks, each opened by a head row (accent line icon in a small raised tile, serif-bold title, one-line note) over a `rule-strong` hairline. Reading and philosophy carry **shelves**: auto-fitting columns under accent typewriter headings, each book an italic serif title with the original title and author in quieter lines, hung off a 2px left rule that turns accent on hover. Travel shows "Visited so far" with countries in bold and places as small pinned chips on the raised surface.
 
 ### Contact
 A lead sentence (PhD search, email preferred), a solid accent **Email me** button beside a ghost **Copy address** button (copies via `cite.js`, flips to "Copied"), then ruled rows — accent line icon, typewriter label, typewriter value, and an arrow that nudges up-right on hover over an accent wash — for Email, GitHub, LinkedIn and the CV PDF. On mobile the label stacks over the value.

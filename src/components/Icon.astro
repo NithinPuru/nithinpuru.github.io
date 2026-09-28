@@ -3,7 +3,7 @@ interface Props {
   name:
     | "external" | "down" | "close" | "expand" | "check" | "cross"
     | "github" | "linkedin" | "mail" | "file" | "star"
-    | "book" | "nondual" | "compass";
+    | "book" | "nondual" | "compass" | "pin";
   size?: number;
 }
 const { name, size } = Astro.props;
@@ -27,6 +27,7 @@ const paths: Record<string, string[]> = {
   nondual: ["M3.5 12a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0", "M9.5 12a5.5 5.5 0 1 0 11 0a5.5 5.5 0 1 0-11 0"],
   // compass
   compass: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z", "M15.5 8.5l-2 5-5 2 2-5z"],
+  pin: ["M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z", "M12 7.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"],
   star: ["M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"],
 };
 const px = size ?? (name === "external" ? 13 : 14);
