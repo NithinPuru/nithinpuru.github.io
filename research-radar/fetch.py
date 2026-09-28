@@ -38,6 +38,7 @@ OUT = ROOT / "public" / "research-radar" / "data"
 UA = "research-radar-bot/1.0 (+https://nithinpuru.github.io/research-radar/; mailto:nithinpurushothama@gmail.com)"
 NOW = dt.datetime.now(dt.timezone.utc)
 ABSTRACT_MAX = 1800
+EXCERPT_MAX = 280  # feed-file excerpt; full text in <domain>-abstracts.json
 
 
 def log(*a):
@@ -256,6 +257,12 @@ FETCHERS = {"arxiv": fetch_arxiv, "hf": fetch_hf, "journal": fetch_journals, "s2
 def run_domain(domain: str) -> dict:
     path = OUT / f"{domain}.json"
     prev = json.loads(path.read_text()) if path.exists() else {"papers": [], "sources": {}}
+    # the feed file holds excerpts; restore full abstracts for kept (stale) items
+    apath = OUT / f"{domain}-abstracts.json"
+    full = json.loads(apath.read_text()) if apath.exists() else {}
+    for p in prev["papers"]:
+        if p["id"] in full:
+            p["abstract"] = full[p["id"]]
     papers, sources = [], {}
     for name, fn in FETCHERS.items():
         t0 = time.time()
@@ -291,7 +298,17 @@ def main(argv: list[str]) -> int:
     for d in domains:
         log(f"== {d}")
         snap = run_domain(d)
+        # Split: the feed carries an excerpt (list, search); full abstracts go to
+        # a side file the page loads lazily for the detail panel and explainer.
+        full = {}
+        for p in snap["papers"]:
+            a = p.get("abstract") or ""
+            if len(a) > EXCERPT_MAX:
+                full[p["id"]] = a
+                p["abstract"] = a[:EXCERPT_MAX].rsplit(" ", 1)[0] + "\u2026"
+                p["abstract_trimmed"] = True
         (OUT / f"{d}.json").write_text(json.dumps(snap, ensure_ascii=False, separators=(",", ":")))
+        (OUT / f"{d}-abstracts.json").write_text(json.dumps(full, ensure_ascii=False, separators=(",", ":")))
         summary[d] = {k: v["status"] for k, v in snap["sources"].items()} | {"papers": len(snap["papers"])}
     (OUT / "index.json").write_text(json.dumps({"generated_at": iso(None), "domains": summary}, indent=1))
     log(json.dumps(summary, indent=1))

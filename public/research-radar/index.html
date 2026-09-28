@@ -1294,6 +1294,28 @@ Rules:
     } catch (_) { return null; }
   }
 
+  /* The snapshot feed carries abstract excerpts (abstract_trimmed); full
+     abstracts live in data/<domain>-abstracts.json, fetched once per domain
+     in the background and patched into the shared paper objects. */
+  const ABSTRACTS = new Map();
+  function ensureAbstracts(domain) {
+    if (!ABSTRACTS.has(domain)) {
+      ABSTRACTS.set(domain, fetchTimeout(`data/${domain}-abstracts.json`, { cache: 'no-cache' }, 15000)
+        .then(r => r.ok ? r.json() : {})
+        .catch(() => { ABSTRACTS.delete(domain); return {}; }));
+    }
+    return ABSTRACTS.get(domain);
+  }
+  function patchAbstracts(papers, full) {
+    papers.forEach(p => { if (p.abstract_trimmed && full[p.id]) { p.abstract = full[p.id]; delete p.abstract_trimmed; } });
+  }
+  async function fullAbstract(paper) {
+    if (!paper.abstract_trimmed) return paper;
+    const full = await ensureAbstracts(paper.domain || STATE.currentDomain);
+    patchAbstracts([paper], full);
+    return paper;
+  }
+
   async function fetchAllSourcesProgressive(domain) {
     const myEpoch = STATE.fetchEpoch;
     const isCurrent = () => STATE.fetchEpoch === myEpoch && STATE.currentDomain === domain;
@@ -1308,6 +1330,7 @@ Rules:
                               s2: prog('s2'), blog: prog('blog'), scholar: STATE.serpApiKey ? null : 'skip' };
       ingestPapers(applyDomainFilter(snap.papers, domain), domain);
       updateFetchStatus();
+      ensureAbstracts(domain).then(full => patchAbstracts(snap.papers, full));
       if (STATE.serpApiKey) {
         await fetchAllScholarAuthors(domain, STATE.serpApiKey)
           .then(papers => { if (!isCurrent()) return; STATE.fetchProgress.scholar = papers.length ? true : 'empty'; ingestPapers(papers, domain); })
@@ -1905,11 +1928,17 @@ Rules:
     STATE.selectedPaper=paper; STATE.explainer=null; STATE.explainerLoading=false;
     highlightFeedItem(paper.id);
     renderDetailPanel(paper,null,false);
+    if(paper.abstract_trimmed){
+      await fullAbstract(paper);
+      if(STATE.selectedPaper?.id!==paper.id)return;
+      renderDetailPanel(paper,null,false);
+    }
     if(STATE.apiKey)await triggerExplainer(paper);
   }
 
   async function triggerExplainer(paper) {
     if(!STATE.apiKey||!paper.abstract)return;
+    await fullAbstract(paper);
     const cacheKey=`explainer_${paper.id}_${STATE.explainerMode}`;
     try {
       const c=sessionStorage.getItem(cacheKey);
