@@ -629,12 +629,21 @@ const gh = await githubStats("chennakeshavadasa");
             <ul class="travel__list">
               {hobbies.travel.visited.map((c) => (
                 <li>
-                  <span class="travel__country">{c.country}</span>
-                  <span class="travel__places">
-                    {c.places.map((pl) => (
-                      <span class="travel__place"><Icon name="pin" size={13} />{pl}</span>
-                    ))}
-                  </span>
+                  {c.places.length > 0 ? (
+                    <>
+                      <span class="travel__country">{c.country}</span>
+                      <span class="travel__places">
+                        {c.places.map((pl) => (
+                          <span class="travel__place"><Icon name="pin" size={13} />{pl}</span>
+                        ))}
+                      </span>
+                    </>
+                  ) : (
+                    /* city-states: the country is the place */
+                    <span class="travel__places">
+                      <span class="travel__place"><Icon name="pin" size={13} />{c.country}</span>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
