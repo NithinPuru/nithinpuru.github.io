@@ -147,7 +147,10 @@ maps its own colour variables onto `--qt-*` in a block at the end of its
 disabled (`injectTheme: false`).
 
 To update a copied tool, re-copy its `index.html` from the repo, then re-apply
-the gm/ID hub URL rewrite and (for gm/ID pages) the theme block and links. The original repos and their Pages sites are untouched.
+the gm/ID hub URL rewrite and (for gm/ID pages) the theme block and links.
+When a PDK page changes, bump the `?v=` tag on its iframe URL in
+`public/gmid/index.html` - GitHub Pages lets browsers cache pages for 10
+minutes and iframes otherwise keep showing the old copy. The original repos and their Pages sites are untouched.
 
 ## Brand assets
 
