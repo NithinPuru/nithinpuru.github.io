@@ -6,11 +6,14 @@
   </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Theme before first paint, shared with nithinpuru.github.io ("theme" key).
+    (function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+  <link rel="preload" href="/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <title>Follow updates: chip conference deadlines</title>
   <link rel="alternate" type="application/rss+xml" title="Deadline changes" href="feed.xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=6">
+  <link rel="stylesheet" href="assets/style.css?v=7">
   <style>
     .page{max-width:880px}
     .back{display:inline-block;margin-bottom:18px;font-weight:600}
@@ -19,17 +22,21 @@
     .way h2{margin-bottom:4px}
     .way p{margin:0 0 12px;color:var(--ink2)}
     .copy{display:flex;gap:8px;flex-wrap:wrap}
-    .copy input{flex:1;min-width:240px;font-size:.95rem;padding:10px 12px;border:2px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink)}
-    .copy button{font-size:.95rem;font-weight:700;padding:10px 16px;border:2px solid var(--ink);border-radius:8px;background:var(--ink);color:#fff;cursor:pointer}
+    .copy input{flex:1;min-width:240px;font-family:var(--mono);font-size:.85rem;padding:10px 12px;border:1px solid var(--rule);border-radius:7px;background:var(--bg);color:var(--ink)}
+    .copy button{font-size:.95rem;font-weight:400;padding:10px 16px;border:1px solid var(--accent);border-radius:7px;background:var(--accent);color:var(--on-accent);cursor:pointer}
     .log{padding:20px 22px}
     .log ol{list-style:none;margin:10px 0 0;padding:0}
     .log li{padding:12px 0;border-top:1px solid var(--rule2);font-size:1rem;color:var(--ink2)}
     .log li:first-child{border-top:0}
-    .log time{display:block;font-size:.88rem;color:var(--muted)}
+    .log time{display:block;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
   </style>
 </head>
 <body>
 <div class="wrap page">
+  <div class="site-bar">
+    <a class="home-link" href="/">&larr; nithinpuru.github.io</a>
+    <button class="theme-btn" type="button" id="themeBtn" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>Theme</button>
+  </div>
   <a class="back" href="./">← Back to deadlines</a>
   <h1>Follow updates</h1>
   <p class="sub">Get told when a deadline is extended, a new deadline is announced, or next year's edition is added. Pick whichever suits you.</p>
@@ -93,6 +100,9 @@
     ).join("") : "<li>No changes yet.</li>";
   }).catch(() => { document.getElementById("log").innerHTML = "<li>Couldn't load the change history. Refresh to try again.</li>"; });
 })();
+</script>
+<script>
+  document.getElementById('themeBtn').addEventListener('click',function(){var r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}});
 </script>
 </body>
 </html>

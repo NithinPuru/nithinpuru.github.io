@@ -3,12 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Theme before first paint, shared with nithinpuru.github.io ("theme" key).
+    (function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+  </script>
+  <link rel="preload" href="/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <title>Chip conference deadlines</title>
   <meta name="description" content="Live paper deadlines for analog, mixed-signal, VLSI and circuits & systems conferences: ISSCC, VLSI Symposium, CICC, ISCAS, BioCAS, AICAS, NEWCAS and more. Checked automatically every day.">
   <link rel="alternate" type="application/rss+xml" title="Deadline changes" href="feed.xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=6">
+  <link rel="stylesheet" href="assets/style.css?v=7">
   <script>
     // Optional: set your repository URL if automatic detection doesn't work (e.g. custom domain).
     window.TRACKER_CONFIG = { repo: "https://github.com/NithinPuru/nithinpuru.github.io" };
@@ -17,6 +20,10 @@
 <body>
 <a class="skip" href="#content">Skip to conferences</a>
 <div class="wrap">
+  <div class="site-bar">
+    <a class="home-link" href="/">&larr; nithinpuru.github.io</a>
+    <button class="theme-btn" type="button" id="themeBtn" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>Theme</button>
+  </div>
   <header class="top">
     <h1>Chip conference deadlines</h1>
     <p class="sub">Paper deadlines for analog, mixed-signal, VLSI and circuits &amp; systems conferences. A bot checks the official pages every day and adds each new year's edition as soon as the last one ends.</p>
@@ -84,5 +91,8 @@
   </footer>
 </div>
 <script src="assets/app.js?v=6"></script>
+<script>
+  document.getElementById('themeBtn').addEventListener('click',function(){var r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}});
+</script>
 </body>
 </html>
