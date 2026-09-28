@@ -1,0 +1,715 @@
+{
+  "_note": "Source lists for the Research Radar data bot (research-radar/fetch.py). arXiv categories, professors and the original feeds were extracted from public/research-radar/index.html; feeds that no longer exist were dropped.",
+  "domains": [
+    "ai",
+    "ai-chips",
+    "ai-finance",
+    "ams",
+    "computing",
+    "hft",
+    "quant",
+    "serdes",
+    "vlsi"
+  ],
+  "arxiv": {
+    "ai": [
+      "cs.LG",
+      "cs.AI",
+      "cs.CL",
+      "cs.CV",
+      "cs.NE",
+      "stat.ML"
+    ],
+    "ai-finance": [
+      "q-fin.CP",
+      "q-fin.TR",
+      "q-fin.MF",
+      "q-fin.PM",
+      "q-fin.RM",
+      "cs.LG",
+      "stat.ML",
+      "cs.CE"
+    ],
+    "quant": [
+      "q-fin.TR",
+      "q-fin.PM",
+      "q-fin.MF",
+      "q-fin.PR",
+      "q-fin.CP",
+      "q-fin.RM",
+      "q-fin.ST",
+      "q-fin.EC"
+    ],
+    "hft": [
+      "q-fin.TR",
+      "q-fin.ST",
+      "q-fin.MF",
+      "q-fin.EC"
+    ],
+    "computing": [
+      "cs.AR",
+      "cs.DC",
+      "cs.OS",
+      "cs.PF",
+      "cs.PL",
+      "cs.SY",
+      "cs.NI"
+    ],
+    "vlsi": [
+      "cs.ET",
+      "cs.AR",
+      "eess.SP",
+      "cs.PF"
+    ],
+    "ams": [
+      "eess.SP",
+      "eess.SY",
+      "eess.AS",
+      "physics.ins-det"
+    ],
+    "serdes": [
+      "eess.SP",
+      "eess.SY",
+      "cs.NI",
+      "cs.AR"
+    ],
+    "ai-chips": [
+      "cs.AR",
+      "cs.LG",
+      "cs.ET",
+      "cs.NE",
+      "cs.DC"
+    ]
+  },
+  "s2_authors": {
+    "ai": [
+      {
+        "name": "Yoshua Bengio",
+        "id": "1751762"
+      },
+      {
+        "name": "Geoffrey Hinton",
+        "id": "1695689"
+      },
+      {
+        "name": "Yann LeCun",
+        "id": "1716555"
+      },
+      {
+        "name": "Kaiming He",
+        "id": "39353098"
+      },
+      {
+        "name": "Ilya Sutskever",
+        "id": "2010485"
+      },
+      {
+        "name": "Percy Liang",
+        "id": "1800034"
+      },
+      {
+        "name": "Chelsea Finn",
+        "id": "46234526"
+      },
+      {
+        "name": "Andrej Karpathy",
+        "id": "2082939"
+      },
+      {
+        "name": "Jacob Steinhardt",
+        "id": "2054534"
+      }
+    ],
+    "ai-finance": [
+      {
+        "name": "Marcos Lopez de Prado",
+        "id": "1740859347"
+      },
+      {
+        "name": "Andrew Lo",
+        "id": "1783590"
+      },
+      {
+        "name": "Campbell Harvey",
+        "id": "2113490"
+      },
+      {
+        "name": "Stefan Jansen",
+        "id": "2093564384"
+      }
+    ],
+    "quant": [
+      {
+        "name": "Marcos Lopez de Prado",
+        "id": "1740859347"
+      },
+      {
+        "name": "Andrew Lo",
+        "id": "1783590"
+      },
+      {
+        "name": "Campbell Harvey",
+        "id": "2113490"
+      },
+      {
+        "name": "Eugene Fama",
+        "id": "3071038"
+      },
+      {
+        "name": "Robert Shiller",
+        "id": "2044437"
+      }
+    ],
+    "hft": [
+      {
+        "name": "Marcos Lopez de Prado",
+        "id": "1740859347"
+      },
+      {
+        "name": "Albert Kyle",
+        "id": "2008481"
+      },
+      {
+        "name": "Thierry Foucault",
+        "id": "2080498"
+      },
+      {
+        "name": "Maureen O'Hara",
+        "id": "2034283"
+      },
+      {
+        "name": "Lawrence Harris",
+        "id": "2083019"
+      }
+    ],
+    "computing": [
+      {
+        "name": "David Patterson",
+        "id": "1760423"
+      },
+      {
+        "name": "John Hennessy",
+        "id": "1780870"
+      },
+      {
+        "name": "Onur Mutlu",
+        "id": "1780512"
+      },
+      {
+        "name": "Ion Stoica",
+        "id": "1734083"
+      },
+      {
+        "name": "Tim Kraska",
+        "id": "2074961"
+      },
+      {
+        "name": "Matei Zaharia",
+        "id": "1887870"
+      }
+    ],
+    "vlsi": [
+      {
+        "name": "David Pan",
+        "id": "1769593"
+      },
+      {
+        "name": "Sachin Sapatnekar",
+        "id": "1791558"
+      },
+      {
+        "name": "Rob Rutenbar",
+        "id": "1769400"
+      },
+      {
+        "name": "Evangeline Young",
+        "id": "2110484"
+      },
+      {
+        "name": "Yibo Lin",
+        "id": "2145831698"
+      }
+    ],
+    "ams": [
+      {
+        "name": "Boris Murmann",
+        "id": "1698147"
+      },
+      {
+        "name": "Behzad Razavi",
+        "id": "1752422"
+      },
+      {
+        "name": "Elad Alon",
+        "id": "1690845"
+      },
+      {
+        "name": "Pieter Harpe",
+        "id": "2063802"
+      },
+      {
+        "name": "Willy Sansen",
+        "id": "1706218"
+      },
+      {
+        "name": "Robert Walden",
+        "id": "2082384"
+      }
+    ],
+    "serdes": [
+      {
+        "name": "Pavan Hanumolu",
+        "id": "1770635"
+      },
+      {
+        "name": "Elad Alon",
+        "id": "1690845"
+      },
+      {
+        "name": "Vladimir Stojanovic",
+        "id": "2163491"
+      },
+      {
+        "name": "Azita Emami",
+        "id": "1706382"
+      },
+      {
+        "name": "Frank O'Mahony",
+        "id": "2162748"
+      }
+    ],
+    "ai-chips": [
+      {
+        "name": "Joel Emer",
+        "id": "1775477"
+      },
+      {
+        "name": "Vivienne Sze",
+        "id": "2055372"
+      },
+      {
+        "name": "Tushar Krishna",
+        "id": "2163054"
+      },
+      {
+        "name": "Onur Mutlu",
+        "id": "1780512"
+      },
+      {
+        "name": "Bill Dally",
+        "id": "1709588"
+      },
+      {
+        "name": "Kunle Olukotun",
+        "id": "1770437"
+      }
+    ]
+  },
+  "blogs": {
+    "ai": [
+      {
+        "name": "Google DeepMind",
+        "url": "https://deepmind.google/blog/rss.xml"
+      },
+      {
+        "name": "Google Research",
+        "url": "https://research.google/blog/rss/"
+      },
+      {
+        "name": "Microsoft Research",
+        "url": "https://www.microsoft.com/en-us/research/feed/"
+      },
+      {
+        "name": "OpenAI Research",
+        "url": "https://openai.com/news/rss.xml"
+      },
+      {
+        "name": "Apple ML Research",
+        "url": "https://machinelearning.apple.com/rss.xml"
+      },
+      {
+        "name": "Hugging Face Blog",
+        "url": "https://huggingface.co/blog/feed.xml"
+      },
+      {
+        "name": "Amazon Science",
+        "url": "https://www.amazon.science/index.rss"
+      },
+      {
+        "name": "Lil'Log (Lilian Weng)",
+        "url": "https://lilianweng.github.io/index.xml"
+      },
+      {
+        "name": "Ahead of AI (Raschka)",
+        "url": "https://magazine.sebastianraschka.com/feed"
+      },
+      {
+        "name": "The Gradient",
+        "url": "https://thegradient.pub/rss/"
+      },
+      {
+        "name": "Distill.pub",
+        "url": "https://distill.pub/rss.xml"
+      },
+      {
+        "name": "Import AI (Jack Clark)",
+        "url": "https://importai.substack.com/feed"
+      },
+      {
+        "name": "Last Week in AI",
+        "url": "https://lastweekin.ai/feed"
+      },
+      {
+        "name": "BAIR Blog",
+        "url": "https://bair.berkeley.edu/blog/feed.xml"
+      },
+      {
+        "name": "MIT News - AI",
+        "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml"
+      }
+    ],
+    "ai-finance": [
+      {
+        "name": "Alpha Architect",
+        "url": "https://alphaarchitect.com/feed/"
+      },
+      {
+        "name": "Flirting With Models",
+        "url": "https://blog.thinknewfound.com/feed/"
+      },
+      {
+        "name": "Quantocracy",
+        "url": "https://quantocracy.com/feed/"
+      },
+      {
+        "name": "NBER New Working Papers",
+        "url": "https://www.nber.org/rss/new.xml"
+      }
+    ],
+    "quant": [
+      {
+        "name": "Alpha Architect",
+        "url": "https://alphaarchitect.com/feed/"
+      },
+      {
+        "name": "Flirting With Models",
+        "url": "https://blog.thinknewfound.com/feed/"
+      },
+      {
+        "name": "Quantocracy",
+        "url": "https://quantocracy.com/feed/"
+      },
+      {
+        "name": "Ernie Chan Blog",
+        "url": "https://epchan.blogspot.com/feeds/posts/default"
+      },
+      {
+        "name": "NBER New Working Papers",
+        "url": "https://www.nber.org/rss/new.xml"
+      }
+    ],
+    "hft": [
+      {
+        "name": "Jane Street Tech Blog",
+        "url": "https://blog.janestreet.com/feed.xml"
+      },
+      {
+        "name": "Quantocracy",
+        "url": "https://quantocracy.com/feed/"
+      }
+    ],
+    "computing": [
+      {
+        "name": "Chips and Cheese",
+        "url": "https://chipsandcheese.com/feed/"
+      },
+      {
+        "name": "Google Research",
+        "url": "https://research.google/blog/rss/"
+      },
+      {
+        "name": "Microsoft Research",
+        "url": "https://www.microsoft.com/en-us/research/feed/"
+      },
+      {
+        "name": "IEEE Spectrum",
+        "url": "https://spectrum.ieee.org/feeds/feed.rss"
+      },
+      {
+        "name": "The Morning Paper",
+        "url": "https://blog.acolyer.org/feed/"
+      },
+      {
+        "name": "AWS Architecture Blog",
+        "url": "https://aws.amazon.com/blogs/architecture/feed/"
+      },
+      {
+        "name": "SemiAnalysis",
+        "url": "https://newsletter.semianalysis.com/feed"
+      },
+      {
+        "name": "IEEE Spectrum (Semiconductors)",
+        "url": "https://spectrum.ieee.org/feeds/topic/semiconductors.rss"
+      }
+    ],
+    "vlsi": [
+      {
+        "name": "SemiAnalysis",
+        "url": "https://www.semianalysis.com/feed"
+      },
+      {
+        "name": "Semiengineering",
+        "url": "https://semiengineering.com/feed/"
+      },
+      {
+        "name": "Chips and Cheese",
+        "url": "https://chipsandcheese.com/feed/"
+      },
+      {
+        "name": "IEEE Spectrum",
+        "url": "https://spectrum.ieee.org/feeds/feed.rss"
+      },
+      {
+        "name": "EETimes",
+        "url": "https://www.eetimes.com/feed/"
+      },
+      {
+        "name": "SemiWiki",
+        "url": "https://semiwiki.com/feed/"
+      },
+      {
+        "name": "SemiAnalysis",
+        "url": "https://newsletter.semianalysis.com/feed"
+      }
+    ],
+    "ams": [
+      {
+        "name": "IEEE Spectrum",
+        "url": "https://spectrum.ieee.org/feeds/feed.rss"
+      },
+      {
+        "name": "EDN Network",
+        "url": "https://www.edn.com/feed/"
+      },
+      {
+        "name": "Electronic Design",
+        "url": "https://www.electronicdesign.com/rss.xml"
+      },
+      {
+        "name": "Semiengineering",
+        "url": "https://semiengineering.com/feed/"
+      },
+      {
+        "name": "Analog Devices Dialogue",
+        "url": "https://www.analog.com/en/analog-dialogue/articles/rss.xml"
+      },
+      {
+        "name": "SemiAnalysis",
+        "url": "https://www.semianalysis.com/feed"
+      },
+      {
+        "name": "IEEE Spectrum (Semiconductors)",
+        "url": "https://spectrum.ieee.org/feeds/topic/semiconductors.rss"
+      },
+      {
+        "name": "SemiWiki",
+        "url": "https://semiwiki.com/feed/"
+      },
+      {
+        "name": "EE Times",
+        "url": "https://www.eetimes.com/feed/"
+      }
+    ],
+    "serdes": [
+      {
+        "name": "Signal Integrity Journal",
+        "url": "https://www.signalintegrityjournal.com/rss/articles"
+      },
+      {
+        "name": "IEEE Spectrum",
+        "url": "https://spectrum.ieee.org/feeds/feed.rss"
+      },
+      {
+        "name": "SemiAnalysis",
+        "url": "https://www.semianalysis.com/feed"
+      },
+      {
+        "name": "EETimes",
+        "url": "https://www.eetimes.com/feed/"
+      },
+      {
+        "name": "EDN Network",
+        "url": "https://www.edn.com/feed/"
+      },
+      {
+        "name": "Semiconductor Engineering",
+        "url": "https://semiengineering.com/feed/"
+      },
+      {
+        "name": "SemiWiki",
+        "url": "https://semiwiki.com/feed/"
+      }
+    ],
+    "ai-chips": [
+      {
+        "name": "SemiAnalysis",
+        "url": "https://www.semianalysis.com/feed"
+      },
+      {
+        "name": "NVIDIA Tech Blog",
+        "url": "https://developer.nvidia.com/blog/feed/"
+      },
+      {
+        "name": "Chips and Cheese",
+        "url": "https://chipsandcheese.com/feed/"
+      },
+      {
+        "name": "The Next Platform",
+        "url": "https://www.nextplatform.com/feed/"
+      },
+      {
+        "name": "Semiengineering",
+        "url": "https://semiengineering.com/feed/"
+      },
+      {
+        "name": "Google Research",
+        "url": "https://research.google/blog/rss/"
+      },
+      {
+        "name": "IEEE Spectrum",
+        "url": "https://spectrum.ieee.org/feeds/feed.rss"
+      },
+      {
+        "name": "SemiAnalysis",
+        "url": "https://newsletter.semianalysis.com/feed"
+      },
+      {
+        "name": "IEEE Spectrum (Semiconductors)",
+        "url": "https://spectrum.ieee.org/feeds/topic/semiconductors.rss"
+      }
+    ]
+  },
+  "journals": {
+    "ams": [
+      {
+        "name": "IEEE Journal of Solid-State Circuits",
+        "issn": "0018-9200"
+      },
+      {
+        "name": "IEEE TCAS-I: Regular Papers",
+        "issn": "1549-8328"
+      },
+      {
+        "name": "IEEE TCAS-II: Express Briefs",
+        "issn": "1549-7747"
+      },
+      {
+        "name": "IEEE Solid-State Circuits Letters",
+        "issn": "2573-9603"
+      }
+    ],
+    "serdes": [
+      {
+        "name": "IEEE Journal of Solid-State Circuits",
+        "issn": "0018-9200"
+      },
+      {
+        "name": "IEEE TCAS-I: Regular Papers",
+        "issn": "1549-8328"
+      },
+      {
+        "name": "IEEE TCAS-II: Express Briefs",
+        "issn": "1549-7747"
+      }
+    ],
+    "vlsi": [
+      {
+        "name": "IEEE Transactions on VLSI Systems",
+        "issn": "1063-8210"
+      },
+      {
+        "name": "IEEE Transactions on CAD",
+        "issn": "0278-0070"
+      }
+    ],
+    "computing": [
+      {
+        "name": "IEEE Micro",
+        "issn": "0272-1732"
+      },
+      {
+        "name": "IEEE Transactions on Computers",
+        "issn": "0018-9340"
+      },
+      {
+        "name": "IEEE Computer Architecture Letters",
+        "issn": "1556-6056"
+      }
+    ],
+    "ai-chips": [
+      {
+        "name": "IEEE Journal of Solid-State Circuits",
+        "issn": "0018-9200"
+      },
+      {
+        "name": "IEEE Micro",
+        "issn": "0272-1732"
+      },
+      {
+        "name": "IEEE JETCAS",
+        "issn": "2156-3357"
+      },
+      {
+        "name": "IEEE Transactions on VLSI Systems",
+        "issn": "1063-8210"
+      }
+    ],
+    "ai": [
+      {
+        "name": "IEEE TPAMI",
+        "issn": "0162-8828"
+      },
+      {
+        "name": "IEEE TNNLS",
+        "issn": "2162-237X"
+      }
+    ],
+    "ai-finance": [
+      {
+        "name": "Quantitative Finance",
+        "issn": "1469-7688"
+      },
+      {
+        "name": "Journal of Finance and Data Science",
+        "issn": "2405-9188"
+      }
+    ],
+    "quant": [
+      {
+        "name": "Quantitative Finance",
+        "issn": "1469-7688"
+      },
+      {
+        "name": "Mathematical Finance",
+        "issn": "0960-1627"
+      },
+      {
+        "name": "Journal of Finance and Data Science",
+        "issn": "2405-9188"
+      }
+    ],
+    "hft": [
+      {
+        "name": "Quantitative Finance",
+        "issn": "1469-7688"
+      },
+      {
+        "name": "Mathematical Finance",
+        "issn": "0960-1627"
+      }
+    ]
+  },
+  "hf_daily": [
+    "ai"
+  ]
+}

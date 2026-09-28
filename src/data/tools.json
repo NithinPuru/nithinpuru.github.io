@@ -48,9 +48,9 @@
         },
         {
           "title": "FX Quant Terminal",
-          "meta": "Seven INR pairs · 100% client-side",
+          "meta": "Seven INR pairs · ECB reference rates",
           "url": "/fx-quant/",
-          "desc": "Zero-server quantitative FX analysis for seven INR currency pairs (EUR, USD, GBP, JPY, CNY, SGD, HKD): ensemble forecasting, technical indicators, risk analytics and seasonality.",
+          "desc": "Quantitative analysis of seven INR currency pairs (EUR, USD, GBP, JPY, CNY, SGD, HKD) for timing a transfer: ensemble forecasts (ARIMA, Holt-Winters, Monte Carlo), technical indicators, risk and seasonality, on ECB rates refreshed daily by a data bot.",
           "links": [
             {
               "label": "Open tool",
@@ -66,7 +66,7 @@
           "title": "Research Radar",
           "meta": "AI · Finance · Chip design",
           "url": "/research-radar/",
-          "desc": "Aggregates papers, preprints and blog posts on AI, finance and chip design from arXiv, Semantic Scholar, OpenAlex, CrossRef and research blogs into one live feed, with an optional Claude-powered paper explainer and Google Scholar author feeds via SerpApi.",
+          "desc": "Live feed of the newest papers and posts in AI, finance and chip design: arXiv, Hugging Face trending papers, the latest IEEE JSSC, TCAS, TVLSI, TCAD and IEEE Micro articles, Semantic Scholar and research blogs, refreshed every 3 hours, with an optional Claude-powered paper explainer.",
           "links": [
             {
               "label": "Open tool",

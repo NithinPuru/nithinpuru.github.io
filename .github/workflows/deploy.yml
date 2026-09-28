@@ -7,7 +7,7 @@ on:
   # Commits pushed by the tracker workflows use GITHUB_TOKEN, which does not
   # trigger other workflows - redeploy explicitly once they finish.
   workflow_run:
-    workflows: ["Track conferences", "Resolve review", "Update quant terminal data"]
+    workflows: ["Track conferences", "Resolve review", "Update quant terminal data", "Research Radar data", "FX Quant data"]
     types: [completed]
     branches: [main]
 

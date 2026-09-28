@@ -133,8 +133,8 @@ page from `src/data/tools.json` (Work -> 6.3 "Tools I built for myself").
 | `/gmid/sky130a/` | gmid_SKY130A@9fe3a6f | byte-identical |
 | `/gmid/gf180mcu-d/` | gmid_GF180MCUD@636ee89 | byte-identical |
 | `/gmid/ihp-sg13g2/` | gmid_IHP130_Tool@35abc75 | byte-identical |
-| `/fx-quant/` | FOREX_QUANT@0f404ba | + Frankfurter URL moved to `api.frankfurter.dev/v1` (the old `.app` host 301s without CORS) |
-| `/research-radar/` | Research-Radar@ee84a10 | + explainer model `claude-sonnet-5`, `max_tokens` 1000, thinking disabled; keys live in localStorage `rr_*` |
+| `/fx-quant/` | rebuilt from FOREX_QUANT@0f404ba | Quant-Terminal-styled rewrite (`css/fx.css`, `js/fx.js`; models unchanged). Data: `fx_data.json` from `fx-quant/update_fx.py` via `fx-quant-data.yml` (weekdays after the ECB fixing) - the page calls no external API |
+| `/research-radar/` | Research-Radar@ee84a10 | loads `data/<domain>.json` snapshots from `research-radar/fetch.py` via `research-radar-data.yml` (every 3 h; sources in `research-radar/sources.json`); live SerpApi Scholar and the Claude explainer (`claude-sonnet-5`) stay in-browser; keys in localStorage `rr_*` |
 | `/quant-terminal/` | career-semi-quant | synced by `quant-terminal-sync.yml`; data by `quant-terminal-data.yml` - do not hand-edit |
 | `/deadline/` | Conf_Deadline_Tracker | driven by the `tracker-*` workflows |
 

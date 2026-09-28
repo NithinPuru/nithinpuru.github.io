@@ -42,6 +42,8 @@
       --tag-oa-bg:  #1a1a2e; --tag-oa-fg:  #a070e0;
       --tag-cr-bg:  #0a1a2a; --tag-cr-fg:  #60b0d8;
       --tag-scholar-bg:#1a2410; --tag-scholar-fg:#7fc855;
+      --tag-journal-bg:#1f1630; --tag-journal-fg:#b99cff;
+      --tag-hf-bg:#2a2208; --tag-hf-fg:#ffcc4d;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -270,6 +272,9 @@
     .source-openalex { background: var(--tag-oa-bg); color: var(--tag-oa-fg); }
     .source-crossref { background: var(--tag-cr-bg); color: var(--tag-cr-fg); }
     .source-scholar  { background: var(--tag-scholar-bg); color: var(--tag-scholar-fg); }
+    .source-journal  { background: var(--tag-journal-bg); color: var(--tag-journal-fg); }
+    .source-hf       { background: var(--tag-hf-bg); color: var(--tag-hf-fg); }
+    .src-fresh { color: var(--text-dim); margin-left: 6px; }
     .oa-badge { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; padding:2px 7px; background:var(--oa-bg); color:var(--oa-fg); }
 
     .cat-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
@@ -475,6 +480,8 @@
           <span class="ctrl-lbl">NARROW</span>
           <button class="ctrl-btn active" data-src="all">ALL</button>
           <button class="ctrl-btn" data-src="arxiv">arXiv</button>
+          <button class="ctrl-btn" data-src="journal">JOURNALS</button>
+          <button class="ctrl-btn" data-src="hf">HF TRENDING</button>
           <button class="ctrl-btn" data-src="s2">PROFS</button>
           <button class="ctrl-btn" data-src="blog">BLOG</button>
           <button class="ctrl-btn" data-src="scholar">Scholar</button>
@@ -1209,6 +1216,7 @@ Rules:
       if (p.source === 'blog') return true;
       if (p.source === 'arxiv') return true;
       if (p.source === 'scholar') return true;
+      if (p.source === 'journal' || p.source === 'hf') return true;
       if (p.source === 's2') {
         // Venue in allowlist → keep
         if (isAllowedVenue(p.venue, domain)) return true;
@@ -1230,9 +1238,49 @@ Rules:
      4. Scholar      — curated author papers via SerpApi (optional)
      No S2 general search, no OpenAlex, no CrossRef.
   ════════════════════════════════════════════════════════ */
+  /* Snapshot built server-side every few hours by the site's data bot
+     (research-radar/fetch.py): arXiv, HF Daily Papers, IEEE/finance journals
+     via Crossref, Semantic Scholar and RSS feeds, fetched without browser
+     CORS limits. Returns null if unavailable, so the live path below runs. */
+  async function loadSnapshot(domain) {
+    try {
+      const r = await fetchTimeout(`data/${domain}.json`, { cache: 'no-cache' }, 10000);
+      if (!r.ok) return null;
+      const snap = await r.json();
+      return Array.isArray(snap.papers) ? snap : null;
+    } catch (_) { return null; }
+  }
+
   async function fetchAllSourcesProgressive(domain) {
     const myEpoch = STATE.fetchEpoch;
     const isCurrent = () => STATE.fetchEpoch === myEpoch && STATE.currentDomain === domain;
+
+    const snap = await loadSnapshot(domain);
+    if (!isCurrent()) return;
+    if (snap) {
+      const st = snap.sources || {};
+      const prog = k => { const s = st[k]?.status; return s === 'ok' || s === 'stale' ? true : s === 'failed' ? false : 'empty'; };
+      STATE.snapshotAt = snap.generated_at;
+      STATE.fetchProgress = { arxiv: prog('arxiv'), journal: prog('journal'), hf: domain === 'ai' ? prog('hf') : 'skip',
+                              s2: prog('s2'), blog: prog('blog'), scholar: STATE.serpApiKey ? null : 'skip' };
+      ingestPapers(applyDomainFilter(snap.papers, domain), domain);
+      updateFetchStatus();
+      if (STATE.serpApiKey) {
+        await fetchAllScholarAuthors(domain, STATE.serpApiKey)
+          .then(papers => { if (!isCurrent()) return; STATE.fetchProgress.scholar = papers.length ? true : 'empty'; ingestPapers(papers, domain); })
+          .catch(() => { if (isCurrent()) STATE.fetchProgress.scholar = false; });
+      }
+      if (!isCurrent()) return;
+      STATE.loading = false;
+      STATE.domainFetchTime.set(domain, Date.now());
+      STATE.domainCache.set(domain, [...STATE.papers]);
+      STATE.domainProgress = STATE.domainProgress || new Map();
+      STATE.domainProgress.set(domain, { ...STATE.fetchProgress, at: STATE.snapshotAt });
+      updateFetchStatus();
+      updateStatusBar();
+      return;
+    }
+    STATE.snapshotAt = null;
 
     STATE.fetchProgress = { arxiv: null, s2: null, blog: null, scholar: STATE.serpApiKey ? null : 'skip' };
     updateFetchStatus();
@@ -1509,7 +1557,7 @@ Rules:
     return d<3?'new':d<30?'recent':'old';
   }
   function isNew(iso){return iso&&(Date.now()-new Date(iso).getTime())<3*86400000;}
-  const SOURCE_LABELS = { arxiv:'arXiv', s2:'S2', openalex:'OpenAlex', crossref:'CrossRef', blog:'BLOG', scholar:'Scholar' };
+  const SOURCE_LABELS = { arxiv:'arXiv', s2:'S2', openalex:'OpenAlex', crossref:'CrossRef', blog:'BLOG', scholar:'Scholar', journal:'JOURNAL', hf:'HF TRENDING' };
   function badgeHtml(src,large=false){
     return `<span class="source-badge source-${src}${large?' large':''}">${SOURCE_LABELS[src]||src.toUpperCase()}</span>`;
   }
@@ -1612,10 +1660,17 @@ Rules:
 
     const parts = [
       srcSpan('arXiv', p.arxiv),
+      ...(p.journal !== undefined ? [srcSpan('Journals', p.journal)] : []),
+      ...(p.hf !== undefined && p.hf !== 'skip' ? [srcSpan('HF', p.hf)] : []),
       srcSpan('Profs', p.s2),
       srcSpan('Blog', p.blog),
       ...(STATE.serpApiKey ? [srcSpan('Scholar', p.scholar)] : []),
     ];
+    if (STATE.snapshotAt) {
+      const mins = Math.max(0, Math.round((Date.now() - new Date(STATE.snapshotAt)) / 60000));
+      const ago = mins < 60 ? `${mins}m` : mins < 2880 ? `${Math.round(mins / 60)}h` : `${Math.round(mins / 1440)}d`;
+      parts.push(`<span class="src-fresh">updated ${ago} ago</span>`);
+    }
 
     row.innerHTML = anyPending
       ? `<span class="spinner-sm"></span>${parts.join(sep)}`
@@ -1789,7 +1844,10 @@ Rules:
     if(STATE.domainCache.has(key)){
       STATE.papers=[...STATE.domainCache.get(key)];
       // Reset fetch progress to all-done so spinner doesn't show
-      STATE.fetchProgress = { arxiv:true, s2:true, blog:true, scholar: STATE.serpApiKey ? true : 'skip' };
+      const saved = STATE.domainProgress?.get(key);
+      STATE.snapshotAt = saved?.at || null;
+      STATE.fetchProgress = saved ? { ...saved } : { arxiv:true, s2:true, blog:true, scholar: STATE.serpApiKey ? true : 'skip' };
+      delete STATE.fetchProgress.at;
       sortPapers(); renderFeed(); updateFetchStatus(); updateStatusBar();
       return;
     }

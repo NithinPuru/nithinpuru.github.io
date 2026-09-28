@@ -1,0 +1,77 @@
+{
+ "generated_at": "2026-09-28T14:42:53Z",
+ "domains": {
+  "ai": {
+   "arxiv": "ok",
+   "hf": "ok",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 421
+  },
+  "ai-chips": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 276
+  },
+  "ai-finance": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 177
+  },
+  "ams": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 295
+  },
+  "computing": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 233
+  },
+  "hft": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 155
+  },
+  "quant": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 207
+  },
+  "serdes": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "ok",
+   "blog": "ok",
+   "papers": 237
+  },
+  "vlsi": {
+   "arxiv": "ok",
+   "hf": "empty",
+   "journal": "ok",
+   "s2": "empty",
+   "blog": "ok",
+   "papers": 165
+  }
+ }
+}

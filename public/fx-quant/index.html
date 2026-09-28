@@ -1,1036 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FX Quant Terminal — INR Pairs</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#05070e;--bg2:#0c1020;--bg3:#141828;
-  --border:#1e2a48;--border2:#2a3a60;
-  --cyan:#00d4ff;--cyan-dim:rgba(0,212,255,0.14);
-  --green:#00ff88;--green-dim:rgba(0,255,136,0.14);
-  --red:#ff3d5e;--red-dim:rgba(255,61,94,0.14);
-  --yellow:#ffd32a;--yellow-dim:rgba(255,211,42,0.14);
-  --purple:#b89af8;
-  --text:#eef2ff;--text-dim:#9aaac8;--text-mid:#c4d0ee;
-  --mono:'JetBrains Mono',monospace;--ui:'Outfit',sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{background:var(--bg);color:var(--text);font-family:var(--ui);}
-body{min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);}
-
-/* ── HEADER ── */
-.header{display:flex;align-items:center;justify-content:space-between;
-  padding:13px 24px;border-bottom:1px solid var(--border);
-  background:var(--bg2);position:sticky;top:0;z-index:100;}
-.logo{font-family:var(--mono);font-weight:700;font-size:16px;color:var(--cyan);
-  letter-spacing:.08em;text-shadow:0 0 20px rgba(0,212,255,.5);}
-.logo span{color:var(--text-mid);}
-.live-badge{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:3px;
-  border:1px solid var(--green);color:var(--green);letter-spacing:.1em;margin-left:14px;
-  animation:blink 2s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
-.src-badge{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:2px;
-  border:1px solid var(--border2);color:var(--text-mid);margin-left:8px;display:none;}
-.hdr-right{font-family:var(--mono);font-size:12px;color:var(--text-mid);}
-.hdr-right span{color:var(--cyan);}
-
-/* ── CONTROLS ── */
-.controls{padding:12px 24px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--bg2);}
-.clabel{font-size:11px;font-family:var(--mono);color:var(--text-mid);
-  letter-spacing:.13em;text-transform:uppercase;}
-.pill{padding:6px 14px;border-radius:4px;border:1px solid var(--border2);
-  font-size:12px;font-family:var(--mono);font-weight:500;color:var(--text-mid);
-  cursor:pointer;background:transparent;transition:all .15s;letter-spacing:.04em;}
-.pill:hover{border-color:var(--cyan);color:var(--cyan);}
-.pill.active{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan);
-  text-shadow:0 0 8px rgba(0,212,255,.4);}
-.pill.h-pill.active{background:rgba(184,154,248,.15);border-color:var(--purple);color:var(--purple);}
-.pill-row{display:flex;gap:6px;align-items:center;}
-.dir-wrap{margin-left:auto;display:flex;border:1px solid var(--border2);border-radius:4px;overflow:hidden;}
-.dir-btn{padding:6px 16px;font-size:12px;font-family:var(--mono);color:var(--text-mid);
-  cursor:pointer;background:transparent;border:none;letter-spacing:.06em;transition:all .15s;}
-.dir-btn.active{background:var(--cyan-dim);color:var(--cyan);}
-.dir-sep{width:1px;background:var(--border2);}
-
-/* ── MAIN ── */
-.main{padding:18px 24px;max-width:1600px;margin:0 auto;}
-
-/* ── BANNER ── */
-.banner{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
-.bcard{background:var(--bg2);border:1px solid var(--border);border-radius:6px;
-  padding:14px 18px;position:relative;overflow:hidden;}
-.bcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.bcard.c-cyan::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
-.bcard.c-green::before{background:linear-gradient(90deg,transparent,var(--green),transparent);}
-.bcard.c-yellow::before{background:linear-gradient(90deg,transparent,var(--yellow),transparent);}
-.bcard.c-dyn::before{background:linear-gradient(90deg,transparent,var(--score-color,var(--text-dim)),transparent);}
-.bc-lbl{font-size:11px;font-family:var(--mono);color:var(--text-mid);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;}
-.bc-val{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1;margin-bottom:6px;}
-.bcard.c-cyan .bc-val{color:var(--cyan);text-shadow:0 0 14px rgba(0,212,255,.4);}
-.bcard.c-green .bc-val{color:var(--green);text-shadow:0 0 14px rgba(0,255,136,.4);}
-.bcard.c-yellow .bc-val{color:var(--yellow);}
-.bc-sub{font-size:12px;color:var(--text-mid);font-family:var(--mono);}
-
-/* ── GRIDS ── */
-.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:18px;}
-.lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;position:relative;}
-.ph{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);}
-.pt{font-size:12px;font-family:var(--mono);color:var(--text);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
-.pm{font-size:11px;font-family:var(--mono);color:var(--text-mid);}
-.pb{padding:10px 10px 4px;}
-.cw{position:relative;height:280px;}
-.cw canvas{width:100%!important;}
-.cleg{display:flex;gap:14px;flex-wrap:wrap;padding:8px 16px 12px;border-top:1px solid var(--border);}
-.li{display:flex;align-items:center;gap:6px;}
-.ld{width:18px;height:2px;border-radius:2px;}
-.ll{font-size:11px;font-family:var(--mono);color:var(--text-mid);}
-
-/* ── INDICATORS ── */
-.ind-row{display:grid;grid-template-columns:104px 90px 100px 1fr;align-items:center;
-  gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);}
-.ind-row:last-child{border-bottom:none;}
-.in{font-size:12px;font-family:var(--mono);color:var(--text-mid);letter-spacing:.04em;}
-.iv{font-size:13px;font-family:var(--mono);font-weight:700;color:var(--text);text-align:right;}
-.is{font-size:11px;font-family:var(--mono);letter-spacing:.06em;padding:3px 8px;border-radius:3px;text-align:center;font-weight:500;}
-.sb{background:var(--green-dim);color:var(--green);}
-.sr{background:var(--red-dim);color:var(--red);}
-.sn{background:rgba(154,170,200,.12);color:var(--text-mid);}
-.ibw{background:var(--bg3);border-radius:2px;height:5px;overflow:hidden;}
-.ib{height:100%;border-radius:2px;transition:width .6s ease;}
-.comp-row{display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;background:var(--bg3);border-top:1px solid var(--border);}
-.comp-lbl{font-size:11px;font-family:var(--mono);color:var(--text-mid);letter-spacing:.12em;}
-.comp-sig{font-size:13px;font-family:var(--mono);font-weight:600;}
-.comp-num{font-size:32px;font-family:var(--mono);font-weight:700;}
-
-/* ── RISK METRICS ── */
-.mg{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.mc{padding:14px 18px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
-.mc:nth-child(even){border-right:none;}
-.mc:nth-last-child(-n+2){border-bottom:none;}
-.mcl{font-size:11px;font-family:var(--mono);color:var(--text-mid);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;font-weight:500;}
-.mcv{font-size:20px;font-family:var(--mono);font-weight:700;}
-.mcs{font-size:11px;font-family:var(--mono);color:var(--text-mid);margin-top:4px;}
-
-/* ── STATS ── */
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.si{padding:14px 18px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
-.si:nth-child(even){border-right:none;}
-.si:nth-last-child(-n+2){border-bottom:none;}
-.sl{font-size:11px;font-family:var(--mono);color:var(--text-mid);letter-spacing:.1em;margin-bottom:5px;font-weight:500;}
-.sv{font-size:16px;font-family:var(--mono);font-weight:700;}
-.si2{font-size:11px;font-family:var(--mono);margin-top:3px;}
-
-/* ── SEASONALITY ── */
-.stabs{display:flex;border-bottom:1px solid var(--border);}
-.stab{padding:9px 16px;font-size:12px;font-family:var(--mono);color:var(--text-mid);
-  cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
-.stab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
-.scw{height:175px;padding:10px 12px 6px;}
-.scw canvas{width:100%!important;}
-
-/* ── LOADING / ERROR ── */
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(11,15,28,.96);z-index:10;flex-direction:column;gap:12px;border-radius:6px;}
-.spin{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--cyan);
-  border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.olt{font-size:12px;font-family:var(--mono);color:var(--text-mid);text-align:center;line-height:1.7;}
-.retry-btn{margin-top:10px;padding:8px 22px;border:1px solid var(--cyan);border-radius:4px;
-  background:var(--cyan-dim);color:var(--cyan);font-family:var(--mono);font-size:12px;
-  cursor:pointer;letter-spacing:.08em;transition:all .15s;}
-.retry-btn:hover{background:var(--cyan);color:var(--bg);}
-
-/* ── FOOTER ── */
-.footer{padding:14px 24px;border-top:1px solid var(--border);font-size:11px;
-  font-family:var(--mono);color:var(--text-mid);line-height:1.9;background:var(--bg2);}
-.footer b{color:var(--text);}
-
-/* scrollbar */
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-
-@media(max-width:1100px){.chart-grid,.lower-grid{grid-template-columns:1fr;}}
-@media(max-width:700px){.banner{grid-template-columns:1fr 1fr;}.controls{gap:10px;}.dir-wrap{margin-left:0;}}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FX Quant Terminal - INR pairs</title>
+<meta name="description" content="Quantitative analysis of seven INR currency pairs from ECB reference rates: ensemble forecasts (ARIMA, Holt-Winters, Monte Carlo), technical indicators, risk and seasonality.">
+<script>
+  // Theme before first paint, shared with nithinpuru.github.io.
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/KaTeX_Typewriter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fx.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" defer></script>
+<script src="js/fx.js" defer></script>
 </head>
 <body>
-
-<div class="header">
-  <div style="display:flex;align-items:center;">
-    <div class="logo">FX<span>/</span>QUANT <span style="font-weight:300">TERMINAL</span></div>
-    <div class="live-badge">● LIVE</div>
-    <div id="src-badge" class="src-badge"></div>
-  </div>
-  <div class="hdr-right">UPDATED: <span id="ts">—</span></div>
-</div>
-
-<div class="controls">
-  <div class="clabel">PAIR</div>
-  <div class="pill-row" id="pair-pills"></div>
-  <div class="clabel" style="margin-left:8px;">HORIZON</div>
-  <div class="pill-row" id="hz-pills"></div>
-  <div class="dir-wrap">
-    <button class="dir-btn active" id="d-inr" onclick="setDir('INR_TO_FX')">INR → FX</button>
-    <div class="dir-sep"></div>
-    <button class="dir-btn" id="d-fx" onclick="setDir('FX_TO_INR')">FX → INR</button>
-  </div>
-</div>
-
-<div class="main">
-
-  <div class="banner">
-    <div class="bcard c-cyan">
-      <div class="bc-lbl">Best Transfer Date</div>
-      <div class="bc-val" id="b-date">—</div>
-      <div class="bc-sub" id="b-date-s">Loading ensemble…</div>
-    </div>
-    <div class="bcard c-green">
-      <div class="bc-lbl">Current Rate</div>
-      <div class="bc-val" id="b-rate">—</div>
-      <div class="bc-sub" id="b-rate-s">INR per unit</div>
-    </div>
-    <div class="bcard c-yellow">
-      <div class="bc-lbl">Potential Gain</div>
-      <div class="bc-val" id="b-gain">—</div>
-      <div class="bc-sub" id="b-gain-s">vs today's rate</div>
-    </div>
-    <div class="bcard c-dyn" id="b-score-card">
-      <div class="bc-lbl">Composite Signal</div>
-      <div class="bc-val" id="b-score" style="color:var(--text-mid)">—</div>
-      <div class="bc-sub" id="b-score-s">Technical consensus</div>
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h12M13 4l3 3-3 3M20 17H8M11 14l-3 3 3 3"/></svg></div>
+    <div>
+      <a class="home-link" href="/">&larr; nithinpuru.github.io</a>
+      <h1 class="h-title">FX Quant Terminal</h1>
+      <div class="h-ts" id="h-ts"><span class="dot"></span>Loading ECB reference rates&hellip;</div>
     </div>
   </div>
-
-  <div class="chart-grid">
-    <div class="panel">
-      <div class="overlay" id="main-ov">
-        <div class="spin"></div>
-        <div class="olt" id="main-ov-t">CONNECTING TO DATA SOURCE…</div>
-      </div>
-      <div class="ph">
-        <div class="pt" id="chart-title">FORECAST — EUR/INR · 1W</div>
-        <div class="pm">ARIMA · HOLT-WINTERS · MONTE CARLO GBM</div>
-      </div>
-      <div class="pb"><div class="cw"><canvas id="fChart"></canvas></div></div>
-      <div class="cleg">
-        <div class="li"><div class="ld" style="background:var(--cyan);width:22px;"></div><div class="ll">ENSEMBLE</div></div>
-        <div class="li"><div class="ld" style="background:var(--green);"></div><div class="ll">ARIMA</div></div>
-        <div class="li"><div class="ld" style="background:var(--yellow);"></div><div class="ll">HOLT-WINTERS</div></div>
-        <div class="li"><div class="ld" style="background:var(--purple);"></div><div class="ll">MC MEDIAN</div></div>
-        <div class="li"><div class="ld" style="background:rgba(0,212,255,.3);width:12px;height:8px;border-radius:2px;"></div><div class="ll">MC P5–P95</div></div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="ph">
-        <div class="pt">MONTE CARLO FAN</div>
-        <div class="pm" id="mc-meta">5000 GBM PATHS</div>
-      </div>
-      <div class="pb"><div class="cw"><canvas id="mcChart"></canvas></div></div>
-      <div class="cleg">
-        <div class="li"><div class="ld" style="background:var(--green);"></div><div class="ll">P95 BULL</div></div>
-        <div class="li"><div class="ld" style="background:var(--yellow);"></div><div class="ll">P50 BASE</div></div>
-        <div class="li"><div class="ld" style="background:var(--red);"></div><div class="ll">P5 BEAR</div></div>
-      </div>
-    </div>
+  <div class="controls">
+    <span class="label">Direction</span>
+    <div class="seg" id="dir-seg"></div>
+    <button class="btn" id="theme-btn" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg> Theme</button>
   </div>
+</header>
 
-  <div class="lower-grid">
-    <div class="panel">
-      <div class="ph"><div class="pt">TECHNICAL INDICATORS</div><div class="pm">8 SIGNALS · 0–100 COMPOSITE</div></div>
-      <div id="ind-list"></div>
-      <div class="comp-row">
-        <div><div class="comp-lbl">COMPOSITE SCORE</div><div class="comp-sig" id="c-sig">—</div></div>
-        <div class="comp-num" id="c-num">—</div>
+<main class="container">
+  <p class="h-sub">Quantitative analysis of seven INR currency pairs for timing a transfer: an ensemble forecast (ARIMA, Holt-Winters and 5,000-path Monte Carlo), eight technical indicators, risk and seasonality. Pick a pair below.</p>
+
+  <section class="pairs" id="pairs" aria-label="INR pairs"></section>
+
+  <section id="analysis">
+    <div class="toolbar">
+      <h2 class="tb-title" id="tb-title">&nbsp;</h2>
+      <span class="label">Horizon</span>
+      <div class="seg" id="hz-seg"></div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="label">Best transfer date</div><div class="kpi-val b" id="k-date">-</div><div class="kpi-sub" id="k-date-s">&nbsp;</div></div>
+      <div class="kpi"><div class="label">Current rate</div><div class="kpi-val" id="k-rate">-</div><div class="kpi-sub" id="k-rate-s">&nbsp;</div></div>
+      <div class="kpi"><div class="label">Potential gain</div><div class="kpi-val" id="k-gain">-</div><div class="kpi-sub" id="k-gain-s">&nbsp;</div></div>
+      <div class="kpi"><div class="label">Composite signal</div><div class="kpi-val" id="k-score">-</div><div class="kpi-sub" id="k-score-s">&nbsp;</div></div>
+    </div>
+
+    <div class="row r-2-1">
+      <div class="panel">
+        <div class="p-head"><span class="p-title">Forecast</span><span class="p-meta" id="fc-meta"></span></div>
+        <div class="p-body"><div class="chart"><canvas id="fChart"></canvas></div></div>
+        <div class="legend">
+          <span style="color:var(--ink-2)"><i></i>History</span>
+          <span style="color:var(--accent)"><i></i>Ensemble</span>
+          <span style="color:var(--up)"><i class="dash"></i>ARIMA</span>
+          <span style="color:var(--warn)"><i class="dash"></i>Holt-Winters</span>
+          <span style="color:var(--violet)"><i class="dash"></i>MC median</span>
+          <span style="color:var(--accent)"><i style="height:8px;opacity:.25"></i>MC P5-P95</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-head"><span class="p-title">Monte Carlo fan</span><span class="p-meta">5,000 GBM paths</span></div>
+        <div class="p-body"><div class="chart"><canvas id="mcChart"></canvas></div></div>
+        <div class="legend">
+          <span style="color:var(--up)"><i></i>P95 bull</span>
+          <span style="color:var(--accent)"><i></i>P50 base</span>
+          <span style="color:var(--down)"><i></i>P5 bear</span>
+        </div>
       </div>
     </div>
-    <div class="panel">
-      <div class="ph"><div class="pt">RISK METRICS</div><div class="pm">HISTORICAL SIMULATION</div></div>
-      <div class="mg" id="risk-grid"></div>
-    </div>
-  </div>
 
-  <div class="lower-grid">
-    <div class="panel">
-      <div class="ph"><div class="pt">STATISTICAL ANALYSIS</div><div class="pm">TIME SERIES CHARACTERISATION</div></div>
-      <div class="sg" id="stat-grid"></div>
-    </div>
-    <div class="panel">
-      <div class="ph"><div class="pt">SEASONALITY ANALYSIS</div><div class="pm">HISTORICAL AVERAGES</div></div>
-      <div class="stabs">
-        <div class="stab active" onclick="showSeas('dow',this)">Day of Week</div>
-        <div class="stab" onclick="showSeas('mon',this)">Monthly</div>
+    <div class="row r-1-1">
+      <div class="panel">
+        <div class="p-head"><span class="p-title">Technical indicators</span><span class="p-meta">8 signals &middot; 0&ndash;100 composite</span></div>
+        <div class="p-body">
+          <table class="tbl"><thead><tr><th>Indicator</th><th style="text-align:right;padding-right:14px">Value</th><th>Signal</th><th></th></tr></thead><tbody id="ind-body"></tbody></table>
+          <div class="composite"><div><div class="label">Composite score</div><div class="kpi-sub" id="c-sig">&nbsp;</div></div><div class="kpi-val" id="c-num">-</div></div>
+        </div>
       </div>
-      <div class="scw" id="dow-wrap"><canvas id="dowChart"></canvas></div>
-      <div class="scw" id="mon-wrap" style="display:none;"><canvas id="monChart"></canvas></div>
+      <div class="panel">
+        <div class="p-head"><span class="p-title">Risk metrics</span><span class="p-meta">historical simulation</span></div>
+        <div class="p-body"><div class="mgrid" id="risk-grid"></div></div>
+      </div>
     </div>
-  </div>
 
-</div>
+    <div class="row r-1-1">
+      <div class="panel">
+        <div class="p-head"><span class="p-title">Return statistics</span><span class="p-meta">daily log returns</span></div>
+        <div class="p-body"><div class="mgrid g3" id="stat-grid"></div></div>
+      </div>
+      <div class="panel">
+        <div class="p-head"><span class="p-title">Seasonality</span><div class="seg" id="seas-seg"></div></div>
+        <div class="p-body"><div class="chart sm"><canvas id="seasChart"></canvas></div></div>
+      </div>
+    </div>
 
-<div class="footer">
-  <b>DATA</b>: Frankfurter API (ECB reference rates) → Yahoo Finance v8 via CORS cascade (fallback) ·
-  <b>MODELS</b>: ARIMA(2,1,0) Yule-Walker + Holt-Winters triple exponential smoothing + Monte Carlo GBM (5000 paths) ·
-  <b>ENSEMBLE</b>: 35% ARIMA + 35% H-W + 30% MC ·
-  <b>DISCLAIMER</b>: Educational/analytical only. Not financial advice. All forecasts are probabilistic estimates from historical data.
-</div>
-
-<script>
-// ═══════════════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════════════
-const PAIRS = [
-  { id:'EURINR', label:'EUR/INR', base:'EUR', target:'INR', ytick:'EURINR=X' },
-  { id:'USDINR', label:'USD/INR', base:'USD', target:'INR', ytick:'INR=X'    },
-  { id:'GBPINR', label:'GBP/INR', base:'GBP', target:'INR', ytick:'GBPINR=X' },
-  { id:'JPYINR', label:'JPY/INR', base:'JPY', target:'INR', ytick:'JPYINR=X' },
-  { id:'CNYINR', label:'CNY/INR', base:'CNY', target:'INR', ytick:null       },
-  { id:'SGDINR', label:'SGD/INR', base:'SGD', target:'INR', ytick:'SGDINR=X' },
-  { id:'HKDINR', label:'HKD/INR', base:'HKD', target:'INR', ytick:'HKDINR=X' },
-];
-
-const HORIZONS = [
-  { id:'1W', label:'1W', td:5,  hd:10,  },
-  { id:'2W', label:'2W', td:10, hd:20,  },
-  { id:'1M', label:'1M', td:22, hd:44,  },
-  { id:'2M', label:'2M', td:44, hd:88,  },
-  { id:'3M', label:'3M', td:66, hd:132, },
-];
-
-// CORS proxies for Yahoo Finance fallback
-const YF_PROXIES = [
-  u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u => `https://api.codetabs.com/v1/proxy?quest=${u}`,
-  u => `https://thingproxy.freeboard.io/fetch/${u}`,
-];
-
-// ═══════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════
-const S = {
-  pair:'EURINR', horizon:'1W', dir:'INR_TO_FX',
-  cache:{},   // { pairId: {dates,closes,highs,lows,src} }
-  charts:{},
-  busy:false,
-};
-
-// ═══════════════════════════════════════════════════════
-// DATA — PRIMARY: Frankfurter API (ECB, zero CORS issues)
-// ═══════════════════════════════════════════════════════
-async function fetchFrankfurter(base, target) {
-  // Get data from 3 years ago to today
-  const start = new Date();
-  start.setFullYear(start.getFullYear() - 3);
-  const startStr = start.toISOString().slice(0,10);
-  // frankfurter.app now 301-redirects (without CORS headers) to frankfurter.dev/v1
-  const url = `https://api.frankfurter.dev/v1/${startStr}..?from=${base}&to=${target}`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`Frankfurter HTTP ${r.status}`);
-  const data = await r.json();
-  if (!data.rates) throw new Error('No rates in Frankfurter response');
-  // Sort dates and extract
-  const entries = Object.entries(data.rates).sort(([a],[b])=>a<b?-1:1);
-  if (entries.length < 30) throw new Error('Frankfurter: insufficient data');
-  const dates  = entries.map(([d])=>new Date(d+'T12:00:00Z'));
-  const closes = entries.map(([,v])=>v[target]);
-  return { dates, closes, highs:closes, lows:closes, src:'FRANKFURTER (ECB)' };
-}
-
-// ═══════════════════════════════════════════════════════
-// DATA — FALLBACK: Yahoo Finance via CORS cascade
-// ═══════════════════════════════════════════════════════
-function withTimeout(p, ms) {
-  return Promise.race([p, new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]);
-}
-
-async function fetchYahoo(ticker) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=3y`;
-  const enc  = encodeURIComponent(url);
-  const attempts = YF_PROXIES.map(fn =>
-    withTimeout(fetch(fn(url)).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();}), 9000)
-  );
-  const data = await Promise.any(attempts);
-  const res  = data?.chart?.result?.[0];
-  if (!res) throw new Error('Yahoo: no result');
-  const ts = res.timestamp, q = res.indicators?.quote?.[0]||{};
-  const out = {dates:[],closes:[],highs:[],lows:[],src:'YAHOO FINANCE'};
-  for (let i=0;i<ts.length;i++) {
-    if (q.close[i]==null) continue;
-    out.dates.push(new Date(ts[i]*1000));
-    out.closes.push(q.close[i]);
-    out.highs.push(q.high?.[i]??q.close[i]);
-    out.lows.push(q.low?.[i]??q.close[i]);
-  }
-  if (out.closes.length < 30) throw new Error('Yahoo: insufficient data');
-  return out;
-}
-
-// CNY/INR synthetic via Yahoo if Frankfurter fails
-async function fetchCNYSynthetic() {
-  const [usd, cny] = await Promise.all([fetchYahoo('INR=X'), fetchYahoo('CNY=X')]);
-  const cnyMap = new Map(cny.dates.map((d,i)=>[dk(d),cny.closes[i]]));
-  const out = {dates:[],closes:[],highs:[],lows:[],src:'YAHOO FINANCE (SYNTHETIC)'};
-  for (let i=0;i<usd.dates.length;i++) {
-    const c = cnyMap.get(dk(usd.dates[i])); if(!c) continue;
-    out.dates.push(usd.dates[i]);
-    out.closes.push(usd.closes[i]/c);
-    out.highs.push(usd.highs[i]/c);
-    out.lows.push(usd.lows[i]/c);
-  }
-  if (out.closes.length < 30) throw new Error('CNY synthetic: insufficient data');
-  return out;
-}
-
-function dk(d){return d.toISOString().slice(0,10);}
-
-async function getPairData(pairId) {
-  if (S.cache[pairId]) return S.cache[pairId];
-  const pair = PAIRS.find(p=>p.id===pairId);
-  let data;
-  try {
-    setOvText('FRANKFURTER API (ECB)…');
-    data = await fetchFrankfurter(pair.base, pair.target);
-  } catch(e1) {
-    console.warn('Frankfurter failed:', e1.message);
-    setOvText('YAHOO FINANCE (CORS FALLBACK)…');
-    if (!pair.ytick) {
-      data = await fetchCNYSynthetic();
-    } else {
-      data = await fetchYahoo(pair.ytick);
-    }
-  }
-  S.cache[pairId] = data;
-  return data;
-}
-
-// ═══════════════════════════════════════════════════════
-// QUANT ENGINE
-// ═══════════════════════════════════════════════════════
-
-// ── ARIMA(2,1,0) ──
-function arima(closes, h) {
-  if (closes.length < 20) return fills(closes[closes.length-1], h);
-  const lp   = closes.map(Math.log);
-  const diff = lp.slice(1).map((v,i)=>v-lp[i]);
-  const mu   = mean(diff);
-  const cd   = diff.map(d=>d-mu);
-  const n    = cd.length;
-  let r0=0,r1=0,r2=0;
-  for(let i=0;i<n;i++) r0+=cd[i]**2;
-  for(let i=1;i<n;i++) r1+=cd[i]*cd[i-1];
-  for(let i=2;i<n;i++) r2+=cd[i]*cd[i-2];
-  r0/=n; r1/=(n-1); r2/=(n-2);
-  const det = r0*r0-r1*r1;
-  let phi1=0.1,phi2=0.05;
-  if(Math.abs(det)>1e-14){ phi1=(r0*r1-r1*r2)/det; phi2=(r0*r2-r1*r1)/det; }
-  const mag=Math.abs(phi1)+Math.abs(phi2);
-  if(mag>0.97){phi1*=0.97/mag;phi2*=0.97/mag;}
-  const ext=[...cd]; let cur=lp[lp.length-1];
-  const out=[];
-  for(let i=0;i<h;i++){
-    const nd=ext.length, d=phi1*ext[nd-1]+phi2*ext[nd-2]+mu;
-    ext.push(d); cur+=d; out.push(Math.exp(cur));
-  }
-  return out;
-}
-
-// ── HOLT-WINTERS ADDITIVE ──
-function hw(closes, h) {
-  if (closes.length < 20) return fills(closes[closes.length-1], h);
-  const m = h<=10 ? 5 : 22;
-  if (closes.length < 2*m) return arima(closes, h);
-  const a=0.35,b=0.08,g=0.12;
-  let L=mean(closes.slice(0,m));
-  let T=(mean(closes.slice(m,2*m))-L)/m;
-  const seas=closes.slice(0,m).map(c=>c-L);
-  for(let i=m;i<closes.length;i++){
-    const y=closes[i],pL=L,pT=T,si=i%m;
-    L=a*(y-seas[si])+(1-a)*(pL+pT);
-    T=b*(L-pL)+(1-b)*pT;
-    seas[si]=g*(y-L)+(1-g)*seas[si];
-  }
-  const n=closes.length, out=[];
-  for(let s=1;s<=h;s++) out.push(Math.max(L+s*T+seas[(n+s-1)%m],0.0001));
-  return out;
-}
-
-// ── MONTE CARLO GBM ──
-function mc(closes, h, np=5000) {
-  if (closes.length < 10) { const c=closes[closes.length-1]; return {p5:fills(c,h),p50:fills(c,h),p95:fills(c,h)}; }
-  const lr=logReturns(closes);
-  const mu=mean(lr), sig=std(lr);
-  const drift=mu-0.5*sig*sig;
-  const S0=closes[closes.length-1];
-  function rn(){let u,v,s;do{u=Math.random()*2-1;v=Math.random()*2-1;s=u*u+v*v;}while(s>=1||s===0);return u*Math.sqrt(-2*Math.log(s)/s);}
-  const byDay=Array.from({length:h},()=>[]);
-  for(let p=0;p<np;p++){let S=S0;for(let d=0;d<h;d++){S*=Math.exp(drift+sig*rn());byDay[d].push(S);}}
-  const p5=[],p50=[],p95=[];
-  for(let d=0;d<h;d++){
-    const s=byDay[d].slice().sort((a,b)=>a-b);
-    p5.push(s[Math.floor(.05*np)]); p50.push(s[Math.floor(.5*np)]); p95.push(s[Math.floor(.95*np)]);
-  }
-  return {p5,p50,p95};
-}
-
-function ensemble(a,h,m){return a.map((v,i)=>0.35*v+0.35*h[i]+0.30*m[i]);}
-
-// ── TECH INDICATORS ──
-function rsi(c,p=14){
-  if(c.length<p+1) return 50;
-  let g=0,l=0;
-  for(let i=c.length-p;i<c.length;i++){const d=c[i]-c[i-1];d>0?g+=d:l+=Math.abs(d);}
-  return 100-100/(1+g/(l||1e-9));
-}
-function emaArr(a,p){const k=2/(p+1);let e=a[0];return a.map((v,i)=>i===0?e:e=v*k+e*(1-k));}
-function macd(c){
-  if(c.length<27) return {hist:0,macd:0,sig:0};
-  const f=emaArr(c,12),s=emaArr(c,26),raw=f.map((v,i)=>v-s[i]);
-  const sig=emaArr(raw.slice(26),9); const n=raw.length-1,sn=sig.length-1;
-  return {hist:raw[n]-sig[sn],macd:raw[n],sig:sig[sn]};
-}
-function bolPctB(c,p=20){
-  if(c.length<p) return 0.5;
-  const sl=c.slice(-p),m=mean(sl),s=std(sl);
-  return s<1e-9?0.5:(c[c.length-1]-(m-2*s))/(4*s);
-}
-function stoch(c,hi,lo,p=14){
-  if(c.length<p) return 50;
-  const hh=Math.max(...hi.slice(-p)),ll=Math.min(...lo.slice(-p));
-  return hh===ll?50:((c[c.length-1]-ll)/(hh-ll))*100;
-}
-function willR(c,hi,lo,p=14){
-  if(c.length<p) return -50;
-  const hh=Math.max(...hi.slice(-p)),ll=Math.min(...lo.slice(-p));
-  return hh===ll?-50:((hh-c[c.length-1])/(hh-ll))*-100;
-}
-function atr(c,hi,lo,p=14){
-  if(c.length<p+1) return 0;
-  const trs=[];
-  for(let i=1;i<c.length;i++) trs.push(Math.max(hi[i]-lo[i],Math.abs(hi[i]-c[i-1]),Math.abs(lo[i]-c[i-1])));
-  return mean(trs.slice(-p));
-}
-function cci(c,hi,lo,p=20){
-  if(c.length<p) return 0;
-  const tp=c.map((v,i)=>(hi[i]+lo[i]+v)/3),sl=tp.slice(-p),m=mean(sl);
-  const mad=sl.reduce((a,b)=>a+Math.abs(b-m),0)/p;
-  return mad<1e-9?0:(tp[tp.length-1]-m)/(0.015*mad);
-}
-function zscore(c,p=20){
-  if(c.length<p) return 0;
-  const sl=c.slice(-p),m=mean(sl),s=std(sl);
-  return s<1e-9?0:(c[c.length-1]-m)/s;
-}
-function composite(r,mh,b,st,wr,_a,cc,z,c){
-  const inv=S.dir==='FX_TO_INR';
-  const f=inv?v=>100-v:v=>v;
-  const rsiS=f(r);
-  const macdS=mh>0?f(70):f(30);
-  const bbS=f((1-b)*100);
-  const stS=f(100-st);
-  const wS=f((-wr/100)*100);
-  const cS=cc<-100?f(80):cc>100?f(20):50;
-  const zS=z<-1.5?f(80):z>1.5?f(20):50;
-  const n=c.length;
-  const roc=n>=6?((c[n-1]/c[n-6])-1)*100:0;
-  const rocS=roc<0?f(70):f(30);
-  return Math.round(.2*rsiS+.15*macdS+.12*bbS+.12*stS+.10*wS+.10*cS+.10*zS+.11*rocS);
-}
-
-// ── RISK ──
-function riskMetrics(c){
-  if(c.length<10) return {v95:0,v99:0,cv95:0,mdd:0,dca5:0,dca10:0,avol:0};
-  const lr=logReturns(c).map(r=>Math.exp(r)-1);
-  const s=[...lr].sort((a,b)=>a-b),n=s.length;
-  const v95=-s[Math.floor(.05*n)],v99=-s[Math.floor(.01*n)];
-  const tail=s.slice(0,Math.floor(.05*n));
-  const cv95=tail.length?-mean(tail):v95;
-  let peak=c[0],mdd=0;
-  for(const v of c){if(v>peak)peak=v;const d=(peak-v)/peak;if(d>mdd)mdd=d;}
-  const dca5=mean(c.slice(-5)),dca10=mean(c.slice(-10));
-  const lrR=logReturns(c.slice(-20)),mR=mean(lrR),vR=lrR.reduce((a,b)=>a+(b-mR)**2,0)/lrR.length;
-  const avol=Math.sqrt(vR*252)*100;
-  return {v95:v95*100,v99:v99*100,cv95:cv95*100,mdd:mdd*100,dca5,dca10,avol};
-}
-
-// ── STATISTICS ──
-function hurst(c){
-  if(c.length<20) return 0.5;
-  const lr=logReturns(c),n=lr.length,mu=mean(lr),dev=lr.map(r=>r-mu);
-  let cum=0;const cd=dev.map(d=>(cum+=d));
-  const R=Math.max(...cd)-Math.min(...cd),S2=std(lr);
-  return S2<1e-12?0.5:Math.log(R/S2)/Math.log(n);
-}
-function skewness(c){
-  const lr=logReturns(c),m=mean(lr),s=std(lr);
-  return s<1e-12?0:lr.reduce((a,b)=>a+((b-m)/s)**3,0)/lr.length;
-}
-function kurtosis(c){
-  const lr=logReturns(c),m=mean(lr),s=std(lr);
-  return s<1e-12?0:lr.reduce((a,b)=>a+((b-m)/s)**4,0)/lr.length-3;
-}
-function rollVol(c,w){
-  if(c.length<w+1) return 0;
-  const lr=logReturns(c.slice(-w-1)),m=mean(lr),v=lr.reduce((a,b)=>a+(b-m)**2,0)/lr.length;
-  return Math.sqrt(v*252)*100;
-}
-
-// ── SEASONALITY ──
-function seasonality(dates,c){
-  const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const ds=Array(7).fill(0),dc=Array(7).fill(0),ms=Array(12).fill(0),mc2=Array(12).fill(0);
-  for(let i=1;i<c.length;i++){
-    const r=c[i]/c[i-1]-1,dw=dates[i].getDay(),mo=dates[i].getMonth();
-    ds[dw]+=r;dc[dw]++;ms[mo]+=r;mc2[mo]++;
-  }
-  const td=[1,2,3,4,5];
-  return {
-    dowL:td.map(i=>DOW[i]),dowV:td.map(i=>dc[i]?ds[i]/dc[i]*100:0),
-    monL:MON,monV:ms.map((v,i)=>mc2[i]?v/mc2[i]*100:0),
-  };
-}
-
-// ── BEST DATE ──
-function bestDate(ens,fDates){
-  let bi=0;
-  for(let i=1;i<ens.length;i++){
-    const better=S.dir==='INR_TO_FX'?ens[i]<ens[bi]:ens[i]>ens[bi];
-    if(better)bi=i;
-  }
-  return {date:fDates[bi],idx:bi,rate:ens[bi]};
-}
-
-function futureDays(n){
-  const out=[],d=new Date();d.setDate(d.getDate()+1);
-  while(out.length<n){if(d.getDay()!==0&&d.getDay()!==6)out.push(new Date(d));d.setDate(d.getDate()+1);}
-  return out;
-}
-
-// ── MATH UTILS ──
-function mean(a){return a.reduce((s,v)=>s+v,0)/a.length;}
-function std(a){const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/a.length);}
-function logReturns(c){return c.slice(1).map((v,i)=>Math.log(v/c[i]));}
-function fills(v,n){return Array(n).fill(v);}
-function applyDir(arr){return S.dir==='FX_TO_INR'?arr.map(v=>1/v):arr;}
-
-// ═══════════════════════════════════════════════════════
-// CHART RENDERING
-// ═══════════════════════════════════════════════════════
-
-// ── Crosshair plugin: vertical line + dot at cursor ──
-const crosshairPlugin = {
-  id: 'crosshair',
-  afterDraw(chart) {
-    const active = chart.tooltip._active;
-    if (!active || !active.length) return;
-    const ctx   = chart.ctx;
-    const x     = active[0].element.x;
-    const top   = chart.scales.y.top;
-    const bot   = chart.scales.y.bottom;
-    ctx.save();
-    // vertical line
-    ctx.beginPath();
-    ctx.moveTo(x, top);
-    ctx.lineTo(x, bot);
-    ctx.lineWidth   = 1;
-    ctx.strokeStyle = 'rgba(0,212,255,0.45)';
-    ctx.setLineDash([4, 4]);
-    ctx.stroke();
-    // horizontal guide line at each active point
-    active.forEach(pt => {
-      const y = pt.element.y;
-      ctx.beginPath();
-      ctx.moveTo(chart.scales.x.left, y);
-      ctx.lineTo(chart.scales.x.right, y);
-      ctx.lineWidth   = 1;
-      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-      ctx.setLineDash([2, 6]);
-      ctx.stroke();
-    });
-    ctx.restore();
-  }
-};
-Chart.register(crosshairPlugin);
-
-// Label colours matched to dataset border colours
-const DATASET_COLORS = {
-  'HIST':    '#e0e8ff',
-  'ENS':     '#00d4ff',
-  'ARIMA':   '#00ff88',
-  'H-W':     '#ffd32a',
-  'MC50':    '#b89af8',
-  'P95':     '#00ff88',
-  'P50':     '#ffd32a',
-  'P5':      '#ff3d5e',
-};
-
-const BASE_OPTS = {
-  responsive:true, maintainAspectRatio:false,
-  animation:{duration:600,easing:'easeInOutQuart'},
-  interaction:{ mode:'index', intersect:false },
-  plugins:{
-    legend:{display:false},
-    tooltip:{
-      backgroundColor:'rgba(5,7,14,.97)',
-      borderColor:'#1e2a48',borderWidth:1,
-      titleColor:'#9aaac8',
-      bodyColor:'#eef2ff',
-      padding:14,
-      titleFont:{family:'JetBrains Mono',size:11},
-      bodyFont:{family:'JetBrains Mono',size:12,weight:'600'},
-      bodySpacing:5,
-      usePointStyle:true,
-      filter: item => item.raw !== null && item.raw !== undefined,
-      callbacks:{
-        title: items => items[0]?.label ?? '',
-        label: ctx => {
-          if (ctx.raw === null || ctx.raw === undefined) return null;
-          const v = typeof ctx.raw === 'number' ? ctx.raw.toFixed(4) : ctx.raw;
-          const lbl = ctx.dataset.label || '';
-          return `  ${lbl.padEnd(6)} ${v}`;
-        },
-        labelColor: ctx => {
-          const c = DATASET_COLORS[ctx.dataset.label] || '#9aaac8';
-          return { borderColor:c, backgroundColor:c, borderWidth:2, borderRadius:2 };
-        },
-      }
-    }
-  },
-  scales:{
-    x:{grid:{color:'rgba(30,42,72,.5)',drawTicks:false},
-       ticks:{color:'#9aaac8',font:{family:'JetBrains Mono',size:11},maxTicksLimit:8,maxRotation:0},
-       border:{color:'#1e2a48'}},
-    y:{grid:{color:'rgba(30,42,72,.5)',drawTicks:false},
-       ticks:{color:'#9aaac8',font:{family:'JetBrains Mono',size:11}},
-       border:{color:'#1e2a48'}},
-  }
-};
-
-function destroyChart(id){if(S.charts[id]){S.charts[id].destroy();delete S.charts[id];}}
-function fmtD(d){return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});}
-
-function renderForecastChart(hDates,hClose,fDates,ens,mcData){
-  destroyChart('fc');
-  const hL=hDates.map(fmtD),fL=fDates.map(fmtD),all=[...hL,...fL];
-  const hC=applyDir(hClose),ensD=applyDir(ens);
-  const p5D=applyDir(mcData.p5),p50D=applyDir(mcData.p50),p95D=applyDir(mcData.p95);
-  const arimaD=applyDir(arima(hClose,fDates.length));
-  const hwD=applyDir(hw(hClose,fDates.length));
-  const hp=Array(hL.length).fill(null);
-  const last=hC[hC.length-1];
-  S.charts.fc=new Chart(document.getElementById('fChart').getContext('2d'),{
-    type:'line',
-    data:{labels:all,datasets:[
-      {label:'P95',data:[...hp,last,...p95D],fill:1,backgroundColor:'rgba(0,212,255,.07)',borderColor:'rgba(0,212,255,.15)',borderWidth:1,pointRadius:0,tension:.3},
-      {label:'P5', data:[...hp,last,...p5D], fill:false,borderColor:'rgba(0,212,255,.15)',borderWidth:1,pointRadius:0,tension:.3},
-      {label:'ARIMA',data:[...hp,last,...arimaD],borderColor:'rgba(0,255,136,.65)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,tension:.3,fill:false},
-      {label:'H-W',  data:[...hp,last,...hwD],  borderColor:'rgba(255,211,42,.65)',borderWidth:1.5,borderDash:[2,4],pointRadius:0,tension:.3,fill:false},
-      {label:'MC50', data:[...hp,last,...p50D], borderColor:'rgba(159,122,234,.7)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,tension:.3,fill:false},
-      {label:'ENS',  data:[...hp,last,...ensD], borderColor:'#00d4ff',borderWidth:2.5,
-        pointRadius:[...Array(hp.length).fill(0),5,...Array(ensD.length-1).fill(2)],
-        pointBackgroundColor:'#00d4ff',tension:.3,fill:false},
-      {label:'HIST', data:[...hC,...Array(fL.length).fill(null)],borderColor:'rgba(224,232,255,.6)',borderWidth:1.5,pointRadius:0,tension:.2,fill:false},
-    ]},
-    options:{...BASE_OPTS}
-  });
-}
-
-function renderMCChart(fDates,mcData){
-  destroyChart('mc2');
-  const labels=fDates.map(fmtD);
-  const p95=applyDir(mcData.p95),p50=applyDir(mcData.p50),p5=applyDir(mcData.p5);
-  S.charts.mc2=new Chart(document.getElementById('mcChart').getContext('2d'),{
-    type:'line',
-    data:{labels,datasets:[
-      {label:'P95',data:p95,borderColor:'#00ff88',borderWidth:2,pointRadius:0,tension:.3,
-       fill:{target:2,above:'rgba(0,212,255,0.12)'}},
-      {label:'P50',data:p50,borderColor:'#ffd32a',borderWidth:3,pointRadius:0,tension:.3,fill:false},
-      {label:'P5', data:p5, borderColor:'#ff3d5e',borderWidth:2,pointRadius:0,tension:.3,fill:false},
-    ]},
-    options:{...BASE_OPTS}
-  });
-}
-
-function renderSeas(seasData){
-  destroyChart('dow');destroyChart('mon');
-  const bOpts={...BASE_OPTS,animation:{duration:400},
-    interaction:{mode:'index',intersect:false},
-    plugins:{...BASE_OPTS.plugins,tooltip:{...BASE_OPTS.plugins.tooltip,
-      callbacks:{
-        title: items => items[0]?.label ?? '',
-        label: ctx => `  Return  ${ctx.raw.toFixed(4)}%`,
-        labelColor: ctx => {
-          const c = ctx.raw < 0 ? '#ff3d5e' : '#00ff88';
-          return {borderColor:c,backgroundColor:c,borderWidth:2,borderRadius:2};
-        }
-      }
-    }},
-    scales:{x:{grid:{display:false},ticks:{color:'#9aaac8',font:{family:'JetBrains Mono',size:11}},border:{color:'#1e2a48'}},
-            y:{grid:{color:'rgba(30,42,72,.4)'},ticks:{color:'#9aaac8',font:{family:'JetBrains Mono',size:11}},border:{color:'#1e2a48'}}}};
-  function mkBar(id,labels,vals){
-    S.charts[id]=new Chart(document.getElementById(id+'Chart').getContext('2d'),{
-      type:'bar',
-      data:{labels,datasets:[{data:vals,
-        backgroundColor:vals.map(v=>v<0?'rgba(255,61,94,.5)':'rgba(0,255,136,.5)'),
-        borderColor:vals.map(v=>v<0?'#ff3d5e':'#00ff88'),
-        borderWidth:1,borderRadius:3}]},
-      options:{...bOpts}
-    });
-  }
-  mkBar('dow',seasData.dowL,seasData.dowV);
-  mkBar('mon',seasData.monL,seasData.monV);
-}
-
-function renderIndicators(closes,highs,lows){
-  const r=rsi(closes),m=macd(closes),b=bolPctB(closes),
-        st=stoch(closes,highs,lows),wr=willR(closes,highs,lows),
-        at=atr(closes,highs,lows),cc=cci(closes,highs,lows),z=zscore(closes);
-  const comp=composite(r,m.hist,b,st,wr,at,cc,z,closes);
-
-  const rows=[
-    {n:'RSI-14',     v:r.toFixed(1),  bar:r,                               s:r>70?'o':r<30?'u':'n', l:r>70?'OVERBOUGHT':r<30?'OVERSOLD':'NEUTRAL'},
-    {n:'MACD HIST',  v:m.hist.toFixed(5),bar:m.hist>0?70:30,              s:m.hist>0?'b':'r', l:m.hist>0?'BULLISH':'BEARISH'},
-    {n:'BOLL %B',    v:b.toFixed(3),  bar:b*100,                           s:b<0.2?'b':b>0.8?'r':'n', l:b<0.2?'AT LOWER':b>0.8?'AT UPPER':'IN BAND'},
-    {n:'STOCH-14',   v:st.toFixed(1), bar:st,                              s:st<20?'b':st>80?'r':'n', l:st<20?'OVERSOLD':st>80?'OVERBOUGHT':'NEUTRAL'},
-    {n:'WILLIAMS %R',v:wr.toFixed(1), bar:((-wr)/100)*100,                 s:wr<-80?'b':wr>-20?'r':'n', l:wr<-80?'OVERSOLD':wr>-20?'OVERBOUGHT':'NEUTRAL'},
-    {n:'ATR-14',     v:at.toFixed(5), bar:50,                              s:'n', l:'VOLATILITY'},
-    {n:'CCI-20',     v:cc.toFixed(1), bar:Math.min(100,Math.max(0,(cc+200)/4)),s:cc<-100?'b':cc>100?'r':'n',l:cc<-100?'CHEAP':cc>100?'EXPENSIVE':'NEUTRAL'},
-    {n:'Z-SCORE-20', v:z.toFixed(3),  bar:Math.min(100,Math.max(0,(z+3)/6*100)),s:z<-1.5?'b':z>1.5?'r':'n',l:z<-1.5?'CHEAP':z>1.5?'EXPENSIVE':'NEUTRAL'},
-  ];
-  const sc={b:'sb',r:'sr',n:'sn',o:'sr',u:'sb'};
-  const cc2={b:'#00ff88',r:'#ff3d5e',n:'#9aaac8',o:'#ff3d5e',u:'#00ff88'};
-
-  // Invert signal display for FX→INR
-  function sigClass(s){
-    if(S.dir==='FX_TO_INR'){if(s==='b')s='r';else if(s==='r')s='b';}
-    return sc[s]||'sn';
-  }
-  function barColor(s){
-    if(S.dir==='FX_TO_INR'){if(s==='b')s='r';else if(s==='r')s='b';}
-    return cc2[s]||cc2.n;
-  }
-
-  document.getElementById('ind-list').innerHTML=rows.map(row=>`
-    <div class="ind-row">
-      <div class="in">${row.n}</div>
-      <div class="iv">${row.v}</div>
-      <div class="is ${sigClass(row.s)}">${row.l}</div>
-      <div class="ibw"><div class="ib" style="width:${Math.min(100,Math.max(0,row.bar))}%;background:${barColor(row.s)};opacity:.75;"></div></div>
-    </div>`).join('');
-
-  const cc3=comp>=70?'var(--green)':comp<40?'var(--red)':'var(--yellow)';
-  const cl=comp>=70?'STRONG SIGNAL':comp<40?'WEAK SIGNAL':'NEUTRAL';
-  document.getElementById('c-num').textContent=comp;
-  document.getElementById('c-num').style.color=cc3;
-  document.getElementById('c-sig').textContent=cl;
-  document.getElementById('c-sig').style.color=cc3;
-  document.getElementById('b-score').textContent=`${comp}/100`;
-  document.getElementById('b-score').style.color=cc3;
-  document.getElementById('b-score-s').textContent=cl;
-  document.getElementById('b-score-card').style.setProperty('--score-color',cc3);
-  return comp;
-}
-
-function renderRisk(closes){
-  const rm=riskMetrics(closes);
-  const cells=[
-    {l:'VaR 95%',   v:`${rm.v95.toFixed(3)}%`,  s:'Max daily loss (95%)',     c:'var(--red)'},
-    {l:'VaR 99%',   v:`${rm.v99.toFixed(3)}%`,  s:'Max daily loss (99%)',     c:'var(--red)'},
-    {l:'CVaR 95%',  v:`${rm.cv95.toFixed(3)}%`, s:'Expected tail loss',       c:'var(--red)'},
-    {l:'Max Drawdown',v:`${rm.mdd.toFixed(2)}%`,s:'Peak-to-trough historical',c:'var(--yellow)'},
-    {l:'DCA 5-Day', v:rm.dca5.toFixed(4),        s:'Avg rate last 5 sessions', c:'var(--cyan)'},
-    {l:'DCA 10-Day',v:rm.dca10.toFixed(4),       s:'Avg rate last 10 sessions',c:'var(--cyan)'},
-    {l:'Ann. Vol',  v:`${rm.avol.toFixed(2)}%`,  s:'20-day rolling annualised', c:'var(--purple)'},
-    {l:'Vol Regime',v:rm.avol>10?'HIGH VOL':'LOW VOL', s:'Volatility regime', c:rm.avol>10?'var(--red)':'var(--green)'},
-  ];
-  document.getElementById('risk-grid').innerHTML=cells.map(c=>`
-    <div class="mc">
-      <div class="mcl">${c.l}</div>
-      <div class="mcv" style="color:${c.c}">${c.v}</div>
-      <div class="mcs">${c.s}</div>
-    </div>`).join('');
-}
-
-function renderStats(closes){
-  const H=hurst(closes),sk=skewness(closes),ku=kurtosis(closes);
-  const v10=rollVol(closes,10),v20=rollVol(closes,20),v30=rollVol(closes,30);
-  const hC=H>0.55?'var(--green)':H<0.45?'var(--cyan)':'var(--text-dim)';
-  const stats=[
-    {l:'HURST EXP (H)',v:H.toFixed(4), i:H>0.55?'TRENDING':H<0.45?'MEAN-REV':'RANDOM WALK', c:hC},
-    {l:'SKEWNESS',     v:sk.toFixed(4),i:sk>0.3?'POS SKEW':sk<-0.3?'NEG SKEW':'SYMMETRIC',  c:Math.abs(sk)>.3?'var(--yellow)':'var(--text-dim)'},
-    {l:'EX. KURTOSIS', v:ku.toFixed(4),i:ku>1?'FAT TAILS':ku<-1?'THIN TAILS':'NEAR-NORMAL', c:ku>1?'var(--red)':'var(--text-dim)'},
-    {l:'10D ANN VOL',  v:`${v10.toFixed(2)}%`,i:'',c:'var(--text)'},
-    {l:'20D ANN VOL',  v:`${v20.toFixed(2)}%`,i:'',c:'var(--text)'},
-    {l:'30D ANN VOL',  v:`${v30.toFixed(2)}%`,i:'',c:'var(--text)'},
-  ];
-  document.getElementById('stat-grid').innerHTML=stats.map(s=>`
-    <div class="si">
-      <div class="sl">${s.l}</div>
-      <div class="sv" style="color:${s.c}">${s.v}</div>
-      ${s.i?`<div class="si2" style="color:${s.c}">${s.i}</div>`:''}
-    </div>`).join('');
-}
-
-function renderBanner(ens,fDates,currentRate){
-  const best=bestDate(ens,fDates);
-  if(best.date){
-    document.getElementById('b-date').textContent=
-      best.date.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-    document.getElementById('b-date-s').textContent=
-      S.dir==='INR_TO_FX'?'Lowest forecast rate (fewest INR per FX)':'Highest forecast rate (most INR per FX)';
-  }
-  const dispRate=S.dir==='FX_TO_INR'?1/currentRate:currentRate;
-  const bestDisp=S.dir==='FX_TO_INR'?1/best.rate:best.rate;
-  const gain=Math.abs(bestDisp-dispRate)/dispRate*100;
-  document.getElementById('b-rate').textContent=dispRate.toFixed(4);
-  document.getElementById('b-rate-s').textContent=
-    `${S.dir==='FX_TO_INR'?'FX per INR':'INR per FX'} · ${PAIRS.find(p=>p.id===S.pair).label}`;
-  document.getElementById('b-gain').textContent=`${gain.toFixed(2)}%`;
-  document.getElementById('b-gain-s').textContent=S.dir==='INR_TO_FX'?'vs today · lower is better':'vs today · higher is better';
-}
-
-// ═══════════════════════════════════════════════════════
-// MAIN PIPELINE
-// ═══════════════════════════════════════════════════════
-function setOvText(t){const el=document.getElementById('main-ov-t');if(el)el.textContent=t;}
-function showOverlay(){document.getElementById('main-ov').style.display='flex';}
-function hideOverlay(){document.getElementById('main-ov').style.display='none';}
-function showError(msg){
-  document.getElementById('main-ov').innerHTML=`
-    <div class="olt" style="color:var(--red);">⚠ DATA UNAVAILABLE</div>
-    <div class="olt" style="font-size:9px;">${msg}</div>
-    <button class="retry-btn" onclick="loadAndRender()">↺ RETRY</button>`;
-  document.getElementById('main-ov').style.display='flex';
-}
-
-async function loadAndRender(){
-  if(S.busy) return;
-  S.busy=true;
-  showOverlay();
-  setOvText('CONNECTING TO DATA SOURCE…');
-
-  // Reset overlay to spinner (in case it was an error state)
-  document.getElementById('main-ov').innerHTML=`<div class="spin"></div><div class="olt" id="main-ov-t">CONNECTING…</div>`;
-  document.getElementById('main-ov').style.display='flex';
-
-  const hz=HORIZONS.find(h=>h.id===S.horizon);
-
-  try {
-    const raw=await getPairData(S.pair);
-    const n=raw.closes.length;
-    const histN=Math.min(n,hz.hd);
-    const hDates =raw.dates.slice(-histN);
-    const hClose =raw.closes.slice(-histN);
-    const hHighs  =raw.highs.slice(-histN);
-    const hLows   =raw.lows.slice(-histN);
-
-    setOvText('RUNNING ENSEMBLE MODELS…');
-
-    const h=hz.td;
-    const fDates=futureDays(h);
-    const arimaF=arima(raw.closes,h);
-    const hwF   =hw(raw.closes,h);
-    const mcF   =mc(raw.closes,h,5000);
-    const ensF  =ensemble(arimaF,hwF,mcF.p50);
-
-    setOvText('RENDERING…');
-    renderForecastChart(hDates,hClose,fDates,ensF,mcF);
-    renderMCChart(fDates,mcF);
-    renderSeas(seasonality(raw.dates,raw.closes));
-    renderIndicators(raw.closes,raw.highs,raw.lows);
-    renderRisk(raw.closes);
-    renderStats(raw.closes);
-    renderBanner(ensF,fDates,raw.closes[n-1]);
-
-    // Update header
-    document.getElementById('ts').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    const sb=document.getElementById('src-badge');
-    sb.textContent=raw.src; sb.style.display='inline-block';
-    document.getElementById('chart-title').textContent=
-      `FORECAST — ${PAIRS.find(p=>p.id===S.pair).label} · ${hz.label}`;
-
-    hideOverlay();
-  } catch(e) {
-    console.error(e);
-    showError(`${e.message}<br><br>Frankfurter API and all CORS proxies failed.<br>Try again in 30s or check your connection.`);
-  }
-  S.busy=false;
-}
-
-// ═══════════════════════════════════════════════════════
-// UI INIT
-// ═══════════════════════════════════════════════════════
-function buildControls(){
-  const pp=document.getElementById('pair-pills');
-  PAIRS.forEach(p=>{
-    const b=document.createElement('button');
-    b.className='pill'+(p.id===S.pair?' active':'');
-    b.textContent=p.label;
-    b.onclick=()=>{
-      // Only clear cache for the new pair (not current)
-      S.pair=p.id;
-      pp.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      loadAndRender();
-    };
-    pp.appendChild(b);
-  });
-
-  const hp=document.getElementById('hz-pills');
-  HORIZONS.forEach(h=>{
-    const b=document.createElement('button');
-    b.className='pill h-pill'+(h.id===S.horizon?' active':'');
-    b.textContent=h.label;
-    b.onclick=()=>{
-      S.horizon=h.id;
-      hp.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      loadAndRender();
-    };
-    hp.appendChild(b);
-  });
-}
-
-function setDir(dir){
-  S.dir=dir;
-  document.getElementById('d-inr').classList.toggle('active',dir==='INR_TO_FX');
-  document.getElementById('d-fx').classList.toggle('active', dir==='FX_TO_INR');
-  // Re-run render with cached data if available
-  if(S.cache[S.pair]){
-    const raw=S.cache[S.pair];
-    const hz=HORIZONS.find(h=>h.id===S.horizon);
-    const h=hz.td, fDates=futureDays(h);
-    const arimaF=arima(raw.closes,h),hwF=hw(raw.closes,h);
-    const mcF=mc(raw.closes,h,5000),ensF=ensemble(arimaF,hwF,mcF.p50);
-    const histN=Math.min(raw.closes.length,hz.hd);
-    renderForecastChart(raw.dates.slice(-histN),raw.closes.slice(-histN),fDates,ensF,mcF);
-    renderMCChart(fDates,mcF);
-    renderBanner(ensF,fDates,raw.closes[raw.closes.length-1]);
-    renderIndicators(raw.closes,raw.highs,raw.lows);
-  }
-}
-
-function showSeas(which, el){
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('dow-wrap').style.display=which==='dow'?'block':'none';
-  document.getElementById('mon-wrap').style.display=which==='mon'?'block':'none';
-}
-
-// ── BOOT ──
-buildControls();
-loadAndRender();
-</script>
+    <p class="note"><b>Data.</b> European Central Bank euro foreign-exchange reference rates (one fixing per business day, around 16:00 CET), via the Frankfurter API. A scheduled job on this site fetches them after each fixing, so the page never calls an external API from your browser. <b>Models.</b> The ensemble weights ARIMA(2,1,0) 35%, additive Holt-Winters 35% and the Monte Carlo median 30%. High and low equal the close for daily fixings, so range-based indicators (ATR, Stochastic, Williams %R, CCI) use closes. Forecasts are statistical estimates, not financial advice.</p>
+  </section>
+</main>
 </body>
 </html>
