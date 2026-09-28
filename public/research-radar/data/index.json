@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-28T14:51:26Z",
+ "generated_at": "2026-09-28T20:14:20Z",
  "domains": {
   "ai": {
    "arxiv": "ok",
@@ -7,7 +7,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 411
+   "papers": 450
   },
   "ai-chips": {
    "arxiv": "ok",
@@ -15,7 +15,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 276
+   "papers": 315
   },
   "ai-finance": {
    "arxiv": "ok",
@@ -23,7 +23,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 177
+   "papers": 217
   },
   "ams": {
    "arxiv": "ok",
@@ -31,7 +31,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 295
+   "papers": 335
   },
   "computing": {
    "arxiv": "ok",
@@ -39,7 +39,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 233
+   "papers": 273
   },
   "hft": {
    "arxiv": "ok",
@@ -47,7 +47,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 155
+   "papers": 195
   },
   "quant": {
    "arxiv": "ok",
@@ -55,7 +55,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 207
+   "papers": 247
   },
   "serdes": {
    "arxiv": "ok",
@@ -63,7 +63,7 @@
    "journal": "ok",
    "s2": "ok",
    "blog": "ok",
-   "papers": 237
+   "papers": 277
   },
   "vlsi": {
    "arxiv": "ok",
@@ -71,7 +71,7 @@
    "journal": "ok",
    "s2": "empty",
    "blog": "ok",
-   "papers": 165
+   "papers": 204
   }
  }
 }
