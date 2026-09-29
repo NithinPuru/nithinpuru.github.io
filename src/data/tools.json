@@ -93,6 +93,18 @@
               "url": "https://github.com/chennakeshavadasa/Conf_Deadline_Tracker"
             }
           ]
+        },
+        {
+          "title": "Secure DSM + PUF - Signal Path Explorer",
+          "meta": "Delta-sigma ADC · SRAM PUF · NLFSR",
+          "url": "/secure_sensor_with_puf/",
+          "desc": "Interactive signal-path explorer for a secure delta-sigma sensor front end, running a behavioural model live in the browser. Compares the ESSERC'25 S-DSM baseline with a proposed SRAM-PUF + fuzzy extractor + NLFSR scheme, and lets you probe every block, from the modulator bitstream to key recovery, under attack scenarios.",
+          "links": [
+            {
+              "label": "Open tool",
+              "url": "/secure_sensor_with_puf/"
+            }
+          ]
         }
       ]
     }

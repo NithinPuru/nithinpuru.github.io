@@ -3,25 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
+<link rel="preload" href="/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>Secure DSM + PUF — signal path explorer</title>
 <style>
+@font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"KaTeX_Main";src:url("/fonts/KaTeX_Main-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"KaTeX_Typewriter";src:url("/fonts/KaTeX_Typewriter-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+/* Palette shared with the other nithinpuru.github.io tools (Quant Terminal family);
+   light/dark follows html[data-theme] and localStorage "theme". */
+:root,:root[data-theme="light"]{
+  color-scheme:light;
+  --ink:#131c28; --ink-soft:#3d4756; --ink-faint:#5b6676; --on-ink:#ffffff;
+  --paper:#f4f6f9; --panel:#ffffff; --line:rgba(19,28,40,.16); --line-soft:rgba(19,28,40,.09);
+  --sig:#1f4fd1;        /* accent blue - data path */
+  --sig-dim:rgba(31,79,209,.45); --sig-bg:rgba(31,79,209,.08);
+  --key:#b42318;        /* red - key/security path */
+  --key-dim:rgba(180,35,24,.45); --key-bg:rgba(180,35,24,.08);
+  --warn:#b42318; --warn-bg:rgba(180,35,24,.1); --warn-line:rgba(180,35,24,.35);
+  --good:#077a5d; --good-bg:rgba(11,138,107,.1); --good-line:rgba(11,138,107,.35);
+  --grid:rgba(19,28,40,.09);
+  --code-bg:#131c28; --code-ink:#e6ebf2;
+  --shadow:rgba(19,28,40,.45);
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#f2f5fa; --ink-soft:#cfd7e3; --ink-faint:#95a1b3; --on-ink:#0f1620;
+  --paper:#0f1620; --panel:#172131; --line:rgba(242,245,250,.14); --line-soft:rgba(242,245,250,.08);
+  --sig:#7aa7ff; --sig-dim:rgba(122,167,255,.45); --sig-bg:rgba(122,167,255,.12);
+  --key:#ff8a7a; --key-dim:rgba(255,138,122,.45); --key-bg:rgba(255,138,122,.12);
+  --warn:#ff8a7a; --warn-bg:rgba(255,138,122,.12); --warn-line:rgba(255,138,122,.35);
+  --good:#4fd1a8; --good-bg:rgba(79,209,168,.12); --good-line:rgba(79,209,168,.35);
+  --grid:rgba(242,245,250,.08);
+  --code-bg:#0b1119; --code-ink:#dbe3ee;
+  --shadow:rgba(0,0,0,.7);
+}
 :root{
-  --ink:#0d1b2a; --ink-soft:#40566b; --ink-faint:#8199ad;
-  --paper:#f5f7f8; --panel:#ffffff; --line:#d3dde3; --line-soft:#e7edf0;
-  --sig:#0f7d8c;        /* teal — data path */
-  --sig-dim:#8fc4cb;
-  --key:#b0472b;        /* rust — key/security path */
-  --key-dim:#e0a999;
-  --warn:#b0472b; --good:#2e7d5b;
-  --grid:#e7edf0;
-  --mono:"Iosevka","SF Mono",ui-monospace,"Cascadia Code",Menlo,monospace;
-  --sans:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"KaTeX_Typewriter","Latin Modern Mono","Courier New",monospace;
+  --sans:"KaTeX_Main","Latin Modern Roman",Georgia,"Times New Roman",serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-h1,h2,h3{font-weight:600;letter-spacing:-0.01em;margin:0}
+  font-size:16px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+::selection{background:var(--sig);color:var(--on-ink)}
+:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
+button,input,select{font:inherit}
+h1,h2,h3{font-weight:700;letter-spacing:-0.01em;margin:0}
 a{color:var(--sig)}
 .wrap{max-width:1500px;margin:0 auto;padding:0 20px 80px}
 
@@ -32,8 +62,11 @@ header{border-bottom:1px solid var(--line);background:var(--panel);position:stic
 .hbar .sub{color:var(--ink-soft);font-size:13.5px}
 .scheme-toggle{margin-left:auto;display:flex;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .scheme-toggle button{border:0;background:var(--panel);color:var(--ink-soft);padding:7px 16px;font-family:var(--sans);
-  font-size:13.5px;font-weight:500;cursor:pointer}
-.scheme-toggle button[aria-pressed=true]{background:var(--ink);color:#fff}
+  font-size:13.5px;font-weight:400;cursor:pointer}
+.scheme-toggle button[aria-pressed=true]{background:var(--ink);color:var(--on-ink)}
+.theme-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);padding:6px 12px;border-radius:8px;cursor:pointer;font-family:var(--sans);font-size:13.5px}
+.theme-btn:hover{border-color:var(--sig);color:var(--sig)}
+.theme-btn svg{width:15px;height:15px}
 
 .layout{display:grid;grid-template-columns:288px 1fr;gap:24px;padding-top:22px}
 @media(max-width:1080px){.layout{grid-template-columns:1fr}.controls{position:static;max-height:none}}
@@ -46,18 +79,18 @@ pre.model{max-width:100%}
 .controls{position:sticky;top:calc(var(--hh,60px) + 12px);align-self:start;max-height:calc(100vh - var(--hh,60px) - 28px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;
   background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
 .controls h3{font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-faint);
-  margin:18px 0 10px;font-weight:600}
+  margin:18px 0 10px;font-weight:700}
 .controls h3:first-child{margin-top:0}
 .ctl{margin-bottom:13px}
 .ctl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);margin-bottom:5px}
-.ctl label b{color:var(--ink);font-family:var(--mono);font-weight:500;font-size:12.5px}
+.ctl label b{color:var(--ink);font-family:var(--mono);font-weight:400;font-size:12.5px}
 input[type=range]{width:100%;accent-color:var(--sig);height:20px}
 select,.seg{width:100%;font-family:var(--sans);font-size:13.5px;padding:7px 9px;border:1px solid var(--line);
   border-radius:8px;background:var(--paper);color:var(--ink)}
 .seg{display:flex;gap:4px;padding:4px;background:var(--paper)}
 .seg button{flex:1;border:0;background:transparent;padding:6px 4px;border-radius:6px;cursor:pointer;
   font-family:var(--sans);font-size:12.5px;color:var(--ink-soft)}
-.seg button[aria-pressed=true]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(13,27,42,.12);font-weight:600}
+.seg button[aria-pressed=true]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px var(--line);font-weight:700}
 .chk{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-soft);cursor:pointer;margin-bottom:9px}
 .chk input{accent-color:var(--key);width:16px;height:16px}
 .reset{width:100%;margin-top:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);
@@ -68,33 +101,33 @@ select,.seg{width:100%;font-family:var(--sans);font-size:13.5px;padding:7px 9px;
 .verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
 .vcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
 .vcard .k{font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-faint)}
-.vcard .v{font-size:22px;font-weight:600;font-family:var(--mono);margin-top:3px;letter-spacing:-0.02em}
+.vcard .v{font-size:22px;font-weight:700;font-family:var(--mono);margin-top:3px;letter-spacing:-0.02em}
 .vcard .d{font-size:12px;color:var(--ink-soft);margin-top:2px}
 .v.good{color:var(--good)} .v.warn{color:var(--warn)}
 
 /* pinned dock: transport + pipeline */
 .dock{position:sticky;top:var(--hh,60px);z-index:25;background:var(--paper);padding:2px 0 12px;margin-bottom:6px}
-.dock-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 18px -14px rgba(13,27,42,.45)}
+.dock-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 18px -14px var(--shadow)}
 .transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--line-soft)}
 .iconbtn{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
   display:inline-grid;place-items:center;cursor:pointer;padding:0;font-family:var(--sans);font-size:12px}
 .iconbtn:hover{border-color:var(--sig)}
-.iconbtn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.iconbtn.primary{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
 .iconbtn svg{width:16px;height:16px;fill:currentColor}
 .txtbtn{height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);
   cursor:pointer;font-family:var(--sans);font-size:12.5px}
-.txtbtn[aria-pressed=true]{background:var(--sig);border-color:var(--sig);color:#fff}
+.txtbtn[aria-pressed=true]{background:var(--sig);border-color:var(--sig);color:var(--on-ink)}
 .tspeed{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft)}
 .tspeed input{width:96px}
-.tspeed b{font-family:var(--mono);font-weight:500;color:var(--ink);min-width:38px}
+.tspeed b{font-family:var(--mono);font-weight:400;color:var(--ink);min-width:38px}
 .scrubwrap{flex:1;min-width:150px;display:flex;flex-direction:column;gap:1px}
 .scrubwrap input{width:100%}
 .tpos{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
 .mini{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
 .chip{font-size:12px;padding:3px 9px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);white-space:nowrap}
-.chip b{font-weight:600}
-.chip.good{color:var(--good);border-color:#b9dccb;background:#eef8f2}
-.chip.warn{color:var(--warn);border-color:#e6bcae;background:#fbf1ed}
+.chip b{font-weight:700}
+.chip.good{color:var(--good);border-color:var(--good-line);background:var(--good-bg)}
+.chip.warn{color:var(--warn);border-color:var(--warn-line);background:var(--warn-bg)}
 .dock-scroll{overflow-x:auto;padding:10px 12px 10px}
 .dock-inner{position:relative;min-width:920px}
 .dock-inner.arc{padding-bottom:50px}
@@ -105,11 +138,11 @@ select,.seg{width:100%;font-family:var(--sans);font-size:13.5px;padding:7px 9px;
   text-align:center;cursor:pointer;min-height:60px;transition:border-color .12s,background .12s}
 .node:hover{border-color:var(--sig-dim)}
 .node.key:hover{border-color:var(--key-dim)}
-.node[aria-selected=true]{border-color:var(--sig);background:#eef7f8}
-.node.key[aria-selected=true]{border-color:var(--key);background:#faf0ec}
+.node[aria-selected=true]{border-color:var(--sig);background:var(--sig-bg)}
+.node.key[aria-selected=true]{border-color:var(--key);background:var(--key-bg)}
 .node:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
 .node.key{border-style:dashed}
-.node .nt{font-size:12px;font-weight:600;line-height:1.15}
+.node .nt{font-size:12px;font-weight:700;line-height:1.15}
 .node .nv{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:4px;min-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #flow{position:absolute;left:0;top:0;pointer-events:none}
 
@@ -121,7 +154,7 @@ select,.seg{width:100%;font-family:var(--sans);font-size:13.5px;padding:7px 9px;
 .panel h2{font-size:15px;margin-bottom:2px}
 
 .panel .cap{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px}
-.panel .cap b{color:var(--ink);font-weight:600}
+.panel .cap b{color:var(--ink);font-weight:700}
 canvas{width:100%;display:block;border-radius:6px}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft);margin-top:9px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
@@ -132,14 +165,14 @@ canvas{width:100%;display:block;border-radius:6px}
 .explain b{color:var(--ink)}
 .explain code{font-family:var(--mono);font-size:12.5px;background:var(--panel);padding:1px 5px;border-radius:4px;border:1px solid var(--line-soft)}
 .tag{display:inline-block;font-size:11px;font-family:var(--mono);padding:2px 7px;border-radius:5px;margin-right:6px}
-.tag.data{background:#e6f3f4;color:var(--sig)}
-.tag.key{background:#f7e9e4;color:var(--key)}
+.tag.data{background:var(--sig-bg);color:var(--sig)}
+.tag.key{background:var(--key-bg);color:var(--key)}
 table.mini{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
 table.mini td,table.mini th{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line-soft)}
-table.mini th{color:var(--ink-faint);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:0.04em}
+table.mini th{color:var(--ink-faint);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:0.04em}
 table.mini td.n{font-family:var(--mono);text-align:right}
-.pill{font-size:11.5px;padding:2px 8px;border-radius:20px;font-weight:600}
-.pill.good{background:#e2f2ea;color:var(--good)} .pill.warn{background:#f7e4de;color:var(--warn)}
+.pill{font-size:11.5px;padding:2px 8px;border-radius:20px;font-weight:700}
+.pill.good{background:var(--good-bg);color:var(--good)} .pill.warn{background:var(--warn-bg);color:var(--warn)}
 .foot{margin-top:24px;font-size:12px;color:var(--ink-faint);line-height:1.6}
 
 /* summary strip above the plots */
@@ -164,7 +197,7 @@ details.info:not([open]) .hide::after{content:"show explanation"}
 details.info[open] .hide::after{content:"hide"}
 .info-body{padding:2px 18px 18px;display:grid;grid-template-columns:1.1fr 1fr;gap:26px}
 @media(max-width:900px){.info-body{grid-template-columns:1fr}}
-.info-body h4{margin:0 0 5px;font-size:12.5px;color:var(--ink-faint);font-weight:600}
+.info-body h4{margin:0 0 5px;font-size:12.5px;color:var(--ink-faint);font-weight:700}
 .info-body p{margin:0 0 14px;font-size:14px;color:var(--ink-soft)}
 .info-body p.big{font-size:15.5px;color:var(--ink);line-height:1.55}
 .info-body ul{margin:0 0 14px;padding-left:18px;font-size:13.5px;color:var(--ink-soft)}
@@ -174,12 +207,12 @@ details.info[open] .hide::after{content:"hide"}
 .io .b b{color:var(--ink)}
 .io .arr{align-self:center;color:var(--ink-faint)}
 @media(max-width:560px){.io{grid-template-columns:1fr}.io .arr{transform:rotate(90deg);justify-self:center}}
-pre.model{margin:0 0 14px;padding:11px 13px;background:#0d1b2a;color:#d7e4ec;border-radius:8px;font-family:var(--mono);
+pre.model{margin:0 0 14px;padding:11px 13px;background:var(--code-bg);color:var(--code-ink);border-radius:8px;font-family:var(--mono);
   font-size:12px;line-height:1.65;overflow-x:auto;white-space:pre}
 details.gloss{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
-details.gloss summary{cursor:pointer;font-weight:600;font-size:14px}
+details.gloss summary{cursor:pointer;font-weight:700;font-size:14px}
 details.gloss dl{margin:12px 0 0;display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;font-size:13.5px;color:var(--ink-soft)}
-details.gloss dt{font-weight:600;color:var(--ink)}
+details.gloss dt{font-weight:700;color:var(--ink)}
 details.gloss dd{margin:0}
 .scn-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
 .scn-btns button{border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);padding:7px 13px;
@@ -196,6 +229,7 @@ details.gloss dd{margin:0}
       <button id="sc-base" onclick="setScheme('baseline')">Baseline (ESSERC'25)</button>
       <button id="sc-prop" onclick="setScheme('proposed')" aria-pressed="true">Proposed (PUF + NLFSR)</button>
     </div>
+    <button class="theme-btn" type="button" id="themeBtn" aria-label="Switch colour theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>Theme</button>
   </div>
 </header>
 <div class="wrap">
@@ -872,9 +906,9 @@ function measure() {
 function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 function tokBit(ctx, x, y, bit, color, bad) {
   ctx.save(); rr(ctx, x - 6.5, y - 6.5, 13, 13, 3);
-  if (bit) { ctx.fillStyle = color; ctx.fill(); } else { ctx.fillStyle = "#fff"; ctx.fill(); }
+  if (bit) { ctx.fillStyle = color; ctx.fill(); } else { ctx.fillStyle = CSS("--panel"); ctx.fill(); }
   ctx.lineWidth = bad ? 2.2 : 1.4; ctx.strokeStyle = bad ? COL.warn() : color; ctx.stroke();
-  ctx.fillStyle = bit ? "#fff" : color; ctx.font = "600 9px " + CSS("--mono"); ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(bit, x, y + 0.5);
+  ctx.fillStyle = bit ? CSS("--panel") : color; ctx.font = "700 9px " + CSS("--mono"); ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(bit, x, y + 0.5);
   ctx.restore();
 }
 function tokAnalog(ctx, x, y, v, color) {
@@ -882,7 +916,7 @@ function tokAnalog(ctx, x, y, v, color) {
   ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - v * 13); ctx.stroke();
   ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, 3.4, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(x, y - v * 13, 2.6, 0, 7); ctx.fill(); ctx.restore();
 }
-function label(ctx, txt, x, y, color, a = 1) { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = color; ctx.font = "600 10px " + CSS("--sans"); ctx.textAlign = "center"; ctx.textBaseline = "alphabetic"; ctx.fillText(txt, x, y); ctx.restore(); }
+function label(ctx, txt, x, y, color, a = 1) { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = color; ctx.font = "700 10px " + CSS("--sans"); ctx.textAlign = "center"; ctx.textBaseline = "alphabetic"; ctx.fillText(txt, x, y); ctx.restore(); }
 const pulse = (ph, t) => Math.exp(-((ph - t) ** 2) / 0.09);
 
 function keyEvents() {
@@ -1130,7 +1164,7 @@ const BLOCKINFO = {
 VCM   = 0.6 V   (middle of the supply)
 VDD   = 1.2 V
 R_TIA = ${(st.rtia / 1e3).toFixed(2)} kΩ   (gain setting)`,
-    read: ["The teal line is the voltage leaving the front end. It moves up and down around the dashed middle line (0.6 V) in step with the sensor current.",
+    read: ["The blue line is the voltage leaving the front end. It moves up and down around the dashed middle line (0.6 V) in step with the sensor current.",
       "If the line goes flat at 0 V or 1.2 V, the amplifier has hit its limit. That flattening is protection, not a fault: nothing an attacker does can push the voltage past the supply."],
     why: "Every later block is only safe if its input stays bounded. This clipping is the first guarantee: however much current an attacker forces in, the voltage cannot leave the 0 to 1.2 V range.",
     limits: "Modelled as an ideal amplifier with a hard clip. The real one is a two-stage amplifier with four selectable gains, plus noise and limited bandwidth, none of which are modelled here.",
@@ -1166,7 +1200,7 @@ u = ±1.0  means "as large as the modulator's
   clamp x1, x2 to ±${st.xlim}                       (amplifier rails)
   d  = ${st.dither ? st.dither_amp : 0} × (LFSR_A bit − LFSR_B bit)      dither
   D  = 1 if x2·(1+d) + d + noise ≥ 0 else 0`,
-    read: ["Left plot: the two teal lines are the modulator's internal 'running totals'. Healthy means they wiggle near zero and never touch the red dashed rails.",
+    read: ["Left plot: the two blue lines are the modulator's internal 'running totals'. Healthy means they wiggle near zero and never touch the red dashed rails.",
       "Right plot: the output bits D. Notice they toggle constantly, and the pattern changes with the input.",
       "If the totals slam into the rails and stay there, the modulator is saturated and the output freezes at all 1s or all 0s."],
     why: "The security of the whole scheme rests on this block. Because the output bits keep toggling in a way nobody can predict (quantization noise plus dither), XORing them with the key hides the key. If an attacker could force the modulator to freeze, the output would become predictable and the key would leak.",
@@ -1187,7 +1221,7 @@ u = ±1.0  means "as large as the modulator's
   1  0 | 1          = D          (K cancels out)
   1  1 | 0`,
     read: ["Top: three rows of bits. Row D is the data, row K the key, row C the encrypted result. Check any column: C differs from D exactly where K is 1.",
-      "Chart: the red line is the encrypted stream on the wire, flat and noise-like. The teal line is the original, with the characteristic dip that noise-shaping creates near the signal band."],
+      "Chart: the red line is the encrypted stream on the wire, flat and noise-like. The blue line is the original, with the characteristic dip that noise-shaping creates near the signal band."],
     why: "The attacker's basic trick is K = C ⊕ D. They see C on the wire; if they can ever work out D, they get the key stream for free. So everything before this gate (the buffer, the dither, the busy bitstream) exists to keep D unpredictable.",
     limits: "This is exactly what the paper describes, one XOR per bit. Nothing simplified here.",
   },
@@ -1222,7 +1256,7 @@ each bit flips with probability BER = ${(st.ber * 100).toFixed(2)}%
 Eavesdropper knowledge:
   the whole design, every polynomial and tap
   NOT the key`,
-    read: ["The bit row shows the last idle bits, then the start of the frame (the sync pattern is highlighted in teal).",
+    read: ["The bit row shows the last idle bits, then the start of the frame (the sync pattern is highlighted in blue).",
       "The payload after the header looks like coin flips. That is what the attacker sees."],
     why: "The attacker model in the paper: full knowledge of the design, full view of the channel, no access to the key. Everything the attack panels do starts from these bits.",
     limits: "A simple model: random idle bits and independent bit errors. No fading, interference, jamming or timing offset.",
@@ -1331,7 +1365,7 @@ each power-up:
   bit_i = 1 if mismatch_i + noise_i > 0
   noise_i ~ Normal(0, σ)
   σ = ${st.puf_sigma} × (1 + 0.008 × |T − 25°C|) = ${(st.puf_sigma * (1 + 0.008 * Math.abs(st.temp - 25))).toFixed(3)}`,
-    read: ["Each little bar is one memory cell in the first 120. Teal cells gave the same value as at enrollment; red cells flipped this time.",
+    read: ["Each little bar is one memory cell in the first 120. Blue cells gave the same value as at enrollment; red cells flipped this time.",
       "Raise the temperature or the PUF noise slider and more red cells appear. That is why error correction is needed."],
     why: "The key is created from this fingerprint every time the chip powers on, so it never has to be stored. An attacker who reads the chip's memory while it is off finds no key.",
     limits: "A simple noise model: fixed Gaussian mismatch, plus Gaussian noise that grows linearly with temperature. Real SRAM PUFs also age, have bias between cells, and need care to avoid correlated cells. The 600 bits and noise level are illustrative.",
@@ -1424,7 +1458,7 @@ matches the chip's K only if key_rx == key_tx`,
     io: (S, st) => [`Every internal signal in the chain`, `Nine traces, lined up on the same clock`],
     model: (S, st) => `trace_n(t) = the signal at stage n, sample t
 
-analog rows (teal): sensor current, TIA voltage,
+analog rows (blue): sensor current, TIA voltage,
                     modulator input u, integrator 2, output y
 digital rows:       D (modulator), K (keystream, rust),
                     C (on the wire, grey), D_rx (recovered)
@@ -1561,7 +1595,7 @@ const PANELS = {
 
   // ------------------------------------------------------------ DSM
   dsm_out() {
-    $("panels").innerHTML = panelCanvas("Inside the modulator", "The two teal lines are the running totals. Healthy: they wiggle near zero. Saturated: they hit the red rails and stay.", 240)
+    $("panels").innerHTML = panelCanvas("Inside the modulator", "The two blue lines are the running totals. Healthy: they wiggle near zero. Saturated: they hit the red rails and stay.", 240)
       + panelCanvas("Output bits D", "The last 96 bits, sliding left as time moves. Underlined bit is the newest.", 150)
       + panelWide("Bit statistics (whole run)", `<table class="mini"><tr><th>Metric</th><th>Value</th><th></th></tr>
         <tr><td>Fraction of 1s</td><td class="n">${(S.ones * 100).toFixed(1)}%</td><td>${S.sig === "dc" || S.sig === "forced" ? "encodes the DC level" : "about 50% for a centred sine"}</td></tr>
@@ -1612,7 +1646,7 @@ const PANELS = {
   // ------------------------------------------------------------ channel
   channel() {
     const p = Math.max(0, S.sync_pos - 20);
-    $("panels").innerHTML = panelWide("On the wire: what an eavesdropper sees", `Header (idle bits, then the sync pattern in teal):
+    $("panels").innerHTML = panelWide("On the wire: what an eavesdropper sees", `Header (idle bits, then the sync pattern in blue):
         <div class="bitrow">${Array.from({ length: 80 }, (_, i) => { const idx = p + i, hl = S.sync_pos >= 0 && idx >= S.sync_pos - 48 && idx < S.sync_pos; return `<b style="color:${hl ? "var(--sig)" : "var(--ink-soft)"}">${S.rx_bits[idx]}</b>`; }).join("")}</div>
         <p class="cap" style="margin:10px 0 4px">Payload streaming past right now (red = flipped by the channel):</p>
         <div class="bitrow"><span id="rW"></span></div>
@@ -1660,7 +1694,7 @@ const PANELS = {
   // ------------------------------------------------------------ PUF
   puf() {
     if (state.scheme !== "proposed") return;
-    $("panels").innerHTML = panelCanvas("SRAM power-up fingerprint", "Cells settle one by one at power-up. Teal = same as at enrollment, red = flipped this time.", 200)
+    $("panels").innerHTML = panelCanvas("SRAM power-up fingerprint", "Cells settle one by one at power-up. Blue = same as at enrollment, red = flipped this time.", 200)
       + panelWide("This power-up vs enrollment", `<table class="mini"><tr><th>Metric</th><th>Value</th><th></th></tr>
         <tr><td>PUF bits</td><td class="n">${PUF_BITS}</td><td></td></tr>
         <tr><td>Flipped since enrollment</td><td class="n">${S.n_err_true}</td><td>${(S.ber_puf * 100).toFixed(1)}% at ${state.temp}°C</td></tr>
@@ -1797,6 +1831,12 @@ buildScenarios(); wireTransport(); setHH(); addEventListener("resize", setHH);
 if (window.ResizeObserver) new ResizeObserver(() => { ANIM.dirty = true; }).observe($("dockInner"));
 setScheme("proposed"); advance(0); markSelected(); renderPanels();
 requestAnimationFrame(frame);
+$("themeBtn").addEventListener("click", () => {
+  const r = document.documentElement, n = r.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  r.setAttribute("data-theme", n); try { localStorage.setItem("theme", n); } catch (e) {}
+  renderPanels();
+});
+if (document.fonts) document.fonts.ready.then(() => { setHH(); renderPanels(); });
 // ===== PANELS-END =====
 </script>
 </body>
