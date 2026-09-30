@@ -1159,8 +1159,13 @@ function runAttack(S, P, A, AK, base) {
         from = 0;
       }
     }
+    if (!base) {                     // BM cannot extend the NLFSR, but a good enough guess of D exposes this frame's keystream directly
+      let m = 0; for (let i = 0; i < n; i++) m += kg[i] === S.K[i];
+      E.raw = m / n;
+      if (E.raw > 0.97) { recover(kg, 0); E.v = S.mac ? "safe" : "breached"; E.reuse = true; return; }   // without a per-frame IV every frame reuses it
+    }
     recover(kh, from);
-    if (!base) E.v = "safe";                           // even a lucky window cannot be extended through the NLFSR
+    if (!base) E.v = "safe";
   };
   switch (A) {
     case "eaves": recover(guessKs()); E.v = "safe"; break;
@@ -1904,7 +1909,13 @@ const PANELS = {
 
 // every probe point on one time axis, scrolling with the diagram's clock
 PANELS.scope = function () {
-  const ROWS = 9, RH = 42, H = ROWS * RH + 34, W = 250;
+  const E = S.atk, extra = [];
+  if (E && ["spoof", "replay", "bitflip"].includes(E.id)) extra.push(["C at the receiver", "d", i => S.C_rx[i], () => CSS("--ink")]);
+  if (E && E.khat) extra.push(["Eve's guess K̂", "d", i => E.khat[i], COL.key], ["Eve's decrypted D̂", "d", i => E.dhat[i], COL.key], ["Eve's reading", "a", i => E.yhat[Math.min(E.yhat.length - 1, Math.floor(i / OSR))] / 0.3, COL.key]);
+  if (E && E.X) extra.push(["Eve: C₁ ⊕ C₂", "d", i => E.X[i], COL.key]);
+  if (E && S.fake) extra.push(["Eve's forged C", "d", i => S.fake.C[i], COL.key]);
+  if (S.mitm_mask) extra.push(["bits Eve flips", "d", i => S.mitm_mask[i], COL.key]);
+  const ROWS = 9 + extra.length, RH = 42, H = ROWS * RH + 34, W = 250;
   document.getElementById("panels").innerHTML = panelWide("Every signal at the same instant",
     "One time axis, moving as the animation plays. Read straight down a column to follow a single moment through the whole chain. The red line is 'now'.",
     `<canvas data-h="${H}"></canvas><div class="legend">${legend([["analog signal", COL.sig()], ["data bits", CSS("--ink")], ["key bits", COL.key()]])}</div>`);
@@ -2154,6 +2165,7 @@ function eveMetric(S) {                        // one line under Eve's first sco
 }
 function atkSummary(S) {                       // one sentence for the banner
   const E = S.atk, pc = v => (v * 100).toFixed(1) + "%", r = atkReason(S);
+  if (E.reuse) return E.v === "breached" ? `The modulator is so predictable that C ⊕ guess gives Eve this frame's whole keystream (${pc(E.kacc)} right). With no frame counter every frame reuses it, so she decrypts all the others.` : `The modulator is so predictable that Eve gets this frame's keystream (${pc(E.kacc)} right), but the frame counter gives the next frame a fresh keystream, so it decrypts nothing else.`;
   if (KEYREC.includes(E.id)) return E.v === "breached" ? `Eve's keystream guess matches the real one on ${pc(E.kacc)} of bits, so she decrypts the sensor reading.` : `Eve's keystream guess is right on only ${pc(E.kacc)} of bits (50% = guessing), so what she decrypts is noise.`;
   if (E.id === "samekey") return `C₁ ⊕ C₂ is ${pc(E.xfrac)} ones: ${E.v === "leak" ? "the key cancels and the two frames are linkable." : "noise, so the key reuse reveals nothing."}`;
   if (E.id === "hleak") return E.v === "na" ? "The original design has no helper data to leak." : `After reading h, ${Math.max(0, E.residual)} fingerprint bits remain unknown to Eve (a 128-bit key needs 128).`;
@@ -2344,7 +2356,7 @@ function buildDiagram() {
 
   // ---- Eve
   const ex = 800, ey = 560, A = state.attack || "none";
-  dgAtk = A;
+  dgAtk = atkSig();
   if (A === "none") {
     s += `<g class="blk eve" data-node="eve" tabindex="0" role="button" aria-label="Eavesdropper"><rect class="evebox" x="${ex}" y="${ey}" width="290" height="230" rx="12"/>
       <text class="t" x="${ex + 145}" y="${ey + 22}" text-anchor="middle">Eavesdropper (Eve)</text>
@@ -2676,7 +2688,7 @@ const ATTACKS = [
       return { base: o("base", R.base), prop: o("prop", R.prop) };
     } },
 
-  { id: "knownin", name: "Zero / DC input attack (replica)", src: "paper", stop: "Dither + quantisation noise (S-DSM, both)",
+  { id: "knownin", name: "Zero / DC input attack (replica)", src: "paper", stop: () => state.mac ? "Dither + QN (both); per-frame IV as backup" : "Dither + quantisation noise (S-DSM, both)",
     has: "Control of the sensor's input (e.g. zero or a fixed DC current) and a replica chip to run the same input on.",
     desc: "The paper's first cryptanalysis test (Fig. 4c). With a conventional ADC + stream cipher, a fixed input gives a known output, so C ⊕ known = keystream. Here Eve feeds the victim a known input, runs her replica on the same input and uses its bits as her guess of D. Dither and quantisation noise make the two modulators disagree about half the time, so the guess is useless. In this model the replica's own analog mismatch already scrambles most bits. Set it to 0 (a perfectly trimmed replica) to isolate dither: at the default strength a few % of bits still differ and short BM windows survive, so the original design breaks. Raise the dither strength to close the gap.",
     knobs: [{ k: "kiInput", t: "seg", label: "Input Eve applies", opts: [["zero", "Zero"], ["dc", "DC 0.5 µA"]] },
@@ -2689,12 +2701,14 @@ const ATTACKS = [
       const flip = flipFrac(Dv, Dr, LAB_N), agree = xorBits(Dv, Dr).subarray(0, 400);
       const o = (d, Sx) => {
         const K = Sx.K.subarray(0, LAB_N), C = xorBits(Dv, K), Kg = xorBits(C, Dr);
-        const w = windowAttack(Kg, K, state.seed + 3), br = w.broken > 0 && d === "base";
-        return { v: br ? "breached" : "safe", head: `Replica disagrees on ${pct(flip)} of bits`,
+        const w = windowAttack(Kg, K, state.seed + 3), raw = 1 - flipFrac(Kg, K, LAB_N), reuse = d === "prop" && raw > 0.97;
+        const br = (w.broken > 0 && d === "base") || (reuse && !state.mac);
+        return { v: br ? "breached" : "safe", head: reuse ? `Keystream of this frame exposed (${pct(raw)})` : `Replica disagrees on ${pct(flip)} of bits`,
           steps: [`Forces the input to ${lab.kiInput === "zero" ? "zero" : "0.5 µA DC"} and records C from the victim.`,
             `Runs her replica on the same input: its bits differ from the victim's D on <b>${pct(flip)}</b> of clocks (50% = no information; the paper measured 50.05%).`,
             `Uses C ⊕ replica as the keystream and runs BM on ${w.tries} windows of 64 bits: ${w.broken} window${w.broken === 1 ? "" : "s"} came out exactly right.`,
             d === "base" ? (br ? `One clean window is enough: the 16-bit LFSR state falls out, and every later reading decrypts.` : `No clean window, so no LFSR state. The keystream stays hidden.`)
+              : reuse ? (state.mac ? `The replica is so close that C ⊕ replica <i>is</i> this frame's keystream (${pct(raw)} right). But the frame counter gives every frame a fresh keystream, so nothing else decrypts.` : `The replica is so close that C ⊕ replica <i>is</i> this frame's keystream (${pct(raw)} right). With counter + MAC off every frame reuses it, so all other frames decrypt.`)
               : (w.broken ? `Even the clean windows don't help: BM cannot model the NLFSR, so nothing beyond them decrypts.` : `No clean window, and the NLFSR would resist BM anyway.`)],
           plot: { kind: "bits", bits: agree, on: "replica wrong", off: "replica right" } };
       };
@@ -2730,7 +2744,7 @@ const ATTACKS = [
         plot: { kind: "bits", bits: X.subarray(0, 400), on: "C₁ ≠ C₂", off: "C₁ = C₂" } } };
     } },
 
-  { id: "saturate", name: "Forced-input saturation", src: "beyond", stop: "S2D ×0.5 buffer; NLFSR as backup",
+  { id: "saturate", name: "Forced-input saturation", src: "beyond", stop: () => state.mac ? "S2D ×0.5 buffer; per-frame IV as backup" : "S2D ×0.5 buffer",
     has: "The ability to inject a large current at the electrode.",
     desc: "If the modulator saturates, its output freezes at all 1s, so C ⊕ 1 is the keystream in the clear. The S2D buffer halves the input so the loop stays in control. Turn the buffer off (global) to see what happens.",
     knobs: [{ g: "buffer", t: "seg", label: "S2D buffer (global)", opts: [[0.5, "×0.5 (on)"], [1.0, "×1 (off)"]] },
@@ -2740,12 +2754,13 @@ const ATTACKS = [
       const ones = D.reduce((a, b) => a + b, 0) / LAB_N, run = longestRun(D), guess = ones >= 0.5 ? 1 : 0;
       const o = (d, Sx) => {
         const K = Sx.K.subarray(0, LAB_N), C = xorBits(D, K), Kg = C.map(c => c ^ guess);
-        const w = windowAttack(Kg, K, state.seed + 23), br = w.broken > 0 && d === "base";
+        const w = windowAttack(Kg, K, state.seed + 23), raw = 1 - flipFrac(Kg, K, LAB_N), reuse = d === "prop" && raw > 0.97;
+        const br = (w.broken > 0 && d === "base") || (reuse && !state.mac);
         return { v: br ? "breached" : "safe", head: `Modulator ${pct(ones, 0)} ones, longest run ${run}`,
           steps: [`Forces ${state.force_uA} µA; the buffer is ${state.buffer === 0.5 ? "on (×0.5)" : "<b>off</b>"}.`,
             run > 200 ? `The modulator saturates: D is stuck at ${guess}s, so C ⊕ ${guess} is the keystream itself.` : `The loop stays in control: D keeps toggling (longest run ${run} bits), so guessing D = all ${guess}s is wrong most of the time.`,
             `BM on ${w.tries} windows: ${w.broken} predicted the future keystream.`,
-            d === "base" ? (br ? `The LFSR is recovered: all later data decrypts.` : `No window breaks the LFSR.`) : (run > 200 ? `The keystream is visible while the input is forced, but the NLFSR can't be extended from it, and the forced reading itself is worthless.` : `Nothing to learn.`)],
+            d === "base" ? (br ? `The LFSR is recovered: all later data decrypts.` : `No window breaks the LFSR.`) : (reuse ? (state.mac ? `This frame's keystream is in the clear, but the frame counter gives the next frame a fresh one, and the forced reading itself is worthless.` : `This frame's keystream is in the clear, and with counter + MAC off every frame reuses it: all other frames decrypt.`) : `Nothing to learn.`)],
           plot: { kind: "bits", bits: D.subarray(2000, 2400), on: "D = 1", off: "D = 0", neutral: true } };
       };
       return { base: o("base", R.base), prop: o("prop", R.prop) };
@@ -2917,7 +2932,7 @@ function vpill(o) { const [t, c] = VERD[o.v]; return `<span class="vp ${c}">${t}
 function buildLabCard() {
   document.getElementById("attackLab").innerHTML = `
     <div class="dg-head"><div><h2>Attack lab: original design vs our proposal</h2>
-      <p>Each attack runs live against <b>both</b> designs with the current settings. Pick one to see what the attacker does, step by step, and whether data is breached. Attacks marked <span class="src paper">paper</span> are the ones the ESSERC'25 paper discusses; the rest go beyond its threat model.</p></div>
+      <p>Each attack runs live against <b>both</b> designs with the current settings. Pick one to see what the attacker does, step by step, whether data is breached, and the waveform at every block in both designs. <i>Run it in the live diagram</i> puts the attack into the animated system above, or pick one from its <i>Attack</i> menu. Attacks marked <span class="src paper">paper</span> are the ones the ESSERC'25 paper discusses; the rest go beyond its threat model.</p></div>
       <div class="lab-score" id="labScore"></div></div>
     <div class="atk-scroll"><table class="atk-table" id="atkTable"></table></div>
     <div class="atk-detail" id="atkDetail"></div>`;
