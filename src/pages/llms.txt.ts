@@ -15,8 +15,6 @@ export const GET: APIRoute = ({ site }) => {
 > Browser-based tools for analog IC design, research and finance. Everything
 > runs client-side; the data-driven tools are refreshed by scheduled bots.
 
-- [Tools index](${origin}/tools/)
-
 ## Tools
 
 ${list}

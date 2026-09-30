@@ -8,9 +8,10 @@ import tools from "./src/data/tools.json" with { type: "json" };
 const site = process.env.SITE_URL || "https://nithinpuru.github.io";
 const base = process.env.ASTRO_BASE || "/";
 
-// "/" and "/rongm/" only forward to the portfolio (nithinpuru.com), so they stay
-// out of the sitemap; the tools (plain pages in public/) are listed instead.
-const redirects = ["/", "/rongm/"];
+// "/", "/rongm/" and "/tools/" only forward to the portfolio (nithinpuru.com),
+// so they stay out of the sitemap; the tools (plain pages in public/) are
+// listed instead.
+const redirects = ["/", "/rongm/", "/tools/"];
 const toolPages = tools.groups.flatMap((g) => g.entries).map((e) => new URL(e.url, site).href);
 
 export default defineConfig({

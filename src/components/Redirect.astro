@@ -1,15 +1,16 @@
 ---
 // The portfolio moved to nithinpuru.com. GitHub Pages can't send real
 // redirects, so old portfolio addresses forward in the browser (keeping
-// ?query and #section) with a meta refresh as the no-JS fallback. Only the
-// portfolio's own paths use this - the tools stay on this site.
+// ?query and #section, unless the target names its own section) with a meta
+// refresh as the no-JS fallback. Only the portfolio's own paths use this - the
+// tools stay on this site.
 const { to } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <script is:inline define:vars={{ to }}>location.replace(to + location.search + location.hash);</script>
+    <script is:inline define:vars={{ to }}>location.replace(to.indexOf("#") < 0 ? to + location.search + location.hash : to);</script>
     <meta http-equiv="refresh" content={`0; url=${to}`} />
     <link rel="canonical" href={to} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -1,5 +1,5 @@
-/* Tools index (/tools/) and 404 - the same palette, Computer Modern fonts and
-   light/dark switch as the tool pages (html[data-theme], localStorage "theme"). */
+/* 404 page - the same palette, Computer Modern fonts and light/dark switch as
+   the tool pages (html[data-theme], localStorage "theme"). */
 @font-face {
   font-family: "KaTeX_Main";
   src: url("/fonts/KaTeX_Main-Regular.woff2") format("woff2");
@@ -42,7 +42,6 @@
   --font-mono: "KaTeX_Typewriter", "Courier New", monospace;
   --content: 46rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ring: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Ccircle cx='4' cy='4' r='3.1' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E");
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -164,115 +163,6 @@ a {
   max-width: var(--content);
   margin-inline: auto;
   padding: 3rem 1.4rem 5rem;
-}
-
-/* heading on a 2px ink rule that ends in an open terminal */
-.head {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 2px solid var(--ink);
-}
-.head::after {
-  content: "";
-  position: absolute;
-  right: -3px;
-  bottom: -5px;
-  width: 8px;
-  height: 8px;
-  background: var(--ink);
-  -webkit-mask: var(--ring) center / contain no-repeat;
-  mask: var(--ring) center / contain no-repeat;
-}
-.head h1 {
-  margin: 0;
-  font-size: clamp(1.75rem, 3.6vw, 2.25rem);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.15;
-}
-.lede {
-  margin: 1.1rem 0 0.4rem;
-  color: var(--ink-2);
-  text-align: justify;
-  hyphens: auto;
-}
-
-.tools {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.tool {
-  display: grid;
-  grid-template-columns: 2.4rem 1fr;
-  column-gap: 0.4rem;
-  padding-block: 1.35rem;
-  border-top: 1px solid var(--rule);
-}
-.tool:first-child {
-  border-top: none;
-}
-.tool__no {
-  font-family: var(--font-mono);
-  font-size: 0.92rem;
-  line-height: 1.95;
-  color: var(--ink-3);
-}
-.tool__title {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  line-height: 1.4;
-}
-.tool__title a {
-  color: var(--ink);
-  text-decoration: none;
-  transition: color 0.2s var(--ease-out);
-}
-.tool__title a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.tool__meta {
-  margin: 0.15rem 0 0;
-  font-family: var(--font-mono);
-  font-size: 0.84rem;
-  letter-spacing: 0.03em;
-  color: var(--ink-3);
-}
-.tool__desc {
-  margin: 0.6rem 0 0;
-  color: var(--ink-2);
-  line-height: 1.6;
-  hyphens: auto;
-}
-.tool__links {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.1rem;
-  margin: 0.75rem 0 0;
-  padding: 0;
-}
-.tool__links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--font-mono);
-  font-size: 0.84rem;
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule);
-  white-space: nowrap;
-  transition: border-color 0.2s var(--ease-out);
-}
-.tool__links a:hover {
-  border-bottom-color: var(--accent);
 }
 
 /* 404 */

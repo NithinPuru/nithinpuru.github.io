@@ -43,9 +43,13 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}`;
 
 // ---- build output ------------------------------------------------------------
-// "/" and "/rongm/" are redirect stubs (the portfolio lives on nithinpuru.com):
-// check them statically - loading them would leave the site.
-for (const [file, to] of [["index.html", "https://nithinpuru.com/"], ["rongm/index.html", "https://nithinpuru.com/rongm/"]]) {
+// "/", "/rongm/" and "/tools/" are redirect stubs (the portfolio lives on
+// nithinpuru.com): check them statically - loading them would leave the site.
+for (const [file, to] of [
+  ["index.html", "https://nithinpuru.com/"],
+  ["rongm/index.html", "https://nithinpuru.com/rongm/"],
+  ["tools/index.html", "https://nithinpuru.com/#tools"],
+]) {
   const html = await readFile(join(DIST, file), "utf8").catch(() => "");
   if (!html.includes("location.replace") || !html.includes(`url=${to}`)) fail(`dist/${file}: does not forward to ${to}`);
 }
@@ -82,12 +86,12 @@ if (dl) {
 
 // ---- pages ---------------------------------------------------------------------
 const PAGES = [
-  "/tools/", "/404.html",
+  "/404.html",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
   "/secure_sensor_with_puf/", "/analytics/",
 ];
-const WIDTHS = { "/tools/": [360, 768, 980, 1440] };
+const WIDTHS = { "/404.html": [360, 768, 1440] };
 const DEFAULT_WIDTHS = [360, 1440];
 
 function browserPath() {

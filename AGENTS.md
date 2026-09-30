@@ -9,10 +9,10 @@ browser tools below, their data bots, and a small Astro shell around them.
 The portfolio moved to the private `NithinPuru/portfolio` repo (Cloudflare
 Pages, https://nithinpuru.com) - don't add portfolio content back here.
 
-- `/` and `/rongm/` are redirect stubs (`src/components/Redirect.astro`) that
-  forward to the same place on nithinpuru.com, keeping `?query` and `#hash`.
-- `/tools/` lists every tool from `src/data/tools.json` - no personal info
-  and no link to nithinpuru.com.
+- `/`, `/rongm/` and `/tools/` are redirect stubs (`src/components/Redirect.astro`)
+  that forward to nithinpuru.com (`/tools/` to the portfolio's tools list,
+  `https://nithinpuru.com/#tools`), keeping `?query` and `#hash`.
+- Each tool's "home" link points straight at `https://nithinpuru.com/#tools`.
 - Never set a custom domain for this Pages site (it would move every tool to
   nithinpuru.com), and never rename it or make it private: the tool URLs,
   the career-semi-quant redirect and Research Radar's `--seed-only` all
@@ -32,15 +32,15 @@ npm run preview   # serve dist/ (use: node node_modules/astro/astro.js preview -
 src/
   pages/index.astro          # redirect stub -> https://nithinpuru.com/
   pages/rongm.astro          # redirect stub -> https://nithinpuru.com/rongm/
-  pages/tools.astro          # /tools/ - the tools index (from tools.json)
+  pages/tools.astro          # redirect stub -> https://nithinpuru.com/#tools
   pages/404.astro            # generated 404 page
   pages/llms.txt.ts          # plain-text index of the tools
   pages/robots.txt.ts        # dynamic robots.txt -> sitemap-index.xml
-  layouts/Layout.astro       # head, theme pre-paint, analytics beacon (tools index + 404)
+  layouts/Layout.astro       # head, theme pre-paint, analytics beacon (404 page)
   components/Redirect.astro  # browser + meta-refresh redirect page
   components/ThemeToggle.astro
-  data/tools.json            # the tools index (title, meta, desc, links; relative URLs)
-  styles/tools.css           # tokens + styling for the tools index and 404
+  data/tools.json            # tool list for llms.txt and the sitemap (relative URLs)
+  styles/tools.css           # tokens + styling for the 404 page
   scripts/theme.js           # theme toggle handler (localStorage "theme")
 public/
   <tool>/                    # the tools (see below)
@@ -53,13 +53,14 @@ scripts/gen-brand.mjs        # regenerates the favicons and og-image
 ```
 
 To add a tool: put it in `public/<tool>/`, add an entry to `src/data/tools.json`
-(the sitemap picks it up too), and add its path to `PAGES` in `scripts/smoke.mjs`.
+(llms.txt and the sitemap pick it up), add its path to `PAGES` in
+`scripts/smoke.mjs`, and list it in the portfolio repo's `src/data/tools.json`.
 
 ## Migrated tools (public/)
 
 Standalone single-file tools copied verbatim from their chennakeshavadasa
-repos and served as-is (Astro copies `public/` untouched). Listed on `/tools/`
-from `src/data/tools.json`; each tool's "home" link points at `/tools/`.
+repos and served as-is (Astro copies `public/` untouched). Listed on the
+portfolio (`https://nithinpuru.com/#tools`); each tool's "home" link points there.
 
 | Path | Source repo (commit copied) | Notes |
 |---|---|---|
@@ -103,7 +104,7 @@ mark geometry live in that script — never hand-edit the PNG/ICO outputs. The
 rounded corners). The tool pages use `favicon.svg`, `/fonts/` and
 `og-image.png` (as their `og:image`), so keep them here.
 
-## Design system (tools index and 404)
+## Design system (404 page)
 
 - **Palette** (`:root` in `src/styles/tools.css`, shared with the tool pages):
   paper `#ffffff`, ink `#131c28`, ink-2 `#3d4756`, ink-3 `#5b6676`, accent
@@ -125,8 +126,8 @@ rounded corners). The tool pages use `favicon.svg`, `/fonts/` and
 
 CI does most of this on every deploy: the `checks` job in `deploy.yml` runs the
 design detector over `src/` and `npm run smoke` (`scripts/smoke.mjs`) against
-the published build - `/tools/`, the 404 page and every tool in both themes at
-phone and laptop widths (plus 768/980 for `/tools/`): no script errors, no
+the published build - the 404 page and every tool in both themes at phone and
+laptop widths: no script errors, no
 broken same-origin requests, no horizontal overflow; the redirect stubs still
 forward to nithinpuru.com; and the data bots fresh (FX <= 6 days, Quant
 Terminal <= 4 days, Research Radar <= 12 h, deadline tracker <= 3 days). It
