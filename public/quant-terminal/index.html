@@ -2975,5 +2975,12 @@ document.getElementById('clear-cache-btn').addEventListener('click', async () =>
 })();
 </script>
 <script src="js/tools.js"></script>
+<script>
+// Visit analytics (nithinpuru.github.io/np.js) - loaded only on the live site,
+// so local runs and tests don't request it.
+if (location.hostname === "nithinpuru.github.io") {
+  var np = document.createElement("script"); np.src = "/np.js"; np.defer = true; document.head.appendChild(np);
+}
+</script>
 </body>
 </html>
