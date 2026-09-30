@@ -337,6 +337,106 @@ body{padding-bottom:var(--insp-h)}
   .inspector[data-open=false] .insp-title p{display:none}   /* the folded bar is one line on a phone */
 }
 
+/* ---------------------------------------------------------------- attack lab + workbench */
+.lab-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 14px 16px;margin-bottom:22px;scroll-margin-top:calc(var(--hh) + 12px)}
+.lab-card .dg-head p{max-width:760px}
+.lab-score{display:flex;gap:10px}
+.lab-score div{border:1px solid var(--line);border-radius:10px;padding:7px 12px;background:var(--paper);min-width:118px}
+.lab-score span{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint)}
+.lab-score b{font-family:var(--mono);font-size:22px;font-weight:400}
+.lab-score b.warn{color:var(--warn)} .lab-score b.good{color:var(--good)}
+.lab-score i{font-style:normal;font-size:12px;color:var(--ink-soft);margin-left:6px}
+.atk-scroll{overflow-x:auto;margin:6px 0 14px}
+table.atk-table{width:100%;min-width:760px;border-collapse:collapse;font-size:13px}
+.atk-table th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);padding:6px 8px;border-bottom:1px solid var(--line)}
+.atk-table td{padding:7px 8px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.atk-table td b{font-weight:700}
+.atk-table td.stop{color:var(--ink-soft);font-size:12.5px}
+.atk-table tbody tr{cursor:pointer}
+.atk-table tbody tr:hover td{background:var(--sig-bg)}
+.atk-table tbody tr[aria-selected=true] td{background:var(--sig-bg2)}
+.atk-table tbody tr[aria-selected=true] td:first-child{box-shadow:inset 3px 0 0 var(--sig)}
+.vp{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;white-space:nowrap}
+.vp.warn{background:var(--key-bg2);color:var(--warn)} .vp.good{background:var(--good-bg);color:var(--good)} .vp.na{background:var(--ink-bg);color:var(--ink-faint)}
+.src{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--ink-faint);vertical-align:middle;font-weight:400}
+.src.paper{border-color:var(--sig-dim);color:var(--sig)}
+.atk-detail{border-top:1px solid var(--line);padding-top:14px}
+.atk-top{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.atk-top h3{font-size:17px}
+.atk-desc{margin:6px 0 4px;font-size:14px;color:var(--ink);max-width:880px}
+.atk-has{margin:0 0 10px;font-size:13px;color:var(--ink-soft);max-width:880px}
+.atk-knobs{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:flex-end;background:var(--paper);border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px 0;margin-bottom:12px}
+.atk-knobs .ctl{min-width:220px;flex:1;max-width:320px}
+.atk-knobs .chk{margin-bottom:14px}
+.atk-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:860px){.atk-cols{grid-template-columns:minmax(0,1fr)}}
+.atk-col{border:1px solid var(--line);border-radius:10px;padding:12px 13px;background:var(--panel-2);min-width:0}
+.atk-col h4{margin:0 0 8px;font-size:13px;color:var(--ink-soft)}
+.atk-v{font-family:var(--mono);font-size:20px;letter-spacing:-.01em}
+.atk-v.warn{color:var(--warn)} .atk-v.good{color:var(--good)} .atk-v.na{color:var(--ink-faint)}
+.atk-h{font-size:13px;color:var(--ink);margin:2px 0 8px}
+.atk-col ol{margin:0 0 10px;padding-left:20px;font-size:13px;color:var(--ink-soft)}
+.atk-col li{margin-bottom:4px}
+.atk-col li b{color:var(--ink)}
+.atk-col canvas{background:var(--paper);border:1px solid var(--line-soft)}
+.bench-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}
+@media(max-width:1180px){.bench-grid{grid-template-columns:minmax(0,1fr)}}
+.bench-part{border:1px solid var(--line);border-radius:10px;padding:12px 13px;background:var(--panel-2);min-width:0}
+.bench-part h3{font-size:15px;margin-bottom:10px}
+.bench-part h4{font-size:13.5px;margin:16px 0 6px}
+.bench-part h4 small{display:block;font-weight:400;font-size:12px;color:var(--ink-faint);margin-top:1px}
+.bchain{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-bottom:10px}
+.bstep{border:1px solid var(--line-soft);border-radius:8px;padding:7px 9px;background:var(--panel)}
+.bstep .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint)}
+.bstep .v{font-family:var(--mono);font-size:16px;margin-top:2px}
+.bstep .v.good{color:var(--good)} .bstep .v.warn{color:var(--warn)}
+.bstep .d{font-size:11.5px;color:var(--ink-soft);line-height:1.35}
+.keyline{display:flex;gap:10px;align-items:baseline;font-size:12px;color:var(--ink-faint);margin:2px 0;flex-wrap:wrap}
+.keyline span{min-width:118px}
+.keyline code{font-family:var(--mono);font-size:12px;color:var(--ink);word-break:break-all}
+.keyline code b.warn{color:var(--warn);font-weight:400;background:var(--key-bg2)}
+.bench-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.bench-tools .seg{width:auto}
+.bench-tools .speed input{width:120px}
+.bench-tools .speed b{font-family:var(--mono);font-weight:400;min-width:44px}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:3px 12px}
+.hw{display:flex;align-items:center;gap:1px}
+.hw span{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);width:30px}
+button.hb,button.pc{font-family:var(--mono);font-size:10.5px;line-height:1;padding:0;border:1px solid var(--line-soft);background:var(--panel);color:var(--ink-soft);cursor:pointer}
+button.hb{width:14px;height:18px;border-radius:2px}
+button.hb:hover,button.pc:hover{border-color:var(--sig);color:var(--sig)}
+button.hb.ed{background:var(--key-bg2);border-color:var(--key);color:var(--key);font-weight:700}
+.pgrid{display:grid;grid-template-columns:repeat(40,minmax(0,1fr));gap:1px;max-width:720px}
+@media(max-width:700px){.pgrid{grid-template-columns:repeat(20,minmax(0,1fr))}}
+button.pc{height:17px;border-radius:2px}
+button.pc.fx{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+button.pc.miss{background:var(--key-bg2);border-color:var(--key);color:var(--key)}
+button.pc.mis{background:var(--key);border-color:var(--key);color:var(--on-ink)}
+button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
+.swatch.mis{background:var(--key);height:10px;width:10px}
+.swatch.you{background:none;height:0;border-top:3px solid var(--sig);width:14px}
+.leak{margin-top:14px;font-size:13px;color:var(--ink-soft)}
+.leak b{font-family:var(--mono);font-weight:400;color:var(--ink)}
+.leak .track{position:relative;height:10px;background:var(--line-soft);border-radius:5px;margin-top:6px;max-width:720px}
+.leak .track i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.leak .track i.good{background:var(--good)} .leak .track i.warn{background:var(--warn)}
+.leak .track em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.hexin{width:100%;font-family:var(--mono);font-size:15px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);text-transform:uppercase;letter-spacing:.1em}
+.hexin:disabled{opacity:.55}
+.chk.inl{display:inline-flex;margin:0;font-size:12px}
+.bchain.two{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));margin-top:10px}
+.home-link{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);padding:6px 12px;border-radius:8px;font-size:13.5px;text-decoration:none}
+.home-link:hover{border-color:var(--sig);color:var(--sig)}
+.home-link svg{width:15px;height:15px}
+.jump-btns{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.jump-btns a{font-size:12.5px;color:var(--sig);text-decoration:none;border:1px solid var(--sig-dim);border-radius:20px;padding:5px 12px;background:var(--sig-bg)}
+.jump-btns a:hover{background:var(--sig-bg2)}
+.refs{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+.refs h2{font-size:15px;margin-bottom:8px}
+.refs ol{margin:0;padding-left:26px;font-size:13px;color:var(--ink-soft);line-height:1.55}
+.refs li{margin-bottom:6px}
+.refs li i{color:var(--ink)}
+.refs .note{font-size:12.5px;color:var(--ink-faint);margin:0 0 8px}
 </style>
 </head>
 <body>
@@ -347,6 +447,7 @@ body{padding-bottom:var(--insp-h)}
       <div class="sub">Encrypt the sensor's bits with a key that never has to be stored: the chip re-creates it from its own fingerprint.</div>
     </div>
     <div class="hbar-right">
+      <a class="home-link" href="/" title="Back to Nithin P's website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11 12 4l8.5 7M6 9.5V20h12V9.5"/></svg>nithinpuru.github.io</a>
       <div class="scheme-toggle" role="group" aria-label="Design to show">
         <button id="sc-base" onclick="setScheme('baseline')">Original design</button>
         <button id="sc-prop" onclick="setScheme('proposed')" aria-pressed="true">With our proposal</button>
@@ -357,6 +458,7 @@ body{padding-bottom:var(--insp-h)}
 </header>
 <div class="wrap">
   <div class="story">
+    <div class="jump-btns"><a href="#attackLab">Attack lab: which attacks break which design</a><a href="#workbench">Workbench: edit the helper data and keys</a></div>
     <div class="scn-btns" id="scnBtns" role="group" aria-label="Scenarios"></div>
     <p class="caption" id="caption" aria-live="polite"></p>
   </div>
@@ -365,8 +467,24 @@ body{padding-bottom:var(--insp-h)}
     <aside class="controls" id="controls"></aside>
     <main>
       <section class="diagram-card" id="diagramCard"></section>
+      <section class="lab-card" id="attackLab" aria-label="Attack lab"></section>
+      <section class="lab-card" id="workbench" aria-label="Helper data and key workbench"></section>
     </main>
   </div>
+  <section class="refs" id="refs" aria-label="References">
+    <h2>References</h2>
+    <p class="note">The original design, its threat model and the zero-input and same-key tests follow [1]. The PUF, fuzzy-extractor and NLFSR extension, and the attacks marked “beyond the paper”, are this page's own modelling built on [2]-[8].</p>
+    <ol>
+      <li id="ref1">A. Yasar, D. Caygara, Y. H. Patel, A. Pemaraj, L. Boisvert, A. Magyar, T. Yu, B. Dufort, T.-L. Poo, and R. T. Yazicigil, “A Secure Multimodal Electrochemical Sensor for Sustainable Biomanufacturing,” in <i>Proc. 2025 IEEE European Solid-State Electronics Research Conference (ESSERC)</i>, pp. 413-416, 2025. doi: <a href="https://doi.org/10.1109/ESSERC66193.2025.11213984">10.1109/ESSERC66193.2025.11213984</a>.</li>
+      <li>R. T. Yazicigil <i>et al.</i>, “Beyond Crypto: Physical-Layer Security for Internet of Things Devices,” <i>IEEE Solid-State Circuits Magazine</i>, vol. 12, no. 4, 2020. doi: <a href="https://doi.org/10.1109/MSSC.2020.3021842">10.1109/MSSC.2020.3021842</a>.</li>
+      <li>A. Yasar and R. T. Yazicigil, “Physical-Layer Security for Energy-Constrained Integrated Systems: Challenges and Design Perspectives,” <i>IEEE Open Journal of the Solid-State Circuits Society</i>, vol. 3, 2023. doi: <a href="https://doi.org/10.1109/OJSSCS.2023.3327326">10.1109/OJSSCS.2023.3327326</a>.</li>
+      <li>J. L. Massey, “Shift-register synthesis and BCH decoding,” <i>IEEE Transactions on Information Theory</i>, vol. 15, no. 1, pp. 122-127, 1969. doi: <a href="https://doi.org/10.1109/TIT.1969.1054260">10.1109/TIT.1969.1054260</a>.</li>
+      <li>M. Hell, T. Johansson, A. Maximov, and W. Meier, “A Stream Cipher Proposal: Grain-128,” in <i>Proc. IEEE International Symposium on Information Theory (ISIT)</i>, pp. 1614-1618, 2006. doi: <a href="https://doi.org/10.1109/ISIT.2006.261549">10.1109/ISIT.2006.261549</a>.</li>
+      <li>Y. Dodis, L. Reyzin, and A. Smith, “Fuzzy Extractors: How to Generate Strong Keys from Biometrics and Other Noisy Data,” in <i>Advances in Cryptology - EUROCRYPT 2004</i>, LNCS, pp. 523-540, 2004. doi: <a href="https://doi.org/10.1007/978-3-540-24676-3_31">10.1007/978-3-540-24676-3_31</a>.</li>
+      <li>J. Guajardo, S. S. Kumar, G.-J. Schrijen, and P. Tuyls, “FPGA Intrinsic PUFs and Their Use for IP Protection,” in <i>Cryptographic Hardware and Embedded Systems - CHES 2007</i>, LNCS, pp. 63-80, 2007. doi: <a href="https://doi.org/10.1007/978-3-540-74735-2_5">10.1007/978-3-540-74735-2_5</a>.</li>
+      <li>C. De Cannière, “Trivium: A Stream Cipher Construction Inspired by Block Cipher Design Principles,” in <i>Proc. Int. Conf. Information Security (ISC)</i>, 2006. doi: <a href="https://doi.org/10.1007/11836810_13">10.1007/11836810_13</a>.</li>
+    </ol>
+  </section>
   <div class="foot" id="foot"></div>
 </div>
 <aside class="inspector" id="inspector" aria-label="Block inspector" data-open="false" data-tall="false">
@@ -728,6 +846,7 @@ const DEFAULTS = {
   rtia: 321.88e3, buffer: 0.5, dither: true, dither_amp: 0.022, comp_noise: 1e-3, xlim: 2.5,
   dither_seeds: [0x1D2B, 0x7A31], key16: 0xC3A5, chip_id: 0x0B77,
   chip_seed: 7, temp: 37, puf_sigma: 0.06, bch_t: 40, h_tamper: 0,
+  h_source: "own", h_edit: [], puf_edit: [], rx_key16: null,   // workbench edits (arrays are replaced, never mutated)
   ber: 0, lead: 200, rx_wrong_key: false, seed: 2026,
 };
 
@@ -766,18 +885,23 @@ function simulate(P0) {
     const en = enroll(puf, t, makeRng(P.chip_seed * 7919 + 1));      // at test, once
     S.w_enroll = en.w; S.key_enroll = en.key;
     rxdb.key = en.key; rxdb.h = en.h;
-    // Rx sends h at power-up (optionally tampered on the way)
+    // Rx sends h at power-up (optionally swapped or tampered on the way)
     let hBits = synToBits(en.h);
     S.h_bits = hBits.slice();
+    if (P.h_source === "other") hBits = synToBits(enroll(new SRAMPUF(P.chip_seed + 1000, PUF_BITS, P.puf_sigma), t, makeRng(P.chip_seed * 31 + 5)).h);
+    else if (P.h_source === "zeros") hBits = new Uint8Array(hBits.length);
     if (P.h_tamper > 0) {
       const r2 = makeRng(P.seed + 99);
       const idx = new Set();
       while (idx.size < Math.min(P.h_tamper, hBits.length)) idx.add(r2.int(hBits.length));
       idx.forEach(i => { hBits[i] ^= 1; });
     }
+    for (const i of P.h_edit) if (i < hBits.length) hBits[i] ^= 1;          // bits the user flipped by hand
     S.h_rx_bits = hBits;
+    S.h_changed = hBits.some((b, i) => b !== S.h_bits[i]);
     const hRx = bitsToSyn(hBits, t);
     S.w_noisy = puf.read(P.temp, makeRng(P.seed + 17));
+    for (const i of P.puf_edit) if (i < PUF_BITS) S.w_noisy[i] ^= 1;         // cells the user forced to flip
     S.e_true = S.w_noisy.map((b, i) => b ^ S.w_enroll[i]);
     const rc = reconstruct(S.w_noisy, hRx, t);
     S.e_hat = rc.e; S.w_fixed = rc.w; S.key_tx = rc.key; S.fe_ok = rc.ok;
@@ -814,7 +938,7 @@ function simulate(P0) {
   }
   S.sync_pos = pos;
   if (P.scheme === "baseline") {
-    S.key_rx16 = P.rx_wrong_key ? P.key16 ^ 1 : rxdb.key16;
+    S.key_rx16 = P.rx_wrong_key ? P.key16 ^ 1 : P.rx_key16 != null ? P.rx_key16 : rxdb.key16;
     S.ks_rx_all = new LFSR16(S.key_rx16).bits(ID_BITS + n);
   } else {
     S.key_rx = P.rx_wrong_key ? Uint8Array.from({ length: 128 }, () => rng.int(2)) : rxdb.key;
@@ -1506,13 +1630,13 @@ const PANELS = {
   // ---------------------------------------------------------------- fuzzy extractor
   fe() {
     if (state.scheme !== "proposed") return;
-    const canFix = S.n_err_true <= state.bch_t && state.h_tamper === 0;
+    const canFix = S.n_err_true <= state.bch_t && !S.h_changed;
     document.getElementById("panels").innerHTML =
       panelCanvas("Error correction headroom", "PUF errors this power-up vs what the BCH code can fix. Stay left of the line and the key is exact.", 210)
       + panelWide("Reconstruction result", `<table class="mini"><tr><th>Step</th><th>Value</th><th></th></tr>
         <tr><td>Errors to correct</td><td class="n">${S.n_err_true}</td><td></td></tr>
         <tr><td>BCH capacity t</td><td class="n">${state.bch_t}</td><td>${pill(S.n_err_true <= state.bch_t, "within capacity", "too many errors")}</td></tr>
-        <tr><td>Helper data tampered</td><td class="n">${state.h_tamper} bits</td><td>${state.h_tamper === 0 ? "clean" : pill(false, "", "corrupts target")}</td></tr>
+        <tr><td>Helper data changed</td><td class="n">${S.h_rx_bits.reduce((a, b, i) => a + (b !== S.h_bits[i]), 0)} bits</td><td>${!S.h_changed ? "clean" : pill(false, "", "corrupts target")}</td></tr>
         <tr><td>Decoder succeeded</td><td>${pill(S.fe_ok, "yes", "no")}</td><td></td></tr>
         <tr><td>Key matches enrollment</td><td>${pill(S.key_match, "MATCH", "MISMATCH")}</td><td>${S.key_match ? "link works" : "Rx ID check will fail"}</td></tr></table>`)
       + explain(`<b>Noisy fingerprint → exact key.</b> The Rx sends the public helper data <code>h</code> (the BCH syndrome of the enrolled <code>w</code>). The chip reads a noisy <code>w'</code>, computes <code>syndrome(w') ⊕ h</code>, and the BCH decoder turns that into the exact list of flipped bits, which it flips back. Then <code>key = hash(w)</code> — identical every power-up.
@@ -1647,10 +1771,10 @@ function renderPanels() {
 document.getElementById("wrapGloss") || (function(){
   const d = document.createElement("details"); d.className = "gloss"; d.id = "wrapGloss";
   d.innerHTML = "<summary>Glossary: every term used here, in plain words</summary><dl>" + GLOSS.map(([t, x]) => "<dt>" + t + "</dt><dd>" + x + "</dd>").join("") + "</dl>";
-  document.querySelector(".wrap").insertBefore(d, document.getElementById("foot"));
+  document.querySelector(".wrap").insertBefore(d, document.getElementById("refs"));
 })();
 document.getElementById("foot").innerHTML =
-  `<b>About this model.</b> Everything runs live in your browser — a behavioural port of the Python model. The DSM is a discrete-time model of the continuous-time loop; TIA clipping, the ×0.5 buffer, the LFSR polynomial, the NLFSR taps (from Grain-128), integrator rails and PUF noise are illustrative, not measured silicon values. SHA-256 stands in for a lightweight on-chip hash. The BCH code is real (GF(2¹⁰), syndrome construction). Numbers are meant to show mechanisms and trends, not exact chip performance. Baseline = the ESSERC'25 S-DSM; Proposed = the SRAM-PUF + fuzzy-extractor + NLFSR extension discussed with Alperen.<p class="credit">This modelling and animation work could not have been done without the help of <a href="https://claude.com/claude-code">Claude Code</a>.</p>`;
+  `<b>About this model.</b> Everything runs live in your browser — a behavioural port of the Python model. The DSM is a discrete-time model of the continuous-time loop; TIA clipping, the ×0.5 buffer, the LFSR polynomial, the NLFSR taps (from Grain-128), integrator rails and PUF noise are illustrative, not measured silicon values. SHA-256 stands in for a lightweight on-chip hash. The BCH code is real (GF(2¹⁰), syndrome construction). Numbers are meant to show mechanisms and trends, not exact chip performance. Baseline = the ESSERC'25 S-DSM <a href="#ref1">[1]</a>; Proposed = the SRAM-PUF + fuzzy-extractor + NLFSR extension discussed with Alperen.<p class="credit">This modelling and animation work could not have been done without the help of <a href="https://claude.com/claude-code">Claude Code</a>.</p>`;
 
 // ===== PANELS-END =====
 
@@ -2024,6 +2148,546 @@ function initInspector() {
 
 </script>
 <script>
+// ===== LAB-START =====
+// Attack lab: every attack is run against BOTH designs with the current settings, so the
+// verdicts move when you change dither, the buffer, the key, t, the helper data...
+// Workbench: edit the public helper data, the PUF read-out and the pre-shared keys by hand.
+
+const LAB_N = 30000;                 // DSM clocks used by the attack experiments (600 output samples)
+const lab = { sel: "eaves", bmBits: 64, kiInput: "dc", mismatch: 0.1, chMismatch: 0.1, flipP: 0.1, clone: 1, hFlip: 1, fake: 0.3 };
+let LR = null, labTimer = null, bfCache = null;
+
+const decodeY = D => fir(cic(D), COMP_TAPS);
+const xorBits = (a, b, n = Math.min(a.length, b.length)) => { const o = new Uint8Array(n); for (let i = 0; i < n; i++) o[i] = a[i] ^ b[i]; return o; };
+const flipFrac = (a, b, n) => { let f = 0; for (let i = 0; i < n; i++) f += a[i] !== b[i]; return f / n; };
+const rmsErr = (a, b, from = 60) => { let s = 0, n = 0; for (let i = from; i < Math.min(a.length, b.length); i++) { s += (a[i] - b[i]) ** 2; n++; } return Math.sqrt(s / Math.max(n, 1)); };
+const pct = (v, d = 1) => (v * 100).toFixed(d) + "%";
+const hex16 = v => "0x" + (v & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
+
+function bmProfile(s) {              // linear complexity after each bit (same recursion as bm2)
+  const n = s.length, cc = new Uint8Array(n + 1), prof = new Uint16Array(n);
+  let b = new Uint8Array(n + 1), L = 0, m = -1;
+  cc[0] = b[0] = 1;
+  for (let i = 0; i < n; i++) {
+    let d = s[i];
+    for (let j = 1; j <= L; j++) d ^= cc[j] & s[i - j];
+    if (d) {
+      const t = cc.slice(), sh = i - m;
+      for (let j = 0; j + sh <= n; j++) cc[j + sh] ^= b[j];
+      if (2 * L <= i) { L = i + 1 - L; m = i; b = t; }
+    }
+    prof[i] = L;
+  }
+  return prof;
+}
+
+// BM on many 64-bit windows of a keystream guess; broken = the prediction of the next 512 bits is right
+function windowAttack(Kguess, Ktrue, seed, tries = 80) {
+  const r = makeRng(seed), n = Math.min(Kguess.length, Ktrue.length);
+  let broken = 0, best = 0;
+  for (let k = 0; k < tries; k++) {
+    const s = 200 + r.int(n - 64 - 512 - 400);
+    const a = bmAttack(Kguess.subarray(s, s + 64), Ktrue.subarray(s + 64, s + 64 + 512));
+    if (a.acc > 0.99) broken++;
+    if (a.acc > best) best = a.acc;
+  }
+  return { broken, tries, best };
+}
+
+function labDsm(u, seeds, noiseSeed) {
+  return dsm2(u, { dither: state.dither, amp: state.dither_amp, seeds, xlim: state.xlim, noise: state.comp_noise }, makeRng(noiseSeed)).D;
+}
+const labU = (iA, off = 0) => { const u = new Float64Array(LAB_N), v = s2d(tia(iA, state.rtia), state.buffer) + off; u.fill(v); return u; };
+
+// ---------------------------------------------------------------- the attacks
+// Each run() returns { base, prop } outcomes: { v, head, steps[], plot }.
+// v: breached | spoofed | leak | weak | safe | detected | na
+const VERD = {
+  breached: ["DATA BREACHED", "warn"], spoofed: ["FAKE DATA ACCEPTED", "warn"], leak: ["INFORMATION LEAKS", "warn"],
+  weak: ["KEY WEAKENED", "warn"], safe: ["DATA SAFE", "good"], detected: ["ATTACK DETECTED", "good"], na: ["NOT APPLICABLE", "na"],
+};
+
+const ATTACKS = [
+  { id: "eaves", name: "Passive eavesdropping", src: "paper", stop: "Encryption (both designs)",
+    has: "A radio that records every bit on the air, full knowledge of the chip, no key.",
+    desc: "The paper's starting point: Eve sniffs the link to learn the bioreactor's readings (and, later, to set up spoofing). She sees only the encrypted stream C. Without the key, decrypting gives white noise (paper Fig. 3).",
+    run(R) {
+      const o = d => {
+        const Sx = R[d], y = R.yFail[d], e = rmsErr(y, R.yTrue);
+        return { v: "safe", head: `Eve's reading is ${pct(e, 0)} RMS off (noise)`,
+          steps: [`Records the ciphertext C: ${pct(Sx.C.subarray(0, LAB_N).reduce((a, b) => a + b, 0) / LAB_N)} ones, looks random.`,
+            `Decrypts with her best guess of the ${d === "base" ? "16" : "128"}-bit key.`,
+            `Gets noise: reading error ${pct(e, 0)} of full scale. No data leaks.`,
+            d === "base" ? `Only safe while nobody searches the key space - see <b>Brute-force key search</b>.` : `The 128-bit key space cannot be searched.`],
+          plot: { kind: "y", series: [[R.yTrue, "true"], [y, "eve"]] } };
+      };
+      return { base: o("base"), prop: o("prop") };
+    } },
+
+  { id: "brute", name: "Brute-force key search", src: "beyond", stop: "128-bit PUF key (proposal)",
+    has: "Recorded traffic, the public chip ID, a laptop.",
+    desc: "The chip ID sits encrypted right after the sync word, and the ID itself is not secret. So Eve can simply try every key until the decrypted ID is right, then decrypt everything. This only works if the key is short.",
+    run(R) {
+      const Sb = R.base, ks = Sb.ks_all, key = `${state.key16}|${state.chip_id}`;
+      if (!bfCache || bfCache.key !== key) {
+        const t0 = performance.now(); let found = -1, tries = 0;
+        for (let k = 1; k <= 0xFFFF && found < 0; k++) {
+          tries++; const l = new LFSR16(k); let ok = true;
+          for (let i = 0; i < ID_BITS && ok; i++) ok = l.bit() === ks[i];
+          if (ok) found = k;
+        }
+        bfCache = { key, found, tries, ms: performance.now() - t0 };
+      }
+      const f = bfCache, hit = f.found === ((state.key16 & 0xFFFF) || 1);
+      return {
+        base: { v: hit ? "breached" : "safe", head: hit ? `Key ${hex16(f.found)} found in ${f.ms.toFixed(0)} ms` : "Key not found",
+          steps: [`Takes the 16 encrypted ID bits from any frame and XORs off the public ID: that is the first 16 keystream bits.`,
+            `Tries keys 0x0001, 0x0002, ... in a 16-bit LFSR: ${f.tries.toLocaleString()} tries, ${f.ms.toFixed(0)} ms in this browser.`,
+            hit ? `Found <b>${hex16(f.found)}</b> (the real key). Decrypts the payload: the full sensor reading.` : `No match.`],
+          plot: { kind: "y", series: [[R.yTrue, "true"], [hit ? R.yTrue : R.yFail.base, "eve"]] } },
+        prop: { v: "safe", head: "2¹²⁸ keys: about 10¹⁹ years",
+          steps: [`Same trick: the first 16 keystream bits are known.`,
+            `But the key is 128 bits. At 10¹² guesses per second the search takes about 5×10¹⁸ years.`,
+            `The PUF itself cannot be guessed either: it keeps ≥ ${Math.max(0, PUF_BITS - 10 * state.bch_t)} unknown bits after the public helper data.`],
+          plot: { kind: "y", series: [[R.yTrue, "true"], [R.yFail.prop, "eve"]] } },
+      };
+    } },
+
+  { id: "bm", name: "Berlekamp-Massey keystream attack", src: "beyond", stop: "Nonlinear NLFSR (proposal)",
+    has: "A short run of keystream bits: probed on the keystream wire, or recovered from any known-plaintext leak.",
+    desc: "Berlekamp-Massey finds the shortest linear feedback register that reproduces a bit sequence. An n-bit LFSR is recovered from just 2n consecutive keystream bits; from then on Eve predicts every future key bit and decrypts everything. Set how many bits she knows.",
+    knobs: [{ k: "bmBits", label: "Keystream bits Eve knows", min: 8, max: 256, step: 4, fmt: v => v + " bits" }],
+    run(R) {
+      const m = lab.bmBits;
+      const o = (d, Sx) => {
+        const a = bmAttack(Sx.K.subarray(0, m), Sx.K.subarray(m, m + 1000)), br = a.acc > 0.99;
+        const prof = bmProfile(Sx.K.subarray(0, 256));
+        return { v: br ? "breached" : "safe", head: `Predicts the next 1000 bits ${pct(a.acc, 0)} right`,
+          steps: [`Knows ${m} consecutive keystream bits.`,
+            `BM returns a linear register of length L = ${a.L}${d === "base" ? (m >= 32 ? " - the real 16-bit LFSR" : "") : " - it keeps growing with every bit, about half the bits seen"}.`,
+            br ? `Runs it forward: <b>every</b> future key bit is right. Decrypts all later data.` : `Its predictions are ${pct(a.acc, 0)} right - a coin flip. Nothing decrypts.`,
+            d === "base" ? `Needs only 2×16 = 32 bits.` : `No practical amount of known keystream gives a linear model of the NLFSR.`],
+          plot: { kind: "lc", prof, m, lin: d === "base" } };
+      };
+      return { base: o("base", R.base), prop: o("prop", R.prop) };
+    } },
+
+  { id: "knownin", name: "Zero / DC input attack (replica)", src: "paper", stop: "Dither + quantisation noise (S-DSM, both)",
+    has: "Control of the sensor's input (e.g. zero or a fixed DC current) and a replica chip to run the same input on.",
+    desc: "The paper's first cryptanalysis test (Fig. 4c). With a conventional ADC + stream cipher, a fixed input gives a known output, so C ⊕ known = keystream. Here Eve feeds the victim a known input, runs her replica on the same input and uses its bits as her guess of D. Dither and quantisation noise make the two modulators disagree about half the time, so the guess is useless. In this model the replica's own analog mismatch already scrambles most bits. Set it to 0 (a perfectly trimmed replica) to isolate dither: at the default strength a few % of bits still differ and short BM windows survive, so the original design breaks. Raise the dither strength to close the gap.",
+    knobs: [{ k: "kiInput", t: "seg", label: "Input Eve applies", opts: [["zero", "Zero"], ["dc", "DC 0.5 µA"]] },
+      { k: "mismatch", label: "Replica vs victim analog mismatch", min: 0, max: 1, step: 0.01, fmt: v => v.toFixed(2) + "% FS" },
+      { g: "dither", label: "Dither enabled (global)" }, { g: "dither_amp", label: "Dither strength (global)", min: 0.01, max: 0.4, step: 0.005, fmt: v => v.toFixed(3) + " ×ref" }],
+    run(R) {
+      const iA = lab.kiInput === "zero" ? 0 : 0.5e-6;
+      const Dv = labDsm(labU(iA), state.dither_seeds, state.seed + 1);
+      const Dr = labDsm(labU(iA, lab.mismatch / 100), [0x2C4D, 0x51E7], state.seed + 2);
+      const flip = flipFrac(Dv, Dr, LAB_N), agree = xorBits(Dv, Dr).subarray(0, 400);
+      const o = (d, Sx) => {
+        const K = Sx.K.subarray(0, LAB_N), C = xorBits(Dv, K), Kg = xorBits(C, Dr);
+        const w = windowAttack(Kg, K, state.seed + 3), br = w.broken > 0 && d === "base";
+        return { v: br ? "breached" : "safe", head: `Replica disagrees on ${pct(flip)} of bits`,
+          steps: [`Forces the input to ${lab.kiInput === "zero" ? "zero" : "0.5 µA DC"} and records C from the victim.`,
+            `Runs her replica on the same input: its bits differ from the victim's D on <b>${pct(flip)}</b> of clocks (50% = no information; the paper measured 50.05%).`,
+            `Uses C ⊕ replica as the keystream and runs BM on ${w.tries} windows of 64 bits: ${w.broken} window${w.broken === 1 ? "" : "s"} came out exactly right.`,
+            d === "base" ? (br ? `One clean window is enough: the 16-bit LFSR state falls out, and every later reading decrypts.` : `No clean window, so no LFSR state. The keystream stays hidden.`)
+              : (w.broken ? `Even the clean windows don't help: BM cannot model the NLFSR, so nothing beyond them decrypts.` : `No clean window, and the NLFSR would resist BM anyway.`)],
+          plot: { kind: "bits", bits: agree, on: "replica wrong", off: "replica right" } };
+      };
+      return { base: o("base", R.base), prop: o("prop", R.prop) };
+    } },
+
+  { id: "samekey", name: "Same key, same message", src: "paper", stop: "Dither + quantisation noise (S-DSM, both)",
+    has: "Two encryptions of the same reading under the same key (the paper uses two channels of one chip).",
+    desc: "Re-using a stream-cipher key is the classic 'two-time pad' mistake: C₁ ⊕ C₂ = D₁ ⊕ D₂, the keystream cancels, and identical messages give identical ciphertexts. Both designs use the same key every session, so both rely on S-DSM here: quantisation noise and dither make D₁ ≠ D₂ even for the same input (paper: 49.8% bit flips). Set the mismatch to 0 and dither low to see the leak.",
+    knobs: [{ k: "chMismatch", label: "Mismatch between the two channels", min: 0, max: 1, step: 0.01, fmt: v => v.toFixed(2) + "% FS" },
+      { g: "dither", label: "Dither enabled (global)" }, { g: "dither_amp", label: "Dither strength (global)", min: 0.01, max: 0.4, step: 0.005, fmt: v => v.toFixed(3) + " ×ref" }],
+    run(R) {
+      const i = sensorCurrent(state, LAB_N);
+      const u1 = Float64Array.from(i, x => s2d(tia(x, state.rtia), state.buffer)), u2 = u1.map(v => v + lab.chMismatch / 100);
+      const D1 = labDsm(u1, state.dither_seeds, state.seed + 11), D2 = labDsm(u2, [0x3A17, 0x6E29], state.seed + 12);
+      const flip = flipFrac(D1, D2, LAB_N), leak = Math.abs(flip - 0.5) > 0.03;
+      const o = () => ({ v: leak ? "leak" : "safe", head: `C₁ ⊕ C₂ has ${pct(flip)} ones`,
+        steps: [`Captures two frames carrying the same reading, encrypted with the same keystream K.`,
+          `XORs them: C₁ ⊕ C₂ = D₁ ⊕ D₂, the key cancels out.`,
+          `The two modulator streams differ on <b>${pct(flip)}</b> of bits (a plain stream cipher gives 0%).`,
+          leak ? `Far from 50%: the XOR reveals that both frames carry nearly the same signal, and one known frame gives away the other.` : `≈50%: the XOR is noise, and Eve learns nothing from the key reuse.`],
+        plot: { kind: "bits", bits: xorBits(D1, D2).subarray(0, 400), on: "C₁ ≠ C₂", off: "C₁ = C₂" } });
+      return { base: o(), prop: o() };
+    } },
+
+  { id: "saturate", name: "Forced-input saturation", src: "beyond", stop: "S2D ×0.5 buffer; NLFSR as backup",
+    has: "The ability to inject a large current at the electrode.",
+    desc: "If the modulator saturates, its output freezes at all 1s, so C ⊕ 1 is the keystream in the clear. The S2D buffer halves the input so the loop stays in control. Turn the buffer off (global) to see what happens.",
+    knobs: [{ g: "buffer", t: "seg", label: "S2D buffer (global)", opts: [[0.5, "×0.5 (on)"], [1.0, "×1 (off)"]] },
+      { g: "force_uA", label: "Forced current (global)", min: 0.5, max: 20, step: 0.5, fmt: v => v + " µA" }],
+    run(R) {
+      const D = labDsm(labU(state.force_uA * 1e-6), state.dither_seeds, state.seed + 21);
+      const ones = D.reduce((a, b) => a + b, 0) / LAB_N, run = longestRun(D), guess = ones >= 0.5 ? 1 : 0;
+      const o = (d, Sx) => {
+        const K = Sx.K.subarray(0, LAB_N), C = xorBits(D, K), Kg = C.map(c => c ^ guess);
+        const w = windowAttack(Kg, K, state.seed + 23), br = w.broken > 0 && d === "base";
+        return { v: br ? "breached" : "safe", head: `Modulator ${pct(ones, 0)} ones, longest run ${run}`,
+          steps: [`Forces ${state.force_uA} µA; the buffer is ${state.buffer === 0.5 ? "on (×0.5)" : "<b>off</b>"}.`,
+            run > 200 ? `The modulator saturates: D is stuck at ${guess}s, so C ⊕ ${guess} is the keystream itself.` : `The loop stays in control: D keeps toggling (longest run ${run} bits), so guessing D = all ${guess}s is wrong most of the time.`,
+            `BM on ${w.tries} windows: ${w.broken} predicted the future keystream.`,
+            d === "base" ? (br ? `The LFSR is recovered: all later data decrypts.` : `No window breaks the LFSR.`) : (run > 200 ? `The keystream is visible while the input is forced, but the NLFSR can't be extended from it, and the forced reading itself is worthless.` : `Nothing to learn.`)],
+          plot: { kind: "bits", bits: D.subarray(2000, 2400), on: "D = 1", off: "D = 0", neutral: true } };
+      };
+      return { base: o("base", R.base), prop: o("prop", R.prop) };
+    } },
+
+  { id: "extract", name: "Key extraction from memory", src: "beyond", stop: "No stored key: PUF (proposal)",
+    has: "Physical access to a sensor: de-capping and reading its non-volatile memory (outside the paper's non-invasive model).",
+    desc: "Floating sensors can be fished out of a bioreactor. The original design must keep its pre-shared key in on-chip memory, where it survives power-off and can be read out. The proposal keeps no key: it is rebuilt from the SRAM power-up pattern, which does not exist while the chip is unpowered.",
+    run(R) {
+      return {
+        base: { v: "breached", head: `Reads the key ${hex16(state.key16)} straight out`,
+          steps: [`De-caps the chip and reads the key register / NVM.`, `Gets ${hex16(state.key16)} - the same key the receiver uses.`,
+            `Decrypts every recorded and future frame, and can clone the sensor (see <b>Cloned sensor</b>).`],
+          plot: { kind: "y", series: [[R.yTrue, "true"], [R.yTrue, "eve"]] } },
+        prop: { v: "safe", head: "Nothing secret is stored",
+          steps: [`De-caps the chip: the NVM holds no key, and the SRAM has no power-up pattern while unpowered.`,
+            `The helper data h is public anyway; without w it gives at most ${10 * state.bch_t} of ${PUF_BITS} bits of information.`,
+            `Nothing to decrypt with. (Probing the SRAM of a <i>running</i> chip is a harder, active attack not modelled here.)`],
+          plot: { kind: "y", series: [[R.yTrue, "true"], [R.yFail.prop, "eve"]] } },
+      };
+    } },
+
+  { id: "spoof", name: "Spoofing: forged sensor frames (MITM)", src: "paper", stop: "Unrecoverable key (proposal)",
+    has: "A transmitter in the link (man-in-the-middle) plus the best key it can get with the attacks above.",
+    desc: "The threat the paper warns about: Eve poses as the sensor and feeds the server a fake reading to misinform the bioreactor's control loop. The receiver accepts a frame when the decrypted ID is right. Eve encrypts her fake reading with the best key she can get: the brute-forced key for the original design, a guess for the proposal.",
+    knobs: [{ k: "fake", label: "Fake reading Eve sends", min: -0.9, max: 0.9, step: 0.05, fmt: v => v.toFixed(2) + " µA DC" }],
+    run(R) {
+      const Dfake = labDsm(labU(lab.fake * 1e-6), state.dither_seeds, state.seed + 31), yFake = decodeY(Dfake);
+      const o = (d, Sx, Katt) => {
+        const idOk = Katt.subarray(0, ID_BITS).every((b, i) => b === Sx.ks_rx_all[i]);
+        const y = decodeY(xorBits(xorBits(Dfake, Katt.subarray(ID_BITS)), Sx.K_rx.subarray(0, LAB_N)));
+        return { v: idOk ? "spoofed" : "detected", head: idOk ? "Server shows Eve's fake reading" : "Receiver rejects the frame",
+          steps: [d === "base" ? `Gets the key by brute force (${bfCache ? bfCache.ms.toFixed(0) : "a few"} ms).` : `No attack above yields the 128-bit key, so she has to guess one.`,
+            `Encrypts a fake ${lab.fake.toFixed(2)} µA reading and its ID, and transmits it as the sensor.`,
+            idOk ? `ID check <b>passes</b>. The server's control loop now acts on the fake value.` : `ID check <b>fails</b>: the frame is dropped and flagged, and its payload decrypts to noise.`],
+          plot: { kind: "y", series: [[R.yTrue, "true"], [yFake, "fake"], [y, "server"]] } };
+      };
+      const Kb = new LFSR16(bfCache && bfCache.found > 0 ? bfCache.found : 1).bits(ID_BITS + LAB_N);
+      const Kp = new NLFSR128(Uint8Array.from({ length: 128 }, (_, i) => makeRng(state.seed + 33 + i).int(2))).bits(ID_BITS + LAB_N);
+      return { base: o("base", R.base, Kb), prop: o("prop", R.prop, Kp) };
+    } },
+
+  { id: "clone", name: "Cloned / counterfeit sensor", src: "beyond", stop: "Unclonable PUF fingerprint",
+    has: "A copy of the chip built from the same design, the public helper data, and the original's key if it can be extracted.",
+    desc: "Eve drops her own chip into the bioreactor and claims to be the real sensor. With a stored key, a clone is only a firmware copy away. With a PUF, the clone's SRAM powers up in its own pattern, which no helper data can turn into the original's key.",
+    knobs: [{ k: "clone", label: "Counterfeit chip number", min: 1, max: 30, step: 1, fmt: v => "#" + v }],
+    run(R) {
+      const Sp = R.prop, t = state.bch_t, puf = new SRAMPUF(state.chip_seed + 500 + lab.clone, PUF_BITS, state.puf_sigma);
+      const wc = puf.read(state.temp, makeRng(state.seed + 41 + lab.clone));
+      const dist = wc.reduce((a, b, i) => a + (b !== Sp.w_enroll[i]), 0);
+      const rc = reconstruct(wc, bitsToSyn(Sp.h_bits, t), t), ok = rc.key.every((b, i) => b === Sp.key_enroll[i]);
+      return {
+        base: { v: "spoofed", head: "Clone accepted as the real sensor",
+          steps: [`Extracts or brute-forces the key ${hex16(state.key16)} (see above).`, `Loads it into a counterfeit chip of the same design.`,
+            `The receiver cannot tell them apart: ID check <b>passes</b>, and the clone can report whatever it likes.`],
+          plot: { kind: "bar", val: 1, max: 1, lim: 0, ok: false, text: "clone's key = real key: identical identity" } },
+        prop: { v: ok ? "spoofed" : "detected", head: `Clone's fingerprint differs in ${dist} of ${PUF_BITS} bits`,
+          steps: [`Counterfeit chip #${lab.clone} powers up: its SRAM pattern differs from the real chip's in <b>${dist}</b> bits.`,
+            `It uses the real chip's public helper data. The decoder can fix at most t = ${t} bits: ${rc.ok ? "it ‘succeeds’ on the wrong codeword" : "it fails"}.`,
+            ok ? `Key matches - should never happen.` : `Key ≠ the enrolled key, so the ID check <b>fails</b>. The clone is rejected.`],
+          plot: { kind: "bar", val: dist, lim: t, max: Math.max(dist, t) * 1.15, ok: dist > t, text: `fingerprint distance (line = t = ${t})` } },
+      };
+    } },
+
+  { id: "htamper", name: "Helper-data tampering", src: "beyond", stop: "key = hash(w) + ID check",
+    has: "Write access to the link that carries the public helper data h at power-up.",
+    desc: "Helper data is public, but it steers the error correction. Flipping bits of h in transit makes the chip 'correct' the wrong bits, so it rebuilds a wrong key. That can't leak data, and the receiver sees the ID fail at once. It is a denial of service, which the paper leaves out of scope. Try it by hand in the workbench below.",
+    knobs: [{ k: "hFlip", label: "Bits of h Eve flips", min: 0, max: 40, step: 1, fmt: v => v + " bits" }],
+    run(R) {
+      const Sp = R.prop, t = state.bch_t, hb = Sp.h_bits.slice(), r = makeRng(state.seed + 51), idx = new Set();
+      while (idx.size < Math.min(lab.hFlip, hb.length)) idx.add(r.int(hb.length));
+      idx.forEach(i => { hb[i] ^= 1; });
+      const rc = reconstruct(Sp.w_noisy, bitsToSyn(hb, t), t), ok = rc.key.every((b, i) => b === Sp.key_enroll[i]);
+      const kd = rc.key.reduce((a, b, i) => a + (b !== Sp.key_enroll[i]), 0);
+      return {
+        base: { v: "na", head: "No helper data in this design", steps: [`The original design has no helper data. Its only secret is the stored key, whose risks are shown above.`] },
+        prop: { v: ok ? "safe" : "detected", head: ok ? "No change: link works" : `Wrong key (${kd}/128 bits differ)`,
+          steps: [`Flips ${lab.hFlip} of the ${hb.length} helper bits on the way to the chip.`,
+            `The decoder ${rc.ok ? "finds a 'valid' but wrong" : "cannot find a"} correction and hashes the result.`,
+            ok ? `With nothing flipped the key is exact.` : `The key differs in ${kd} of 128 bits (a hash spreads any change). The ID check fails and the receiver raises an alarm; no data is exposed.`],
+          plot: { kind: "bar", val: kd, lim: 0, max: 128, neutral: true, text: "chip key bits wrong, of 128" } },
+      };
+    } },
+
+  { id: "hleak", name: "Helper-data leakage", src: "beyond", stop: "Choose t so n − 10t ≥ 128",
+    has: "The public helper data h, which anyone can read.",
+    desc: "h is 10t bits of information about the 600-bit fingerprint. What is left for Eve to guess is at most 600 − 10t bits (for ideal, full-entropy SRAM bits). A stronger code tolerates more noise but publishes more. Move the BCH t (global) and watch the margin.",
+    knobs: [{ g: "bch_t", label: "BCH correction t (global)", min: 10, max: 60, step: 1, fmt: v => v + "" }],
+    run() {
+      const res = PUF_BITS - 10 * state.bch_t;
+      return {
+        base: { v: "na", head: "Nothing public to leak", steps: [`No helper data. The key is only 16 bits long, which is the real problem (see brute force).`] },
+        prop: { v: res >= 128 ? "safe" : "weak", head: `${Math.max(0, res)} bits left for a 128-bit key`,
+          steps: [`Reads h: ${10 * state.bch_t} bits.`, `At most ${PUF_BITS} − ${10 * state.bch_t} = <b>${Math.max(0, res)}</b> bits of the fingerprint remain unknown.`,
+            res >= 128 ? `That is more than the 128-bit key needs, so hash(w) is still a full-strength key.` : `Fewer than 128: the key is now easier to guess than its length suggests. Use a longer PUF or a smaller t.`],
+          plot: { kind: "bar", val: Math.max(0, res), lim: 128, max: PUF_BITS, ok: res >= 128, text: "secret fingerprint bits left (line = 128)" } },
+      };
+    } },
+
+  { id: "replay", name: "Replay of a recorded frame", src: "beyond", stop: "Neither - needs a frame counter",
+    has: "A recording of any valid earlier frame.",
+    desc: "Eve records a frame while the reactor is healthy and plays it back later, hiding a fault. She needs no key. Both designs restart the same keystream from the same key at every power-up, and nothing in the frame changes with time, so both accept the old frame. The fix is a frame counter (nonce) mixed into the keystream.",
+    run(R) {
+      const now = R.yTrue.map(v => v * 0.4);
+      const o = () => ({ v: "spoofed", head: "Old frame accepted as new",
+        steps: [`Records a valid frame earlier.`, `Later the real reading has dropped to 40% (a fault).`,
+          `Replays the old frame: same key, same keystream, so the ID check <b>passes</b> and the server shows the old, healthy reading.`],
+        plot: { kind: "y", series: [[now, "true"], [R.yTrue, "server"]] } });
+      return { base: o(), prop: o() };
+    } },
+
+  { id: "bitflip", name: "Bit-flipping in transit (malleability)", src: "beyond", stop: "Neither - needs a MAC",
+    has: "A man-in-the-middle who can flip bits it forwards, without any key.",
+    desc: "XOR encryption is malleable: flipping a ciphertext bit flips the same bit of D after decryption. Flipping a random fraction p of payload bits scales the recovered reading by about (1 − 2p). The ID check covers only the ID field, so the change goes unnoticed in both designs. A message authentication code over the payload would catch it.",
+    knobs: [{ k: "flipP", label: "Payload bits Eve flips", min: 0, max: 0.3, step: 0.01, fmt: v => pct(v, 0) }],
+    run(R) {
+      const r = makeRng(state.seed + 61), D = R.base.D.subarray(0, LAB_N), Dm = D.map(b => (r.u() < lab.flipP ? b ^ 1 : b));
+      const y = decodeY(Dm); let num = 0, den = 0;
+      for (let i = 60; i < y.length; i++) { num += y[i] * R.yTrue[i]; den += R.yTrue[i] ** 2; }
+      const g = den > 1e-9 ? num / den : 1 - 2 * lab.flipP;
+      const o = () => ({ v: lab.flipP > 0 ? "spoofed" : "safe", head: lab.flipP > 0 ? `Reading scaled to ${pct(g, 0)}, undetected` : "Nothing flipped",
+        steps: [`Flips ${pct(lab.flipP, 0)} of the payload bits, leaves the header and ID alone.`,
+          `The receiver decrypts correctly, but D has ${pct(lab.flipP, 0)} of its bits inverted.`,
+          lab.flipP > 0 ? `The recovered reading shrinks to ${pct(g, 0)} of its true value, and the ID check still <b>passes</b>.` : `No change.`],
+        plot: { kind: "y", series: [[R.yTrue, "true"], [y, "server"]] } });
+      return { base: o(), prop: o() };
+    } },
+];
+
+// ---------------------------------------------------------------- compute
+function labCompute() {
+  const Sb = state.scheme === "baseline" ? S : simulate({ ...state, scheme: "baseline" });
+  const Sp = state.scheme === "proposed" ? S : simulate({ ...state, scheme: "proposed" });
+  const R = { base: Sb, prop: Sp };
+  R.yTrue = decodeY(Sb.D.subarray(0, LAB_N));
+  const wrongB = new LFSR16((state.key16 ^ 0x5A5A) || 1).bits(ID_BITS + LAB_N).subarray(ID_BITS);
+  const wrongP = new NLFSR128(Uint8Array.from({ length: 128 }, (_, i) => (i * 7 + 3) % 5 < 2 ? 1 : 0)).bits(ID_BITS + LAB_N).subarray(ID_BITS);
+  R.yFail = { base: decodeY(xorBits(Sb.C.subarray(0, LAB_N), wrongB)), prop: decodeY(xorBits(Sp.C.subarray(0, LAB_N), wrongP)) };
+  R.res = {};
+  for (const a of ATTACKS) R.res[a.id] = a.run(R);
+  LR = R;
+}
+function labSchedule() { clearTimeout(labTimer); labTimer = setTimeout(() => { labCompute(); renderLab(); renderBench(); }, 200); }
+function labNow() { clearTimeout(labTimer); labCompute(); renderLab(); renderBench(); }
+
+// ---------------------------------------------------------------- render: matrix + detail
+function vpill(o) { const [t, c] = VERD[o.v]; return `<span class="vp ${c}">${t}</span>`; }
+
+function buildLabCard() {
+  document.getElementById("attackLab").innerHTML = `
+    <div class="dg-head"><div><h2>Attack lab: original design vs our proposal</h2>
+      <p>Each attack runs live against <b>both</b> designs with the current settings. Pick one to see what the attacker does, step by step, and whether data is breached. Attacks marked <span class="src paper">paper</span> are the ones the ESSERC'25 paper discusses; the rest go beyond its threat model.</p></div>
+      <div class="lab-score" id="labScore"></div></div>
+    <div class="atk-scroll"><table class="atk-table" id="atkTable"></table></div>
+    <div class="atk-detail" id="atkDetail"></div>`;
+}
+
+function renderLab() {
+  if (!LR) return;
+  const rows = ATTACKS.map(a => {
+    const r = LR.res[a.id];
+    return `<tr data-id="${a.id}" tabindex="0" aria-selected="${a.id === lab.sel}"><td><b>${a.name}</b></td><td><span class="src ${a.src}">${a.src === "paper" ? "paper" : "beyond"}</span></td>
+      <td>${vpill(r.base)}</td><td>${vpill(r.prop)}</td><td class="stop">${a.stop}</td></tr>`;
+  }).join("");
+  const tb = document.getElementById("atkTable");
+  tb.innerHTML = `<thead><tr><th>Attack</th><th>Source</th><th>Original design</th><th>With our proposal</th><th>What stops it</th></tr></thead><tbody>${rows}</tbody>`;
+  tb.querySelectorAll("tbody tr").forEach(tr => {
+    const go = () => { lab.sel = tr.dataset.id; renderLab(); };
+    tr.onclick = go; tr.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
+  });
+  const bad = d => ATTACKS.filter(a => ["breached", "spoofed", "leak", "weak"].includes(LR.res[a.id][d].v)).length;
+  document.getElementById("labScore").innerHTML = `<div><span>Original</span><b class="warn">${bad("base")}</b><i>of ${ATTACKS.length} succeed</i></div><div><span>Proposal</span><b class="${bad("prop") ? "warn" : "good"}">${bad("prop")}</b><i>of ${ATTACKS.length} succeed</i></div>`;
+  renderAttackDetail();
+}
+
+const JUMP = { eaves: 1, saturate: () => (state.buffer === 1 ? 3 : 2), bm: 4, htamper: 8 };
+
+function renderAttackDetail() {
+  const a = ATTACKS.find(x => x.id === lab.sel), r = LR.res[a.id], el = document.getElementById("atkDetail");
+  const knobs = (a.knobs || []).map((k, n) => {
+    const key = k.g || k.k, obj = k.g ? state : lab, val = obj[key];
+    if (k.g === "dither") return `<label class="chk"><input type="checkbox" data-kn="${n}" ${val ? "checked" : ""}> ${k.label}</label>`;
+    if (k.t === "seg") return `<div class="ctl"><label>${k.label}</label><div class="seg">${k.opts.map(([v, t]) => `<button data-kn="${n}" data-v="${v}" aria-pressed="${val == v}">${t}</button>`).join("")}</div></div>`;
+    return `<div class="ctl"><label>${k.label}<b id="kn${n}">${k.fmt ? k.fmt(val) : val}</b></label><input type="range" data-kn="${n}" min="${k.min}" max="${k.max}" step="${k.step}" value="${val}"></div>`;
+  }).join("");
+  const col = (title, o) => `<div class="atk-col"><h4>${title}</h4><div class="atk-v ${VERD[o.v][1]}">${VERD[o.v][0]}</div><div class="atk-h">${o.head}</div>
+    <ol>${o.steps.map(s => `<li>${s}</li>`).join("")}</ol>${o.plot ? `<canvas data-h="150"></canvas><div class="legend"></div>` : ""}</div>`;
+  const j = JUMP[a.id];
+  el.innerHTML = `<div class="atk-top"><div><h3>${a.name} <span class="src ${a.src}">${a.src === "paper" ? "from the paper" : "beyond the paper"}</span></h3>
+      <p class="atk-desc">${a.desc}</p><p class="atk-has"><b>Attacker has:</b> ${a.has}</p></div>
+      ${j != null ? `<button class="tool" id="atkJump">Show it in the live diagram</button>` : ""}</div>
+    ${knobs ? `<div class="atk-knobs">${knobs}</div>` : ""}
+    <div class="atk-cols">${col("Original design (S-DSM, 16-bit LFSR, stored key)", r.base)}${col("With our proposal (SRAM PUF, fuzzy extractor, 128-bit NLFSR)", r.prop)}</div>`;
+  el.querySelectorAll("[data-kn]").forEach(inp => {
+    const k = a.knobs[+inp.dataset.kn], key = k.g || k.k, obj = k.g ? state : lab;
+    const apply = v => { obj[key] = v; if (k.g) { buildControls(); schedule(); } else labNow(); };
+    if (inp.type === "checkbox") inp.onchange = () => apply(inp.checked);
+    else if (inp.dataset.v != null) inp.onclick = () => apply(isNaN(+inp.dataset.v) ? inp.dataset.v : +inp.dataset.v);
+    else inp.oninput = () => { const v = parseFloat(inp.value); document.getElementById("kn" + inp.dataset.kn).textContent = k.fmt ? k.fmt(v) : v; clearTimeout(inp._t); inp._t = setTimeout(() => apply(v), 120); };
+  });
+  if (j != null) document.getElementById("atkJump").onclick = () => { applyScenario(typeof j === "function" ? j() : j); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const cvs = el.querySelectorAll("canvas"), outs = [r.base, r.prop].filter(o => o.plot);
+  cvs.forEach((c, n) => drawAtkPlot(c, outs[n].plot));
+}
+
+const SERIES = { true: ["true reading", () => COL.faint(), [5, 4]], eve: ["what Eve decrypts", () => COL.key()], fake: ["Eve's fake reading", () => COL.sig(), [3, 3]], server: ["what the server shows", () => COL.key()] };
+function drawAtkPlot(c, p) {
+  const g = dpiCanvas(c, 150), ctx = g.ctx, lg = c.nextElementSibling;
+  if (p.kind === "y") {
+    const off = 100, W = 400; let pk = 0.05;
+    for (const [y] of p.series) for (let i = off; i < off + W && i < y.length; i++) pk = Math.max(pk, Math.abs(y[i]));
+    pk = Math.min(1.1, pk * 1.15);
+    const a = axes(ctx, g.w, g.h, { l: 42, r: 10, t: 8, b: 26 }, [0, W], [-pk, pk], { ny: 2, yfmt: v => v.toFixed(2), xlabel: "output samples (FS)" });
+    for (const [y, s] of p.series) {
+      const [, cf, dash] = SERIES[s]; ctx.setLineDash(dash || []);
+      line(ctx, null, Array.from(y.subarray ? y.subarray(off, off + W) : y.slice(off, off + W)), a.X, a.Y, cf(), s === "true" ? 1.3 : 1.5);
+    }
+    ctx.setLineDash([]);
+    lg.innerHTML = p.series.map(([, s]) => `<span><i class="swatch${SERIES[s][2] ? " dashed" : ""}" style="${SERIES[s][2] ? "border-color" : "background"}:${SERIES[s][1]()}"></i>${SERIES[s][0]}</span>`).join("");
+  } else if (p.kind === "bits") {
+    ctx.clearRect(0, 0, g.w, g.h);
+    const n = p.bits.length, cols = 100, rows = Math.ceil(n / cols), cw = (g.w - 4) / cols, ch = Math.min(28, (g.h - 30) / rows);
+    const on = p.neutral ? CSS("--ink") : COL.warn(), off = p.neutral ? COL.grid() : COL.good();
+    for (let i = 0; i < n; i++) { ctx.fillStyle = p.bits[i] ? on : off; ctx.fillRect(2 + (i % cols) * cw, 4 + Math.floor(i / cols) * (ch + 3), Math.max(1, cw - 1), ch); }
+    const f = p.bits.reduce((x, y) => x + y, 0) / n;
+    ctx.fillStyle = COL.ink(); ctx.font = "11px " + CSS("--mono"); ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(`${n} consecutive bits, ${pct(f)} ${p.on}`, 2, g.h - 8);
+    lg.innerHTML = legend([[p.on, on], [p.off, off]]);
+  } else if (p.kind === "lc") {
+    const n = p.prof.length, a = axes(ctx, g.w, g.h, { l: 36, r: 10, t: 8, b: 26 }, [0, n], [0, n / 2 + 8], { ny: 4, yfmt: v => v.toFixed(0), xlabel: "keystream bits seen" });
+    ctx.setLineDash([4, 4]); line(ctx, [0, n], [0, n / 2], a.X, a.Y, COL.faint(), 1); ctx.setLineDash([]);
+    line(ctx, null, Array.from(p.prof), a.X, a.Y, COL.key(), 2);
+    ctx.strokeStyle = COL.sig(); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(a.X(Math.min(p.m, n)), 8); ctx.lineTo(a.X(Math.min(p.m, n)), g.h - 26); ctx.stroke();
+    lg.innerHTML = legend([["linear complexity L", COL.key()], ["random sequence (n/2)", COL.faint()], ["bits Eve knows", COL.sig()]]);
+  } else if (p.kind === "bar") {
+    ctx.clearRect(0, 0, g.w, g.h);
+    const L = 10, R = g.w - 10, X = v => L + Math.min(1, v / p.max) * (R - L), y0 = 50;
+    ctx.fillStyle = COL.grid(); ctx.fillRect(L, y0, R - L, 26);
+    ctx.fillStyle = p.neutral ? COL.sig() : p.ok ? COL.good() : COL.warn();
+    ctx.fillRect(L, y0, X(p.val) - L, 26);
+    if (p.lim > 0) { ctx.strokeStyle = COL.ink(); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(p.lim), y0 - 8); ctx.lineTo(X(p.lim), y0 + 34); ctx.stroke(); }
+    ctx.fillStyle = COL.ink(); ctx.font = "12px " + CSS("--mono"); ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    ctx.fillText(p.max > 1 ? `${p.text}: ${p.val}` : p.text, L, 32);
+    lg.innerHTML = "";
+  }
+}
+
+// ---------------------------------------------------------------- workbench
+function buildBenchCard() {
+  document.getElementById("workbench").innerHTML = `
+    <div class="dg-head"><div><h2>Workbench: edit the helper data, the fingerprint and the keys</h2>
+      <p>Everything the receiver and chip exchange or store is editable here. Click any helper-data bit or fingerprint cell to flip it and follow the change through the decoder, the key and the receiver's ID check. The results feed the diagram and the attack lab too.</p></div></div>
+    <div id="benchBody"></div>`;
+}
+
+function renderBench() {
+  if (!LR) return;
+  const Sp = LR.prop, Sb = LR.base, t = state.bch_t, el = document.getElementById("benchBody");
+  const hb = Sp.h_rx_bits, h0 = Sp.h_bits, nh = hb.length;
+  const hDiff = hb.reduce((a, b, i) => a + (b !== h0[i]), 0);
+  const words = [];
+  for (let j = 0; j < t; j++) {
+    let cells = "";
+    for (let b = 0; b < 10; b++) { const i = j * 10 + b; cells += `<button class="hb${hb[i] !== h0[i] ? " ed" : ""}" data-h="${i}" title="h bit ${i}: ${hb[i]}${hb[i] !== h0[i] ? " (changed)" : ""}">${hb[i]}</button>`; }
+    words.push(`<div class="hw"><span>S${2 * j + 1}</span>${cells}</div>`);
+  }
+  const eT = Sp.e_true, eH = Sp.e_hat, forced = new Set(state.puf_edit);
+  let fixed = 0, mis = 0, missed = 0, cells = "";
+  for (let i = 0; i < PUF_BITS; i++) {
+    const a = eT[i], b = eH[i], cls = a && b ? "fx" : !a && b ? "mis" : a && !b ? "miss" : "";
+    fixed += a && b; mis += !a && b; missed += a && !b;
+    cells += `<button class="pc ${cls}${forced.has(i) ? " you" : ""}" data-p="${i}" title="cell ${i}: reads ${Sp.w_noisy[i]}, enrolled ${Sp.w_enroll[i]}">${Sp.w_noisy[i]}</button>`;
+  }
+  const kHex = bitsHex(Sp.key_tx), kHex0 = bitsHex(Sp.key_enroll);
+  const kd = Sp.key_tx.reduce((a, b, i) => a + (b !== Sp.key_enroll[i]), 0);
+  const hexDiff = [...kHex].map((c, i) => c === kHex0[i] ? c : `<b class="warn">${c}</b>`).join("");
+  let noiseErr = 0;
+  for (let i = 0; i < PUF_BITS; i++) noiseErr += (Sp.w_noisy[i] ^ (forced.has(i) ? 1 : 0)) !== Sp.w_enroll[i];
+  const residual = PUF_BITS - 10 * t;
+  const step = (k, v, ok, d) => `<div class="bstep"><div class="k">${k}</div><div class="v ${ok == null ? "" : ok ? "good" : "warn"}">${v}</div><div class="d">${d}</div></div>`;
+  const src = state.h_source;
+  const ksC = Sb.ks_all, ksR = Sb.ks_rx_all;
+  const rxKey = state.rx_key16 != null ? state.rx_key16 : state.key16;
+  el.innerHTML = `
+    <div class="bench-grid">
+      <div class="bench-part"><h3>Our proposal: SRAM PUF + fuzzy extractor</h3>
+        <div class="bchain">
+          ${step("Fingerprint errors", Sp.n_err_true, Sp.n_err_true <= t, `${noiseErr} from noise at ${state.temp}°C + ${forced.size} you forced`)}
+          ${step("Helper data", hDiff ? `${hDiff} bits changed` : "as sent", hDiff === 0, src === "own" ? "vs what the receiver sent" : src === "other" ? "another chip's h" : "all-zero h")}
+          ${step("Decoder", Sp.fe_ok ? `fixed ${Sp.n_err_fixed}` : "failed", Sp.fe_ok && mis === 0 && missed === 0, `${fixed} right, ${mis} wrong fixes, ${missed} missed`)}
+          ${step("Key = hash(w)", Sp.key_match ? "MATCH" : `${kd}/128 off`, Sp.key_match, "vs the enrolled key")}
+          ${step("Rx ID check", Sp.id_ok ? "PASS" : "FAIL", Sp.id_ok, Sp.id_ok ? "link up" : "alarm raised")}
+          ${step("Recovered signal", Sp.sndr != null ? Sp.sndr.toFixed(1) + " dB" : "-", Sp.sndr != null ? Sp.sndr > 40 : null, Sp.sndr != null ? "SNDR at the receiver" : "not a sine input")}
+        </div>
+        <div class="keyline"><span>chip's key</span><code>${hexDiff}</code></div>
+        <div class="keyline"><span>enrolled key</span><code>${kHex0}</code></div>
+
+        <h4>Helper data h, as the chip receives it <small>${nh} bits = ${t} syndrome words of 10 bits, public, sent by the receiver at power-up · ${hDiff} changed</small></h4>
+        <div class="bench-tools">
+          <div class="seg">${[["own", "This chip's h"], ["other", "Another chip's h"], ["zeros", "All zeros"]].map(([v, l]) => `<button data-src="${v}" aria-pressed="${src === v}">${l}</button>`).join("")}</div>
+          <button class="tool" id="hRand">Flip a random bit</button><button class="tool" id="hClear">Undo my h edits</button>
+        </div>
+        <div class="hgrid">${words.join("")}</div>
+        <p class="hint">Red = differs from what the receiver sent. Even one changed bit moves the decoder's target: it “corrects” the wrong cells below, the hash scrambles the key, and the ID check fails. Tampering is detected, never silently accepted.</p>
+
+        <h4>Power-up fingerprint w′ <small>${PUF_BITS} SRAM cells as read at this power-up · click a cell to force it to flip</small></h4>
+        <div class="bench-tools">
+          <label class="speed">Temperature <input type="range" id="bTemp" min="-20" max="125" step="1" value="${state.temp}"><b>${state.temp}°C</b></label>
+          <label class="speed">BCH t <input type="range" id="bT" min="10" max="60" step="1" value="${t}"><b>${t}</b></label>
+          <button class="tool" id="pPlus">Force ${Math.max(1, t + 1 - Sp.n_err_true)} more flip${t + 1 - Sp.n_err_true === 1 ? "" : "s"} (exceed t)</button><button class="tool" id="pClear">Undo my cell edits</button>
+        </div>
+        <div class="pgrid">${cells}</div>
+        <div class="legend">${legend([["error fixed by the decoder", COL.good()], ["error the decoder missed", COL.warn()]])}<span><i class="swatch mis"></i>good bit the decoder wrongly flipped</span><span><i class="swatch you"></i>flipped by you</span></div>
+        <div class="leak"><div><b>${Math.max(0, residual)}</b> fingerprint bits stay secret after publishing h (600 − 10t); a 128-bit key needs ≥ 128.</div>
+          <div class="track"><i style="width:${Math.max(0, residual) / PUF_BITS * 100}%" class="${residual >= 128 ? "good" : "warn"}"></i><em style="left:${128 / PUF_BITS * 100}%"></em></div></div>
+      </div>
+
+      <div class="bench-part"><h3>Original design: pre-shared 16-bit key</h3>
+        <p class="hint">No helper data or fingerprint here: the key is fixed at manufacture and stored on the chip. The only things to change are the two copies of it.</p>
+        <div class="ctl"><label>Key stored in the chip</label><input class="hexin" id="kChip" value="${(state.key16 & 0xFFFF).toString(16).toUpperCase().padStart(4, "0")}" maxlength="4" spellcheck="false" aria-label="Chip key in hex"></div>
+        <div class="ctl"><label>Key the receiver uses <label class="chk inl"><input type="checkbox" id="kSame" ${state.rx_key16 == null ? "checked" : ""}> same as chip</label></label>
+          <input class="hexin" id="kRx" value="${(rxKey & 0xFFFF).toString(16).toUpperCase().padStart(4, "0")}" maxlength="4" spellcheck="false" ${state.rx_key16 == null ? "disabled" : ""} aria-label="Receiver key in hex"></div>
+        <div class="bchain two">
+          ${step("Keys differ in", `${[...Array(16)].reduce((a, _, i) => a + (((state.key16 ^ rxKey) >> i) & 1), 0)} bits`, state.key16 === rxKey, "chip vs receiver")}
+          ${step("Rx ID check", Sb.id_ok ? "PASS" : "FAIL", Sb.id_ok, Sb.id_ok ? "link up" : "alarm raised")}
+          ${step("Recovered signal", Sb.sndr != null ? Sb.sndr.toFixed(1) + " dB" : "-", Sb.sndr != null ? Sb.sndr > 40 : null, "SNDR at the receiver")}
+        </div>
+        <div class="keyline"><span>chip keystream</span><code>${fmtBits(ksC, 0, 32)}</code></div>
+        <div class="keyline"><span>receiver keystream</span><code>${colorBits2(ksR, ksC, 0, 32)}</code></div>
+        <p class="hint">Change one hex digit and the whole keystream changes, so the output turns to noise. But the key space is only 65,536 keys: the attack lab's brute-force search finds it in milliseconds.</p>
+      </div>
+    </div>`;
+
+  const redo = () => { run(); labNow(); };
+  const setArr = (k, v) => { state[k] = v; redo(); };
+  const toggle = (arr, i) => (arr.includes(i) ? arr.filter(x => x !== i) : arr.concat(i));
+  el.querySelector(".hgrid").onclick = e => { const b = e.target.closest("[data-h]"); if (b) setArr("h_edit", toggle(state.h_edit, +b.dataset.h)); };
+  el.querySelector(".pgrid").onclick = e => { const b = e.target.closest("[data-p]"); if (b) setArr("puf_edit", toggle(state.puf_edit, +b.dataset.p)); };
+  el.querySelectorAll("[data-src]").forEach(b => { b.onclick = () => { state.h_source = b.dataset.src; redo(); }; });
+  el.querySelector("#hRand").onclick = () => setArr("h_edit", toggle(state.h_edit, Math.floor(Math.random() * nh)));
+  el.querySelector("#hClear").onclick = () => { state.h_source = "own"; state.h_tamper = 0; buildControls(); setArr("h_edit", []); };
+  el.querySelector("#pClear").onclick = () => setArr("puf_edit", []);
+  el.querySelector("#pPlus").onclick = () => {
+    const need = Math.max(1, t + 1 - Sp.n_err_true), add = [];
+    for (let i = 0; i < PUF_BITS && add.length < need; i++) { const j = (i * 97 + 13) % PUF_BITS; if (!eT[j] && !forced.has(j)) add.push(j); }
+    setArr("puf_edit", state.puf_edit.concat(add));
+  };
+  const slide = (id, k) => { const r = el.querySelector(id); r.oninput = () => { r.nextElementSibling.textContent = r.value + (k === "temp" ? "°C" : ""); clearTimeout(r._t); r._t = setTimeout(() => { state[k] = +r.value; buildControls(); redo(); }, 120); }; };
+  slide("#bTemp", "temp"); slide("#bT", "bch_t");
+  const hexKey = (inp, k) => { inp.onchange = () => { const v = parseInt(inp.value, 16); if (!isNaN(v) && v > 0 && v <= 0xFFFF) { state[k] = v; buildControls(); redo(); } else inp.value = (state[k] & 0xFFFF).toString(16).toUpperCase(); }; };
+  hexKey(el.querySelector("#kChip"), "key16"); hexKey(el.querySelector("#kRx"), "rx_key16");
+  el.querySelector("#kSame").onchange = e => { state.rx_key16 = e.target.checked ? null : state.key16; redo(); };
+}
+// ===== LAB-END =====
+</script>
+<script>
 // ===== APP-START =====
 const state = { ...DEFAULTS };
 let S = null, selected = "afe_out", raf = null;
@@ -2163,7 +2827,7 @@ function pill(ok, tOk, tNo) { return `<span class="pill ${ok ? "good" : "warn"}"
 function schedule() { if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { run(); }); }
 function run() {
   S = simulate(state);
-  renderVerdict(); renderPanels(); paintRun();
+  renderVerdict(); renderPanels(); paintRun(); labSchedule();
 }
 
 function setScheme(sc) {
@@ -2233,12 +2897,13 @@ function renderVerdict() {
 initInspector();
 buildScenarios();
 buildDiagramCard();
+buildLabCard(); buildBenchCard();
 setScheme("proposed");
 selectNode("dsm_out", { quiet: true });      // pre-select a block but leave the inspector folded
 document.getElementById("themeBtn").addEventListener("click", () => {
   const r = document.documentElement, n = r.getAttribute("data-theme") === "dark" ? "light" : "dark";
   r.setAttribute("data-theme", n); try { localStorage.setItem("theme", n); } catch (e) {}
-  buildDiagram(); renderPanels(); paintRun(); dgHighlight();   // canvases read the palette when they draw
+  buildDiagram(); renderPanels(); paintRun(); dgHighlight(); renderLab(); renderBench();   // canvases read the palette when they draw
 });
 if (document.fonts) document.fonts.ready.then(() => { setHH(); renderPanels(); });
 
