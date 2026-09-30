@@ -5,11 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Site Analytics - Nithin Purushothama</title>
 <meta name="description" content="First-party site analytics: unique visitors, page views, request origins, and traffic sources.">
-<meta name="robots" content="noindex, follow">
+<meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#faf9f4">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://nithinpuru.github.io/analytics/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bitmaks/cm-web-fonts@latest/fonts.css">
+<script>
+  // Owner key: /analytics/?key=<owner key> stores it for this browser (it unlocks
+  // the visit log, networks and cities) and stops counting this browser on
+  // nithinpuru.github.io. The parameter is removed from the address bar.
+  (function () {
+    var m = /[?&]key=([A-Za-z0-9_-]+)/.exec(location.search);
+    if (!m) return;
+    try { localStorage.setItem("np_stats_key", m[1]); localStorage.setItem("np_notrack", "1"); } catch (e) {}
+    var q = location.search.replace(/([?&])key=[^&]*&?/, "$1").replace(/[?&]$/, "");
+    history.replaceState(null, "", location.pathname + q + location.hash);
+  })();
+</script>
 <style>
   :root {
     --paper: #faf9f4;
@@ -19,7 +31,7 @@
     --land: #e9e5d9;
     --views: #22408c;      /* hyperref blue */
     --visitors: #9a3b2e;   /* red-oxide, like a probe pad */
-    --measure: 58rem;
+    --measure: 64rem;
   }
   * { box-sizing: border-box; }
   html { background: var(--paper); color: var(--ink); }
@@ -37,24 +49,46 @@
   }
   .skip { position: absolute; left: -999px; }
   .skip:focus { left: 1rem; top: 1rem; background: var(--paper); padding: .25rem .5rem; }
+  .muted { color: var(--muted); }
 
   main { max-width: var(--measure); margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
   .back { font-size: .95rem; }
   h1 { font-size: 2.6rem; font-weight: normal; margin: 1.5rem 0 .25rem; letter-spacing: -.01em; }
-  .sub { color: var(--muted); margin: 0 0 2.25rem; font-style: italic; }
+  .sub { color: var(--muted); margin: 0 0 1rem; font-style: italic; }
+  .filters { display: flex; gap: .5rem 1rem; align-items: center; flex-wrap: wrap; margin: 0 0 2rem; font-size: .95rem; }
+  .filters label { color: var(--muted); }
+  .linkish { font: inherit; background: none; border: 0; padding: 0; cursor: pointer; color: var(--views); text-decoration: underline; text-underline-offset: 2px; }
 
   /* Headline figures: set like a table of results, not cards */
-  .figures { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1.5px solid var(--ink); border-bottom: 1px solid var(--rule); margin-bottom: 3rem; }
+  .figures { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1.5px solid var(--ink); border-bottom: 1px solid var(--rule); margin: 0 0 3rem; }
   .figures div { padding: .9rem 1rem 1rem; border-left: 1px solid var(--rule); }
-  .figures div:first-child { border-left: 0; padding-left: 0; }
+  .figures div:nth-child(4n+1) { border-left: 0; padding-left: 0; }
+  .figures div:nth-child(n+5) { border-top: 1px solid var(--rule); }
   .figures dt { font-size: .95rem; color: var(--muted); }
   .figures dd { margin: .15rem 0 0; font-size: 2.1rem; line-height: 1.1; }
+  .figures dd small { font-size: 1rem; color: var(--muted); }
 
   section { margin: 0 0 3.25rem; }
   .head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
           border-bottom: 1px solid var(--rule); padding-bottom: .35rem; margin-bottom: 1rem; }
   h2 { font-size: 1.45rem; font-weight: normal; margin: 0; }
+  h3 { font-size: 1.1rem; font-weight: normal; font-style: italic; margin: 0 0 .5rem; }
   .note { color: var(--muted); font-size: .92rem; font-style: italic; }
+
+  /* Visit log */
+  .visits { list-style: none; margin: 0; padding: 0; }
+  .visit { padding: .75rem 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 9.5rem 1fr; gap: .1rem 1.25rem; }
+  .visit__when { grid-row: span 4; color: var(--muted); font-size: .95rem; }
+  .visit__when b { display: block; color: var(--ink); font-weight: normal; }
+  .visit__who { font-size: 1.05rem; }
+  .visit__how, .visit__read { color: var(--muted); font-size: .93rem; }
+  .visit__what { font-size: .95rem; word-break: break-word; }
+  .tag { display: inline-block; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+         border: 1px solid var(--rule); padding: 0 .35rem; margin-left: .35rem; vertical-align: .1em; }
+  .tag--acad { color: var(--visitors); border-color: var(--visitors); }
+  .tag--new { color: var(--views); border-color: var(--views); }
+  .locked { color: var(--muted); font-style: italic; border: 1px dashed var(--rule); padding: 1rem 1.25rem; }
+  .visits-foot { margin-top: .75rem; font-size: .95rem; }
 
   /* Map */
   .map-wrap { position: relative; }
@@ -79,21 +113,35 @@
     font: inherit; font-size: .92rem; color: var(--ink); background: #fff; border: 1px solid var(--rule); border-radius: 3px; padding: .2rem .35rem;
   }
   #chart { width: 100%; height: 260px; display: block; }
-  #chart .axis text { font-family: inherit; font-size: 12px; fill: var(--muted); }
+  #chart .axis text, #heat text { font-family: inherit; font-size: 12px; fill: var(--muted); }
   #chart .axis path, #chart .axis line { stroke: var(--rule); }
   #chart .grid line { stroke: var(--rule); stroke-dasharray: 2 3; }
   #chart .area-views { fill: var(--views); fill-opacity: .08; }
   #chart .line-views { fill: none; stroke: var(--views); stroke-width: 2; }
   #chart .line-visitors { fill: none; stroke: var(--visitors); stroke-width: 1.5; }
   #chart .cross { stroke: var(--ink); stroke-opacity: .35; }
+  #heat { width: 100%; height: auto; display: block; }
+  #heat rect.hcell { stroke: var(--paper); stroke-width: 1.5; }
+  #heat rect.hcell:hover { stroke: var(--ink); stroke-width: 1; }
 
   .tip {
     position: absolute; pointer-events: none; background: var(--paper); border: 1px solid var(--ink);
     padding: .3rem .55rem; font-size: .88rem; line-height: 1.35; white-space: nowrap; opacity: 0; z-index: 5;
   }
 
+  /* Distributions: labelled horizontal bars */
+  .dists { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.25rem; }
+  .dist { list-style: none; margin: 0; padding: 0; font-size: .95rem; }
+  .dist li { display: grid; grid-template-columns: 8.5rem 1fr 3.2rem; gap: .6rem; align-items: center; padding: .22rem 0; }
+  .dist .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dist .track { height: .55rem; background: var(--land); position: relative; }
+  .dist .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--visitors); opacity: .8; }
+  .dist .val { text-align: right; color: var(--muted); }
+  .dist .empty { display: block; color: var(--muted); font-style: italic; }
+
   /* Tables */
-  .tables { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.25rem; }
+  .tables { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.25rem; margin-bottom: 2.25rem; }
+  .tables.wide { grid-template-columns: repeat(2, 1fr); }
   .tables section { margin: 0; }
   table { width: 100%; border-collapse: collapse; font-size: .95rem; }
   thead th { font-weight: normal; font-style: italic; color: var(--muted); text-align: right; padding: 0 0 .35rem .5rem; border-bottom: 1px solid var(--ink); }
@@ -108,31 +156,56 @@
   footer { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
 
   @media (max-width: 860px) {
-    .tables { grid-template-columns: 1fr; }
+    .tables, .tables.wide, .dists { grid-template-columns: 1fr; }
     .figures { grid-template-columns: repeat(2, 1fr); }
-    .figures div:nth-child(3) { border-left: 0; padding-left: 0; }
+    .figures div:nth-child(4n+1) { border-left: 1px solid var(--rule); padding-left: 1rem; }
+    .figures div:nth-child(odd) { border-left: 0; padding-left: 0; }
     .figures div:nth-child(n+3) { border-top: 1px solid var(--rule); }
     .range { margin-left: 0; }
+    .visit { grid-template-columns: 1fr; }
+    .visit__when { grid-row: auto; }
+    .visit__when b { display: inline; margin-right: .5rem; }
   }
   @media (max-width: 480px) {
     h1 { font-size: 2.1rem; }
     .figures dd { font-size: 1.7rem; }
+    .dist li { grid-template-columns: 6.5rem 1fr 2.8rem; }
   }
 </style>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <main id="content">
-  <a class="back" href="https://nithinpuru.github.io/">← Homepage</a>
+  <a class="back" href="https://nithinpuru.com/">← nithinpuru.com</a>
   <h1>Analytics</h1>
-  <p class="sub">First-party counts in UTC days. <span id="updated">Loading…</span></p>
+  <p class="sub">First-party counts for the portfolio (nithinpuru.com) and the tools (nithinpuru.github.io). <span id="updated">Loading…</span></p>
+  <div class="filters">
+    <label for="site">Site</label>
+    <select id="site">
+      <option value="">Both sites</option>
+      <option value="nithinpuru.com">nithinpuru.com (portfolio)</option>
+      <option value="nithinpuru.github.io">nithinpuru.github.io (tools)</option>
+    </select>
+    <span id="owner-status" class="muted"></span>
+  </div>
 
   <dl class="figures">
     <div><dt>Unique visitors</dt><dd id="f-visitors">–</dd></div>
     <div><dt>Page views</dt><dd id="f-views">–</dd></div>
     <div><dt>Visitors today</dt><dd id="f-visitors-today">–</dd></div>
     <div><dt>Views today</dt><dd id="f-views-today">–</dd></div>
+    <div><dt>Academic visitors</dt><dd id="f-academic">–</dd></div>
+    <div><dt>Returning visitors</dt><dd id="f-returning">–</dd></div>
+    <div><dt>Avg. time on page</dt><dd id="f-time">–</dd></div>
+    <div><dt>Avg. scroll depth</dt><dd id="f-scroll">–</dd></div>
   </dl>
+
+  <section aria-labelledby="h-visits">
+    <div class="head"><h2 id="h-visits">Who visited</h2>
+      <span class="note">One line per visitor per day, newest first · times in your timezone
+        · <label><input type="checkbox" id="only-academic"> academic only</label></span></div>
+    <div id="visits-wrap"><p class="locked">Loading…</p></div>
+  </section>
 
   <section aria-labelledby="h-origins">
     <div class="head"><h2 id="h-origins">Origins</h2><span class="note">Requests grouped into 1° cells</span></div>
@@ -161,6 +234,20 @@
     <div class="map-wrap"><svg id="chart" role="img" aria-label="Daily views and visitors"></svg><div class="tip" id="chart-tip"></div></div>
   </section>
 
+  <section aria-labelledby="h-when">
+    <div class="head"><h2 id="h-when">When they visit</h2><span class="note">Page views by weekday and hour, in the visitor's own timezone</span></div>
+    <div class="map-wrap"><svg id="heat" role="img" aria-label="Page views by weekday and hour"></svg><div class="tip" id="heat-tip"></div></div>
+  </section>
+
+  <section aria-labelledby="h-reading">
+    <div class="head"><h2 id="h-reading">How they read</h2><span class="note">Per page load</span></div>
+    <div class="dists">
+      <div><h3>Portfolio sections reached</h3><ul class="dist" id="d-sections"></ul></div>
+      <div><h3>Time on page</h3><ul class="dist" id="d-time"></ul></div>
+      <div><h3>Scroll depth</h3><ul class="dist" id="d-scroll"></ul></div>
+    </div>
+  </section>
+
   <div class="tables">
     <section aria-labelledby="h-regions">
       <div class="head"><h2 id="h-regions">Regions</h2><span class="note">ISO 3166</span></div>
@@ -174,9 +261,63 @@
       <div class="head"><h2 id="h-pages">Pages</h2><span class="note">By views</span></div>
       <table><thead><tr><th>Path</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-pages"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
     </section>
+
+    <section aria-labelledby="h-academic">
+      <div class="head"><h2 id="h-academic">Academic networks</h2><span class="note">Universities, institutes, research networks</span></div>
+      <table><thead><tr><th>Network</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-academic"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-orgs">
+      <div class="head"><h2 id="h-orgs">All networks</h2><span class="note">Who owns the IP</span></div>
+      <table><thead><tr><th>Network</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-orgs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-cities">
+      <div class="head"><h2 id="h-cities">Cities</h2><span class="note">Cloudflare geolocation</span></div>
+      <table><thead><tr><th>City</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-cities"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+
+    <section aria-labelledby="h-refs">
+      <div class="head"><h2 id="h-refs">Referring pages</h2><span class="note">Exact page, no query</span></div>
+      <table><thead><tr><th>Page</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-refs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-sites">
+      <div class="head"><h2 id="h-sites">Sites</h2><span class="note">Before the split, all github.io</span></div>
+      <table><thead><tr><th>Site</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-sites"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-devices">
+      <div class="head"><h2 id="h-devices">Devices</h2></div>
+      <table><thead><tr><th>Device</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-devices"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+
+    <section aria-labelledby="h-browsers">
+      <div class="head"><h2 id="h-browsers">Browsers</h2></div>
+      <table><thead><tr><th>Browser</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-browsers"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-os">
+      <div class="head"><h2 id="h-os">Operating systems</h2></div>
+      <table><thead><tr><th>System</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-os"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-langs">
+      <div class="head"><h2 id="h-langs">Languages</h2><span class="note">Browser setting</span></div>
+      <table><thead><tr><th>Language</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-langs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
   </div>
 
-  <footer style="margin-top:3.5rem">No cookies. Visitors are counted by a salted hash; raw IP addresses are never stored.
+  <div class="tables wide">
+    <section aria-labelledby="h-engagement">
+      <div class="head"><h2 id="h-engagement">Reading by page</h2><span class="note">Time visible, deepest scroll</span></div>
+      <table><thead><tr><th>Path</th><th>Loads</th><th>Avg. time</th><th>Scroll</th></tr></thead><tbody id="t-engagement"><tr class="empty"><td colspan="4">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-clicks">
+      <div class="head"><h2 id="h-clicks">Outbound clicks</h2><span class="note">CV, email, profiles, tools</span></div>
+      <table><thead><tr><th>Target</th><th>Visitors</th><th>Clicks</th></tr></thead><tbody id="t-clicks"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+    <section aria-labelledby="h-campaigns">
+      <div class="head"><h2 id="h-campaigns">Campaigns</h2><span class="note">utm_campaign / utm_medium</span></div>
+      <table><thead><tr><th>Campaign</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-campaigns"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    </section>
+  </div>
+
+  <footer style="margin-top:3.5rem">No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. The visit log, networks and cities are only returned with the owner key.
     <p class="notrack" id="notrack" hidden><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
   </footer>
 </main>
@@ -186,8 +327,11 @@
 <script>
 /* ---- Configuration ------------------------------------------------------ */
 // Your Cloudflare Worker URL (no trailing slash). Leave empty to preview with demo data.
-const API_BASE = "https://nithin-analytics.nithin-analytics-worker.workers.dev";
+const API_BASE = "https://nithin-analytics.nithinpurushothama.workers.dev";
 const DEMO = !API_BASE || API_BASE.includes("YOUR-SUBDOMAIN") || new URLSearchParams(location.search).has("demo");
+// The portfolio's sections in page order (for "sections reached").
+const PORTFOLIO_SECTIONS = ["experience", "education", "skills", "publications", "awards", "work", "finance", "hobbies", "cv", "contact"];
+const SECTION_NAMES = { cv: "CV", work: "Work & tools" };
 
 /* ---- Helpers ------------------------------------------------------------ */
 const $ = id => document.getElementById(id);
@@ -196,6 +340,7 @@ const DAY = 864e5;
 const iso = d => d.toISOString().slice(0, 10);
 const todayUTC = () => iso(new Date());
 const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+const langNames = new Intl.DisplayNames(["en"], { type: "language" });
 const flag = cc => /^[A-Z]{2}$/.test(cc) && cc !== "XX" && cc !== "T1"
   ? String.fromCodePoint(...[...cc].map(c => 127397 + c.charCodeAt(0))) + " " : "";
 function regionLabel(cc) {
@@ -203,13 +348,31 @@ function regionLabel(cc) {
   if (cc === "T1") return "Tor network";
   try { return flag(cc) + regionNames.of(cc) + ` (${cc})`; } catch { return cc; }
 }
+function countryName(cc) { try { return cc && cc !== "XX" ? regionNames.of(cc) : ""; } catch { return cc; } }
+function langLabel(tag) { try { return `${langNames.of(tag)} (${tag})`; } catch { return tag; } }
 function ago(isoTime) {
   const s = Math.round((Date.now() - new Date(isoTime)) / 1000);
   if (s < 60) return "just now";
   if (s < 3600) return `${Math.round(s / 60)} min ago`;
   return new Date(isoTime).toUTCString().replace("GMT", "UTC");
 }
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function dur(ms) {
+  if (ms == null) return "–";
+  const s = Math.round(ms / 1000);
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, "0")} s`;
+}
+const pct = v => v == null ? "–" : `${Math.round(v)}%`;
+const cap = k => k ? k[0].toUpperCase() + k.slice(1) : k;
+function sectionName(id) {
+  if (SECTION_NAMES[id]) return SECTION_NAMES[id];
+  return cap(id.replace(/^\d+-/, m => m.replace("-", ". ")).replace(/-/g, " "));
+}
+function clickLabel(key) {
+  const i = key.indexOf(":"), kind = key.slice(0, i), target = key.slice(i + 1);
+  return kind === "email" ? `email ${target}` : target;
+}
+const statsKey = () => { try { return localStorage.getItem("np_stats_key") || ""; } catch { return ""; } };
 
 /* ---- Demo data (used until the Worker is configured) -------------------- */
 function demoData(from, to) {
@@ -223,23 +386,53 @@ function demoData(from, to) {
   const sum = k => d3.sum(daily, d => d[k]);
   const share = (rows, total) => rows.map(([key, w]) => ({ key, visitors: Math.round(total * w), views: Math.round(total * w * 1.7) }));
   const V = sum("visitors");
+  const now = Date.now();
+  const visit = (h, city, cc, org, academic, device, browser, os, lang, tz, source, ref, pages, ms, scroll, sections, clicks, returning) =>
+    ({ visitor: Math.random().toString(16).slice(2, 8), day: iso(new Date(now - h * 36e5)), start: now - h * 36e5, city, country: cc, org, academic,
+       device, browser, os, lang, tz, source, ref, pages, ms, scroll, sections, clicks, returning, views: pages.split(" > ").length });
   return {
-    updated: new Date().toISOString(), from, to,
+    updated: new Date().toISOString(), from, to, authorized: true,
     total: { visitors: V + 1240, views: sum("views") + 2210 },
     today: daily.at(-1),
     daily,
     countries: share([["IN", .46], ["US", .17], ["ES", .08], ["DE", .06], ["GB", .04], ["CN", .04], ["TW", .03], ["NL", .02], ["XX", .01]], V),
     sources: share([["(direct)", .41], ["linkedin.com", .24], ["google", .17], ["github.com", .1], ["colab.research.google.com", .05], ["scholar.google.com", .03]], V),
-    pages: share([["/", .82], ["/rongm", .18]], V),
+    pages: share([["nithinpuru.com/", .62], ["nithinpuru.com/rongm", .14], ["nithinpuru.github.io/gmid", .12], ["nithinpuru.github.io/research-radar", .08], ["nithinpuru.github.io/fx-quant", .04]], V),
     origins: [[13,78,40],[19,73,18],[28,77,15],[17,78,11],[23,72,9],[23,88,5],[37,-122,12],[40,-74,8],[42,-71,7],[47,-122,5],[30,-98,4],[40,3,9],[40,-4,5],[48,11,6],[52,13,4],[51,0,5],[31,121,4],[25,121,5],[52,5,3],[35,139,3],[1,104,3],[-34,151,2]]
       .map(([lat, lon, v]) => ({ lat, lon, visitors: Math.round(v * V / 180) + 1, views: Math.round(v * V / 110) + 1 })),
+    sites: share([["nithinpuru.com", .7], ["nithinpuru.github.io", .3]], V),
+    orgs: share([["ETH Zurich", .12], ["Massachusetts Institute of Technology", .09], ["Deutsche Telekom AG", .08], ["Comcast Cable Communications, LLC", .07], ["Delft University of Technology", .05]], V),
+    academic: share([["ETH Zurich", .12], ["Massachusetts Institute of Technology", .09], ["Delft University of Technology", .05], ["Verein zur Foerderung eines Deutschen Forschungsnetzes e.V.", .04]], V),
+    academicVisitors: Math.round(V * .3),
+    cities: share([["Zurich, CH", .12], ["Boston, US", .1], ["Munich, DE", .08], ["Delft, NL", .05], ["London, GB", .05]], V),
+    refs: share([["linkedin.com/feed/", .14], ["scholar.google.com/citations", .03], ["github.com/chennakeshavadasa", .06]], V),
+    devices: share([["desktop", .78], ["mobile", .2], ["tablet", .02]], V),
+    browsers: share([["Chrome", .52], ["Safari", .24], ["Firefox", .16], ["Edge", .08]], V),
+    os: share([["macOS", .38], ["Windows", .3], ["Linux", .14], ["iOS", .12], ["Android", .06]], V),
+    langs: share([["en-US", .44], ["de-DE", .16], ["en-GB", .12], ["de-CH", .08], ["nl-NL", .05]], V),
+    campaigns: share([["phd-applications / email", .06]], V),
+    engagement: { views: V, avg_ms: 74000, avg_scroll: 58 },
+    pageEngagement: [["nithinpuru.com/", 124000, 61], ["nithinpuru.com/rongm", 212000, 44], ["nithinpuru.github.io/gmid", 386000, 30]].map(([key, avg_ms, avg_scroll]) => ({ key, views: Math.round(V * .3), avg_ms, avg_scroll })),
+    clicks: share([["outbound:drive.google.com/file/d/cv/view", .05], ["email:nithinpurushothama@gmail.com", .03], ["outbound:www.linkedin.com/in/nithin-purushothama-70664727b/", .03], ["outbound:nithinpuru.github.io/gmid/", .02]], V),
+    timeBuckets: [210, 140, 96, 120, 61, 18],
+    scrollBuckets: [150, 90, 80, 60, 140],
+    pageSections: { "nithinpuru.com/": [["experience", 300], ["education", 250], ["skills", 210], ["publications", 190], ["awards", 150], ["work", 140], ["finance", 70], ["hobbies", 60], ["cv", 110], ["contact", 90]].map(([key, views]) => ({ key, views })) },
+    newReturning: { new: Math.round(V * .8), returning: Math.round(V * .2) },
+    hours: Array.from({ length: 7 }, (_, wd) => Array.from({ length: 24 }, (_, h) => Math.round((wd > 0 && wd < 6 ? 6 : 2) * Math.exp(-((h - 11) ** 2) / 18) + (rnd() * 2)))),
+    visits: [
+      visit(1, "Zurich", "CH", "ETH Zurich", true, "desktop", "Safari", "macOS", "de-CH", "Europe/Zurich", "scholar.google.com", "scholar.google.com/citations", "nithinpuru.com/ > nithinpuru.com/rongm", 430000, 95, "experience,education,publications,awards,cv", "drive.google.com/file/d/cv/view", false),
+      visit(5, "Boston", "US", "Massachusetts Institute of Technology", true, "desktop", "Chrome", "macOS", "en-US", "America/New_York", "linkedin.com", "linkedin.com/feed/", "nithinpuru.com/", 96000, 70, "experience,education,skills,publications", null, true),
+      visit(9, "Munich", "DE", "Deutsche Telekom AG", false, "mobile", "Chrome", "Android", "de-DE", "Europe/Berlin", "(direct)", null, "nithinpuru.github.io/gmid", 386000, 30, null, null, false),
+    ],
   };
 }
 
 /* ---- Data loading ------------------------------------------------------- */
 async function load(from, to) {
   if (DEMO) return demoData(from, to);
-  const r = await fetch(`${API_BASE}/stats?from=${from}&to=${to}`);
+  const site = $("site").value, key = statsKey();
+  const r = await fetch(`${API_BASE}/stats?from=${from}&to=${to}${site ? `&site=${site}` : ""}`,
+                        key ? { headers: { "X-Stats-Key": key } } : undefined);
   if (!r.ok) throw new Error(`Stats API returned ${r.status}`);
   return r.json();
 }
@@ -337,12 +530,101 @@ function drawChart(daily, from, to) {
   $("range-note").textContent = `${n} day${n === 1 ? "" : "s"}, UTC`;
 }
 
+/* ---- Weekday x hour heatmap --------------------------------------------- */
+function drawHeat(hours) {
+  const svg = d3.select("#heat"); svg.selectAll("*").remove();
+  const order = [1, 2, 3, 4, 5, 6, 0], names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const W = 960, cw = (W - 44) / 24, ch = 26, H = 7 * ch + 22;
+  svg.attr("viewBox", `0 0 ${W} ${H}`);
+  const grid = hours && hours.length === 7 ? hours : Array.from({ length: 7 }, () => Array(24).fill(0));
+  const max = d3.max(grid.flat()) || 1;
+  const color = d3.scaleSequential([0, max], t => d3.interpolateRgb("#f1eee5", "#22408c")(Math.sqrt(t)));
+  const tip = $("heat-tip");
+  order.forEach((wd, row) => {
+    svg.append("text").attr("x", 0).attr("y", row * ch + ch / 2 + 4).text(names[wd]);
+    grid[wd].forEach((n, h) => {
+      svg.append("rect").attr("class", "hcell").attr("x", 44 + h * cw).attr("y", row * ch).attr("width", cw).attr("height", ch)
+        .attr("fill", n ? color(n) : "#f1eee5")
+        .on("mousemove", e => {
+          const box = svg.node().parentNode.getBoundingClientRect();
+          tip.innerHTML = `${names[wd]} ${String(h).padStart(2, "0")}:00–${String(h + 1).padStart(2, "0")}:00<br>${fmt(n)} views`;
+          tip.style.left = Math.min(e.clientX - box.left + 12, box.width - 160) + "px";
+          tip.style.top = (e.clientY - box.top + 12) + "px"; tip.style.opacity = 1;
+        })
+        .on("mouseleave", () => tip.style.opacity = 0);
+    });
+  });
+  [0, 3, 6, 9, 12, 15, 18, 21].forEach(h => svg.append("text").attr("x", 44 + h * cw + 2).attr("y", H - 4).text(String(h).padStart(2, "0")));
+}
+
+/* ---- Distributions ------------------------------------------------------ */
+function fillDist(id, rows, emptyText) {
+  const ul = $(id);
+  const total = d3.max(rows, r => r.max ?? r.value) || 0;
+  if (!rows.length || !total) { ul.innerHTML = `<li><span class="empty">${emptyText}</span></li>`; return; }
+  ul.innerHTML = rows.map(r => {
+    const w = (r.value / (r.max ?? total) * 100);
+    return `<li><span class="lbl" title="${esc(r.label)}">${esc(r.label)}</span><span class="track"><span class="fill" style="width:${w.toFixed(1)}%"></span></span><span class="val">${esc(r.text)}</span></li>`;
+  }).join("");
+}
+function drawReading(s) {
+  const tb = s.timeBuckets || [], sb = s.scrollBuckets || [];
+  const tTot = d3.sum(tb) || 0, sTot = d3.sum(sb) || 0;
+  fillDist("d-time", ["under 10 s", "10–30 s", "30 s–1 min", "1–3 min", "3–10 min", "over 10 min"]
+    .map((label, i) => ({ label, value: tb[i] || 0, max: tTot, text: tTot ? pct(100 * (tb[i] || 0) / tTot) : "–" })), "No reading data yet.");
+  fillDist("d-scroll", ["0–24%", "25–49%", "50–74%", "75–99%", "100%"]
+    .map((label, i) => ({ label, value: sb[i] || 0, max: sTot, text: sTot ? pct(100 * (sb[i] || 0) / sTot) : "–" })), "No reading data yet.");
+  // Sections: share of portfolio home-page loads (with reading data) that reached each one.
+  const home = (s.pageSections || {})[$("site").value === "nithinpuru.com" ? "/" : "nithinpuru.com/"] || [];
+  const loads = (s.pageEngagement || []).find(r => r.key === "/" && $("site").value === "nithinpuru.com" || r.key === "nithinpuru.com/")?.views || 0;
+  const byId = new Map(home.map(r => [r.key, r.views]));
+  const denom = loads || d3.max(home, r => r.views) || 0;
+  fillDist("d-sections", PORTFOLIO_SECTIONS.map(id => ({ label: sectionName(id), value: byId.get(id) || 0, max: denom,
+    text: denom ? pct(100 * (byId.get(id) || 0) / denom) : "–" })), "No portfolio reading data yet.");
+}
+
+/* ---- Visit log ---------------------------------------------------------- */
+let lastVisits = null, lastAuthorized = false;
+function renderVisits() {
+  const wrap = $("visits-wrap");
+  if (!lastAuthorized) {
+    wrap.innerHTML = `<p class="locked">The visit log is private. Open this page once with <code>?key=</code> followed by your owner key; it is kept in this browser only.</p>`;
+    return;
+  }
+  const onlyAcad = $("only-academic").checked;
+  const rows = (lastVisits || []).filter(v => !onlyAcad || v.academic);
+  if (!rows.length) { wrap.innerHTML = `<p class="locked">No visits in this range${onlyAcad ? " from academic networks" : ""} yet.</p>`; return; }
+  const when = t => new Date(t).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const theirs = (t, tz) => { try { return tz ? new Date(t).toLocaleTimeString([], { timeZone: tz, hour: "2-digit", minute: "2-digit" }) + " their time" : ""; } catch { return ""; } };
+  wrap.innerHTML = `<ol class="visits">${rows.map(v => {
+    const place = [v.city, countryName(v.country)].filter(Boolean).join(", ") || "Unknown place";
+    const how = [cap(v.device), v.browser, v.os, v.lang].filter(Boolean).join(" · ");
+    const from = v.source && v.source !== "(direct)" ? `from ${esc(v.ref || v.source)}` : "direct visit";
+    const read = v.sections ? [...new Set(v.sections.split(","))].map(sectionName).join(", ") : "";
+    const pages = esc(v.pages || "").replaceAll(" &gt; ", " → ");
+    return `<li class="visit">
+      <div class="visit__when"><b>${esc(when(v.start))}</b>${esc(theirs(v.start, v.tz))}</div>
+      <div class="visit__who">${flag(v.country)}${esc(place)}${v.org ? ` · ${esc(v.org)}` : ""}${v.academic ? `<span class="tag tag--acad">academic</span>` : ""}${v.returning ? `<span class="tag">returning</span>` : `<span class="tag tag--new">new</span>`}</div>
+      <div class="visit__how">${esc(how) || "Device unknown"} · ${from}</div>
+      <div class="visit__what">${pages} · ${v.views} view${v.views === 1 ? "" : "s"}${v.ms != null ? ` · read ${dur(v.ms)}` : ""}${v.scroll != null ? ` · scrolled ${pct(v.scroll)}` : ""}</div>
+      <div class="visit__read">${read ? `Sections: ${esc(read)}` : ""}${read && v.clicks ? " · " : ""}${v.clicks ? `Clicked: ${esc(v.clicks)}` : ""}</div>
+    </li>`;
+  }).join("")}</ol><p class="visits-foot muted">${rows.length} visit${rows.length === 1 ? "" : "s"} shown (latest 80 in the range).</p>`;
+}
+
 /* ---- Tables ------------------------------------------------------------- */
-function fillTable(id, rows, label) {
+function fillTable(id, rows, label, lockedText) {
   const tb = $(id);
+  if (lockedText) { tb.innerHTML = `<tr class="empty"><td colspan="3">${lockedText}</td></tr>`; return; }
   if (!rows.length) { tb.innerHTML = `<tr class="empty"><td colspan="3">No visits in this range yet.</td></tr>`; return; }
   const max = d3.max(rows, r => r.visitors) || 1;
   tb.innerHTML = rows.map(r => `<tr><td>${esc(label(r.key))}<span class="bar" style="width:${(r.visitors / max * 100).toFixed(1)}%"></span></td><td>${fmt(r.visitors)}</td><td>${fmt(r.views)}</td></tr>`).join("");
+}
+function fillEngagement(rows) {
+  const tb = $("t-engagement");
+  if (!rows.length) { tb.innerHTML = `<tr class="empty"><td colspan="4">No reading data in this range yet.</td></tr>`; return; }
+  const max = d3.max(rows, r => r.avg_ms) || 1;
+  tb.innerHTML = rows.map(r => `<tr><td>${esc(r.key)}<span class="bar" style="width:${(r.avg_ms / max * 100).toFixed(1)}%"></span></td><td>${fmt(r.views)}</td><td>${dur(r.avg_ms)}</td><td>${pct(r.avg_scroll)}</td></tr>`).join("");
 }
 
 /* ---- Wiring ------------------------------------------------------------- */
@@ -351,15 +633,41 @@ async function refresh() {
   if (!from || !to || from > to) return;
   try {
     const s = await load(from, to);
+    const auth = !!s.authorized, locked = auth ? null : "Owner key needed.";
+    lastAuthorized = auth; lastVisits = s.visits || [];
+    $("owner-status").innerHTML = auth
+      ? `Owner view <button type="button" class="linkish" id="lock">forget key</button>`
+      : "Public view: visit log, networks and cities are hidden.";
+    $("lock")?.addEventListener("click", () => { try { localStorage.removeItem("np_stats_key"); } catch (e) {} refresh(); });
     $("f-visitors").textContent = fmt(s.total.visitors || 0);
     $("f-views").textContent = fmt(s.total.views || 0);
     $("f-visitors-today").textContent = fmt(s.today?.visitors || 0);
     $("f-views-today").textContent = fmt(s.today?.views || 0);
+    $("f-academic").textContent = auth ? fmt(s.academicVisitors || 0) : "–";
+    const nr = s.newReturning || {}, nrTot = (nr.new || 0) + (nr.returning || 0);
+    $("f-returning").innerHTML = nrTot ? `${fmt(nr.returning || 0)} <small>${pct(100 * (nr.returning || 0) / nrTot)}</small>` : "–";
+    $("f-time").textContent = dur(s.engagement?.avg_ms);
+    $("f-scroll").textContent = pct(s.engagement?.avg_scroll);
     $("updated").textContent = DEMO ? "Showing demo data until the stats API is connected." : `Updated ${ago(s.updated)}.`;
+    renderVisits();
     drawChart(s.daily, from, to);
+    drawHeat(s.hours);
+    drawReading(s);
     fillTable("t-regions", s.countries, regionLabel);
     fillTable("t-sources", s.sources, k => k);
     fillTable("t-pages", s.pages, k => k);
+    fillTable("t-academic", s.academic || [], k => k, locked);
+    fillTable("t-orgs", s.orgs || [], k => k, locked);
+    fillTable("t-cities", s.cities || [], k => k, locked);
+    fillTable("t-refs", s.refs || [], k => k, locked);
+    fillTable("t-sites", s.sites || [], k => k);
+    fillTable("t-devices", s.devices || [], cap);
+    fillTable("t-browsers", s.browsers || [], k => k);
+    fillTable("t-os", s.os || [], k => k);
+    fillTable("t-langs", s.langs || [], langLabel);
+    fillTable("t-campaigns", s.campaigns || [], k => k);
+    fillTable("t-clicks", s.clicks || [], clickLabel);
+    fillEngagement(s.pageEngagement || []);
     drawMap(s.origins);
   } catch (err) {
     $("updated").innerHTML = `<span class="status">Couldn't load stats: ${esc(err.message)}. Check API_BASE and the Worker's SITE_ORIGIN.</span>`;
@@ -372,6 +680,8 @@ function setPreset(days) {
   $("from").value = iso(new Date(to.getTime() - (days - 1) * DAY));
 }
 
+$("site").addEventListener("change", refresh);
+$("only-academic").addEventListener("change", renderVisits);
 $("preset").addEventListener("change", e => {
   if (e.target.value !== "custom") { setPreset(+e.target.value); refresh(); }
 });
@@ -387,10 +697,11 @@ let resizeT; addEventListener("resize", () => { clearTimeout(resizeT); resizeT =
 function renderNotrack() {
   let off = false;
   try { off = localStorage.getItem("np_notrack") === "1"; } catch (e) {}
-  $("notrack-status").textContent = off ? "Visits from this browser are not counted." : "Visits from this browser are counted.";
+  $("notrack-status").textContent = (off ? "Visits from this browser to nithinpuru.github.io are not counted." : "Visits from this browser to nithinpuru.github.io are counted.")
+    + " For nithinpuru.com, open your owner link (nithinpuru.com/?owner=…) once in this browser.";
   $("notrack-toggle").textContent = off ? "Count this browser again" : "Stop counting this browser";
-  // only shown to the owner: an opted-out browser, or /analytics/?admin
-  $("notrack").hidden = !(off || /[?&]admin\b/.test(location.search));
+  // only shown to the owner: an opted-out browser, a stored key, or /analytics/?admin
+  $("notrack").hidden = !(off || statsKey() || /[?&]admin\b/.test(location.search));
 }
 $("notrack-toggle").addEventListener("click", () => {
   try {

@@ -126,5 +126,6 @@
     <p class="note"><b>Data.</b> European Central Bank euro foreign-exchange reference rates (one fixing per business day, around 16:00 CET), via the Frankfurter API. A scheduled job on this site fetches them after each fixing, so the page never calls an external API from your browser. <b>Models.</b> The ensemble weights ARIMA(2,1,0) 35%, additive Holt-Winters 35% and the Monte Carlo median 30%. High and low equal the close for daily fixings, so range-based indicators (ATR, Stochastic, Williams %R, CCI) use closes. Forecasts are statistical estimates, not financial advice.</p>
   </section>
 </main>
+<script src="/np.js" defer></script>
 </body>
 </html>

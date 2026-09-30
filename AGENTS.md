@@ -94,6 +94,27 @@ When a PDK page changes, bump the `?v=` tag on its iframe URL in
 `public/gmid/index.html` - GitHub Pages lets browsers cache pages for 10
 minutes and iframes otherwise keep showing the old copy. The original repos and their Pages sites are untouched.
 
+## Analytics
+
+`public/np.js` is the first-party tracker, served by both sites (the portfolio
+repo has an identical copy - keep them in sync). It sends `view`, `end` (time
+visible, scroll depth, sections read) and `click` (outbound / mailto) events
+to the `nithin-analytics` Cloudflare Worker at
+`https://nithin-analytics.nithinpurushothama.workers.dev` (account
+nithinpurushothama@gmail.com; D1 database `nithin-analytics`). The Worker
+source is not in a repo - it lives in `~/nithin-analytics-worker` on the
+owner's machine (`src/index.js`, `migrations/`). No cookies; the Worker stores
+a salted hash, never the IP. Skipped for localhost, `/analytics/`, framed
+pages, `?notrack` browsers and the portfolio's owner-pass cookie.
+
+Tool pages load it with `<script src="/np.js" defer></script>` before
+`</body>`; the Quant Terminal is synced from career-semi-quant, which loads it
+through a hostname-gated snippet (its e2e test fails on a 404). The dashboard
+is `public/analytics/`; `/stats` returns aggregates to anyone and the visit
+log, networks and cities only with the `X-Stats-Key` header (the owner key,
+stored in the browser by opening `/analytics/?key=<key>` once). Never commit
+the key.
+
 ## Brand assets
 
 `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png`,
