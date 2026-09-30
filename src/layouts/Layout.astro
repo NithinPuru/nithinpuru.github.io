@@ -1,46 +1,15 @@
 ---
-import "../styles/global.css";
-import ThemeToggle from "../components/ThemeToggle.astro";
+import "../styles/tools.css";
 
-const { title: pageTitle, hideNav = false, noindex = false } = Astro.props;
+// Shell for the tools index (/tools/) and the 404 page. The tools themselves
+// are standalone pages in public/ and don't use it.
+const { title, description, noindex = false } = Astro.props;
 
-// Resolves a public/ asset path against the configured base so it stays
-// correct both locally (base "/") and when deployed under a base path such as
-// a GitHub Pages project site ("/repo/").
+// Resolves a public/ asset path against the configured base.
 const asset = (p) =>
   `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
 
-// `site` is set in astro.config.mjs; CI can override it via SITE_URL. Use it
-// for canonical/social URLs, falling back to the request URL if unset.
-const base = import.meta.env.BASE_URL.replace(/\/$/, "") + "/";
-
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
-
-const description =
-  "Nithin Purushothama - Analog/Mixed-Signal IC Designer. Tapeout experience in SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, TSMC 28 nm. IEEE SSCS Code-a-Chip Travel Grant recipient.";
-
-const ogImage = new URL(asset("og-image.png"), canonical).href;
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Nithin Purushothama",
-  alternateName: "chennakeshavadasa",
-  url: canonical,
-  image: ogImage,
-  jobTitle: "Analog/Mixed-Signal IC Designer",
-  affiliation: {
-    "@type": "Organization",
-    name: "Omni Design Technologies",
-  },
-  email: "mailto:nithinpurushothama@gmail.com",
-  sameAs: [
-    "https://github.com/chennakeshavadasa",
-    "https://www.linkedin.com/in/nithin-purushothama-70664727b/",
-  ],
-  description:
-    "Analog/Mixed-Signal IC designer with tapeout experience across SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, and TSMC 28 nm. IEEE SSCS Code-a-Chip Travel Grant recipient (ESSERC 2026).",
-};
 ---
 <!doctype html>
 <html lang="en">
@@ -48,136 +17,49 @@ const jsonLd = {
     <meta charset="UTF-8" />
     <script is:inline>
       (function () {
-        var d = document.documentElement;
-        d.classList.add("js");
         // Theme before first paint: saved choice, else the system setting.
         var t = null;
         try { t = localStorage.getItem("theme"); } catch (e) {}
         if (t !== "light" && t !== "dark") {
           t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
-        d.setAttribute("data-theme", t);
+        document.documentElement.setAttribute("data-theme", t);
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f1620" media="(prefers-color-scheme: dark)" />
     <meta name="color-scheme" content="light dark" />
-    <title>{pageTitle ?? "Nithin Purushothama - Analog IC Designer"}</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="author" content="Nithin Purushothama" />
-    { noindex && <meta name="robots" content="noindex, nofollow" /> }
-    <meta name="google-site-verification" content="CbHJ7n0y8wb_nJlVVVP4BAdzb0_GmnH6HhC5Umx4Z4Y" />
-    <meta property="og:type" content="profile" />
+    { noindex && <meta name="robots" content="noindex" /> }
+    <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:site_name" content="Nithin Purushothama" />
-    <meta property="og:title" content="Nithin Purushothama - Analog IC Designer" />
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Nithin Purushothama - Analog/Mixed-Signal IC Designer" />
-    <meta property="og:profile:first_name" content="Nithin" />
-    <meta property="og:profile:last_name" content="Purushothama" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Nithin Purushothama - Analog IC Designer" />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="Nithin Purushothama - Analog/Mixed-Signal IC Designer" />
+    <meta name="twitter:card" content="summary" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={asset("favicon.ico")} sizes="48x48" />
     <link rel="icon" type="image/png" sizes="192x192" href={asset("android-chrome-192x192.png")} />
     <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
     <link rel="apple-touch-icon" sizes="180x180" href={asset("apple-touch-icon.png")} />
-    <link rel="manifest" href={asset("site.webmanifest")} />
     <link rel="preload" href={asset("fonts/KaTeX_Main-Regular.woff2")} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={asset("fonts/KaTeX_Main-Bold.woff2")} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={asset("fonts/KaTeX_Typewriter-Regular.woff2")} as="font" type="font/woff2" crossorigin />
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-JNZE3WL90X');
-      // gtag.js (~170 KB) is the heaviest thing on the page: fetch it once the
-      // page has loaded and the browser is idle (the queued calls above run
-      // then). Skipped on devices opted out with ?notrack, like the Worker beacon.
-      (function () {
-        try {
-          if (/[?&]notrack\b/.test(location.search) || localStorage.getItem("np_notrack") === "1") return;
-        } catch (e) {}
-        function load() {
-          var s = document.createElement("script");
-          s.async = true;
-          s.src = "https://www.googletagmanager.com/gtag/js?id=G-JNZE3WL90X";
-          document.head.appendChild(s);
-        }
-        addEventListener("load", function () {
-          (window.requestIdleCallback || setTimeout)(load, { timeout: 3000 });
-        });
-      })();
-    </script>
   </head>
   <body>
-    <!--
-impeccable:direction contract 568c1d30
-THESIS: A single-page portfolio rendered as a freshly-typeset LaTeX document - Computer Modern serif over typewriter metadata, justified measure, ink on paper - refusing the agency card grid and the hero-metric template for a researcher's body of work.
-OWN-WORLD: warm paper field, near-black ink, one muted oxford-blue accent and a sparing annotation red; KaTeX Computer Modern; section headers with drawn hairline rules; bibliography-style work entries; no cards, no gradients, no chrome.
-STORY: A visitor lands on a typeset paper, reads the abstract of who Nithin Purushothama is, then moves section to section - Experience, Education, Publications, Awards, Projects, Tape-outs, Finance, CV, Contact - each list data-driven from editable JSON.
-FIRST VIEWPORT: masthead as \maketitle: name set huge in Computer Modern over a typewriter role line, abstract in justified measure, and a "Get in touch" button that scrolls to the contact section; fixed running-head nav above with section links and a hairline.
-FORM: brief-pinned paper world standing in for assigned grounded direction; seed key 568c1d30.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md.
--->
-    <div id="read-line" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
-    {!hideNav && (
-      <nav class="site-nav">
-        <div class="site-nav__bar">
-          <a class="site-nav__brand" href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/`} aria-label="Nithin Purushothama - back to top">
-            <span class="site-nav__name">Nithin&nbsp;Purushothama</span>
-          </a>
-          <div class="site-nav__links">
-            <a data-nav href={`${base}#about`}>About</a>
-            <a data-nav href={`${base}#experience`} aria-label="Experience">Exp</a>
-            <a data-nav href={`${base}#education`}>Education</a>
-            <a data-nav href={`${base}#skills`}>Skills</a>
-            <a data-nav href={`${base}#publications`} aria-label="Publications">Papers</a>
-            <a data-nav href={`${base}#awards`}>Awards</a>
-            <a data-nav href={`${base}#work`}>Work</a>
-            <a data-nav href={`${base}#finance`}>Finance</a>
-            <a data-nav href={`${base}#hobbies`}>Hobbies</a>
-            <a data-nav href={`${base}#cv`}>CV</a>
-            <a data-nav href={`${base}#contact`}>Contact</a>
-            <a class="site-nav__nb" href={`${base}rongm`} aria-label="Ron/gm notebook"><i>R<sub>on</sub>/g<sub>m</sub></i></a>
-          </div>
-          <ThemeToggle />
-        </div>
-      </nav>
-    )}
-    <main id="main">
+    <main id="main" class="page">
       <slot />
     </main>
-    <dialog class="lightbox" id="lightbox" aria-label="Image viewer">
-      <button class="lightbox__close" type="button" aria-label="Close image viewer">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
-      </button>
-      <figure class="lightbox__figure">
-        <figcaption class="lightbox__caption"></figcaption>
-      </figure>
-    </dialog>
     <script>
-      import "../scripts/reveal.js";
-      import "../scripts/lightbox.js";
       import "../scripts/theme.js";
-      import "../scripts/cite.js";
     </script>
     <script is:inline>
     (function () {
       var ENDPOINT = "https://nithin-analytics.nithin-analytics-worker.workers.dev/collect";
       var h = location.hostname;
       if (h === "localhost" || h === "127.0.0.1" || location.protocol === "file:") return;
-      if (location.pathname.indexOf("/analytics") === 0) return; // don't count the dashboard itself
       try {
         var qs = location.search;
         if (/[?&]notrack\b/.test(qs)) localStorage.setItem("np_notrack", "1");

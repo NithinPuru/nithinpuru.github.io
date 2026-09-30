@@ -1,35 +1,23 @@
 # nithinpuru.github.io
 
-Personal portfolio - [nithinpuru.github.io](https://nithinpuru.github.io)
+Browser tools - [nithinpuru.github.io/tools/](https://nithinpuru.github.io/tools/):
+gm/ID explorer for open PDKs, semiconductor and FX quant terminals, Research
+Radar, a conference deadline tracker and a secure-sensor signal-path explorer,
+plus the data bots that keep them fresh.
 
-Analog/Mixed-Signal IC Designer. Tapeout experience in SKY130, GF180MCU, IHP SG13G2, UMC 55 nm, TSMC 28 nm. IEEE SSCS Code-a-Chip Travel Grant recipient, ESSERC 2026.
-
----
+The site root forwards to the portfolio at [nithinpuru.com](https://nithinpuru.com).
 
 ## Stack
 
-Astro · plain CSS · self-hosted Computer Modern (KaTeX) fonts · zero client framework
-
-## Structure
-
-```
-src/
-  pages/index.astro        # the whole page
-  pages/notebook.astro     # Ron/gm methodology notebook at /notebook
-  layouts/Layout.astro
-  components/WorkList.astro
-  data/                    # JSON content + nbconvert notebook export
-  styles/global.css
-public/
-  fonts/                   # KaTeX Computer Modern
-  img/                     # images and assets
-```
+Astro (tools index only) · the tools are standalone pages in `public/` ·
+self-hosted Computer Modern (KaTeX) fonts · GitHub Actions data bots
 
 ## Local dev
 
 ```sh
 npm install
-npm run dev      # localhost:4321
+npm run radar-data   # Research Radar snapshots from the live site
+npm run dev          # localhost:4321
 ```
 
-Pushes to `main` deploy automatically via GitHub Actions.
+Pushes to `main` deploy automatically via GitHub Actions (`.github/workflows/deploy.yml`).

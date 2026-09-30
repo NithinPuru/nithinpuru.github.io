@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Portfolio of Nithin P (chennakeshavadasa) — analog/mixed-signal IC designer, typeset like a freshly-compiled LaTeX document.",
+  "description": "Browser tools (gm/ID explorer, quant terminals, Research Radar, deadline tracker) and their data bots, served at nithinpuru.github.io.",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

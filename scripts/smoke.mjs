@@ -1,7 +1,8 @@
 // Smoke test for the built site (dist/): every page loads without script
 // errors or broken same-origin requests, nothing overflows horizontally at
-// phone / "desktop site" / laptop widths in either theme, the direction
-// contract survived the build, and the data bots are still delivering.
+// phone / "desktop site" / laptop widths in either theme, the old portfolio
+// addresses still forward to nithinpuru.com, and the data bots are still
+// delivering.
 //
 //   npm run build && npm run smoke        (CI: the "checks" job in deploy.yml)
 //
@@ -42,8 +43,12 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}`;
 
 // ---- build output ------------------------------------------------------------
-const home = await readFile(join(DIST, "index.html"), "utf8");
-if (!home.includes("impeccable:direction contract")) fail("dist/index.html: direction contract missing");
+// "/" and "/rongm/" are redirect stubs (the portfolio lives on nithinpuru.com):
+// check them statically - loading them would leave the site.
+for (const [file, to] of [["index.html", "https://nithinpuru.com/"], ["rongm/index.html", "https://nithinpuru.com/rongm/"]]) {
+  const html = await readFile(join(DIST, file), "utf8").catch(() => "");
+  if (!html.includes("location.replace") || !html.includes(`url=${to}`)) fail(`dist/${file}: does not forward to ${to}`);
+}
 
 // ---- data freshness ------------------------------------------------------------
 const hoursOld = (iso) => (Date.now() - new Date(iso)) / 36e5;
@@ -77,11 +82,12 @@ if (dl) {
 
 // ---- pages ---------------------------------------------------------------------
 const PAGES = [
-  "/", "/rongm/", "/404.html",
+  "/tools/", "/404.html",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
+  "/secure_sensor_with_puf/", "/analytics/",
 ];
-const WIDTHS = { "/": [360, 768, 980, 1440] };
+const WIDTHS = { "/tools/": [360, 768, 980, 1440] };
 const DEFAULT_WIDTHS = [360, 1440];
 
 function browserPath() {
