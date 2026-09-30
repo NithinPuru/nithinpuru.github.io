@@ -279,6 +279,7 @@ svg.dg g[data-node=channel].sel .wire,svg.dg g[data-node=fe].sel .wire{stroke-wi
 svg.dg .blk.eve .evebox{stroke:var(--key);stroke-dasharray:6 4;fill:var(--key-bg)}
 svg.dg .blk.eve rect:not(.evebox){stroke-dasharray:none}
 svg.dg .blk.eve rect.track{stroke:none}
+svg.dg .solid{fill:var(--panel);stroke:none}
 svg.dg .newbox{fill:var(--key-bg);stroke:var(--key-dim);stroke-width:1.2;stroke-dasharray:5 4}
 svg.dg .blk rect.cell{fill:var(--sig);stroke:none}
 svg.dg .blk rect.cell.bad{fill:var(--warn)}
@@ -424,6 +425,9 @@ button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
 .hexin{width:100%;font-family:var(--mono);font-size:15px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);text-transform:uppercase;letter-spacing:.1em}
 .hexin:disabled{opacity:.55}
 .chk.inl{display:inline-flex;margin:0;font-size:12px}
+.bench-side{display:grid;gap:16px;align-content:start;min-width:0}
+.two-in{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hexin[type=number]{letter-spacing:0}
 .bchain.two{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));margin-top:10px}
 .home-link{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);padding:6px 12px;border-radius:8px;font-size:13.5px;text-decoration:none}
 .home-link:hover{border-color:var(--sig);color:var(--sig)}
@@ -473,7 +477,7 @@ button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
   </div>
   <section class="refs" id="refs" aria-label="References">
     <h2>References</h2>
-    <p class="note">The original design, its threat model and the zero-input and same-key tests follow [1]. The PUF, fuzzy-extractor and NLFSR extension, and the attacks marked “beyond the paper”, are this page's own modelling built on [2]-[8].</p>
+    <p class="note">The original design, its threat model and the zero-input and same-key tests follow [1]. The PUF, fuzzy-extractor and NLFSR extension, and the attacks marked “beyond the paper”, are this page's own modelling built on [2]-[9].</p>
     <ol>
       <li id="ref1">A. Yasar, D. Caygara, Y. H. Patel, A. Pemaraj, L. Boisvert, A. Magyar, T. Yu, B. Dufort, T.-L. Poo, and R. T. Yazicigil, “A Secure Multimodal Electrochemical Sensor for Sustainable Biomanufacturing,” in <i>Proc. 2025 IEEE European Solid-State Electronics Research Conference (ESSERC)</i>, pp. 413-416, 2025. doi: <a href="https://doi.org/10.1109/ESSERC66193.2025.11213984">10.1109/ESSERC66193.2025.11213984</a>.</li>
       <li>R. T. Yazicigil <i>et al.</i>, “Beyond Crypto: Physical-Layer Security for Internet of Things Devices,” <i>IEEE Solid-State Circuits Magazine</i>, vol. 12, no. 4, 2020. doi: <a href="https://doi.org/10.1109/MSSC.2020.3021842">10.1109/MSSC.2020.3021842</a>.</li>
@@ -483,6 +487,7 @@ button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
       <li>Y. Dodis, L. Reyzin, and A. Smith, “Fuzzy Extractors: How to Generate Strong Keys from Biometrics and Other Noisy Data,” in <i>Advances in Cryptology - EUROCRYPT 2004</i>, LNCS, pp. 523-540, 2004. doi: <a href="https://doi.org/10.1007/978-3-540-24676-3_31">10.1007/978-3-540-24676-3_31</a>.</li>
       <li>J. Guajardo, S. S. Kumar, G.-J. Schrijen, and P. Tuyls, “FPGA Intrinsic PUFs and Their Use for IP Protection,” in <i>Cryptographic Hardware and Embedded Systems - CHES 2007</i>, LNCS, pp. 63-80, 2007. doi: <a href="https://doi.org/10.1007/978-3-540-74735-2_5">10.1007/978-3-540-74735-2_5</a>.</li>
       <li>C. De Cannière, “Trivium: A Stream Cipher Construction Inspired by Block Cipher Design Principles,” in <i>Proc. Int. Conf. Information Security (ISC)</i>, 2006. doi: <a href="https://doi.org/10.1007/11836810_13">10.1007/11836810_13</a>.</li>
+      <li>M. Ågren, M. Hell, T. Johansson, and W. Meier, “Grain-128a: a new version of Grain-128 with optional authentication,” <i>International Journal of Wireless and Mobile Computing</i>, vol. 5, no. 1, 2011. doi: <a href="https://doi.org/10.1504/IJWMC.2011.044106">10.1504/IJWMC.2011.044106</a>.</li>
     </ol>
   </section>
   <div class="foot" id="foot"></div>
@@ -549,8 +554,9 @@ class LFSR16 {                       // x^16 + x^14 + x^13 + x^11 + 1 (stand-in 
 }
 
 class NLFSR128 {                     // feedback taps borrowed from Grain-128's NFSR (illustrative)
-  constructor(keyBits) {
+  constructor(keyBits, ivBits) {
     this.s = Uint8Array.from(keyBits.slice(0, 128));
+    if (ivBits) for (let i = 0; i < 64; i++) this.s[64 + i] ^= ivBits[i];   // 64-bit IV = session nonce | frame counter
     if (!this.s.some(x => x)) this.s[0] = 1;
     this.p = 0;
     for (let i = 0; i < 256; i++) this.bit();       // warm-up mixes the key
@@ -564,6 +570,32 @@ class NLFSR128 {                     // feedback taps borrowed from Grain-128's 
     s[p] = fb; this.p = (p + 1) & 127; return out;
   }
   bits(n) { const o = new Uint8Array(n); for (let i = 0; i < n; i++) o[i] = this.bit(); return o; }
+}
+
+// ---------- frame counter + MAC (proposal)
+// Grain-128a-style authentication: after IV loading, the first 64 keystream bits fill a 32-bit
+// accumulator A and a 32-bit shift register R; then even bits encrypt and odd bits drive the MAC.
+// For each message bit m: if m, A ^= R; R shifts in the next auth bit. Tag = A after a final 1 pad bit.
+const u32bits = v => Uint8Array.from({ length: 32 }, (_, i) => (v >>> (31 - i)) & 1);
+const bitsU32 = (b, o = 0) => { let v = 0; for (let i = 0; i < 32; i++) v = ((v << 1) | (b[o + i] & 1)) >>> 0; return v; };
+const ivBits = (nonce, ctr) => { const o = new Uint8Array(64); o.set(u32bits(nonce), 0); o.set(u32bits(ctr), 32); return o; };
+function keystreamNL(key, iv, nEnc) {
+  if (!iv) return { enc: new NLFSR128(key).bits(nEnc) };
+  const g = new NLFSR128(key, iv), z0 = g.bits(64), m = nEnc + 33;
+  const enc = new Uint8Array(m), auth = new Uint8Array(m);
+  for (let i = 0; i < m; i++) { enc[i] = g.bit(); auth[i] = g.bit(); }
+  return { enc, auth, A0: bitsU32(z0, 0), R0: bitsU32(z0, 32) };
+}
+function macTag(msg, ks) {           // msg: bits covered by the MAC (counter | enc ID | ciphertext)
+  let A = ks.A0, R = ks.R0;
+  for (let i = 0; i < msg.length; i++) { if (msg[i]) A ^= R; R = ((R << 1) | ks.auth[i]) >>> 0; }
+  return (A ^ R) >>> 0;              // the appended 1 pad bit
+}
+function macMsg(ctrBits, encId, C) { const m = new Uint8Array(32 + ID_BITS + C.length); m.set(ctrBits, 0); m.set(encId, 32); m.set(C, 32 + ID_BITS); return m; }
+// Receiver side: rebuild the keystream from (key, nonce, received counter) and compare tags
+function macVerify(key, nonce, ctr, encId, C, tag) {
+  const ks = keystreamNL(key, ivBits(nonce, ctr), ID_BITS + C.length), t = macTag(macMsg(u32bits(ctr), encId, C), ks);
+  return { ok: t === tag, tag: t, ks };
 }
 
 // ---------- analog front end
@@ -847,6 +879,7 @@ const DEFAULTS = {
   dither_seeds: [0x1D2B, 0x7A31], key16: 0xC3A5, chip_id: 0x0B77,
   chip_seed: 7, temp: 37, puf_sigma: 0.06, bch_t: 40, h_tamper: 0,
   h_source: "own", h_edit: [], puf_edit: [], rx_key16: null,   // workbench edits (arrays are replaced, never mutated)
+  mac: true, frame_ctr: 42, rx_last_ctr: 41, mitm_p: 0,          // proposal: session nonce + frame counter + MAC
   ber: 0, lead: 200, rx_wrong_key: false, seed: 2026,
 };
 
@@ -910,14 +943,27 @@ function simulate(P0) {
     S.n_err_fixed = rc.e.reduce((a, b) => a + b, 0);
     S.key_match = S.key_tx.every((b, i) => b === S.key_enroll[i]);
     S.ber_puf = S.n_err_true / PUF_BITS;
-    S.ks_all = new NLFSR128(S.key_tx).bits(ID_BITS + n);
+    S.mac = !!P.mac;
+    if (S.mac) {                     // the receiver sends a fresh session nonce with h at power-up
+      const rn = makeRng(P.seed + 71); S.nonce = ((rn.int(0x10000) << 16) | rn.int(0x10000)) >>> 0; rxdb.nonce = S.nonce;
+    }
+    S.ks_tx = keystreamNL(S.key_tx, S.mac ? ivBits(S.nonce, P.frame_ctr) : null, ID_BITS + n);
+    S.ks_all = S.ks_tx.enc;
   }
-  S.K = S.ks_all.subarray(ID_BITS);
+  S.K = S.ks_all.subarray(ID_BITS, ID_BITS + n);
   S.C = S.D.map((d, i) => d ^ S.K[i]);
   const idBits = Uint8Array.from(P.chip_id.toString(2).padStart(ID_BITS, "0"), c => +c);
   S.enc_id = idBits.map((b, i) => b ^ S.ks_all[i]);
-  S.frame = new Uint8Array(PREAMBLE.length + SYNC.length + ID_BITS + n);
-  S.frame.set(PREAMBLE, 0); S.frame.set(SYNC, 32); S.frame.set(S.enc_id, 48); S.frame.set(S.C, 64);
+  if (S.mac) {                       // preamble | sync | counter (clear) | enc ID | C | tag
+    S.ctr_bits = u32bits(P.frame_ctr);
+    S.tag = macTag(macMsg(S.ctr_bits, S.enc_id, S.C), S.ks_tx);
+    S.frame = new Uint8Array(48 + 32 + ID_BITS + n + 32);
+    S.frame.set(PREAMBLE, 0); S.frame.set(SYNC, 32); S.frame.set(S.ctr_bits, 48); S.frame.set(S.enc_id, 80); S.frame.set(S.C, 96); S.frame.set(u32bits(S.tag), 96 + n);
+  } else {
+    S.frame = new Uint8Array(PREAMBLE.length + SYNC.length + ID_BITS + n);
+    S.frame.set(PREAMBLE, 0); S.frame.set(SYNC, 32); S.frame.set(S.enc_id, 48); S.frame.set(S.C, 64);
+  }
+  const body = S.mac ? 32 : 0;       // counter field before the encrypted ID
 
   // channel
   const rc = makeRng(P.seed + 5);
@@ -927,6 +973,12 @@ function simulate(P0) {
   let flips = 0;
   if (P.ber > 0) for (let i = 0; i < S.rx_bits.length; i++) if (rc.u() < P.ber) { S.rx_bits[i] ^= 1; flips++; }
   S.channel_flips = flips;
+  // man-in-the-middle flips a fraction of the payload bits (never the header, so sync and ID survive)
+  S.mitm_flips = 0;
+  if (P.mitm_p > 0) {
+    const rm = makeRng(P.seed + 77), o = P.lead + 48 + body + ID_BITS;
+    for (let i = 0; i < n; i++) if (rm.u() < P.mitm_p) { S.rx_bits[o + i] ^= 1; S.mitm_flips++; }
+  }
 
   // Rx
   const hdr = new Uint8Array(48); hdr.set(PREAMBLE); hdr.set(SYNC, 32);
@@ -942,17 +994,23 @@ function simulate(P0) {
     S.ks_rx_all = new LFSR16(S.key_rx16).bits(ID_BITS + n);
   } else {
     S.key_rx = P.rx_wrong_key ? Uint8Array.from({ length: 128 }, () => rng.int(2)) : rxdb.key;
-    S.ks_rx_all = new NLFSR128(S.key_rx).bits(ID_BITS + n);
+    if (!S.mac) S.ks_rx_all = keystreamNL(S.key_rx, null, ID_BITS + n).enc;
   }
-  S.K_rx = S.ks_rx_all.subarray(ID_BITS);
   if (pos >= 0) {
-    S.enc_id_rx = S.rx_bits.slice(pos, pos + ID_BITS);
-    S.id_rx = S.enc_id_rx.map((b, i) => b ^ S.ks_rx_all[i]);
-    S.id_ok = S.id_rx.every((b, i) => b === idBits[i]);
-    S.C_rx = S.rx_bits.slice(pos + ID_BITS, pos + ID_BITS + n);
-  } else {
-    S.id_ok = false; S.C_rx = new Uint8Array(n); S.id_rx = new Uint8Array(ID_BITS);
+    S.enc_id_rx = S.rx_bits.slice(pos + body, pos + body + ID_BITS);
+    S.C_rx = S.rx_bits.slice(pos + body + ID_BITS, pos + body + ID_BITS + n);
+  } else { S.enc_id_rx = new Uint8Array(ID_BITS); S.C_rx = new Uint8Array(n); }
+  if (S.mac) {                       // counter must be fresh, and the tag must match what the Rx recomputes
+    S.ctr_rx = pos >= 0 ? bitsU32(S.rx_bits, pos) : 0;
+    S.tag_rx = pos >= 0 ? bitsU32(S.rx_bits, pos + body + ID_BITS + n) : 0;
+    const v = macVerify(S.key_rx, rxdb.nonce, S.ctr_rx, S.enc_id_rx, S.C_rx, S.tag_rx);
+    S.tag_calc = v.tag; S.mac_ok = pos >= 0 && v.ok; S.ctr_fresh = S.ctr_rx > P.rx_last_ctr;
+    S.ks_rx_all = v.ks.enc;
   }
+  S.K_rx = S.ks_rx_all.subarray(ID_BITS, ID_BITS + n);
+  S.id_rx = S.enc_id_rx.map((b, i) => b ^ S.ks_rx_all[i]);
+  S.id_ok = pos >= 0 && S.id_rx.every((b, i) => b === idBits[i]);
+  S.accepted = S.id_ok && (!S.mac || (S.mac_ok && S.ctr_fresh));
   S.D_rx = S.C_rx.map((c, i) => c ^ S.K_rx[i]);
   S.y_cic = cic(S.D_rx);
   S.y = fir(S.y_cic, COMP_TAPS);
@@ -1087,8 +1145,8 @@ u = ±1.0  means "as large as the modulator's
     plain: "Before sending, the chip wraps the encrypted data in a fixed header so the receiver knows where the message starts and can check it holds the right key.",
     analogy: "An envelope with a distinctive knock-knock pattern on the outside (so the receiver knows a letter has arrived) and a name tag inside that only the right key can read.",
     io: (S, st) => [`Encrypted data C (${S.n.toLocaleString()} bits) and the chip ID`, `Frame of ${(S.frame.length).toLocaleString()} bits: 32 + 16 + 16 header, then data`],
-    model: (S, st) => `frame = preamble (32 bits) | sync (16 bits)
-      | enc_ID (16 bits) | C (data bits)
+    model: (S, st) => `frame = preamble (32 bits) | sync (16 bits)${S.mac ? "\n      | counter (32 bits, in the clear)" : ""}
+      | enc_ID (16 bits) | C (data bits)${S.mac ? " | tag (32 bits)" : ""}
 
 preamble = 1010 1010 ...        "a message is coming"
 sync     = 0xB5E3               "align your clock here"
@@ -1096,7 +1154,7 @@ enc_ID   = ID XOR K[0..15]      ID = 0x${st.chip_id.toString(16).toUpperCase()}`
     read: ["The coloured labels show each part of the frame as bits.",
       "The encrypted ID is the chip's ID XORed with the first 16 key bits. If the receiver decrypts it back to the right ID, its key and alignment are correct."],
     why: "This is how the receiver tells 'right key' from 'wrong key'. In the proposed design it also catches a failed PUF reconstruction or tampered helper data, because a wrong key gives a garbled ID.",
-    limits: "Follows Alperen's description (preamble, sync, encrypted ID). The exact lengths of the fields are my guesses. As he said, this is an alignment and debug scheme, not full authentication.",
+    limits: "Follows Alperen's description (preamble, sync, encrypted ID). The exact lengths of the fields are my guesses. As he said, this is an alignment and debug scheme, not full authentication; the proposal's counter + MAC block adds real authentication.",
   },
 
   // ------------------------------------------------------------------ channel
@@ -1361,6 +1419,29 @@ score = share of the next 512-1000 key bits predicted
     why: "These three bars are the pitch in one picture: the original design holds up while nothing touches the chip, but falls once an attacker can probe. The proposed design keeps holding.",
     limits: "Only Berlekamp-Massey style attacks are tried. Real attackers have more tools (side channels, cloning, fault injection). The 'probe' attack assumes the attacker can read the key stream wire directly.",
   },
+  mac: {
+    key: true, name: "Frame counter + MAC", where: "Proposed · between the frame builder and the radio",
+    plain: "Every frame carries a number that only goes up, and a 32-bit tag computed with a secret part of the keystream. The receiver drops any frame whose number it has already seen, or whose tag does not match.",
+    analogy: "A numbered, sealed envelope. An old envelope carries a number the receiver has already ticked off, and any change to the contents breaks the seal.",
+    io: (S, st) => S.mac ? [`Frame counter ${st.frame_ctr}, session nonce 0x${S.nonce.toString(16).toUpperCase().padStart(8, "0")}, the frame`, `32-bit tag 0x${S.tag.toString(16).toUpperCase().padStart(8, "0")} appended; the receiver ${S.accepted ? "accepts" : "REJECTS"} the frame`] : ["Turned off", "Frames go out unauthenticated"],
+    model: (S, st) => `IV = session nonce (32 bits, from the Rx at power-up)
+   | frame counter (32 bits)
+NLFSR: key loaded, IV XORed into bits 64..127, 256 warm-up clocks
+first 64 keystream bits -> accumulator A, shift register R
+then per clock: even bit -> encryption K, odd bit -> MAC
+
+for each bit m of (counter | enc ID | C):
+    if m:  A ^= R
+    R = (R << 1) | next odd keystream bit
+tag = A ^ R                     (final pad bit)
+
+Rx accepts iff  counter > last accepted counter
+           and  recomputed tag == tag in frame
+           and  decrypted ID is right`,
+    read: ["The first panel shows where the counter and the tag sit in the frame.", "The table runs the receiver's checks in order. Any one failing drops the frame."],
+    why: "Encryption hides the data but does not protect it. A stream cipher is malleable, and an old frame decrypts just as well as a new one. The counter makes every frame unique and gives each frame its own keystream; the MAC makes any change detectable. Together they close the replay and bit-flipping attacks in the attack lab.",
+    limits: "Grain-128a-style authentication on this page's illustrative NLFSR, not a vetted cipher. The counter restarts each session because the receiver sends a fresh nonce, so the receiver only has to remember the last counter of the current session. One tag per frame means a single channel bit error drops the whole frame; a real link would add FEC, or split the payload into short tagged packets with retransmission.",
+  },
   rxdb: {
     key: true, name: "Key database (receiver)", where: "Receiver · the trusted side",
     plain: "The receiver keeps a record for every chip it talks to. In the original design that is just the shared key. In the proposed design it is the key plus the public helper data h.",
@@ -1547,7 +1628,8 @@ const PANELS = {
         <span class="tag data">preamble</span> ${fmtBits(PREAMBLE, 0, 32)}<br>
         <span class="tag data">sync</span> ${fmtBits(SYNC, 0, 16)}<br>
         <span class="tag key">enc ID</span> ${fmtBits(S.enc_id, 0, 16)} <span style="color:var(--ink-faint)">(ID ${"0x" + state.chip_id.toString(16)} XOR first 16 key bits)</span><br>
-        <span class="tag data">enc data…</span> ${fmtBits(S.C, 0, 48)}…</div>
+        ${S.mac ? `<span class="tag data">counter</span> ${fmtBits(S.ctr_bits, 0, 32)} <span style="color:var(--ink-faint)">(= ${state.frame_ctr}, in the clear, placed before the ID)</span><br>` : ""}
+        <span class="tag data">enc data…</span> ${fmtBits(S.C, 0, 48)}…${S.mac ? `<br><span class="tag key">tag</span> ${fmtBits(u32bits(S.tag), 0, 32)} <span style="color:var(--ink-faint)">(32-bit MAC, at the end)</span>` : ""}</div>
         <p class="cap" style="margin-top:10px">This is Alperen's real protocol: preamble + sync align the receiver, and the encrypted ID lets the Rx confirm it has the right key.</p>`)
       + explain(`<b>The frame doubles as an alignment and key check.</b> The receiver finds the preamble/sync, then decrypts the ID. If the decrypted ID matches the expected one, the keys are aligned and correct. ${state.scheme === "proposed" ? `In the proposed design this same check catches a failed PUF reconstruction or tampered helper data — a wrong key gives a garbled ID.` : `With a static key this is only an alignment/debug aid, not true authentication.`}
         <br><br>As Alperen noted, the known ID leaks the first 16 keystream bits — but 16 < 2×16, so it's not enough for Berlekamp-Massey (see the keystream block).`);
@@ -1703,6 +1785,30 @@ PANELS.eve = function () {
     ? "Eve attacks the original design's 16-bit LFSR keystream."
     : "Eve attacks the proposed design's 128-bit NLFSR keystream.");
 };
+PANELS.mac = function () {
+  if (!S.mac) {
+    document.getElementById("panels").innerHTML = explain(`<b>Frame counter + MAC is ${state.scheme === "proposed" ? "turned off" : "part of the proposal only"}.</b> ${state.scheme === "proposed" ? "Tick <i>Counter + MAC enabled</i> in the sidebar to add it." : "Switch to <i>With our proposal</i> to see it."} Without it, a recorded frame can be replayed and payload bits can be flipped without detection.`);
+    return;
+  }
+  const hx = v => "0x" + (v >>> 0).toString(16).toUpperCase().padStart(8, "0");
+  document.getElementById("panels").innerHTML =
+    panelWide("Frame with counter and tag", `<div class="bitrow">
+      <span class="tag data">preamble + sync</span> 48 bits<br>
+      <span class="tag data">counter</span> ${fmtBits(S.ctr_bits, 0, 32)} <span style="color:var(--ink-faint)">= ${state.frame_ctr}, in the clear</span><br>
+      <span class="tag key">enc ID</span> ${fmtBits(S.enc_id, 0, 16)}<br>
+      <span class="tag key">C</span> ${fmtBits(S.C, 0, 40)}… <span style="color:var(--ink-faint)">(${S.n.toLocaleString()} bits)</span><br>
+      <span class="tag key">tag</span> ${fmtBits(u32bits(S.tag), 0, 32)} <span style="color:var(--ink-faint)">= ${hx(S.tag)}</span></div>`)
+    + panelWide("Receiver checks, in order", `<table class="mini"><tr><th>Check</th><th>Value</th><th></th></tr>
+      <tr><td>Counter fresh?</td><td class="n">${S.ctr_rx} &gt; ${state.rx_last_ctr}</td><td>${pill(S.ctr_fresh, "fresh", "stale: replay")}</td></tr>
+      <tr><td>Tag in the frame</td><td class="n">${hx(S.tag_rx)}</td><td></td></tr>
+      <tr><td>Tag the receiver computes</td><td class="n">${hx(S.tag_calc)}</td><td>${pill(S.mac_ok, "match", "mismatch")}</td></tr>
+      <tr><td>Decrypted ID</td><td class="n">${S.id_ok ? "correct" : "wrong"}</td><td>${pill(S.id_ok, "ok", "wrong key")}</td></tr>
+      <tr><td><b>Frame</b></td><td class="n">${S.mitm_flips ? S.mitm_flips.toLocaleString() + " bits flipped in transit" : ""}</td><td>${pill(S.accepted, "ACCEPTED", "REJECTED")}</td></tr></table>`)
+    + explain(`<b>How this stops replay and bit-flipping.</b> The keystream is now seeded with the key <i>and</i> an IV = session nonce | frame counter. The receiver picks a fresh 32-bit nonce at every power-up and sends it with the helper data; the chip counts frames within the session. The receiver accepts a counter only if it is higher than the last one it accepted, so a recorded frame comes back stale. Rewriting its counter does not help: the counter is part of both the IV and the MAC input, so the tag stops matching.
+      <br><br>The 32-bit tag covers the counter, the encrypted ID and every payload bit. Flip any of them and the receiver's tag changes; Eve cannot compute the new tag without the secret MAC keystream, so a forgery gets through with probability 2⁻³². A fresh keystream per frame also ends keystream reuse between frames (the <i>same key, same message</i> attack).
+      <br><br><b>Cost.</b> In the style of Grain-128a: the NLFSR delivers two bits per modulator clock (even bits encrypt, odd bits feed the MAC), plus a 32-bit accumulator, a 32-bit shift register, a 32-bit counter and 64 extra bits per frame.
+      ${S.channel_flips ? `<br><br><span style="color:var(--warn)"><b>Side effect:</b></span> the channel flipped ${S.channel_flips} bits, so the MAC rejects this frame too. An authenticated link needs forward error correction, or short packets with retransmission.` : ""}`);
+};
 PANELS.rxdb = function () {
   const base = state.scheme === "baseline";
   document.getElementById("panels").innerHTML =
@@ -1774,7 +1880,7 @@ document.getElementById("wrapGloss") || (function(){
   document.querySelector(".wrap").insertBefore(d, document.getElementById("refs"));
 })();
 document.getElementById("foot").innerHTML =
-  `<b>About this model.</b> Everything runs live in your browser — a behavioural port of the Python model. The DSM is a discrete-time model of the continuous-time loop; TIA clipping, the ×0.5 buffer, the LFSR polynomial, the NLFSR taps (from Grain-128), integrator rails and PUF noise are illustrative, not measured silicon values. SHA-256 stands in for a lightweight on-chip hash. The BCH code is real (GF(2¹⁰), syndrome construction). Numbers are meant to show mechanisms and trends, not exact chip performance. Baseline = the ESSERC'25 S-DSM <a href="#ref1">[1]</a>; Proposed = the SRAM-PUF + fuzzy-extractor + NLFSR extension discussed with Alperen.<p class="credit">This modelling and animation work could not have been done without the help of <a href="https://claude.com/claude-code">Claude Code</a>.</p>`;
+  `<b>About this model.</b> Everything runs live in your browser — a behavioural port of the Python model. The DSM is a discrete-time model of the continuous-time loop; TIA clipping, the ×0.5 buffer, the LFSR polynomial, the NLFSR taps (from Grain-128), integrator rails and PUF noise are illustrative, not measured silicon values. SHA-256 stands in for a lightweight on-chip hash. The frame counter + MAC follows Grain-128a's authentication mode (accumulator + shift register fed by every second keystream bit) on the same illustrative NLFSR. The BCH code is real (GF(2¹⁰), syndrome construction). Numbers are meant to show mechanisms and trends, not exact chip performance. Baseline = the ESSERC'25 S-DSM <a href="#ref1">[1]</a>; Proposed = the SRAM-PUF + fuzzy-extractor + NLFSR extension discussed with Alperen, plus a session nonce, frame counter and MAC.<p class="credit">This modelling and animation work could not have been done without the help of <a href="https://claude.com/claude-code">Claude Code</a>.</p>`;
 
 // ===== PANELS-END =====
 
@@ -1799,6 +1905,7 @@ let dgPlaying = !(window.matchMedia && window.matchMedia("(prefers-reduced-motio
 let dgRate = 40;                              // DSM samples per second of wall-clock
 let dgPos = 0, dgLast = 0, dgShown = -1, dgRaf = null;
 let dgDyn = [];                               // live elements: {kind, name, ...}
+let dgMac = null;                             // whether the drawn diagram has the counter + MAC block
 let dgLive = [];                              // extra per-frame painters registered by the open panel: fn(k)
 
 // ------------------------------------------------------------- svg helpers
@@ -1884,7 +1991,7 @@ function buildDiagram() {
   } else {
     s += wire("ky", "M160 305 H215") + wire("ky", "M365 305 H420") + wire("ky", "M530 305 H600");
     s += `<g data-node="fe"><path class="wire pub" d="M40 727 H24 V410 H290 V347" marker-end="url(#ar-pub)"/></g>`;
-    s += label(34, 402, "helper data h (public), sent by the receiver at power-up", "lab key");
+    s += label(34, 402, state.mac ? "helper data h + session nonce (public), sent by the receiver at power-up" : "helper data h (public), sent by the receiver at power-up", "lab key");
   }
 
   // ---- labels on wires
@@ -1921,6 +2028,14 @@ function buildDiagram() {
       <text class="v" x="970" y="136" text-anchor="middle">header + data</text>
       <text class="v" x="970" y="151" text-anchor="middle" id="dg-fr"></text>` });
 
+  // ---- frame counter + MAC (proposal): sits on the wire from the frame builder to the radio
+  dgMac = !base && !!state.mac;
+  if (dgMac) {
+    s += wire("ky", "M855 276 H888") + `<circle class="dot" cx="855" cy="276" r="3.5"/>` + label(860, 270, "auth", "lab key", "start");
+    s += `<rect class="solid" x="890" y="245" width="160" height="62" rx="10"/>`;   // keeps the channel wire from showing through
+    s += blk({ node: "mac", cls: "key", x: 890, y: 245, w: 160, h: 62, title: "Counter + MAC", val: "macv", extra: `<text class="v" id="dg-macv2" x="970" y="296" text-anchor="middle"></text>` });
+  }
+
   // ---- key generation (Tx)
   if (base) {
     s += blk({ node: "psk", cls: "key", x: 420, y: 265, w: 110, h: 80, title: "Pre-shared key", val: "psk" });
@@ -1934,7 +2049,7 @@ function buildDiagram() {
   }
 
   // ---- receiver
-  s += blk({ node: "rx_dec", cls: "dig", x: 40, y: 575, w: 150, h: 80, title: "Find frame + ID", val: "idchk", scope: { name: "sc_Crx", get: k => ({ arr: S.C_rx, idx: k, n: 80, lo: -0.2, hi: 1.2, digital: true }) } });
+  s += blk({ node: "rx_dec", cls: "dig", x: 40, y: 575, w: 150, h: 80, title: !base && state.mac ? "Verify frame" : "Find frame + ID", val: "idchk", scope: { name: "sc_Crx", get: k => ({ arr: S.C_rx, idx: k, n: 80, lo: -0.2, hi: 1.2, digital: true }) } });
   s += circ("rx_dec", "dig", 255, 615, 18, "⊕");
   s += blk({ node: "rx_out", cls: "an", x: 310, y: 575, w: 120, h: 80, title: "CIC filter", val: "cicv",
     scope: { name: "sc_cic", get: k => ({ arr: S.y_cic, idx: Math.floor(k / OSR), n: 40, lo: -yScale(), hi: yScale() }) } });
@@ -2015,10 +2130,12 @@ function paintRun() {
   const set = (id, txt) => { const e = svg.querySelector("#dg-" + id); if (e) e.textContent = txt; };
   const base = state.scheme === "baseline";
   svg.querySelector("#dg-dsmgrp").classList.toggle("alert", S.run >= 32 || S.clip > 0.01);
-  set("idchk", S.id_ok ? "ID ✓ matches" : "ID ✗ wrong key");
-  const idEl = svg.querySelector("#dg-idchk"); if (idEl) idEl.classList.toggle("bad", !S.id_ok);
-  set("outv", S.sndr != null ? "SNDR " + S.sndr.toFixed(1) + " dB" : "no test tone");
-  const oEl = svg.querySelector("#dg-outv"); if (oEl) oEl.classList.toggle("bad", S.sndr != null && S.sndr < 20);
+  const ck = (ok, t) => t + (ok ? " ✓" : " ✗");
+  set("idchk", S.mac ? [ck(S.ctr_fresh, "ctr"), ck(S.mac_ok, "MAC"), ck(S.id_ok, "ID")].join("  ") : S.id_ok ? "ID ✓ matches" : "ID ✗ wrong key");
+  const idEl = svg.querySelector("#dg-idchk"); if (idEl) idEl.classList.toggle("bad", !S.accepted);
+  set("outv", S.mac && !S.accepted ? "frame rejected" : S.sndr != null ? "SNDR " + S.sndr.toFixed(1) + " dB" : "no test tone");
+  const oEl = svg.querySelector("#dg-outv"); if (oEl) oEl.classList.toggle("bad", (S.mac && !S.accepted) || (S.sndr != null && S.sndr < 20));
+  if (S.mac) { set("macv", `ctr ${state.frame_ctr} · nonce ${S.nonce.toString(16).toUpperCase().padStart(8, "0").slice(0, 4)}…`); set("macv2", "tag " + S.tag.toString(16).toUpperCase().padStart(8, "0")); }
   if (base) {
     set("psk", "0x" + (state.key16 & 0xFFFF).toString(16).toUpperCase().padStart(4, "0"));
     set("dbv", "key 0x" + (state.key16 & 0xFFFF).toString(16).toUpperCase());
@@ -2026,7 +2143,7 @@ function paintRun() {
     set("pufv", `${S.n_err_true} bits flipped`);
     set("fev", S.fe_ok ? `fixed ${S.n_err_fixed} (max ${state.bch_t})` : `too many: ${S.n_err_true} > ${state.bch_t}`);
     set("hashv", bitsHex(S.key_tx).slice(0, 8) + "…");
-    set("dbv", "key + h");
+    set("dbv", S.mac ? "key, h, nonce, ctr" : "key + h");
     // PUF cells: first 28 bits; red = flipped this power-up
     const g = svg.querySelector("#dg-pufcells");
     if (g) {
@@ -2297,9 +2414,9 @@ const ATTACKS = [
       return { base: o("base", R.base), prop: o("prop", R.prop) };
     } },
 
-  { id: "samekey", name: "Same key, same message", src: "paper", stop: "Dither + quantisation noise (S-DSM, both)",
+  { id: "samekey", name: "Same key, same message", src: "paper", stop: () => state.mac ? "Dither + QN (both); per-frame IV (proposal)" : "Dither + quantisation noise (S-DSM, both)",
     has: "Two encryptions of the same reading under the same key (the paper uses two channels of one chip).",
-    desc: "Re-using a stream-cipher key is the classic 'two-time pad' mistake: C₁ ⊕ C₂ = D₁ ⊕ D₂, the keystream cancels, and identical messages give identical ciphertexts. Both designs use the same key every session, so both rely on S-DSM here: quantisation noise and dither make D₁ ≠ D₂ even for the same input (paper: 49.8% bit flips). Set the mismatch to 0 and dither low to see the leak.",
+    desc: "Re-using a stream-cipher key is the classic 'two-time pad' mistake: C₁ ⊕ C₂ = D₁ ⊕ D₂, the keystream cancels, and identical messages give identical ciphertexts. The original design uses the same keystream for every frame, so it relies on S-DSM here: quantisation noise and dither make D₁ ≠ D₂ even for the same input (paper: 49.8% bit flips). Set the mismatch to 0 and dither low to see the leak. With the frame counter on, the proposal gives every frame its own keystream, so K₁ ≠ K₂ and the XOR is noise whatever the modulator does.",
     knobs: [{ k: "chMismatch", label: "Mismatch between the two channels", min: 0, max: 1, step: 0.01, fmt: v => v.toFixed(2) + "% FS" },
       { g: "dither", label: "Dither enabled (global)" }, { g: "dither_amp", label: "Dither strength (global)", min: 0.01, max: 0.4, step: 0.005, fmt: v => v.toFixed(3) + " ×ref" }],
     run(R) {
@@ -2313,7 +2430,17 @@ const ATTACKS = [
           `The two modulator streams differ on <b>${pct(flip)}</b> of bits (a plain stream cipher gives 0%).`,
           leak ? `Far from 50%: the XOR reveals that both frames carry nearly the same signal, and one known frame gives away the other.` : `≈50%: the XOR is noise, and Eve learns nothing from the key reuse.`],
         plot: { kind: "bits", bits: xorBits(D1, D2).subarray(0, 400), on: "C₁ ≠ C₂", off: "C₁ = C₂" } });
-      return { base: o(), prop: o() };
+      const Sp = R.prop;
+      if (!Sp.mac) return { base: o(), prop: o() };
+      const K1 = keystreamNL(Sp.key_enroll, ivBits(Sp.nonce, state.frame_ctr), ID_BITS + LAB_N).enc.subarray(ID_BITS);
+      const K2 = keystreamNL(Sp.key_enroll, ivBits(Sp.nonce, state.frame_ctr + 1), ID_BITS + LAB_N).enc.subarray(ID_BITS);
+      const X = xorBits(xorBits(D1, K1), xorBits(D2, K2)), fp = X.reduce((a, b) => a + b, 0) / LAB_N;
+      return { base: o(), prop: { v: Math.abs(fp - 0.5) > 0.03 ? "leak" : "safe", head: `C₁ ⊕ C₂ has ${pct(fp)} ones`,
+        steps: [`Captures two frames carrying the same reading under the same key.`,
+          `But they carry counters ${state.frame_ctr} and ${state.frame_ctr + 1}, so each was encrypted with its own keystream: C₁ ⊕ C₂ = D₁ ⊕ D₂ ⊕ K₁ ⊕ K₂.`,
+          `The keys no longer cancel: <b>${pct(fp)}</b> of the XOR bits are 1, whatever the modulators did (${pct(flip)} of D bits differ).`,
+          `The XOR is noise. Key reuse is gone, not just hidden.`],
+        plot: { kind: "bits", bits: X.subarray(0, 400), on: "C₁ ≠ C₂", off: "C₁ = C₂" } } };
     } },
 
   { id: "saturate", name: "Forced-input saturation", src: "beyond", stop: "S2D ×0.5 buffer; NLFSR as backup",
@@ -2366,7 +2493,7 @@ const ATTACKS = [
         return { v: idOk ? "spoofed" : "detected", head: idOk ? "Server shows Eve's fake reading" : "Receiver rejects the frame",
           steps: [d === "base" ? `Gets the key by brute force (${bfCache ? bfCache.ms.toFixed(0) : "a few"} ms).` : `No attack above yields the 128-bit key, so she has to guess one.`,
             `Encrypts a fake ${lab.fake.toFixed(2)} µA reading and its ID, and transmits it as the sensor.`,
-            idOk ? `ID check <b>passes</b>. The server's control loop now acts on the fake value.` : `ID check <b>fails</b>: the frame is dropped and flagged, and its payload decrypts to noise.`],
+            idOk ? `ID check <b>passes</b>. The server's control loop now acts on the fake value.` : `ID check <b>fails</b>${Sx.mac ? " and so does the MAC" : ""}: the frame is dropped and flagged, and its payload decrypts to noise.`],
           plot: { kind: "y", series: [[R.yTrue, "true"], [yFake, "fake"], [y, "server"]] } };
       };
       const Kb = new LFSR16(bfCache && bfCache.found > 0 ? bfCache.found : 1).bits(ID_BITS + LAB_N);
@@ -2431,22 +2558,31 @@ const ATTACKS = [
       };
     } },
 
-  { id: "replay", name: "Replay of a recorded frame", src: "beyond", stop: "Neither - needs a frame counter",
+  { id: "replay", name: "Replay of a recorded frame", src: "beyond", stop: () => state.mac ? "Frame counter + MAC (proposal)" : "Neither - turn on counter + MAC",
     has: "A recording of any valid earlier frame.",
-    desc: "Eve records a frame while the reactor is healthy and plays it back later, hiding a fault. She needs no key. Both designs restart the same keystream from the same key at every power-up, and nothing in the frame changes with time, so both accept the old frame. The fix is a frame counter (nonce) mixed into the keystream.",
+    desc: "Eve records a frame while the reactor is healthy and plays it back later, hiding a fault. She needs no key. The original design restarts the same keystream from the same key and nothing in the frame changes with time, so it accepts the old frame. The proposal's frame counter fixes this: the receiver only accepts counters higher than the last one, and the counter is protected by the MAC.",
+    knobs: [{ g: "mac", t: "chk", label: "Frame counter + MAC in the proposal (global)" }],
     run(R) {
-      const now = R.yTrue.map(v => v * 0.4);
+      const now = R.yTrue.map(v => v * 0.4), Sp = R.prop;
       const o = () => ({ v: "spoofed", head: "Old frame accepted as new",
         steps: [`Records a valid frame earlier.`, `Later the real reading has dropped to 40% (a fault).`,
           `Replays the old frame: same key, same keystream, so the ID check <b>passes</b> and the server shows the old, healthy reading.`],
         plot: { kind: "y", series: [[now, "true"], [R.yTrue, "server"]] } });
-      return { base: o(), prop: o() };
+      if (!Sp.mac) { const p = o(); p.steps.push(`The proposal has its counter + MAC turned off, so it is no better here.`); return { base: o(), prop: p }; }
+      const last = Math.max(state.rx_last_ctr, state.frame_ctr), bump = last + 1;
+      const v = macVerify(Sp.key_enroll, Sp.nonce, bump, Sp.enc_id, Sp.C, Sp.tag);
+      return { base: o(), prop: { v: v.ok ? "spoofed" : "detected", head: "Replayed frame rejected",
+        steps: [`Records frame #${state.frame_ctr}; the receiver accepts it and remembers counter ${last}.`,
+          `Replays it unchanged: counter ${state.frame_ctr} ≤ ${last}, so it is <b>stale</b> and dropped.`,
+          `Rewrites the clear counter to ${bump}: the receiver rebuilds the keystream for counter ${bump} and gets tag 0x${v.tag.toString(16).toUpperCase().padStart(8, "0")} ≠ 0x${Sp.tag.toString(16).toUpperCase().padStart(8, "0")} in the frame. <b>Rejected.</b>`,
+          `Replays it after a reboot: the receiver has sent a new session nonce, so the tag fails again.`],
+        plot: { kind: "y", series: [[now, "true"]] } } };
     } },
 
-  { id: "bitflip", name: "Bit-flipping in transit (malleability)", src: "beyond", stop: "Neither - needs a MAC",
+  { id: "bitflip", name: "Bit-flipping in transit (malleability)", src: "beyond", stop: () => state.mac ? "MAC over the payload (proposal)" : "Neither - turn on counter + MAC",
     has: "A man-in-the-middle who can flip bits it forwards, without any key.",
-    desc: "XOR encryption is malleable: flipping a ciphertext bit flips the same bit of D after decryption. Flipping a random fraction p of payload bits scales the recovered reading by about (1 − 2p). The ID check covers only the ID field, so the change goes unnoticed in both designs. A message authentication code over the payload would catch it.",
-    knobs: [{ k: "flipP", label: "Payload bits Eve flips", min: 0, max: 0.3, step: 0.01, fmt: v => pct(v, 0) }],
+    desc: "XOR encryption is malleable: flipping a ciphertext bit flips the same bit of D after decryption. Flipping a random fraction p of payload bits scales the recovered reading by about (1 − 2p). The ID check covers only the ID field, so the original design never notices. The proposal's MAC covers every payload bit, so any flip changes the tag the receiver computes.",
+    knobs: [{ k: "flipP", label: "Payload bits Eve flips", min: 0, max: 0.3, step: 0.01, fmt: v => pct(v, 0) }, { g: "mac", t: "chk", label: "Frame counter + MAC in the proposal (global)" }],
     run(R) {
       const r = makeRng(state.seed + 61), D = R.base.D.subarray(0, LAB_N), Dm = D.map(b => (r.u() < lab.flipP ? b ^ 1 : b));
       const y = decodeY(Dm); let num = 0, den = 0;
@@ -2457,7 +2593,15 @@ const ATTACKS = [
           `The receiver decrypts correctly, but D has ${pct(lab.flipP, 0)} of its bits inverted.`,
           lab.flipP > 0 ? `The recovered reading shrinks to ${pct(g, 0)} of its true value, and the ID check still <b>passes</b>.` : `No change.`],
         plot: { kind: "y", series: [[R.yTrue, "true"], [y, "server"]] } });
-      return { base: o(), prop: o() };
+      const Sp = R.prop;
+      if (!Sp.mac || lab.flipP === 0) return { base: o(), prop: o() };
+      const r2 = makeRng(state.seed + 62), Cm = Sp.C.map(b => (r2.u() < lab.flipP ? b ^ 1 : b));
+      const v = macVerify(Sp.key_enroll, Sp.nonce, state.frame_ctr, Sp.enc_id, Cm, Sp.tag);
+      return { base: o(), prop: { v: v.ok ? "spoofed" : "detected", head: "Tampered frame rejected",
+        steps: [`Flips ${pct(lab.flipP, 0)} of the payload bits, leaves the header and ID alone.`,
+          `The receiver recomputes the MAC over what arrived: 0x${v.tag.toString(16).toUpperCase().padStart(8, "0")}, but the frame says 0x${Sp.tag.toString(16).toUpperCase().padStart(8, "0")}.`,
+          `<b>Rejected</b> before the data is used. Eve cannot fix the tag: it depends on secret keystream bits, so a forgery succeeds with probability 2⁻³².`],
+        plot: { kind: "y", series: [[R.yTrue, "true"], [y, "tamper"]] } } };
     } },
 ];
 
@@ -2494,7 +2638,7 @@ function renderLab() {
   const rows = ATTACKS.map(a => {
     const r = LR.res[a.id];
     return `<tr data-id="${a.id}" tabindex="0" aria-selected="${a.id === lab.sel}"><td><b>${a.name}</b></td><td><span class="src ${a.src}">${a.src === "paper" ? "paper" : "beyond"}</span></td>
-      <td>${vpill(r.base)}</td><td>${vpill(r.prop)}</td><td class="stop">${a.stop}</td></tr>`;
+      <td>${vpill(r.base)}</td><td>${vpill(r.prop)}</td><td class="stop">${typeof a.stop === "function" ? a.stop() : a.stop}</td></tr>`;
   }).join("");
   const tb = document.getElementById("atkTable");
   tb.innerHTML = `<thead><tr><th>Attack</th><th>Source</th><th>Original design</th><th>With our proposal</th><th>What stops it</th></tr></thead><tbody>${rows}</tbody>`;
@@ -2507,13 +2651,13 @@ function renderLab() {
   renderAttackDetail();
 }
 
-const JUMP = { eaves: 1, saturate: () => (state.buffer === 1 ? 3 : 2), bm: 4, htamper: 8 };
+const JUMP = { eaves: 1, saturate: () => (state.buffer === 1 ? 3 : 2), bm: 4, htamper: 8, replay: 9, bitflip: 10 };
 
 function renderAttackDetail() {
   const a = ATTACKS.find(x => x.id === lab.sel), r = LR.res[a.id], el = document.getElementById("atkDetail");
   const knobs = (a.knobs || []).map((k, n) => {
     const key = k.g || k.k, obj = k.g ? state : lab, val = obj[key];
-    if (k.g === "dither") return `<label class="chk"><input type="checkbox" data-kn="${n}" ${val ? "checked" : ""}> ${k.label}</label>`;
+    if (k.g === "dither" || k.t === "chk") return `<label class="chk"><input type="checkbox" data-kn="${n}" ${val ? "checked" : ""}> ${k.label}</label>`;
     if (k.t === "seg") return `<div class="ctl"><label>${k.label}</label><div class="seg">${k.opts.map(([v, t]) => `<button data-kn="${n}" data-v="${v}" aria-pressed="${val == v}">${t}</button>`).join("")}</div></div>`;
     return `<div class="ctl"><label>${k.label}<b id="kn${n}">${k.fmt ? k.fmt(val) : val}</b></label><input type="range" data-kn="${n}" min="${k.min}" max="${k.max}" step="${k.step}" value="${val}"></div>`;
   }).join("");
@@ -2537,7 +2681,7 @@ function renderAttackDetail() {
   cvs.forEach((c, n) => drawAtkPlot(c, outs[n].plot));
 }
 
-const SERIES = { true: ["true reading", () => COL.faint(), [5, 4]], eve: ["what Eve decrypts", () => COL.key()], fake: ["Eve's fake reading", () => COL.sig(), [3, 3]], server: ["what the server shows", () => COL.key()] };
+const SERIES = { true: ["true reading", () => COL.faint(), [5, 4]], eve: ["what Eve decrypts", () => COL.key()], fake: ["Eve's fake reading", () => COL.sig(), [3, 3]], tamper: ["what Eve tried to deliver (rejected)", () => COL.sig(), [3, 3]], server: ["what the server shows", () => COL.key()] };
 function drawAtkPlot(c, p) {
   const g = dpiCanvas(c, 150), ctx = g.ctx, lg = c.nextElementSibling;
   if (p.kind === "y") {
@@ -2623,7 +2767,7 @@ function renderBench() {
           ${step("Helper data", hDiff ? `${hDiff} bits changed` : "as sent", hDiff === 0, src === "own" ? "vs what the receiver sent" : src === "other" ? "another chip's h" : "all-zero h")}
           ${step("Decoder", Sp.fe_ok ? `fixed ${Sp.n_err_fixed}` : "failed", Sp.fe_ok && mis === 0 && missed === 0, `${fixed} right, ${mis} wrong fixes, ${missed} missed`)}
           ${step("Key = hash(w)", Sp.key_match ? "MATCH" : `${kd}/128 off`, Sp.key_match, "vs the enrolled key")}
-          ${step("Rx ID check", Sp.id_ok ? "PASS" : "FAIL", Sp.id_ok, Sp.id_ok ? "link up" : "alarm raised")}
+          ${step("Receiver", Sp.accepted ? "ACCEPT" : "REJECT", Sp.accepted, !Sp.id_ok ? "ID wrong: key mismatch" : Sp.mac && !Sp.ctr_fresh ? "stale counter" : Sp.mac && !Sp.mac_ok ? "MAC mismatch" : Sp.mac ? "ID, counter, MAC ok" : "ID ok")}
           ${step("Recovered signal", Sp.sndr != null ? Sp.sndr.toFixed(1) + " dB" : "-", Sp.sndr != null ? Sp.sndr > 40 : null, Sp.sndr != null ? "SNDR at the receiver" : "not a sine input")}
         </div>
         <div class="keyline"><span>chip's key</span><code>${hexDiff}</code></div>
@@ -2649,6 +2793,22 @@ function renderBench() {
           <div class="track"><i style="width:${Math.max(0, residual) / PUF_BITS * 100}%" class="${residual >= 128 ? "good" : "warn"}"></i><em style="left:${128 / PUF_BITS * 100}%"></em></div></div>
       </div>
 
+      <div class="bench-side"><div class="bench-part"><h3>Our proposal: frame counter + MAC</h3>
+        <label class="chk"><input type="checkbox" id="mOn" ${state.mac ? "checked" : ""}> Counter + MAC enabled</label>
+        ${Sp.mac ? `<div class="two-in">
+          <div class="ctl"><label>Counter in this frame</label><input class="hexin" id="mCtr" type="number" min="1" max="1000000" value="${state.frame_ctr}"></div>
+          <div class="ctl"><label>Receiver's last counter</label><input class="hexin" id="mLast" type="number" min="0" max="1000000" value="${state.rx_last_ctr}"></div></div>` : ""}
+        <div class="ctl"><label>Bits a MITM flips in the payload<b id="mPl">${(state.mitm_p * 100).toFixed(0)}%</b></label><input type="range" id="mP" min="0" max="0.3" step="0.01" value="${state.mitm_p}"></div>
+        ${Sp.mac ? `<div class="bchain two">
+          ${step("Counter", Sp.ctr_fresh ? "fresh" : "stale", Sp.ctr_fresh, `${Sp.ctr_rx} vs last ${state.rx_last_ctr}`)}
+          ${step("MAC", Sp.mac_ok ? "match" : "mismatch", Sp.mac_ok, Sp.mitm_flips ? `${Sp.mitm_flips.toLocaleString()} bits flipped` : "tag recomputed")}
+          ${step("Frame", Sp.accepted ? "ACCEPT" : "REJECT", Sp.accepted, Sp.accepted ? "data used" : "dropped")}
+        </div>
+        <div class="keyline"><span>tag in the frame</span><code>${Sp.tag_rx.toString(16).toUpperCase().padStart(8, "0")}</code></div>
+        <div class="keyline"><span>tag the Rx computes</span><code>${Sp.mac_ok ? Sp.tag_calc.toString(16).toUpperCase().padStart(8, "0") : `<b class="warn">${Sp.tag_calc.toString(16).toUpperCase().padStart(8, "0")}</b>`}</code></div>
+        <div class="keyline"><span>session nonce</span><code>${Sp.nonce.toString(16).toUpperCase().padStart(8, "0")}</code></div>` : `<p class="hint">Off: the proposal behaves like the original here, accepting replayed and bit-flipped frames.</p>`}
+        <p class="hint">Original design, same MITM: ${state.mitm_p > 0 ? `${Sb.accepted ? "<b>accepts</b>" : "rejects"} the frame with ${Sb.mitm_flips.toLocaleString()} altered bits${Sb.sndr != null ? ` (SNDR ${Sb.sndr.toFixed(1)} dB)` : ""}.` : "set the MITM slider above to compare."}</p>
+      </div>
       <div class="bench-part"><h3>Original design: pre-shared 16-bit key</h3>
         <p class="hint">No helper data or fingerprint here: the key is fixed at manufacture and stored on the chip. The only things to change are the two copies of it.</p>
         <div class="ctl"><label>Key stored in the chip</label><input class="hexin" id="kChip" value="${(state.key16 & 0xFFFF).toString(16).toUpperCase().padStart(4, "0")}" maxlength="4" spellcheck="false" aria-label="Chip key in hex"></div>
@@ -2662,7 +2822,7 @@ function renderBench() {
         <div class="keyline"><span>chip keystream</span><code>${fmtBits(ksC, 0, 32)}</code></div>
         <div class="keyline"><span>receiver keystream</span><code>${colorBits2(ksR, ksC, 0, 32)}</code></div>
         <p class="hint">Change one hex digit and the whole keystream changes, so the output turns to noise. But the key space is only 65,536 keys: the attack lab's brute-force search finds it in milliseconds.</p>
-      </div>
+      </div></div>
     </div>`;
 
   const redo = () => { run(); labNow(); };
@@ -2683,6 +2843,11 @@ function renderBench() {
   slide("#bTemp", "temp"); slide("#bT", "bch_t");
   const hexKey = (inp, k) => { inp.onchange = () => { const v = parseInt(inp.value, 16); if (!isNaN(v) && v > 0 && v <= 0xFFFF) { state[k] = v; buildControls(); redo(); } else inp.value = (state[k] & 0xFFFF).toString(16).toUpperCase(); }; };
   hexKey(el.querySelector("#kChip"), "key16"); hexKey(el.querySelector("#kRx"), "rx_key16");
+  el.querySelector("#mOn").onchange = e => { state.mac = e.target.checked; buildControls(); redo(); };
+  const num = (id, k, lo) => { const i = el.querySelector(id); if (i) i.onchange = () => { const v = Math.round(+i.value); if (isFinite(v) && v >= lo) { state[k] = v; buildControls(); redo(); } else i.value = state[k]; }; };
+  num("#mCtr", "frame_ctr", 1); num("#mLast", "rx_last_ctr", 0);
+  const mp = el.querySelector("#mP");
+  mp.oninput = () => { el.querySelector("#mPl").textContent = (+mp.value * 100).toFixed(0) + "%"; clearTimeout(mp._t); mp._t = setTimeout(() => { state.mitm_p = +mp.value; buildControls(); redo(); }, 120); };
   el.querySelector("#kSame").onchange = e => { state.rx_key16 = e.target.checked ? null : state.key16; redo(); };
 }
 // ===== LAB-END =====
@@ -2721,8 +2886,13 @@ const CONTROLS = [
   { k: "puf_sigma", t: "range", min: 0.02, max: 0.14, step: 0.005, label: "PUF noise σ", scheme: "proposed", hint: "Higher σ = more unstable PUF bits per power-up." },
   { k: "bch_t", t: "range", min: 10, max: 60, step: 1, label: "BCH correction t", scheme: "proposed", hint: "Bits the ECC can fix. Below the PUF error count, the key fails." },
   { k: "h_tamper", t: "range", min: 0, max: 120, step: 1, label: "Tamper helper data", unit: "bits", scheme: "proposed", hint: "Attacker flips bits in h in transit. Any flip breaks the key → Rx catches it." },
+  { h: "Frame counter + MAC", scheme: "proposed" },
+  { k: "mac", t: "chk", label: "Counter + MAC enabled", scheme: "proposed" },
+  { k: "frame_ctr", t: "range", min: 1, max: 100, step: 1, label: "Counter in this frame", scheme: "proposed", show: p => p.mac },
+  { k: "rx_last_ctr", t: "range", min: 0, max: 100, step: 1, label: "Receiver's last accepted counter", scheme: "proposed", show: p => p.mac, hint: "A frame counts as fresh only if its counter is higher. Set this ≥ the frame's counter to replay an old frame." },
   { h: "Channel & receiver" },
   { k: "ber", t: "range", min: 0, max: 0.02, step: 0.0005, label: "Channel bit-error rate", fmt: v => (v * 100).toFixed(2) + "%" },
+  { k: "mitm_p", t: "range", min: 0, max: 0.3, step: 0.01, label: "MITM flips payload bits", fmt: v => (v * 100).toFixed(0) + "%", hint: "Bit-flipping in transit, no key needed. The original design accepts the altered reading; the MAC rejects the frame." },
   { k: "rx_wrong_key", t: "chk", label: "Rx uses wrong key" },
 ];
 
@@ -2772,7 +2942,7 @@ function buildControls() {
 // ---------------------------------------------------------------- selection
 // Blocks that only exist in one design. If the user flips designs while one of these
 // is open, jump to the equivalent block.
-const ONLY = { baseline: ["psk", "lfsr"], proposed: ["puf", "fe", "keyd", "nlfsr"] };
+const ONLY = { baseline: ["psk", "lfsr"], proposed: ["puf", "fe", "keyd", "nlfsr", "mac"] };
 
 function selectNode(id, opts) {
   selected = id; infoOpen = true;
@@ -2827,6 +2997,7 @@ function pill(ok, tOk, tNo) { return `<span class="pill ${ok ? "good" : "warn"}"
 function schedule() { if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { run(); }); }
 function run() {
   S = simulate(state);
+  if (dgMac !== (state.scheme === "proposed" && !!state.mac)) buildDiagram();   // the counter + MAC block comes and goes
   renderVerdict(); renderPanels(); paintRun(); labSchedule();
 }
 
@@ -2860,6 +3031,10 @@ const SCEN = [
     cap: "<b>What if the code is too weak?</b> When the flips exceed what the code can fix, the key comes out wrong and the receiver's ID check catches it. So you size the code for the worst case." },
   { t: "Tampered helper data", s: { ...DEFAULTS, scheme: "proposed", h_tamper: 30 }, sel: "fe",
     cap: "<b>Attacker alters the public helper data in transit.</b> The chip reconstructs a wrong key, and the receiver notices immediately. Public does not mean unprotected." },
+  { t: "Replay an old frame", s: { ...DEFAULTS, scheme: "proposed", rx_last_ctr: 42 }, sel: "mac",
+    cap: "<b>Eve plays back a frame the receiver has already accepted.</b> Its counter (42) is not higher than the last one seen, so the receiver drops it. Switch to the original design: it has no counter and takes the old frame as new." },
+  { t: "Bit-flipping in transit", s: { ...DEFAULTS, scheme: "proposed", mitm_p: 0.1 }, sel: "mac",
+    cap: "<b>Eve flips 10% of the payload bits on the way, no key needed.</b> The tag the receiver computes no longer matches, so the frame is rejected. Switch to the original design: it accepts the altered frame, and the recovered signal quietly degrades." },
 ];
 let scnActive = 0;
 function applyScenario(i) {
@@ -2880,7 +3055,11 @@ function buildScenarios() {
 function renderVerdict() {
   const v = document.getElementById("verdict"), items = [];
   items.push({ k: "Rx ID check", v: S.id_ok ? "PASS" : "FAIL", cls: S.id_ok ? "good" : "warn", d: S.sync_pos >= 0 ? "frame synced" : "no sync" });
-  items.push({ k: "Recovered SNDR", v: S.sndr != null ? S.sndr.toFixed(1) + " dB" : "—", d: S.sndr != null ? (S.sndr > 40 ? "clean signal" : "buried in noise") : "not a sine" });
+  if (S.mac) items.push({ k: "Counter + MAC", v: S.accepted ? "ACCEPT" : "REJECT", cls: S.accepted ? "good" : "warn",
+    d: !S.ctr_fresh ? `stale counter: replay` : !S.mac_ok ? "tag mismatch" : !S.id_ok ? "ID wrong" : `fresh, authentic` });
+  else if (state.mitm_p > 0) items.push({ k: "Payload integrity", v: "UNCHECKED", cls: "warn", d: `${S.mitm_flips.toLocaleString()} bits altered, accepted` });
+  const dropped = S.mac && !S.accepted;
+  items.push({ k: "Recovered SNDR", v: S.sndr != null ? S.sndr.toFixed(1) + " dB" : "—", d: dropped ? "frame dropped, not used" : S.sndr != null ? (S.sndr > 40 ? "clean signal" : "buried in noise") : "not a sine" });
   const evilBroken = S.eve_forced_broken > 0.5 || S.eve_probe.acc > 0.99;
   if (state.scheme === "baseline") {
     items.push({ k: "Keystream vs BM", v: S.eve_probe.acc > 0.99 ? "BROKEN" : (S.eve_forced_broken > 0.5 ? "BROKEN" : "safe"), cls: S.eve_probe.acc > 0.99 ? "warn" : "good", d: "probe recovers LFSR" });
