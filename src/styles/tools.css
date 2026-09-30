@@ -204,3 +204,92 @@ a {
 .not-found .theme-toggle {
   margin-top: 2.5rem;
 }
+
+/* /go/ - unlisted links page */
+.go-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--ink);
+}
+.go-head h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3.6vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.go-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0.5rem;
+}
+.go-filter .mono {
+  font-size: 0.84rem;
+  color: var(--ink-3);
+}
+.go-filter input {
+  flex: 1;
+  min-width: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink);
+}
+.go-group {
+  margin-top: 2rem;
+}
+.go-group h2 {
+  margin: 0 0 0.4rem;
+  padding-bottom: 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.go-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.go-group li {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.go-group li a {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.1rem 1rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+.go-group li a:hover .go-label {
+  color: var(--accent);
+}
+.go-sub {
+  padding-left: 1.25rem;
+}
+.go-sub .go-label {
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+.go-url {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.go-note {
+  display: block;
+  margin-top: 0.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+}

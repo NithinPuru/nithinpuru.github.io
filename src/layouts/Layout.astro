@@ -1,9 +1,9 @@
 ---
 import "../styles/tools.css";
 
-// Shell for the 404 page. The tools themselves are standalone pages in
-// public/ and don't use it.
-const { title, description, noindex = false } = Astro.props;
+// Shell for the 404 page and /go/. The tools themselves are standalone pages
+// in public/ and don't use it. track={false} leaves out the analytics tracker.
+const { title, description, noindex = false, track = true } = Astro.props;
 
 // Resolves a public/ asset path against the configured base.
 const asset = (p) =>
@@ -55,6 +55,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
     <script>
       import "../scripts/theme.js";
     </script>
-    <script is:inline src="/np.js" defer></script>
+    { track && <script is:inline src="/np.js" defer></script> }
   </body>
 </html>

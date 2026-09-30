@@ -1,0 +1,111 @@
+---
+// /go/ - the owner's unlisted quick-links page: every page on nithinpuru.com
+// and nithinpuru.github.io in one place. Not linked anywhere, noindex, not in
+// the sitemap, not tracked. Public if someone guesses the URL, so no keys here.
+import Layout from "../layouts/Layout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import tools from "../data/tools.json";
+
+const COM = "https://nithinpuru.com";
+const IO = "https://nithinpuru.github.io";
+
+// Each group: [label, url, note?]
+const portfolio = [
+  ["Home", `${COM}/`],
+  ...[
+    ["About", "about"], ["Experience", "experience"], ["Education", "education"], ["Skills", "skills"],
+    ["Publications", "publications"], ["Awards", "awards"], ["Work", "work"], ["Tools list", "tools"],
+    ["Finance", "finance"], ["Hobbies", "hobbies"], ["CV", "cv"], ["Contact", "contact"],
+  ].map(([label, id]) => [`  ${label}`, `${COM}/#${id}`]),
+  ["Ron/gm notebook", `${COM}/rongm/`],
+  ["llms.txt", `${COM}/llms.txt`],
+  ["Sitemap", `${COM}/sitemap-index.xml`],
+  ["Stop counting this browser", `${COM}/?notrack`, "undo with ?track"],
+];
+
+const toolRows = tools.groups.flatMap((g) => g.entries).flatMap((e) => [
+  [e.title, `${IO}${e.url}`],
+  ...(e.links || [])
+    .filter((l) => l.url !== e.url && l.url.startsWith("/"))
+    .map((l) => [`  ${l.label}`, `${IO}${l.url}`]),
+]);
+// extra pages of the deadline tracker, right after it
+const di = toolRows.findIndex(([, url]) => url === `${IO}/deadline/`);
+toolRows.splice(di + 1, 0,
+  ["  Change log", `${IO}/deadline/updates.html`],
+  ["  RSS feed", `${IO}/deadline/feed.xml`],
+  ["  Calendar (subscribe)", "webcal://nithinpuru.github.io/deadline/deadlines.ics", "adds the deadlines to your calendar app"],
+);
+
+const owner = [
+  ["Analytics dashboard", `${IO}/analytics/`, "owner view needs ?key= once per browser"],
+  ["  Demo data", `${IO}/analytics/?demo`],
+  ["  Show the opt-out switch", `${IO}/analytics/?admin`],
+  ["FX rates data", `${IO}/fx-quant/fx_data.json`],
+  ["Quant Terminal market data", `${IO}/quant-terminal/market_data.json`],
+  ["Research Radar snapshot", `${IO}/research-radar/data/index.json`],
+  ["Deadline tracker status", `${IO}/deadline/data/meta.json`],
+  ["Tools llms.txt", `${IO}/llms.txt`],
+  ["Tools sitemap", `${IO}/sitemap-index.xml`],
+  ["Cloudflare Pages address", "https://nithinpuru.pages.dev/", "redirects to nithinpuru.com"],
+];
+
+const admin = [
+  ["GitHub - tools repo", "https://github.com/NithinPuru/nithinpuru.github.io"],
+  ["  Actions (bots, deploys)", "https://github.com/NithinPuru/nithinpuru.github.io/actions"],
+  ["GitHub - portfolio repo", "https://github.com/NithinPuru/portfolio", "private"],
+  ["GitHub - career-semi-quant", "https://github.com/chennakeshavadasa/career-semi-quant"],
+  ["Cloudflare - Workers & Pages", "https://dash.cloudflare.com/?to=/:account/workers-and-pages"],
+  ["Cloudflare - nithinpuru.com", "https://dash.cloudflare.com/?to=/:account/nithinpuru.com", "Security -> Security rules for the India block"],
+];
+
+const groups = [
+  ["Portfolio - nithinpuru.com", portfolio],
+  ["Tools - nithinpuru.github.io", toolRows],
+  ["Data and owner pages", owner],
+  ["Admin (sign-in needed)", admin],
+];
+const shown = (url) => url.replace(/^https?:\/\//, "").replace(/^webcal:\/\//, "webcal: ");
+---
+<Layout title="Links" description="All pages." noindex track={false}>
+  <header class="go-head">
+    <h1>Links</h1>
+    <ThemeToggle />
+  </header>
+  <label class="go-filter">
+    <span class="mono">Filter</span>
+    <input id="go-q" type="search" placeholder="gmid, cv, radar ..." autocomplete="off" />
+  </label>
+  {groups.map(([heading, rows]) => (
+    <section class="go-group">
+      <h2>{heading}</h2>
+      <ul>
+        {rows.map(([label, url, note]) => (
+          <li class={label.startsWith("  ") ? "go-sub" : undefined} data-q={`${label} ${url} ${note ?? ""}`.toLowerCase()}>
+            <a href={url}>
+              <span class="go-label">{label.trim()}</span>
+              <span class="go-url">{shown(url)}</span>
+            </a>
+            {note && <span class="go-note">{note}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+  <script is:inline>
+    (function () {
+      var q = document.getElementById("go-q");
+      q.addEventListener("input", function () {
+        var v = q.value.trim().toLowerCase();
+        document.querySelectorAll(".go-group").forEach(function (g) {
+          var any = false;
+          g.querySelectorAll("li").forEach(function (li) {
+            var hit = !v || li.dataset.q.indexOf(v) >= 0;
+            li.hidden = !hit; any = any || hit;
+          });
+          g.hidden = !any;
+        });
+      });
+    })();
+  </script>
+</Layout>

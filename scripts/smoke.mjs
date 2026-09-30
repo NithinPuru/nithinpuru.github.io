@@ -84,9 +84,36 @@ if (dl) {
   if (dl.deferred && !dl.api_calls) warn(`Deadline tracker: ${dl.deferred} checks deferred, no API calls (ANTHROPIC_API_KEY secret set?)`);
 }
 
+// ---- keeping the two sites in step (warnings only) ------------------------------
+// Every tool page should load the tracker, and the portfolio's tools list
+// (nithinpuru.com/#tools, a separate repo) should match src/data/tools.json.
+const tools = JSON.parse(await readFile(new URL("../src/data/tools.json", import.meta.url), "utf8"))
+  .groups.flatMap((g) => g.entries);
+for (const e of tools) {
+  const html = await readFile(join(DIST, e.url, "index.html"), "utf8").catch(() => "");
+  if (!html) fail(`${e.url}: listed in tools.json but missing from the build`);
+  else if (!html.includes("/np.js")) warn(`${e.url}: no /np.js - visits to this tool aren't counted`);
+}
+try {
+  const r = await fetch("https://nithinpuru.com/", { signal: AbortSignal.timeout(15000) });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const portfolio = await r.text();
+  for (const e of tools)
+    if (!portfolio.includes(`https://nithinpuru.github.io${e.url}`))
+      warn(`nithinpuru.com doesn't list ${e.url} - add it to the portfolio repo's src/data/tools.json`);
+  const linked = new Set(portfolio.match(/https:\/\/nithinpuru\.github\.io\/[^"'#?\s<]*/g) || []);
+  for (const u of linked) {
+    const path = new URL(u).pathname;
+    const file = path.endsWith("/") ? join(DIST, path, "index.html") : join(DIST, path);
+    if (!existsSync(file)) warn(`nithinpuru.com links to ${u}, which this build doesn't have`);
+  }
+} catch (e) {
+  warn(`couldn't compare with nithinpuru.com (${e.message}) - it blocks India, so this only runs from CI`);
+}
+
 // ---- pages ---------------------------------------------------------------------
 const PAGES = [
-  "/404.html",
+  "/404.html", "/go/",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
   "/secure_sensor_with_puf/", "/analytics/",

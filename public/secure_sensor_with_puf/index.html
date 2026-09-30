@@ -280,6 +280,11 @@ svg.dg .blk.eve .evebox{stroke:var(--key);stroke-dasharray:6 4;fill:var(--key-bg
 svg.dg .blk.eve rect:not(.evebox){stroke-dasharray:none}
 svg.dg .blk.eve rect.track{stroke:none}
 svg.dg .solid{fill:var(--panel);stroke:none}
+svg.dg .atk-ring{fill:none;stroke:var(--key);stroke-width:2.2;stroke-dasharray:7 4;pointer-events:none}
+svg.dg .atk-dot{fill:var(--key);stroke:var(--panel);stroke-width:2.5;pointer-events:none}
+svg.dg .atk-lab{font-size:12px;font-weight:700;fill:var(--key);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+svg.dg .atk-v{font-family:var(--mono);font-size:16px;fill:var(--ink)}
+svg.dg .atk-v.warn{fill:var(--warn)} svg.dg .atk-v.good{fill:var(--good)} svg.dg .atk-v.na{fill:var(--ink-faint)}
 svg.dg .newbox{fill:var(--key-bg);stroke:var(--key-dim);stroke-width:1.2;stroke-dasharray:5 4}
 svg.dg .blk rect.cell{fill:var(--sig);stroke:none}
 svg.dg .blk rect.cell.bad{fill:var(--warn)}
@@ -429,6 +434,16 @@ button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
 .two-in{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hexin[type=number]{letter-spacing:0}
 .bchain.two{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));margin-top:10px}
+.atk-banner{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:4px 0 10px;padding:10px 13px;background:var(--key-bg);border:1px solid var(--key-dim);border-left:4px solid var(--key);border-radius:10px;font-size:13.5px;color:var(--ink)}
+.atk-banner .ab-text{flex:1;min-width:260px}
+.atk-banner .ab-tools{display:flex;gap:8px;flex-wrap:wrap}
+.atk-pick select{max-width:230px;border-color:var(--key-dim)}
+.wave-head{margin:18px 0 8px}
+.wave-head h4{margin:0;font-size:14px}
+.wave-head p{margin:3px 0 0;font-size:13px;color:var(--ink-soft);max-width:880px}
+.atk-col canvas.wv{background:var(--paper);border:1px solid var(--line-soft)}
+ol.steps{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-soft)}
+ol.steps li{margin-bottom:5px}
 .home-link{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);padding:6px 12px;border-radius:8px;font-size:13.5px;text-decoration:none}
 .home-link:hover{border-color:var(--sig);color:var(--sig)}
 .home-link svg{width:15px;height:15px}
@@ -880,6 +895,7 @@ const DEFAULTS = {
   chip_seed: 7, temp: 37, puf_sigma: 0.06, bch_t: 40, h_tamper: 0,
   h_source: "own", h_edit: [], puf_edit: [], rx_key16: null,   // workbench edits (arrays are replaced, never mutated)
   mac: true, frame_ctr: 42, rx_last_ctr: 41, mitm_p: 0,          // proposal: session nonce + frame counter + MAC
+  attack: "none",                                                 // an attack from the lab, run through the live model
   ber: 0, lead: 200, rx_wrong_key: false, seed: 2026,
 };
 
@@ -895,45 +911,94 @@ function sensorCurrent(P, n) {
   return i;
 }
 
+// ---------- attacks run inside the link model
+// P.attack picks one; P.atk holds its knobs. Each attack hooks in where the attacker acts:
+// the sensor input, the chip's key, the channel, or only in Eve's own processing (S.atk).
+const ATK_DEF = { mismatch: 0.1, kiInput: "dc", flipP: 0.1, fake: 0.3, bmBits: 64, clone: 1, hFlip: 1, chMismatch: 0.1 };
+
+function buildFrame(D, ks, mac, ctr, idBits) {   // ks: keystreamNL-style { enc, auth?, A0?, R0? }
+  const n = D.length, K = ks.enc.subarray(ID_BITS, ID_BITS + n), C = D.map((d, i) => d ^ K[i]);
+  const enc_id = idBits.map((b, i) => b ^ ks.enc[i]), F = { K, C, enc_id };
+  if (mac) {                         // preamble | sync | counter (clear) | enc ID | C | tag
+    F.ctr_bits = u32bits(ctr);
+    F.tag = macTag(macMsg(F.ctr_bits, enc_id, C), ks);
+    F.frame = new Uint8Array(48 + 32 + ID_BITS + n + 32);
+    F.frame.set(PREAMBLE, 0); F.frame.set(SYNC, 32); F.frame.set(F.ctr_bits, 48); F.frame.set(enc_id, 80); F.frame.set(C, 96); F.frame.set(u32bits(F.tag), 96 + n);
+  } else {
+    F.frame = new Uint8Array(48 + ID_BITS + n);
+    F.frame.set(PREAMBLE, 0); F.frame.set(SYNC, 32); F.frame.set(enc_id, 48); F.frame.set(C, 64);
+  }
+  return F;
+}
+
+function bruteLFSR(ks16) {           // try every 16-bit key against 16 known keystream bits
+  for (let k = 1; k <= 0xFFFF; k++) {
+    const l = new LFSR16(k); let ok = true;
+    for (let i = 0; i < ID_BITS && ok; i++) ok = l.bit() === ks16[i];
+    if (ok) return { key: k, tries: k };
+  }
+  return { key: -1, tries: 0xFFFF };
+}
+
+// BM on many 64-bit windows of a keystream guess. A window "breaks" when its LFSR predicts the next 512
+// real key bits; the earliest one is extended over the rest of the stream.
+function windowAttack(Kguess, Ktrue, seed, tries = 80) {
+  const r = makeRng(seed), n = Math.min(Kguess.length, Ktrue.length);
+  let broken = 0, first = -1;
+  for (let k = 0; k < tries; k++) {
+    const s = 200 + r.int(Math.min(n, 30000) - 64 - 512 - 400);
+    const a = bmAttack(Kguess.subarray(s, s + 64), Ktrue.subarray(s + 64, s + 64 + 512));
+    if (a.acc > 0.99) { broken++; if (first < 0 || s < first) first = s; }
+  }
+  return { broken, tries, first };
+}
+
 function simulate(P0) {
   const P = { ...DEFAULTS, ...P0 };
   const rng = makeRng(P.seed), n = N_DSM, t = P.bch_t;
-  const S = { P, n };
+  const S = { P, n }, A = P.attack || "none", AK = { ...ATK_DEF, ...(P.atk || {}) }, base = P.scheme === "baseline";
 
-  // Tx analog chain
+  // Tx analog chain (some attacks set the input the chip actually sees)
   S.i_sense = sensorCurrent(P, n);
+  if (A === "knownin") S.i_sense.fill(AK.kiInput === "zero" ? 0 : 0.5e-6);        // Eve forces a known input
+  else if (A === "saturate") S.i_sense.fill(P.force_uA * 1e-6);                     // Eve forces a huge current
+  else if (A === "clone") S.i_sense.fill(AK.fake * 1e-6);                           // the counterfeit reports what Eve wants
+  else if (A === "replay") S.i_sense = S.i_sense.map(v => v * 0.4);                 // the real reading has dropped (a fault)
   S.v_tia = S.i_sense.map(i => tia(i, P.rtia));
   S.u = S.v_tia.map(v => s2d(v, P.buffer));
   const dsm = dsm2(S.u, { dither: P.dither, amp: P.dither_amp, seeds: P.dither_seeds, xlim: P.xlim, noise: P.comp_noise }, rng);
   Object.assign(S, { D: dsm.D, x1: dsm.X1, x2: dsm.X2, dith: dsm.DI, clip: dsm.clip });
 
   // key + keystream at the Tx
-  const rxdb = {};
-  if (P.scheme === "baseline") {
+  const rxdb = {}, ctrTx = A === "replay" ? P.frame_ctr + 1 : P.frame_ctr;   // during a replay the chip has moved on a frame
+  let ksTx;
+  if (base) {
     rxdb.key16 = P.key16;
-    S.ks_all = new LFSR16(P.key16).bits(ID_BITS + n);
+    ksTx = { enc: new LFSR16(P.key16).bits(ID_BITS + n) };
   } else {
     const puf = new SRAMPUF(P.chip_seed, PUF_BITS, P.puf_sigma);
-    S.mismatch = puf.mismatch;
     const en = enroll(puf, t, makeRng(P.chip_seed * 7919 + 1));      // at test, once
     S.w_enroll = en.w; S.key_enroll = en.key;
     rxdb.key = en.key; rxdb.h = en.h;
+    const pufTx = A === "clone" ? new SRAMPUF(P.chip_seed + 500 + AK.clone, PUF_BITS, P.puf_sigma) : puf;
+    S.mismatch = pufTx.mismatch;
     // Rx sends h at power-up (optionally swapped or tampered on the way)
     let hBits = synToBits(en.h);
     S.h_bits = hBits.slice();
     if (P.h_source === "other") hBits = synToBits(enroll(new SRAMPUF(P.chip_seed + 1000, PUF_BITS, P.puf_sigma), t, makeRng(P.chip_seed * 31 + 5)).h);
     else if (P.h_source === "zeros") hBits = new Uint8Array(hBits.length);
-    if (P.h_tamper > 0) {
-      const r2 = makeRng(P.seed + 99);
-      const idx = new Set();
-      while (idx.size < Math.min(P.h_tamper, hBits.length)) idx.add(r2.int(hBits.length));
+    const flipH = (count, seed) => {
+      const r2 = makeRng(seed), idx = new Set();
+      while (idx.size < Math.min(count, hBits.length)) idx.add(r2.int(hBits.length));
       idx.forEach(i => { hBits[i] ^= 1; });
-    }
+    };
+    if (P.h_tamper > 0) flipH(P.h_tamper, P.seed + 99);
+    if (A === "htamper") flipH(AK.hFlip, P.seed + 51);                 // Eve flips helper bits in transit
     for (const i of P.h_edit) if (i < hBits.length) hBits[i] ^= 1;          // bits the user flipped by hand
     S.h_rx_bits = hBits;
     S.h_changed = hBits.some((b, i) => b !== S.h_bits[i]);
     const hRx = bitsToSyn(hBits, t);
-    S.w_noisy = puf.read(P.temp, makeRng(P.seed + 17));
+    S.w_noisy = pufTx.read(P.temp, makeRng(A === "clone" ? P.seed + 41 + AK.clone : P.seed + 17));
     for (const i of P.puf_edit) if (i < PUF_BITS) S.w_noisy[i] ^= 1;         // cells the user forced to flip
     S.e_true = S.w_noisy.map((b, i) => b ^ S.w_enroll[i]);
     const rc = reconstruct(S.w_noisy, hRx, t);
@@ -947,37 +1012,47 @@ function simulate(P0) {
     if (S.mac) {                     // the receiver sends a fresh session nonce with h at power-up
       const rn = makeRng(P.seed + 71); S.nonce = ((rn.int(0x10000) << 16) | rn.int(0x10000)) >>> 0; rxdb.nonce = S.nonce;
     }
-    S.ks_tx = keystreamNL(S.key_tx, S.mac ? ivBits(S.nonce, P.frame_ctr) : null, ID_BITS + n);
-    S.ks_all = S.ks_tx.enc;
+    ksTx = keystreamNL(S.key_tx, S.mac ? ivBits(S.nonce, ctrTx) : null, ID_BITS + n);
   }
-  S.K = S.ks_all.subarray(ID_BITS, ID_BITS + n);
-  S.C = S.D.map((d, i) => d ^ S.K[i]);
+  S.ks_tx = ksTx; S.ks_all = ksTx.enc;
   const idBits = Uint8Array.from(P.chip_id.toString(2).padStart(ID_BITS, "0"), c => +c);
-  S.enc_id = idBits.map((b, i) => b ^ S.ks_all[i]);
-  if (S.mac) {                       // preamble | sync | counter (clear) | enc ID | C | tag
-    S.ctr_bits = u32bits(P.frame_ctr);
-    S.tag = macTag(macMsg(S.ctr_bits, S.enc_id, S.C), S.ks_tx);
-    S.frame = new Uint8Array(48 + 32 + ID_BITS + n + 32);
-    S.frame.set(PREAMBLE, 0); S.frame.set(SYNC, 32); S.frame.set(S.ctr_bits, 48); S.frame.set(S.enc_id, 80); S.frame.set(S.C, 96); S.frame.set(u32bits(S.tag), 96 + n);
-  } else {
-    S.frame = new Uint8Array(PREAMBLE.length + SYNC.length + ID_BITS + n);
-    S.frame.set(PREAMBLE, 0); S.frame.set(SYNC, 32); S.frame.set(S.enc_id, 48); S.frame.set(S.C, 64);
-  }
+  const F = buildFrame(S.D, ksTx, S.mac, ctrTx, idBits);
+  Object.assign(S, { K: F.K, C: F.C, enc_id: F.enc_id, frame: F.frame, ctr_bits: F.ctr_bits, tag: F.tag });
   const body = S.mac ? 32 : 0;       // counter field before the encrypted ID
+
+  // what reaches the receiver: the chip's frame, or one Eve substitutes
+  let onAir = S.frame;
+  if (A === "spoof") {               // Eve transmits a forged frame carrying a fake reading
+    const uF = new Float64Array(n).fill(s2d(tia(AK.fake * 1e-6, P.rtia), P.buffer));
+    const Df = dsm2(uF, { dither: P.dither, amp: P.dither_amp, seeds: P.dither_seeds, xlim: P.xlim, noise: P.comp_noise }, makeRng(P.seed + 31)).D;
+    let ksE;
+    if (base) { S.bf = bruteLFSR(S.ks_all.subarray(0, ID_BITS)); ksE = { enc: new LFSR16(S.bf.key > 0 ? S.bf.key : 1).bits(ID_BITS + n) }; }
+    else {
+      const gr = makeRng(P.seed + 33), gk = Uint8Array.from({ length: 128 }, () => gr.int(2));
+      ksE = keystreamNL(gk, S.mac ? ivBits(S.nonce, P.frame_ctr + 1) : null, ID_BITS + n);   // nonce is public; she picks a fresh counter
+    }
+    const FF = buildFrame(Df, ksE, S.mac, P.frame_ctr + 1, idBits);
+    S.fake = { D: Df, K: FF.K, C: FF.C }; onAir = FF.frame;
+  } else if (A === "replay") {       // Eve plays back the frame she recorded while the reading was healthy
+    const old = simulate({ ...P0, attack: "none" });
+    S.old = { D: old.D, y: old.y, ctr: P.frame_ctr }; onAir = old.frame;
+  }
 
   // channel
   const rc = makeRng(P.seed + 5);
-  S.rx_bits = new Uint8Array(P.lead + S.frame.length);
+  S.rx_bits = new Uint8Array(P.lead + onAir.length);
   for (let i = 0; i < P.lead; i++) S.rx_bits[i] = rc.int(2);
-  S.rx_bits.set(S.frame, P.lead);
+  S.rx_bits.set(onAir, P.lead);
   let flips = 0;
   if (P.ber > 0) for (let i = 0; i < S.rx_bits.length; i++) if (rc.u() < P.ber) { S.rx_bits[i] ^= 1; flips++; }
   S.channel_flips = flips;
   // man-in-the-middle flips a fraction of the payload bits (never the header, so sync and ID survive)
+  const mp = A === "bitflip" ? AK.flipP : P.mitm_p;
   S.mitm_flips = 0;
-  if (P.mitm_p > 0) {
+  if (mp > 0) {
     const rm = makeRng(P.seed + 77), o = P.lead + 48 + body + ID_BITS;
-    for (let i = 0; i < n; i++) if (rm.u() < P.mitm_p) { S.rx_bits[o + i] ^= 1; S.mitm_flips++; }
+    S.mitm_mask = new Uint8Array(n);
+    for (let i = 0; i < n; i++) if (rm.u() < mp) { S.rx_bits[o + i] ^= 1; S.mitm_mask[i] = 1; S.mitm_flips++; }
   }
 
   // Rx
@@ -989,7 +1064,7 @@ function simulate(P0) {
     if (ok) pos = i + 48;
   }
   S.sync_pos = pos;
-  if (P.scheme === "baseline") {
+  if (base) {
     S.key_rx16 = P.rx_wrong_key ? P.key16 ^ 1 : P.rx_key16 != null ? P.rx_key16 : rxdb.key16;
     S.ks_rx_all = new LFSR16(S.key_rx16).bits(ID_BITS + n);
   } else {
@@ -1000,11 +1075,12 @@ function simulate(P0) {
     S.enc_id_rx = S.rx_bits.slice(pos + body, pos + body + ID_BITS);
     S.C_rx = S.rx_bits.slice(pos + body + ID_BITS, pos + body + ID_BITS + n);
   } else { S.enc_id_rx = new Uint8Array(ID_BITS); S.C_rx = new Uint8Array(n); }
+  S.rx_last = A === "replay" ? Math.max(P.rx_last_ctr, P.frame_ctr) : P.rx_last_ctr;   // it accepted the original frame
   if (S.mac) {                       // counter must be fresh, and the tag must match what the Rx recomputes
     S.ctr_rx = pos >= 0 ? bitsU32(S.rx_bits, pos) : 0;
     S.tag_rx = pos >= 0 ? bitsU32(S.rx_bits, pos + body + ID_BITS + n) : 0;
     const v = macVerify(S.key_rx, rxdb.nonce, S.ctr_rx, S.enc_id_rx, S.C_rx, S.tag_rx);
-    S.tag_calc = v.tag; S.mac_ok = pos >= 0 && v.ok; S.ctr_fresh = S.ctr_rx > P.rx_last_ctr;
+    S.tag_calc = v.tag; S.mac_ok = pos >= 0 && v.ok; S.ctr_fresh = S.ctr_rx > S.rx_last;
     S.ks_rx_all = v.ks.enc;
   }
   S.K_rx = S.ks_rx_all.subarray(ID_BITS, ID_BITS + n);
@@ -1015,7 +1091,7 @@ function simulate(P0) {
   S.y_cic = cic(S.D_rx);
   S.y = fir(S.y_cic, COMP_TAPS);
   S.u_ref = Float64Array.from({ length: S.y.length }, (_, j) => S.u[j * OSR]);
-  S.sndr = P.sig === "sine" ? sndr(S.y, P.bin) : null;
+  S.sndr = P.sig === "sine" && !["knownin", "saturate", "clone"].includes(A) ? sndr(S.y, P.bin) : null;
   let bitErr = 0;
   for (let i = 0; i < n; i++) bitErr += S.D_rx[i] !== S.D[i];
   S.rx_bit_err = bitErr / n;
@@ -1044,13 +1120,96 @@ function simulate(P0) {
   S.eve_probe = bmAttack(S.K.subarray(0, 64), S.K.subarray(64, 1064));
   S.eve_id = bmAttack(S.ks_all.subarray(0, 16), S.ks_all.subarray(16, 1016));
 
+  // the active attack, as Eve carries it out
+  S.atk = A === "none" ? null : runAttack(S, P, A, AK, base);
+
   // summary stats
   S.ones = S.D.reduce((a, b) => a + b, 0) / n;
   S.run = longestRun(S.D);
   return S;
 }
+
+// Eve's side of each attack. Key-recovery attacks end in khat, her estimate of the keystream; she decrypts
+// the recorded C with it. Frame attacks (spoof, clone, replay, bit-flip) are judged by what the receiver accepts.
+function runAttack(S, P, A, AK, base) {
+  const n = S.n, E = { id: A }, decode = D => fir(cic(D), COMP_TAPS);
+  E.ytrue = decode(S.D);                               // the reading the chip really measured
+  const guessKs = () => {
+    if (base) return new LFSR16((P.key16 ^ 0x5A5A) || 1).bits(ID_BITS + n).subarray(ID_BITS, ID_BITS + n);
+    const gr = makeRng(P.seed + 33), gk = Uint8Array.from({ length: 128 }, () => gr.int(2));
+    return keystreamNL(gk, null, ID_BITS + n).enc.subarray(ID_BITS, ID_BITS + n);
+  };
+  const recover = (khat, from = 0) => {                // decrypt what she recorded with her keystream estimate
+    let m = 0; for (let i = from; i < n; i++) m += khat[i] === S.K[i];
+    E.khat = khat; E.from = from; E.kacc = m / Math.max(1, n - from);
+    E.dhat = S.C.map((c, i) => c ^ khat[i]); E.yhat = decode(E.dhat);
+    E.v = E.kacc > 0.99 ? "breached" : "safe";
+  };
+  const replica = (Dguess, seed) => {                  // C ⊕ guess of D, then BM windows
+    const kg = S.C.map((c, i) => c ^ Dguess[i]), w = windowAttack(kg, S.K, seed);
+    E.win = w; E.kguess = kg;
+    const kh = kg.slice();
+    let from = Math.floor(n / 2);
+    if (w.first >= 0) {
+      const known = kg.subarray(w.first, w.first + 64), { L, c } = bm2(known);
+      kh.set(lfsrPredict(c, L, known, n - w.first - 64), w.first + 64);
+      from = w.first + 64;
+      if (L > 0 && c[L]) {           // an LFSR runs backwards too: s[i-L] = s[i] ^ sum_{j<L} c_j s[i-j]
+        for (let i = w.first + L - 1; i >= L; i--) { let v = kh[i]; for (let j = 1; j < L; j++) v ^= c[j] & kh[i - j]; kh[i - L] = v; }
+        from = 0;
+      }
+    }
+    recover(kh, from);
+    if (!base) E.v = "safe";                           // even a lucky window cannot be extended through the NLFSR
+  };
+  switch (A) {
+    case "eaves": recover(guessKs()); E.v = "safe"; break;
+    case "brute":
+      if (base) { E.bf = bruteLFSR(S.ks_all.subarray(0, ID_BITS)); recover(new LFSR16(E.bf.key > 0 ? E.bf.key : 1).bits(ID_BITS + n).subarray(ID_BITS, ID_BITS + n)); }
+      else recover(guessKs());
+      break;
+    case "extract":
+      if (base) recover(new LFSR16(P.key16).bits(ID_BITS + n).subarray(ID_BITS, ID_BITS + n));   // the key read out of memory
+      else recover(guessKs());
+      break;
+    case "bm": {
+      const m = Math.min(AK.bmBits, n - 1), known = S.K.subarray(0, m), { L, c } = bm2(known), kh = new Uint8Array(n);
+      kh.set(known, 0); kh.set(lfsrPredict(c, L, known, n - m), m);
+      E.L = L; E.m = m; recover(kh, m);
+      break;
+    }
+    case "knownin": {
+      const uR = S.u.map(v => v + AK.mismatch / 100);
+      const Dr = dsm2(uR, { dither: P.dither, amp: P.dither_amp, seeds: [0x2C4D, 0x51E7], xlim: P.xlim, noise: P.comp_noise }, makeRng(P.seed + 2)).D;
+      let f = 0; for (let i = 0; i < n; i++) f += Dr[i] !== S.D[i];
+      E.dguess = Dr; E.flip = f / n; replica(Dr, P.seed + 3);
+      break;
+    }
+    case "saturate": {
+      const g = S.ones >= 0.5 || S.D.reduce((a, b) => a + b, 0) >= n / 2 ? 1 : 0;
+      E.dguess = new Uint8Array(n).fill(g); E.guess = g; replica(E.dguess, P.seed + 23);
+      break;
+    }
+    case "samekey": {                                   // a second frame of the same reading under the same key
+      const u2 = S.u.map(v => v + AK.chMismatch / 100);
+      const D2 = dsm2(u2, { dither: P.dither, amp: P.dither_amp, seeds: [0x3A17, 0x6E29], xlim: P.xlim, noise: P.comp_noise }, makeRng(P.seed + 12)).D;
+      const K2 = !base && S.mac ? keystreamNL(S.key_tx, ivBits(S.nonce, P.frame_ctr + 1), ID_BITS + n).enc.subarray(ID_BITS, ID_BITS + n) : S.K;
+      E.C2 = D2.map((d, i) => d ^ K2[i]); E.X = S.C.map((c, i) => c ^ E.C2[i]);
+      let x = 0, fd = 0; for (let i = 0; i < n; i++) { x += E.X[i]; fd += D2[i] !== S.D[i]; }
+      E.xfrac = x / n; E.dflip = fd / n; E.v = Math.abs(E.xfrac - 0.5) > 0.03 ? "leak" : "safe";
+      break;
+    }
+    case "spoof": E.yfake = decode(S.fake.D); E.v = S.accepted ? "spoofed" : "detected"; break;
+    case "clone": E.v = S.accepted ? "spoofed" : "detected"; break;
+    case "replay": E.yold = S.old.y; E.v = S.accepted ? "spoofed" : "detected"; break;
+    case "bitflip": E.v = !S.mitm_flips ? "safe" : S.accepted ? "spoofed" : "detected"; break;
+    case "htamper": E.v = base ? "na" : S.key_match ? "safe" : "detected"; break;
+    case "hleak": E.residual = PUF_BITS - 10 * P.bch_t; E.v = base ? "na" : E.residual >= 128 ? "safe" : "weak"; break;
+  }
+  return E;
+}
 // ===== CORE-END =====
-if (typeof module !== "undefined") module.exports = { simulate, SRAMPUF, enroll, reconstruct, bchSyndrome, bchDecode, bm2, bmAttack, LFSR16, NLFSR128, dsm2, makeRng, sha256, psd, longestRun, tia, s2d, PUF_BITS, N_DSM, DEFAULTS, EXP };
+if (typeof module !== "undefined") module.exports = { simulate, runAttack, windowAttack, bruteLFSR, SRAMPUF, enroll, reconstruct, bchSyndrome, bchDecode, bm2, bmAttack, LFSR16, NLFSR128, dsm2, makeRng, sha256, psd, longestRun, tia, s2d, PUF_BITS, N_DSM, DEFAULTS, EXP };
 
 </script>
 <script>
@@ -1760,6 +1919,7 @@ PANELS.scope = function () {
       ["D  modulator bits", "d", i => S.D[i], ink], ["K  keystream", "d", i => S.K[i], COL.key()],
       ["C  on the wire", "d", i => S.C[i], ink], ["D_rx  recovered", "d", i => S.D_rx[i], ink],
       ["y  final output", "a", i => S.y[Math.min(S.y.length - 1, Math.floor(i / OSR))] / 0.3, COL.sig()],
+      ...extra.map(([nm, kd, f, col]) => [nm, kd, f, col()]),
     ];
     ctx.font = "11px " + CSS("--sans");
     rows.forEach(([name, kind, f, col], r) => {
@@ -1781,6 +1941,7 @@ PANELS.scope = function () {
 };
 
 PANELS.eve = function () {
+  if (S.atk) { evePanel(); return; }
   keystreamPanel(state.scheme === "baseline"
     ? "Eve attacks the original design's 16-bit LFSR keystream."
     : "Eve attacks the proposed design's 128-bit NLFSR keystream.");
@@ -1809,6 +1970,54 @@ PANELS.mac = function () {
       <br><br><b>Cost.</b> In the style of Grain-128a: the NLFSR delivers two bits per modulator clock (even bits encrypt, odd bits feed the MAC), plus a 32-bit accumulator, a 32-bit shift register, a 32-bit counter and 64 extra bits per frame.
       ${S.channel_flips ? `<br><br><span style="color:var(--warn)"><b>Side effect:</b></span> the channel flipped ${S.channel_flips} bits, so the MAC rejects this frame too. An authenticated link needs forward error correction, or short packets with retransmission.` : ""}`);
 };
+// Eve's side of the running attack: her keystream guess, what she decrypts, or what the server ends up showing
+function evePanel() {
+  const E = S.atk, base = state.scheme === "baseline", side = base ? "base" : "prop";
+  const steps = LR && LR.res && LR.res[E.id] ? LR.res[E.id][side].steps : [];
+  const k0 = DG_K0, NB = 300, j0 = 60, NJ = 400;
+  let html = "", plots = [];
+  if (KEYREC.includes(E.id)) {
+    html += panelCanvas("Her keystream guess against the real keystream", `Green where her bit K̂ equals the real K, red where it does not: <b>${pct(E.kacc)}</b> right${E.from ? ` from bit ${E.from.toLocaleString()} on` : ""}. 50% is guessing.`, 150)
+      + panelCanvas("What she decrypts", "She XORs the recorded ciphertext C with K̂ and filters it like the receiver does.", 200);
+    plots = [["match", E.khat, S.K], ["y", [[E.ytrue, "true"], [E.yhat, "eve"]]]];
+  } else if (E.id === "samekey") {
+    html += panelCanvas("C₁ ⊕ C₂", `Red = the two ciphertexts differ. <b>${pct(E.xfrac)}</b> ones; 50% means the XOR is noise.`, 150);
+    plots = [["bits", E.X]];
+  } else {
+    const ser = [[E.ytrue, "true"]];
+    if (E.id === "spoof") ser.push([E.yfake, "fake"]);
+    if (E.id === "replay") ser.push([E.yold, "old"]);
+    ser.push([S.y, "server"]);
+    html += panelCanvas("What the server shows", S.accepted ? `The receiver <b>accepted</b> this frame, so this is what the control loop acts on.` : `The receiver <b>rejected</b> this frame (${atkReason(S) || "check failed"}); this output is thrown away.`, 220);
+    plots = [["y", ser]];
+  }
+  html += panelWide("What Eve does, step by step", `<ol class="steps">${steps.map(t => `<li>${t}</li>`).join("")}</ol>`) + explain(`<b>${VERD[E.v][0]}.</b> ${atkSummary(S)}`);
+  document.getElementById("panels").innerHTML = html;
+  const cvs = document.querySelectorAll("#panels canvas");
+  plots.forEach(([kind, a, b], n) => {
+    const c = cvs[n], lg = c.parentElement.querySelector(".legend");
+    if (kind === "match" || kind === "bits") {
+      const g = dpiCanvas(c, 150), ctx = g.ctx; ctx.clearRect(0, 0, g.w, g.h);
+      const cols = 100, cw = (g.w - 4) / cols, ch = 30;
+      for (let i = 0; i < NB; i++) {
+        const bad = kind === "match" ? a[k0 + i] !== b[k0 + i] : a[k0 + i] === 1;
+        ctx.fillStyle = bad ? COL.warn() : COL.good();
+        ctx.fillRect(2 + (i % cols) * cw, 6 + Math.floor(i / cols) * (ch + 6), Math.max(1, cw - 1), ch);
+      }
+      lg.innerHTML = kind === "match" ? legend([["K̂ = K", COL.good()], ["K̂ ≠ K", COL.warn()]]) : legend([["C₁ = C₂", COL.good()], ["C₁ ≠ C₂", COL.warn()]]);
+    } else {
+      const g = dpiCanvas(c, +c.dataset.h), ctx = g.ctx; let pk = 0.05;
+      for (const [y] of a) for (let i = j0; i < j0 + NJ && i < y.length; i++) pk = Math.max(pk, Math.abs(y[i]));
+      pk = Math.min(1.1, pk * 1.12);
+      const ax = axes(ctx, g.w, g.h, { l: 44, r: 10, t: 8, b: 26 }, [0, NJ], [-pk, pk], { ny: 2, yfmt: v => v.toFixed(2), xlabel: "output samples" });
+      const ST = { true: ["true reading", COL.faint(), [5, 4]], eve: ["what Eve decrypts", COL.key()], fake: ["Eve's fake reading", COL.sig(), [3, 3]], old: ["old reading she replays", COL.sig(), [3, 3]], server: ["what the server shows", S.accepted ? COL.key() : COL.faint()] };
+      for (const [y, k] of a) { ctx.setLineDash(ST[k][2] || []); line(ctx, null, Array.from(y.subarray(j0, j0 + NJ)), ax.X, ax.Y, ST[k][1], k === "true" ? 1.3 : 1.6); }
+      ctx.setLineDash([]);
+      lg.innerHTML = a.map(([, k]) => `<span><i class="swatch${ST[k][2] ? " dashed" : ""}" style="${ST[k][2] ? "border-color" : "background"}:${ST[k][1]}"></i>${ST[k][0]}</span>`).join("");
+    }
+  });
+}
+
 PANELS.rxdb = function () {
   const base = state.scheme === "baseline";
   document.getElementById("panels").innerHTML =
@@ -1906,6 +2115,71 @@ let dgRate = 40;                              // DSM samples per second of wall-
 let dgPos = 0, dgLast = 0, dgShown = -1, dgRaf = null;
 let dgDyn = [];                               // live elements: {kind, name, ...}
 let dgMac = null;                             // whether the drawn diagram has the counter + MAC block
+let dgAtk = null;                             // which attack the drawn diagram shows
+
+// ------------------------------------------------------------- attacks in the diagram
+const KEYREC = ["eaves", "brute", "bm", "knownin", "saturate", "extract"];
+const atkName = id => (ATTACKS.find(a => a.id === id) || { name: id }).name;
+function eveRows(A) {                          // Eve's two scopes: [label, getter]
+  const Z = new Uint8Array(4000), at = () => S.atk || {};
+  const digi = f => k => ({ arr: f() || Z, idx: k, n: 100, lo: -0.2, hi: 1.2, digital: true });
+  const ana = f => k => ({ arr: f() || Z, idx: Math.floor(k / OSR), n: 40, lo: -yScale(), hi: yScale() });
+  const stat = f => k => ({ arr: f() || Z, idx: 99 + (k % 280), n: 100, lo: -0.2, hi: 1.2, digital: true });
+  if (KEYREC.includes(A)) return { r1: ["her guess of the keystream K̂", digi(() => at().khat)], r2: ["what she decrypts", ana(() => at().yhat)] };
+  return {
+    samekey: { r1: ["C₁ ⊕ C₂: two frames XORed", digi(() => at().X)], r2: ["second frame C₂", digi(() => at().C2)] },
+    spoof: { r1: ["her forged ciphertext", digi(() => S.fake && S.fake.C)], r2: ["the fake reading she sends", ana(() => at().yfake)] },
+    clone: { r1: ["the clone's bits on the air", digi(() => S.C)], r2: ["what the server shows", ana(() => S.y)] },
+    replay: { r1: ["the old frame she replays", digi(() => S.C_rx)], r2: ["the old reading in it", ana(() => at().yold)] },
+    bitflip: { r1: ["bits she flips (1 = flipped)", digi(() => S.mitm_mask)], r2: ["what the server shows", ana(() => S.y)] },
+    htamper: { r1: ["helper data h the chip gets", stat(() => S.h_rx_bits)], r2: ["what the server shows", ana(() => S.y)] },
+    hleak: { r1: ["public helper data h she reads", stat(() => S.h_bits)], r2: ["what the server shows", ana(() => S.y)] },
+  }[A];
+}
+function atkReason(S) {
+  return !S.id_ok ? "wrong ID" : S.mac && !S.ctr_fresh ? "stale counter" : S.mac && !S.mac_ok ? "MAC mismatch" : "";
+}
+function eveMetric(S) {                        // one line under Eve's first scope
+  const E = S.atk, base = S.P.scheme === "baseline", pc = v => (v * 100).toFixed(1) + "%";
+  if (KEYREC.includes(E.id)) return `K̂ = real K on ${pc(E.kacc)} of bits` + (E.id === "brute" && E.bf ? ` (key 0x${E.bf.key.toString(16).toUpperCase()})` : E.win ? ` · ${E.win.broken}/${E.win.tries} windows` : "");
+  return {
+    samekey: () => `${pc(E.xfrac)} ones (50% = nothing learned)`,
+    spoof: () => base ? `encrypted with the brute-forced key` : `encrypted with a guessed key`,
+    clone: () => base ? `the clone holds the extracted key` : `clone PUF: ${S.n_err_true} of ${PUF_BITS} bits differ`,
+    replay: () => S.mac ? `old counter ${S.old.ctr}, receiver's last ${S.rx_last}` : `no counter in this design`,
+    bitflip: () => `${S.mitm_flips.toLocaleString()} of ${S.n.toLocaleString()} payload bits flipped`,
+    htamper: () => base ? `no helper data in this design` : `${S.h_rx_bits.reduce((a, b, i) => a + (b !== S.h_bits[i]), 0)} bits flipped, key ${S.key_match ? "still right" : "now wrong"}`,
+    hleak: () => base ? `no helper data in this design` : `${Math.max(0, E.residual)} fingerprint bits stay secret (need 128)`,
+  }[E.id]();
+}
+function atkSummary(S) {                       // one sentence for the banner
+  const E = S.atk, pc = v => (v * 100).toFixed(1) + "%", r = atkReason(S);
+  if (KEYREC.includes(E.id)) return E.v === "breached" ? `Eve's keystream guess matches the real one on ${pc(E.kacc)} of bits, so she decrypts the sensor reading.` : `Eve's keystream guess is right on only ${pc(E.kacc)} of bits (50% = guessing), so what she decrypts is noise.`;
+  if (E.id === "samekey") return `C₁ ⊕ C₂ is ${pc(E.xfrac)} ones: ${E.v === "leak" ? "the key cancels and the two frames are linkable." : "noise, so the key reuse reveals nothing."}`;
+  if (E.id === "hleak") return E.v === "na" ? "The original design has no helper data to leak." : `After reading h, ${Math.max(0, E.residual)} fingerprint bits remain unknown to Eve (a 128-bit key needs 128).`;
+  if (E.id === "htamper" && E.v === "na") return "The original design has no helper data, so there is nothing to tamper with.";
+  return S.accepted ? `The receiver accepts the frame: the server now shows ${E.id === "replay" ? "the old reading" : E.id === "bitflip" ? "the altered reading" : "Eve's data"}.` : `The receiver rejects the frame (${r || "check failed"}), so Eve's data is never used.`;
+}
+function atkOverlay(A, base) {                 // mark where Eve acts
+  const ring = (x, y, w, h) => `<rect class="atk-ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="12"/>`;
+  const txt = (x, y, t, anc = "start") => `<text class="atk-lab" x="${x}" y="${y}" text-anchor="${anc}">${t}</text>`;
+  const dot = (x, y) => `<circle class="atk-dot" cx="${x}" cy="${y}" r="7"/>`;
+  const ch = t => dot(720, 480) + txt(720, 503, t, "middle");
+  switch (A) {
+    case "knownin": return ring(24, 74, 107, 92) + txt(28, 68, `Eve forces ${lab.kiInput === "zero" ? "0" : "0.5"} µA`);
+    case "saturate": return ring(24, 74, 107, 92) + txt(28, 68, `Eve forces ${state.force_uA} µA`);
+    case "clone": return ring(14, 14, 1072, 422) + txt(1076, 32, "Counterfeit chip (Eve's)", "end") + txt(28, 68, `reports ${lab.fake.toFixed(2)} µA`);
+    case "bm": return ring(594, 259, 132, 92) + txt(660, 378, `Eve probes ${lab.bmBits} key bits`, "middle");
+    case "extract": return base ? ring(414, 259, 122, 92) + txt(475, 378, "Eve reads the stored key", "middle") : ring(34, 259, 132, 92) + txt(100, 378, "Eve de-caps: no key stored", "middle");
+    case "htamper": return dot(24, 455) + txt(36, 459, base ? "no helper data here" : `Eve flips ${lab.hFlip} helper bit${lab.hFlip === 1 ? "" : "s"}`);
+    case "hleak": return dot(24, 455) + txt(36, 459, base ? "no helper data here" : "Eve reads h (public)");
+    case "spoof": return ch("Eve replaces the frame with a forged one");
+    case "replay": return ch("Eve replays a recorded frame");
+    case "bitflip": return ch(`Eve flips ${Math.round(lab.flipP * 100)}% of payload bits`);
+    case "samekey": return ch("Eve records two frames of one reading");
+    default: return ch("Eve records the channel");
+  }
+}
 let dgLive = [];                              // extra per-frame painters registered by the open panel: fn(k)
 
 // ------------------------------------------------------------- svg helpers
@@ -2069,17 +2343,34 @@ function buildDiagram() {
   s += badge("bKrx", 271, 664, "start", k => "K=" + S.K_rx[k]);
 
   // ---- Eve
-  const ex = 800, ey = 560;
-  s += `<g class="blk eve" data-node="eve" tabindex="0" role="button" aria-label="Eavesdropper"><rect class="evebox" x="${ex}" y="${ey}" width="290" height="230" rx="12"/>
-    <text class="t" x="${ex + 145}" y="${ey + 22}" text-anchor="middle">Eavesdropper (Eve)</text>
-    <text class="lab" x="${ex + 145}" y="${ey + 40}" text-anchor="middle">sees the wire · knows the design · no key</text>
-    <rect class="sbg" x="${ex + 12}" y="${ey + 52}" width="266" height="32" rx="3"/><path class="scope" id="dg-sc_eve"/>
-    ${[["Known ID, 16 bits", 112, "e1"], ["Forced input (saturation)", 152, "e2"], ["Probe the key, 64 bits", 192, "e3"]].map(([t, dy, id]) => `
-      <text class="v left" x="${ex + 12}" y="${ey + dy}">${t}</text><text class="v right" id="dg-${id}t" x="${ex + 278}" y="${ey + dy}" text-anchor="end"></text>
-      <rect class="track" x="${ex + 12}" y="${ey + dy + 6}" width="266" height="9" rx="4"/><rect class="fill" id="dg-${id}f" x="${ex + 12}" y="${ey + dy + 6}" width="0" height="9" rx="4"/>
-      <line class="half" x1="${ex + 145}" x2="${ex + 145}" y1="${ey + dy + 4}" y2="${ey + dy + 17}"/>`).join("")}
-    <text class="lab" x="${ex + 145}" y="${ey + 222}" text-anchor="middle">bar = key bits predicted · dotted line = guessing</text></g>`;
-  dgDyn.push({ kind: "scope", name: "sc_eve", g: { x: ex + 12, y: ey + 52, w: 266, h: 32 }, get: k => ({ arr: S.C_rx, idx: k, n: 100, lo: -0.2, hi: 1.2, digital: true }) });
+  const ex = 800, ey = 560, A = state.attack || "none";
+  dgAtk = A;
+  if (A === "none") {
+    s += `<g class="blk eve" data-node="eve" tabindex="0" role="button" aria-label="Eavesdropper"><rect class="evebox" x="${ex}" y="${ey}" width="290" height="230" rx="12"/>
+      <text class="t" x="${ex + 145}" y="${ey + 22}" text-anchor="middle">Eavesdropper (Eve)</text>
+      <text class="lab" x="${ex + 145}" y="${ey + 40}" text-anchor="middle">sees the wire · knows the design · no key</text>
+      <rect class="sbg" x="${ex + 12}" y="${ey + 52}" width="266" height="32" rx="3"/><path class="scope" id="dg-sc_eve"/>
+      ${[["Known ID, 16 bits", 112, "e1"], ["Forced input (saturation)", 152, "e2"], ["Probe the key, 64 bits", 192, "e3"]].map(([t, dy, id]) => `
+        <text class="v left" x="${ex + 12}" y="${ey + dy}">${t}</text><text class="v right" id="dg-${id}t" x="${ex + 278}" y="${ey + dy}" text-anchor="end"></text>
+        <rect class="track" x="${ex + 12}" y="${ey + dy + 6}" width="266" height="9" rx="4"/><rect class="fill" id="dg-${id}f" x="${ex + 12}" y="${ey + dy + 6}" width="0" height="9" rx="4"/>
+        <line class="half" x1="${ex + 145}" x2="${ex + 145}" y1="${ey + dy + 4}" y2="${ey + dy + 17}"/>`).join("")}
+      <text class="lab" x="${ex + 145}" y="${ey + 222}" text-anchor="middle">bar = key bits predicted · dotted line = guessing</text></g>`;
+    dgDyn.push({ kind: "scope", name: "sc_eve", g: { x: ex + 12, y: ey + 52, w: 266, h: 32 }, get: k => ({ arr: S.C_rx, idx: k, n: 100, lo: -0.2, hi: 1.2, digital: true }) });
+  } else {
+    const R = eveRows(A);
+    s += `<g class="blk eve" data-node="eve" tabindex="0" role="button" aria-label="Eavesdropper carrying out the attack"><rect class="evebox" x="${ex}" y="${ey}" width="290" height="230" rx="12"/>
+      <text class="t" x="${ex + 145}" y="${ey + 22}" text-anchor="middle">Eve: ${esc(atkName(A).length > 30 ? atkName(A).slice(0, 29) + "…" : atkName(A))}</text>
+      <text class="v left" x="${ex + 12}" y="${ey + 46}">${R.r1[0]}</text>
+      <rect class="sbg" x="${ex + 12}" y="${ey + 52}" width="266" height="30" rx="3"/><path class="scope" id="dg-sc_eve1"/>
+      <text class="v left" id="dg-eveM1" x="${ex + 12}" y="${ey + 98}"></text>
+      <text class="v left" x="${ex + 12}" y="${ey + 120}">${R.r2[0]}</text>
+      <rect class="sbg" x="${ex + 12}" y="${ey + 126}" width="266" height="34" rx="3"/><path class="scope thick" id="dg-sc_eve2"/>
+      <text class="atk-v" id="dg-eveV" x="${ex + 145}" y="${ey + 186}" text-anchor="middle"></text>
+      <text class="lab" id="dg-eveN" x="${ex + 145}" y="${ey + 208}" text-anchor="middle"></text></g>`;
+    dgDyn.push({ kind: "scope", name: "sc_eve1", g: { x: ex + 12, y: ey + 52, w: 266, h: 30 }, get: R.r1[1] });
+    dgDyn.push({ kind: "scope", name: "sc_eve2", g: { x: ex + 12, y: ey + 126, w: 266, h: 34 }, get: R.r2[1] });
+    s += atkOverlay(A, base);
+  }
 
   s += `</svg>`;
   document.getElementById("dgSvg").innerHTML = s;
@@ -2159,8 +2450,13 @@ function paintRun() {
     }
   }
   const bars = [["e1", S.eve_id.acc], ["e2", S.eve_forced_best], ["e3", S.eve_probe.acc]];
+  if (S.atk) {
+    set("eveM1", eveMetric(S)); set("eveN", S.accepted ? "receiver: frame accepted" : "receiver: frame rejected");
+    const vv = svg.querySelector("#dg-eveV"); if (vv) { vv.textContent = VERD[S.atk.v][0]; vv.setAttribute("class", "atk-v " + VERD[S.atk.v][1]); }
+  }
   bars.forEach(([id, acc]) => {
     const f = svg.querySelector("#dg-" + id + "f"), t = svg.querySelector("#dg-" + id + "t"), broken = acc > 0.99;
+    if (!f || !t) return;
     f.setAttribute("width", (266 * acc).toFixed(1)); f.setAttribute("class", "fill " + (broken ? "bad" : "ok"));
     t.textContent = (acc * 100).toFixed(0) + "%  " + (broken ? "BROKEN" : "safe"); t.classList.toggle("bad", broken);
   });
@@ -2201,8 +2497,10 @@ function buildDiagramCard() {
         <button id="dgStep" class="tool">Step</button>
         <button id="dgScope" class="tool" aria-pressed="false" title="Plot every probe point on one time axis">All signals</button>
         <label class="speed">Speed <select id="dgSpeed"><option value="8">Slow</option><option value="40" selected>Normal</option><option value="160">Fast</option></select></label>
+        <label class="speed atk-pick">Attack <select id="dgAttack"><option value="none">None</option>${ATTACKS.map(a => `<option value="${a.id}">${a.name}</option>`).join("")}</select></label>
       </div>
     </div>
+    <div class="atk-banner" id="dgAtkBanner" hidden></div>
     ${reduced ? '<p class="dg-note">Your device asks for reduced motion, so the animation starts paused. Press Play to run it.</p>' : ""}
     <p class="dg-swipe">Swipe sideways to see the whole diagram.</p>
     <div class="dg-scroll" id="dgSvg"></div>
@@ -2217,6 +2515,7 @@ function buildDiagramCard() {
   document.getElementById("dgStep").onclick = () => { dgPlaying = false; const p = document.getElementById("dgPlay"); p.textContent = "Play"; document.querySelector("svg.dg").classList.add("paused"); dgPos = (dgPos + 1) % DG_LEN; paintFrame(DG_K0 + Math.floor(dgPos)); };
   document.getElementById("dgSpeed").onchange = e => { dgRate = +e.target.value; };
   document.getElementById("dgScope").onclick = () => selectNode("scope");
+  document.getElementById("dgAttack").onchange = e => setAttack(e.target.value);
   if (!dgRaf) dgRaf = requestAnimationFrame(dgTick);
 }
 
@@ -2298,18 +2597,6 @@ function bmProfile(s) {              // linear complexity after each bit (same r
   return prof;
 }
 
-// BM on many 64-bit windows of a keystream guess; broken = the prediction of the next 512 bits is right
-function windowAttack(Kguess, Ktrue, seed, tries = 80) {
-  const r = makeRng(seed), n = Math.min(Kguess.length, Ktrue.length);
-  let broken = 0, best = 0;
-  for (let k = 0; k < tries; k++) {
-    const s = 200 + r.int(n - 64 - 512 - 400);
-    const a = bmAttack(Kguess.subarray(s, s + 64), Ktrue.subarray(s + 64, s + 64 + 512));
-    if (a.acc > 0.99) broken++;
-    if (a.acc > best) best = a.acc;
-  }
-  return { broken, tries, best };
-}
 
 function labDsm(u, seeds, noiseSeed) {
   return dsm2(u, { dither: state.dither, amp: state.dither_amp, seeds, xlim: state.xlim, noise: state.comp_noise }, makeRng(noiseSeed)).D;
@@ -2397,7 +2684,7 @@ const ATTACKS = [
       { g: "dither", label: "Dither enabled (global)" }, { g: "dither_amp", label: "Dither strength (global)", min: 0.01, max: 0.4, step: 0.005, fmt: v => v.toFixed(3) + " ×ref" }],
     run(R) {
       const iA = lab.kiInput === "zero" ? 0 : 0.5e-6;
-      const Dv = labDsm(labU(iA), state.dither_seeds, state.seed + 1);
+      const Dv = labDsm(labU(iA), state.dither_seeds, state.seed);
       const Dr = labDsm(labU(iA, lab.mismatch / 100), [0x2C4D, 0x51E7], state.seed + 2);
       const flip = flipFrac(Dv, Dr, LAB_N), agree = xorBits(Dv, Dr).subarray(0, 400);
       const o = (d, Sx) => {
@@ -2422,7 +2709,7 @@ const ATTACKS = [
     run(R) {
       const i = sensorCurrent(state, LAB_N);
       const u1 = Float64Array.from(i, x => s2d(tia(x, state.rtia), state.buffer)), u2 = u1.map(v => v + lab.chMismatch / 100);
-      const D1 = labDsm(u1, state.dither_seeds, state.seed + 11), D2 = labDsm(u2, [0x3A17, 0x6E29], state.seed + 12);
+      const D1 = labDsm(u1, state.dither_seeds, state.seed), D2 = labDsm(u2, [0x3A17, 0x6E29], state.seed + 12);
       const flip = flipFrac(D1, D2, LAB_N), leak = Math.abs(flip - 0.5) > 0.03;
       const o = () => ({ v: leak ? "leak" : "safe", head: `C₁ ⊕ C₂ has ${pct(flip)} ones`,
         steps: [`Captures two frames carrying the same reading, encrypted with the same keystream K.`,
@@ -2449,7 +2736,7 @@ const ATTACKS = [
     knobs: [{ g: "buffer", t: "seg", label: "S2D buffer (global)", opts: [[0.5, "×0.5 (on)"], [1.0, "×1 (off)"]] },
       { g: "force_uA", label: "Forced current (global)", min: 0.5, max: 20, step: 0.5, fmt: v => v + " µA" }],
     run(R) {
-      const D = labDsm(labU(state.force_uA * 1e-6), state.dither_seeds, state.seed + 21);
+      const D = labDsm(labU(state.force_uA * 1e-6), state.dither_seeds, state.seed);
       const ones = D.reduce((a, b) => a + b, 0) / LAB_N, run = longestRun(D), guess = ones >= 0.5 ? 1 : 0;
       const o = (d, Sx) => {
         const K = Sx.K.subarray(0, LAB_N), C = xorBits(D, K), Kg = C.map(c => c ^ guess);
@@ -2606,9 +2893,11 @@ const ATTACKS = [
 ];
 
 // ---------------------------------------------------------------- compute
+// the live result S is reused whenever it is the run we need
+const labSim = (scheme, attack) => (S && state.scheme === scheme && (state.attack || "none") === attack ? S : simulate({ ...state, scheme, attack, atk: lab }));
+function labWave(R) { R.wave = { base: labSim("baseline", lab.sel), prop: labSim("proposed", lab.sel), id: lab.sel }; }
 function labCompute() {
-  const Sb = state.scheme === "baseline" ? S : simulate({ ...state, scheme: "baseline" });
-  const Sp = state.scheme === "proposed" ? S : simulate({ ...state, scheme: "proposed" });
+  const Sb = labSim("baseline", "none"), Sp = labSim("proposed", "none");      // the matrix judges attacks from the clean link
   const R = { base: Sb, prop: Sp };
   R.yTrue = decodeY(Sb.D.subarray(0, LAB_N));
   const wrongB = new LFSR16((state.key16 ^ 0x5A5A) || 1).bits(ID_BITS + LAB_N).subarray(ID_BITS);
@@ -2616,6 +2905,7 @@ function labCompute() {
   R.yFail = { base: decodeY(xorBits(Sb.C.subarray(0, LAB_N), wrongB)), prop: decodeY(xorBits(Sp.C.subarray(0, LAB_N), wrongP)) };
   R.res = {};
   for (const a of ATTACKS) R.res[a.id] = a.run(R);
+  labWave(R);
   LR = R;
 }
 function labSchedule() { clearTimeout(labTimer); labTimer = setTimeout(() => { labCompute(); renderLab(); renderBench(); }, 200); }
@@ -2643,7 +2933,11 @@ function renderLab() {
   const tb = document.getElementById("atkTable");
   tb.innerHTML = `<thead><tr><th>Attack</th><th>Source</th><th>Original design</th><th>With our proposal</th><th>What stops it</th></tr></thead><tbody>${rows}</tbody>`;
   tb.querySelectorAll("tbody tr").forEach(tr => {
-    const go = () => { lab.sel = tr.dataset.id; renderLab(); };
+    const go = () => {
+      lab.sel = tr.dataset.id;
+      if ((state.attack || "none") !== "none") { setAttack(lab.sel); return; }
+      renderLab(); setTimeout(() => { labWave(LR); renderAttackDetail(); }, 0);
+    };
     tr.onclick = go; tr.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
   });
   const bad = d => ATTACKS.filter(a => ["breached", "spoofed", "leak", "weak"].includes(LR.res[a.id][d].v)).length;
@@ -2651,7 +2945,6 @@ function renderLab() {
   renderAttackDetail();
 }
 
-const JUMP = { eaves: 1, saturate: () => (state.buffer === 1 ? 3 : 2), bm: 4, htamper: 8, replay: 9, bitflip: 10 };
 
 function renderAttackDetail() {
   const a = ATTACKS.find(x => x.id === lab.sel), r = LR.res[a.id], el = document.getElementById("atkDetail");
@@ -2662,23 +2955,84 @@ function renderAttackDetail() {
     return `<div class="ctl"><label>${k.label}<b id="kn${n}">${k.fmt ? k.fmt(val) : val}</b></label><input type="range" data-kn="${n}" min="${k.min}" max="${k.max}" step="${k.step}" value="${val}"></div>`;
   }).join("");
   const col = (title, o) => `<div class="atk-col"><h4>${title}</h4><div class="atk-v ${VERD[o.v][1]}">${VERD[o.v][0]}</div><div class="atk-h">${o.head}</div>
-    <ol>${o.steps.map(s => `<li>${s}</li>`).join("")}</ol>${o.plot ? `<canvas data-h="150"></canvas><div class="legend"></div>` : ""}</div>`;
-  const j = JUMP[a.id];
+    <ol>${o.steps.map(s => `<li>${s}</li>`).join("")}</ol>${o.plot ? `<canvas class="ap" data-h="150"></canvas><div class="legend"></div>` : ""}</div>`;
+  const live = state.attack === a.id, wv = LR.wave && LR.wave.id === a.id;
   el.innerHTML = `<div class="atk-top"><div><h3>${a.name} <span class="src ${a.src}">${a.src === "paper" ? "from the paper" : "beyond the paper"}</span></h3>
       <p class="atk-desc">${a.desc}</p><p class="atk-has"><b>Attacker has:</b> ${a.has}</p></div>
-      ${j != null ? `<button class="tool" id="atkJump">Show it in the live diagram</button>` : ""}</div>
+      <button class="tool" id="atkJump" aria-pressed="${live}">${live ? "Running in the live diagram · stop" : "Run it in the live diagram"}</button></div>
     ${knobs ? `<div class="atk-knobs">${knobs}</div>` : ""}
-    <div class="atk-cols">${col("Original design (S-DSM, 16-bit LFSR, stored key)", r.base)}${col("With our proposal (SRAM PUF, fuzzy extractor, 128-bit NLFSR)", r.prop)}</div>`;
+    <div class="atk-cols">${col("Original design (S-DSM, 16-bit LFSR, stored key)", r.base)}${col("With our proposal (SRAM PUF, fuzzy extractor, 128-bit NLFSR)", r.prop)}</div>
+    <div class="wave-head"><h4>Waveforms at every block during this attack</h4><p>The full link model run with the attack in place, same instant in both designs: 200 clocks of bits at each stage, then the readings the server and Eve end up with. Run it in the live diagram to watch it move.</p></div>
+    <div class="atk-cols">${["base", "prop"].map(d => `<div class="atk-col"><h4>${d === "base" ? "Original design" : "With our proposal"}</h4>${wv ? `<canvas class="wv" data-d="${d}"></canvas><div class="legend">${legend([["analog", COL.sig()], ["data bits", CSS("--ink")], ["key / Eve", COL.key()]])}<span><i class="swatch" style="background:${COL.warn()};height:8px;width:8px"></i>Eve's bit wrong</span></div>` : `<p class="hint">Computing…</p>`}</div>`).join("")}</div>`;
   el.querySelectorAll("[data-kn]").forEach(inp => {
     const k = a.knobs[+inp.dataset.kn], key = k.g || k.k, obj = k.g ? state : lab;
-    const apply = v => { obj[key] = v; if (k.g) { buildControls(); schedule(); } else labNow(); };
+    const apply = v => { obj[key] = v; if (k.g || (state.attack || "none") !== "none") { if (k.g) buildControls(); schedule(); } else labNow(); };
     if (inp.type === "checkbox") inp.onchange = () => apply(inp.checked);
     else if (inp.dataset.v != null) inp.onclick = () => apply(isNaN(+inp.dataset.v) ? inp.dataset.v : +inp.dataset.v);
     else inp.oninput = () => { const v = parseFloat(inp.value); document.getElementById("kn" + inp.dataset.kn).textContent = k.fmt ? k.fmt(v) : v; clearTimeout(inp._t); inp._t = setTimeout(() => apply(v), 120); };
   });
-  if (j != null) document.getElementById("atkJump").onclick = () => { applyScenario(typeof j === "function" ? j() : j); window.scrollTo({ top: 0, behavior: "smooth" }); };
-  const cvs = el.querySelectorAll("canvas"), outs = [r.base, r.prop].filter(o => o.plot);
+  document.getElementById("atkJump").onclick = () => {
+    if (live) { setAttack("none"); return; }
+    setAttack(a.id); document.getElementById("diagramCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const cvs = el.querySelectorAll("canvas.ap"), outs = [r.base, r.prop].filter(o => o.plot);
   cvs.forEach((c, n) => drawAtkPlot(c, outs[n].plot));
+  if (wv) el.querySelectorAll("canvas.wv").forEach(c => drawBlockWaves(c, LR.wave[c.dataset.d]));
+}
+
+// one design's whole chain under the attack: bit-level rows over 200 clocks, then the readings
+function drawBlockWaves(c, Sx) {
+  const E = Sx.atk || {}, ink = CSS("--ink"), key = COL.key(), sig = COL.sig(), W = 200, k0 = DG_K0 + 100;
+  const pk = Math.max(1e-9, peakAbs(Sx.i_sense, 3000));
+  const rows = [["sensor current", "a", i => Sx.i_sense[i] / pk, sig], ["modulator bits D", "d", i => Sx.D[i], ink], ["keystream K", "d", i => Sx.K[i], key],
+    ["C on the air", "d", i => Sx.C[i], ink]];
+  if (Sx.fake) rows.push(["Eve's forged C", "d", i => Sx.fake.C[i], key]);
+  if (Sx.mitm_mask) rows.push(["bits Eve flips", "d", i => Sx.mitm_mask[i], key]);
+  if (Sx.fake || Sx.old || Sx.mitm_mask) rows.push(["C at the receiver", "d", i => Sx.C_rx[i], ink]);
+  if (E.khat) rows.push(["Eve's guess K̂", "k", i => E.khat[i], key]);
+  if (E.X) rows.push(["Eve: C₁ ⊕ C₂", "d", i => E.X[i], key]);
+  rows.push(["Rx decrypted D", "d", i => Sx.D_rx[i], ink]);
+  const reads = [["server output", Sx.y, Sx.accepted ? key : COL.faint()]];
+  if (E.yhat) reads.push(["Eve decrypts", E.yhat, key]);
+  if (E.yfake) reads.push(["Eve's fake reading", E.yfake, sig]);
+  if (E.yold) reads.push(["old reading replayed", E.yold, sig]);
+  const RH = 26, AH = 52, top0 = 20, top1 = top0 + rows.length * RH + 26, H = top1 + reads.length * AH + 30;
+  const g = dpiCanvas(c, H), ctx = g.ctx, L = 124, R = 8, X = i => L + i / W * (g.w - L - R);
+  ctx.clearRect(0, 0, g.w, g.h);
+  ctx.font = "11px " + CSS("--sans"); ctx.textBaseline = "middle";
+  ctx.fillStyle = COL.faint(); ctx.textAlign = "left"; ctx.fillText(`bits, clocks ${k0.toLocaleString()}-${(k0 + W).toLocaleString()}`, L, 9);
+  rows.forEach(([name, kind, f, col], r) => {
+    const top = top0 + r * RH, mid = top + RH / 2, hi = top + 5, lo = top + RH - 6;
+    ctx.fillStyle = COL.ink(); ctx.textAlign = "right"; ctx.fillText(name, L - 8, mid);
+    if (kind === "k") for (let i = 0; i < W; i++) if (f(k0 + i) !== Sx.K[k0 + i]) { ctx.fillStyle = COL.warn(); ctx.globalAlpha = 0.3; ctx.fillRect(X(i), top + 2, Math.max(1, X(1) - X(0)), RH - 5); ctx.globalAlpha = 1; }
+    ctx.strokeStyle = col; ctx.lineWidth = 1.3; ctx.beginPath();
+    for (let i = 0; i < W; i++) {
+      const v = f(k0 + i);
+      if (kind === "a") { const y = mid - Math.max(-1.1, Math.min(1.1, v)) * (RH / 2 - 4); i ? ctx.lineTo(X(i), y) : ctx.moveTo(X(i), y); }
+      else { const y = v ? hi : lo; if (i === 0) ctx.moveTo(X(i), y); else { ctx.lineTo(X(i), f(k0 + i - 1) ? hi : lo); ctx.lineTo(X(i), y); } ctx.lineTo(X(i + 1), y); }
+    }
+    ctx.stroke();
+  });
+  const j0 = 60, NJ = 240, XJ = j => L + j / NJ * (g.w - L - R), yt = E.ytrue || Sx.y;
+  let pkY = 0.05; for (const [, y] of reads) for (let j = j0; j < j0 + NJ; j++) pkY = Math.max(pkY, Math.abs(y[j]));
+  pkY = Math.min(1.1, pkY * 1.1);
+  ctx.fillStyle = COL.faint(); ctx.textAlign = "left"; ctx.fillText(`readings, output samples ${j0}-${j0 + NJ} (dashed = true reading)`, L, top1 - 12);
+  reads.forEach(([name, y, col], r) => {
+    const top = top1 + r * AH, mid = top + AH / 2, sc = (AH / 2 - 4) / pkY;
+    ctx.strokeStyle = COL.grid(); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L, mid); ctx.lineTo(g.w - R, mid); ctx.stroke();
+    ctx.fillStyle = COL.ink(); ctx.textAlign = "right"; ctx.fillText(name, L - 8, mid);
+    ctx.setLineDash([4, 3]); ctx.strokeStyle = COL.faint(); ctx.lineWidth = 1; ctx.beginPath();
+    for (let j = 0; j < NJ; j++) { const v = mid - Math.max(-pkY, Math.min(pkY, yt[j0 + j])) * sc; j ? ctx.lineTo(XJ(j), v) : ctx.moveTo(XJ(j), v); }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (let j = 0; j < NJ; j++) { const v = mid - Math.max(-pkY, Math.min(pkY, y[j0 + j])) * sc; j ? ctx.lineTo(XJ(j), v) : ctx.moveTo(XJ(j), v); }
+    ctx.stroke();
+  });
+  const [vt, vc] = VERD[(Sx.atk || { v: "na" }).v];
+  ctx.textAlign = "left"; ctx.font = "12px " + CSS("--mono"); ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = Sx.accepted ? COL.ink() : COL.warn();
+  ctx.fillText(`receiver: ${Sx.accepted ? "accepts" : "rejects (" + (atkReason(Sx) || "check failed") + ")"}`, 4, H - 8);
+  ctx.fillStyle = vc === "warn" ? COL.warn() : vc === "good" ? COL.good() : COL.faint(); ctx.textAlign = "right"; ctx.fillText(vt, g.w - 4, H - 8);
 }
 
 const SERIES = { true: ["true reading", () => COL.faint(), [5, 4]], eve: ["what Eve decrypts", () => COL.key()], fake: ["Eve's fake reading", () => COL.sig(), [3, 3]], tamper: ["what Eve tried to deliver (rejected)", () => COL.sig(), [3, 3]], server: ["what the server shows", () => COL.key()] };
@@ -2996,9 +3350,30 @@ function pill(ok, tOk, tNo) { return `<span class="pill ${ok ? "good" : "warn"}"
 
 function schedule() { if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { run(); }); }
 function run() {
-  S = simulate(state);
-  if (dgMac !== (state.scheme === "proposed" && !!state.mac)) buildDiagram();   // the counter + MAC block comes and goes
-  renderVerdict(); renderPanels(); paintRun(); labSchedule();
+  S = simulate({ ...state, atk: lab });
+  if (dgMac !== (state.scheme === "proposed" && !!state.mac) || dgAtk !== atkSig()) buildDiagram();   // MAC block and attack marks come and go
+  const pick = document.getElementById("dgAttack"); if (pick && pick.value !== state.attack) pick.value = state.attack;
+  renderVerdict(); renderPanels(); paintRun(); renderAtkBanner(); labSchedule();
+}
+
+// the diagram is rebuilt when the attack or a knob its labels mention changes
+const atkSig = () => (state.attack || "none") === "none" ? "none" : state.attack + JSON.stringify([lab.kiInput, lab.fake, lab.bmBits, lab.hFlip, lab.flipP, state.force_uA]);
+function setAttack(id) {
+  state.attack = id || "none";
+  if (state.attack !== "none") lab.sel = state.attack;
+  buildDiagram(); run();
+}
+function renderAtkBanner() {
+  const el = document.getElementById("dgAtkBanner"); if (!el) return;
+  if (!S.atk) { el.hidden = true; el.innerHTML = ""; return; }
+  const [t, c] = VERD[S.atk.v], other = state.scheme === "baseline" ? "proposed" : "baseline";
+  const nm = d => d === "baseline" ? "original design" : "proposal";
+  el.hidden = false;
+  el.innerHTML = `<div class="ab-text"><b>Attack running: ${atkName(S.atk.id)}</b>, on the ${nm(state.scheme)} <span class="vp ${c}">${t}</span><br>${atkSummary(S)} Every scope in the diagram now shows its block under this attack; the red marks show where Eve acts.</div>
+    <div class="ab-tools"><button class="tool" id="abOther">Same attack on the ${nm(other)}</button><button class="tool" id="abEve">Open Eve's side</button><button class="tool" id="abStop">Stop attack</button></div>`;
+  el.querySelector("#abOther").onclick = () => setScheme(other);
+  el.querySelector("#abEve").onclick = () => selectNode("eve");
+  el.querySelector("#abStop").onclick = () => setAttack("none");
 }
 
 function setScheme(sc) {
@@ -3054,6 +3429,10 @@ function buildScenarios() {
 
 function renderVerdict() {
   const v = document.getElementById("verdict"), items = [];
+  if (S.atk) {
+    const SHORT = { breached: "BREACHED", spoofed: "FOOLED", leak: "LEAKS", weak: "WEAK KEY", safe: "SAFE", detected: "DETECTED", na: "N/A" };
+    items.push({ k: "Under attack", v: SHORT[S.atk.v], cls: VERD[S.atk.v][1] === "na" ? "" : VERD[S.atk.v][1], d: atkName(S.atk.id) });
+  }
   items.push({ k: "Rx ID check", v: S.id_ok ? "PASS" : "FAIL", cls: S.id_ok ? "good" : "warn", d: S.sync_pos >= 0 ? "frame synced" : "no sync" });
   if (S.mac) items.push({ k: "Counter + MAC", v: S.accepted ? "ACCEPT" : "REJECT", cls: S.accepted ? "good" : "warn",
     d: !S.ctr_fresh ? `stale counter: replay` : !S.mac_ok ? "tag mismatch" : !S.id_ok ? "ID wrong" : `fresh, authentic` });

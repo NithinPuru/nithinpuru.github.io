@@ -13,6 +13,9 @@ Pages, https://nithinpuru.com) - don't add portfolio content back here.
   that forward to nithinpuru.com (`/tools/` to the portfolio's tools list,
   `https://nithinpuru.com/#tools`), keeping `?query` and `#hash`.
 - Each tool's "home" link points straight at `https://nithinpuru.com/#tools`.
+- `/go/` (`src/pages/go.astro`) is the owner's unlisted links page: every page
+  of both sites (tools come from `tools.json`). Not linked anywhere, noindex,
+  out of the sitemap, untracked - and public if guessed, so never put keys on it.
 - Never set a custom domain for this Pages site (it would move every tool to
   nithinpuru.com), and never rename it or make it private: the tool URLs,
   the career-semi-quant redirect and Research Radar's `--seed-only` all
