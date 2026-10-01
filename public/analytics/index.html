@@ -277,7 +277,7 @@
       <dl class="figures">
         <div><dt>Visitors</dt><dd id="f-visitors">–</dd></div>
         <div><dt>Page views</dt><dd id="f-views">–</dd></div>
-        <div><dt>Likely people</dt><dd id="f-people">–</dd></div>
+        <div><dt>Engaged visitors</dt><dd id="f-people">–</dd></div>
         <div><dt>Academic visitors</dt><dd id="f-academic">–</dd></div>
         <div><dt>Returning visitors</dt><dd id="f-returning">–</dd></div>
         <div><dt>Avg. time on page</dt><dd id="f-time">–</dd></div>
@@ -298,7 +298,8 @@
     <section class="group" id="visitors" aria-labelledby="g-visitors">
       <h2 class="gtitle" id="g-visitors">Who visited</h2>
       <div class="head"><span class="note">One line per visitor per day, newest first · times in your timezone</span>
-        <span class="note"><label><input type="checkbox" id="only-academic"> academic only</label>
+        <span class="note"><label><input type="checkbox" id="only-engaged"> engaged only</label>
+        · <label><input type="checkbox" id="only-academic"> academic only</label>
         · <label><input type="checkbox" id="hide-cloud" checked> hide cloud / VPN</label></span></div>
       <div id="visits-wrap"><p class="locked">Loading…</p></div>
     </section>
@@ -405,7 +406,7 @@
       </div>
     </section>
 
-    <footer>No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. Visits from cloud, hosting and VPN networks are not recorded; "cloud / VPN" marks any that slip through.
+    <footer>No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. Not recorded: cloud, hosting and VPN networks, and browsers driven by automation software. "Engaged" = interacted with the page (tap, click, key, wheel, touch, mouse move), scrolled part-way, or stayed 15 s or more; "no interaction" visits are often scanners. "Cloud / VPN" marks any hosting network that slips through.
       <p class="notrack" id="notrack"><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
     </footer>
   </div>
@@ -478,7 +479,7 @@ function demoData(from, to) {
   const now = Date.now();
   const visit = (h, city, cc, org, academic, device, browser, os, lang, tz, source, ref, pages, ms, scroll, sections, clicks, returning) =>
     ({ visitor: Math.random().toString(16).slice(2, 8), day: iso(new Date(now - h * 36e5)), start: now - h * 36e5, city, country: cc, org, academic,
-       device, browser, os, lang, tz, source, ref, pages, ms, scroll, sections, clicks, returning, views: pages.split(" > ").length });
+       device, browser, os, lang, tz, source, ref, pages, ms, scroll, sections, clicks, returning, engaged: ms >= 15000, views: pages.split(" > ").length });
   return {
     updated: new Date().toISOString(), from, to, authorized: true,
     total: { visitors: V + 1240, views: sum("views") + 2210 },
@@ -507,6 +508,7 @@ function demoData(from, to) {
     scrollBuckets: [150, 90, 80, 60, 140],
     pageSections: { "nithinpuru.com/": [["experience", 300], ["education", 250], ["skills", 210], ["publications", 190], ["awards", 150], ["work", 140], ["finance", 70], ["hobbies", 60], ["cv", 110], ["contact", 90]].map(([key, views]) => ({ key, views })) },
     newReturning: { new: Math.round(V * .8), returning: Math.round(V * .2) },
+    engagedVisitors: Math.round(V * .62),
     cloudVisitors: Math.round(V * .25),
     landing: [["linkedin.com", "nithinpuru.com/", .2], ["(direct)", "nithinpuru.com/", .15], ["google", "nithinpuru.github.io/gmid", .1],
       ["scholar.google.com", "nithinpuru.com/", .05], ["github.com", "nithinpuru.github.io/research-radar", .04], ["nithinpuru.github.io", "nithinpuru.com/rongm", .03]]
@@ -809,8 +811,8 @@ function renderVisits() {
     wrap.innerHTML = `<p class="locked">The visit log is private. Paste your owner key (the part after <code>?owner=</code> in your nithinpuru.com owner link) into the box at the top and press Unlock. It is kept in this browser only.</p>`;
     return;
   }
-  const onlyAcad = $("only-academic").checked, hideCloud = $("hide-cloud").checked;
-  const rows = (lastVisits || []).filter(v => (!onlyAcad || v.academic) && (!hideCloud || !v.cloud));
+  const onlyAcad = $("only-academic").checked, hideCloud = $("hide-cloud").checked, onlyEng = $("only-engaged").checked;
+  const rows = (lastVisits || []).filter(v => (!onlyAcad || v.academic) && (!hideCloud || !v.cloud) && (!onlyEng || v.engaged));
   if (!rows.length) { wrap.innerHTML = `<p class="locked">No visits in this range${onlyAcad ? " from academic networks" : ""} yet.</p>`; return; }
   const when = t => new Date(t).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   const theirs = (t, tz) => { try { return tz ? new Date(t).toLocaleTimeString([], { timeZone: tz, hour: "2-digit", minute: "2-digit" }) + " their time" : ""; } catch { return ""; } };
@@ -822,7 +824,7 @@ function renderVisits() {
     const pages = esc(v.pages || "").replaceAll(" &gt; ", " → ");
     return `<li class="visit${v.cloud ? " is-cloud" : ""}">
       <div class="visit__when"><b>${esc(when(v.start))}</b>${esc(theirs(v.start, v.tz))}</div>
-      <div class="visit__who">${flag(v.country)}${esc(place)}${v.org ? ` · ${esc(v.org)}` : ""}${v.academic ? `<span class="tag tag--acad">academic</span>` : ""}${v.cloud ? `<span class="tag tag--cloud">cloud / VPN</span>` : ""}${v.returning ? `<span class="tag">returning</span>` : `<span class="tag tag--new">new</span>`}</div>
+      <div class="visit__who">${flag(v.country)}${esc(place)}${v.org ? ` · ${esc(v.org)}` : ""}${v.academic ? `<span class="tag tag--acad">academic</span>` : ""}${v.cloud ? `<span class="tag tag--cloud">cloud / VPN</span>` : ""}${v.engaged ? "" : `<span class="tag tag--cloud" title="No scroll, tap, click or key press and under 15 s - often an automated scanner">no interaction</span>`}${v.returning ? `<span class="tag">returning</span>` : `<span class="tag tag--new">new</span>`}</div>
       <div class="visit__how">${esc(how) || "Device unknown"} · ${from}</div>
       <div class="visit__what">${pages} · ${v.views} view${v.views === 1 ? "" : "s"}${v.ms != null ? ` · read ${dur(v.ms)}` : ""}${v.scroll != null ? ` · scrolled ${pct(v.scroll)}` : ""}</div>
       <div class="visit__read">${read ? `Sections: ${esc(read)}` : ""}${read && v.clicks ? " · " : ""}${v.clicks ? `Clicked: ${esc(v.clicks)}` : ""}</div>
@@ -911,7 +913,8 @@ async function refresh() {
     const rng = s.range || s.total || {};
     $("f-visitors").textContent = fmt(rng.visitors || 0);
     $("f-views").textContent = fmt(rng.views || 0);
-    $("f-people").textContent = fmt(Math.max(0, (rng.visitors || 0) - (s.cloudVisitors || 0)));
+    const eng = s.engagedVisitors || 0;
+    $("f-people").innerHTML = rng.visitors ? `${fmt(eng)} <small>${pct(100 * eng / rng.visitors)}</small>` : "–";
     $("f-academic").textContent = fmt(s.academicVisitors || 0);
     const nr = s.newReturning || {}, nrTot = (nr.new || 0) + (nr.returning || 0);
     $("f-returning").innerHTML = nrTot ? `${fmt(nr.returning || 0)} <small>${pct(100 * (nr.returning || 0) / nrTot)}</small>` : "–";
@@ -965,6 +968,7 @@ function setPreset(days) {
 $("site").addEventListener("change", refresh);
 $("only-academic").addEventListener("change", renderVisits);
 $("hide-cloud").addEventListener("change", renderVisits);
+$("only-engaged").addEventListener("change", renderVisits);
 $("preset").addEventListener("change", e => {
   if (e.target.value !== "custom") { setPreset(+e.target.value); refresh(); }
 });
