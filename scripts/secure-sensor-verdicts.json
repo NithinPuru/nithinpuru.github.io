@@ -1,0 +1,712 @@
+{
+ "default": {
+  "eaves": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "brute": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "bm": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "knownin": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "samekey": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "saturate": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "extract": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "spoof": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "clone": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "htamper": {
+   "lab": [
+    "na",
+    "detected"
+   ],
+   "live": [
+    "na",
+    "detected"
+   ]
+  },
+  "hleak": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "hmanip": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "replay": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "bitflip": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  }
+ },
+ "counter + MAC off": {
+  "eaves": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "brute": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "bm": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "knownin": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "samekey": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "saturate": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "extract": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "spoof": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "clone": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "htamper": {
+   "lab": [
+    "na",
+    "detected"
+   ],
+   "live": [
+    "na",
+    "detected"
+   ]
+  },
+  "hleak": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "hmanip": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "replay": {
+   "lab": [
+    "spoofed",
+    "spoofed"
+   ],
+   "live": [
+    "spoofed",
+    "spoofed"
+   ]
+  },
+  "bitflip": {
+   "lab": [
+    "spoofed",
+    "spoofed"
+   ],
+   "live": [
+    "spoofed",
+    "spoofed"
+   ]
+  }
+ },
+ "perfect replica, no dither, no noise": {
+  "eaves": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "brute": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "bm": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "knownin": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "samekey": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "saturate": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "extract": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "spoof": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "clone": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "htamper": {
+   "lab": [
+    "na",
+    "detected"
+   ],
+   "live": [
+    "na",
+    "detected"
+   ]
+  },
+  "hleak": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "hmanip": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "replay": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "bitflip": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  }
+ },
+ "S2D buffer off": {
+  "eaves": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "brute": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "bm": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "knownin": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "samekey": {
+   "lab": [
+    "leak",
+    "safe"
+   ],
+   "live": [
+    "leak",
+    "safe"
+   ]
+  },
+  "saturate": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "extract": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "spoof": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "clone": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "htamper": {
+   "lab": [
+    "na",
+    "detected"
+   ],
+   "live": [
+    "na",
+    "detected"
+   ]
+  },
+  "hleak": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "hmanip": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "replay": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "bitflip": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  }
+ },
+ "biased PUF (0.6)": {
+  "eaves": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "brute": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "bm": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "knownin": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "samekey": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "saturate": {
+   "lab": [
+    "safe",
+    "safe"
+   ],
+   "live": [
+    "safe",
+    "safe"
+   ]
+  },
+  "extract": {
+   "lab": [
+    "breached",
+    "safe"
+   ],
+   "live": [
+    "breached",
+    "safe"
+   ]
+  },
+  "spoof": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "clone": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "htamper": {
+   "lab": [
+    "na",
+    "detected"
+   ],
+   "live": [
+    "na",
+    "detected"
+   ]
+  },
+  "hleak": {
+   "lab": [
+    "na",
+    "weak"
+   ],
+   "live": [
+    "na",
+    "weak"
+   ]
+  },
+  "hmanip": {
+   "lab": [
+    "na",
+    "safe"
+   ],
+   "live": [
+    "na",
+    "safe"
+   ]
+  },
+  "replay": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  },
+  "bitflip": {
+   "lab": [
+    "spoofed",
+    "detected"
+   ],
+   "live": [
+    "spoofed",
+    "detected"
+   ]
+  }
+ }
+}

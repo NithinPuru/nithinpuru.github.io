@@ -112,6 +112,8 @@ jobs:
           name: github-pages
           path: ${{ runner.temp }}/pages
       - run: mkdir -p dist && tar -xf "$RUNNER_TEMP/pages/artifact.tar" -C dist
+      - name: Secure sensor model (cipher vectors, calibration, verdict table)
+        run: npm run test:sensor
       - name: Design detector (tools index)
         run: node .agents/skills/impeccable/scripts/detect.mjs --json src/pages src/components src/styles src/layouts
       - run: npx playwright-core install --with-deps --only-shell chromium

@@ -9,7 +9,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "radar-data": "python3 research-radar/fetch.py --seed-only",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test:sensor": "node scripts/test-secure-sensor.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.2",

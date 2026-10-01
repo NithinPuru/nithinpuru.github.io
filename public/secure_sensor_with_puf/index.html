@@ -24,6 +24,7 @@
   --key:#b42318;        /* red - key/security path */
   --key-dim:rgba(180,35,24,.45); --key-bg:rgba(180,35,24,.06); --key-bg2:rgba(180,35,24,.12);
   --warn:#b42318; --good:#077a5d; --good-bg:rgba(11,138,107,.1);
+  --ok-c:#2a78d6; --bad-c:#eb6834;   /* right / wrong in bit strips: blue vs orange, checked for colour-vision deficiency */
   --ink-bg:rgba(19,28,40,.07);
   --grid:rgba(19,28,40,.09);
   --code-bg:#131c28; --code-ink:#e6ebf2;
@@ -36,6 +37,7 @@
   --sig:#7aa7ff; --sig-dim:rgba(122,167,255,.45); --sig-bg:rgba(122,167,255,.08); --sig-bg2:rgba(122,167,255,.16);
   --key:#ff8a7a; --key-dim:rgba(255,138,122,.45); --key-bg:rgba(255,138,122,.08); --key-bg2:rgba(255,138,122,.16);
   --warn:#ff8a7a; --good:#4fd1a8; --good-bg:rgba(79,209,168,.12);
+  --ok-c:#3987e5; --bad-c:#d95926;
   --ink-bg:rgba(242,245,250,.08);
   --grid:rgba(242,245,250,.08);
   --code-bg:#0b111a; --code-ink:#dbe3ee;
@@ -249,7 +251,7 @@ svg.dg .blk.dig .scope{stroke:var(--ink)}
 svg.dg .blk.key .scope,svg.dg .blk.eve .scope{stroke:var(--key)}
 svg.dg .scope.thick{stroke-width:1.8}
 svg.dg .cell{fill:var(--sig)}
-svg.dg .cell.bad{fill:var(--warn)}
+svg.dg .cell.bad{fill:var(--bad-c)}
 svg.dg .track{fill:var(--line-soft);stroke:none!important}
 svg.dg .fill.ok{fill:var(--good)}
 svg.dg .fill.bad{fill:var(--warn)}
@@ -287,7 +289,7 @@ svg.dg .atk-v{font-family:var(--mono);font-size:16px;fill:var(--ink)}
 svg.dg .atk-v.warn{fill:var(--warn)} svg.dg .atk-v.good{fill:var(--good)} svg.dg .atk-v.na{fill:var(--ink-faint)}
 svg.dg .newbox{fill:var(--key-bg);stroke:var(--key-dim);stroke-width:1.2;stroke-dasharray:5 4}
 svg.dg .blk rect.cell{fill:var(--sig);stroke:none}
-svg.dg .blk rect.cell.bad{fill:var(--warn)}
+svg.dg .blk rect.cell.bad{fill:var(--bad-c)}
 svg.dg .blk rect.track,svg.dg .blk rect.fill{stroke:none}
 
 /* ---------------------------------------------------------------- small screens */
@@ -415,11 +417,11 @@ button.hb.ed{background:var(--key-bg2);border-color:var(--key);color:var(--key);
 .pgrid{display:grid;grid-template-columns:repeat(40,minmax(0,1fr));gap:1px;max-width:720px}
 @media(max-width:700px){.pgrid{grid-template-columns:repeat(20,minmax(0,1fr))}}
 button.pc{height:17px;border-radius:2px}
-button.pc.fx{background:var(--good-bg);border-color:var(--good);color:var(--good)}
-button.pc.miss{background:var(--key-bg2);border-color:var(--key);color:var(--key)}
-button.pc.mis{background:var(--key);border-color:var(--key);color:var(--on-ink)}
+button.pc.fx{background:color-mix(in srgb,var(--ok-c) 16%,transparent);border-color:var(--ok-c);color:var(--ok-c)}
+button.pc.miss{background:color-mix(in srgb,var(--bad-c) 16%,transparent);border:1.5px dashed var(--bad-c);color:var(--bad-c)}
+button.pc.mis{background:var(--bad-c);border-color:var(--bad-c);color:#fff}
 button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
-.swatch.mis{background:var(--key);height:10px;width:10px}
+.swatch.mis{background:var(--bad-c);height:10px;width:10px}
 .swatch.you{background:none;height:0;border-top:3px solid var(--sig);width:14px}
 .leak{margin-top:14px;font-size:13px;color:var(--ink-soft)}
 .leak b{font-family:var(--mono);font-weight:400;color:var(--ink)}
@@ -444,6 +446,27 @@ button.pc.you{box-shadow:inset 0 -3px 0 var(--sig)}
 .atk-col canvas.wv{background:var(--paper);border:1px solid var(--line-soft)}
 ol.steps{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-soft)}
 ol.steps li{margin-bottom:5px}
+.warnt{color:var(--warn)}
+.cost-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 12px;font-size:12.5px;color:var(--ink-soft)}
+.cost-in label{display:flex;flex-direction:column;gap:2px}
+.cost-in span{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink-faint)}
+.cost-in input{width:100%;font-family:var(--mono);font-size:13px;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+.card-status{font-size:12.5px;color:var(--ink-faint);font-family:var(--mono)}
+.pm-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;margin-top:6px}
+@media(max-width:1180px){.pm-grid{grid-template-columns:minmax(0,1fr)}}
+.pm-grid h4,.lab-card h4{font-size:13.5px;margin:10px 0 6px}
+.pm-grid h4 small,.lab-card h4 small{font-weight:400;color:var(--ink-faint);font-size:12px}
+table.pm{min-width:340px}
+table.pm td{vertical-align:top}
+table.pm small{color:var(--ink-faint)}
+.sw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sw-grid.one{grid-template-columns:minmax(0,1fr)}
+@media(max-width:1180px){.sw-grid{grid-template-columns:minmax(0,1fr)}}
+.sw-grid canvas,.pm-grid canvas{background:var(--paper);border:1px solid var(--line-soft)}
+table.sw th,table.sw td{padding:3px 6px;font-size:12px;white-space:nowrap}
+.ctip{position:absolute;z-index:5;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12px;line-height:1.45;color:var(--ink);box-shadow:0 6px 16px -10px var(--shadow);max-width:260px}
+.swatch.hatchsw{height:10px;width:14px;background:repeating-linear-gradient(135deg,var(--ink) 0 1.4px,transparent 1.4px 5px)}
+.swatch.ring{width:10px;height:10px;border:2px solid var(--ink);border-radius:50%;background:none}
 .home-link{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);padding:6px 12px;border-radius:8px;font-size:13.5px;text-decoration:none}
 .home-link:hover{border-color:var(--sig);color:var(--sig)}
 .home-link svg{width:15px;height:15px}
@@ -477,7 +500,7 @@ ol.steps li{margin-bottom:5px}
 </header>
 <div class="wrap">
   <div class="story">
-    <div class="jump-btns"><a href="#attackLab">Attack lab: which attacks break which design</a><a href="#workbench">Workbench: edit the helper data and keys</a></div>
+    <div class="jump-btns"><a href="#attackLab">Attack lab: which attacks break which design</a><a href="#workbench">Workbench: edit the helper data and keys</a><a href="#cost">What each design costs</a><a href="#paperModel">Paper vs model</a><a href="#pufRel">PUF reliability</a><a href="#sweeps">Sweeps</a></div>
     <div class="scn-btns" id="scnBtns" role="group" aria-label="Scenarios"></div>
     <p class="caption" id="caption" aria-live="polite"></p>
   </div>
@@ -488,11 +511,15 @@ ol.steps li{margin-bottom:5px}
       <section class="diagram-card" id="diagramCard"></section>
       <section class="lab-card" id="attackLab" aria-label="Attack lab"></section>
       <section class="lab-card" id="workbench" aria-label="Helper data and key workbench"></section>
+      <section class="lab-card" id="cost" aria-label="Cost of each design"></section>
+      <section class="lab-card" id="paperModel" aria-label="Paper measurements vs this model"></section>
+      <section class="lab-card" id="pufRel" aria-label="PUF reliability"></section>
+      <section class="lab-card" id="sweeps" aria-label="Parameter sweeps"></section>
     </main>
   </div>
   <section class="refs" id="refs" aria-label="References">
     <h2>References</h2>
-    <p class="note">The original design, its threat model and the zero-input and same-key tests follow [1]. The PUF, fuzzy-extractor and NLFSR extension, and the attacks marked “beyond the paper”, are this page's own modelling built on [2]-[9].</p>
+    <p class="note">The original design, its threat model and the zero-input and same-key tests follow [1]. The PUF, fuzzy-extractor, Grain-128a and counter + MAC extension, and the attacks marked “beyond the paper”, are this page's own modelling built on [2]-[17]. The cost section's energy model uses the radio figures of [10] exactly as the paper does; its area and power figures come from [9], [12]-[17].</p>
     <ol>
       <li id="ref1">A. Yasar, D. Caygara, Y. H. Patel, A. Pemaraj, L. Boisvert, A. Magyar, T. Yu, B. Dufort, T.-L. Poo, and R. T. Yazicigil, “A Secure Multimodal Electrochemical Sensor for Sustainable Biomanufacturing,” in <i>Proc. 2025 IEEE European Solid-State Electronics Research Conference (ESSERC)</i>, pp. 413-416, 2025. doi: <a href="https://doi.org/10.1109/ESSERC66193.2025.11213984">10.1109/ESSERC66193.2025.11213984</a>.</li>
       <li>R. T. Yazicigil <i>et al.</i>, “Beyond Crypto: Physical-Layer Security for Internet of Things Devices,” <i>IEEE Solid-State Circuits Magazine</i>, vol. 12, no. 4, 2020. doi: <a href="https://doi.org/10.1109/MSSC.2020.3021842">10.1109/MSSC.2020.3021842</a>.</li>
@@ -502,7 +529,15 @@ ol.steps li{margin-bottom:5px}
       <li>Y. Dodis, L. Reyzin, and A. Smith, “Fuzzy Extractors: How to Generate Strong Keys from Biometrics and Other Noisy Data,” in <i>Advances in Cryptology - EUROCRYPT 2004</i>, LNCS, pp. 523-540, 2004. doi: <a href="https://doi.org/10.1007/978-3-540-24676-3_31">10.1007/978-3-540-24676-3_31</a>.</li>
       <li>J. Guajardo, S. S. Kumar, G.-J. Schrijen, and P. Tuyls, “FPGA Intrinsic PUFs and Their Use for IP Protection,” in <i>Cryptographic Hardware and Embedded Systems - CHES 2007</i>, LNCS, pp. 63-80, 2007. doi: <a href="https://doi.org/10.1007/978-3-540-74735-2_5">10.1007/978-3-540-74735-2_5</a>.</li>
       <li>C. De Cannière, “Trivium: A Stream Cipher Construction Inspired by Block Cipher Design Principles,” in <i>Proc. Int. Conf. Information Security (ISC)</i>, 2006. doi: <a href="https://doi.org/10.1007/11836810_13">10.1007/11836810_13</a>.</li>
-      <li>M. Ågren, M. Hell, T. Johansson, and W. Meier, “Grain-128a: a new version of Grain-128 with optional authentication,” <i>International Journal of Wireless and Mobile Computing</i>, vol. 5, no. 1, 2011. doi: <a href="https://doi.org/10.1504/IJWMC.2011.044106">10.1504/IJWMC.2011.044106</a>.</li>
+      <li>M. Ågren, M. Hell, T. Johansson, and W. Meier, “Grain-128a: a new version of Grain-128 with optional authentication,” <i>International Journal of Wireless and Mobile Computing</i>, vol. 5, no. 1, 2011. doi: <a href="https://doi.org/10.1504/IJWMC.2011.044106">10.1504/IJWMC.2011.044106</a>. Spec and test vectors used here: the authors' copy, <a href="https://lup.lub.lu.se/search/files/3454246/2296485.pdf">Lund University Publications</a>.</li>
+      <li>M. Song, M. Ding, E. Tiurin, Y.-H. Xu <i>et al.</i>, “A 3.5mm×3.8mm Crystal-Less MICS Transceiver Featuring Coverages of ±160ppm Carrier Frequency Offset and 4.8-VSWR Antenna Impedance for Insertable Smart Pills,” in <i>Proc. IEEE International Solid-State Circuits Conference (ISSCC)</i>, 2020. doi: <a href="https://doi.org/10.1109/ISSCC19947.2020.9063083">10.1109/ISSCC19947.2020.9063083</a>.</li>
+      <li>M. S. Turan, E. Barker, J. Kelsey, K. McKay <i>et al.</i>, “Recommendation for the Entropy Sources Used for Random Bit Generation,” NIST SP 800-90B, 2018. doi: <a href="https://doi.org/10.6028/NIST.SP.800-90B">10.6028/NIST.SP.800-90B</a>.</li>
+      <li>M. Feldhofer, “Comparison of Low-Power Implementations of Trivium and Grain,” eSTREAM, ECRYPT Stream Cipher Project, report 2007/027 (SASC 2007).</li>
+      <li>J. Mora-Gutiérrez, C. Jiménez-Fernández, and M. Valencia-Barrero, “Low Power Implementation of Trivium Stream Cipher,” in <i>PATMOS 2012</i>, LNCS, pp. 113-120, 2013. doi: <a href="https://doi.org/10.1007/978-3-642-36157-9_12">10.1007/978-3-642-36157-9_12</a>.</li>
+      <li>A. Bogdanov, M. Knežević, G. Leander, D. Toz, K. Varıcı, and I. Verbauwhede, “SPONGENT: A Lightweight Hash Function,” in <i>Cryptographic Hardware and Embedded Systems - CHES 2011</i>, LNCS, pp. 312-325, 2011. doi: <a href="https://doi.org/10.1007/978-3-642-23951-9_21">10.1007/978-3-642-23951-9_21</a>.</li>
+      <li>R. Maes, A. Van Herrewege, and I. Verbauwhede, “PUFKY: A Fully Functional PUF-Based Cryptographic Key Generator,” in <i>Cryptographic Hardware and Embedded Systems - CHES 2012</i>, LNCS, pp. 302-319, 2012. doi: <a href="https://doi.org/10.1007/978-3-642-33027-8_18">10.1007/978-3-642-33027-8_18</a>.</li>
+      <li>K. Liu, Y. Min, X. Yang, H. Sun, and H. Shinohara, “A 373-F² 0.21%-Native-BER EE SRAM Physically Unclonable Function With 2-D Power-Gated Bit Cells and VSS Bias-Based Dark-Bit Detection,” <i>IEEE Journal of Solid-State Circuits</i>, 2020. doi: <a href="https://doi.org/10.1109/JSSC.2019.2963002">10.1109/JSSC.2019.2963002</a>.</li>
+      <li>A. Poschmann, “Lightweight Cryptography: Cryptographic Engineering for a Pervasive World,” PhD thesis, Ruhr-Universität Bochum, 2009 (IACR ePrint 2009/516), Table 2.1.</li>
     </ol>
   </section>
   <div class="foot" id="foot"></div>
@@ -525,698 +560,7 @@ ol.steps li{margin-bottom:5px}
     </div>
   </div>
 </aside>
-<script>
-// ===== CORE-START =====
-// Behavioural model of the S-DSM link (baseline) and the SRAM-PUF + NLFSR proposal.
-// Same model as the Python version, ported so every node can be probed in the browser.
-
-const FS = 10e6, OSR = 50, FS_OUT = FS / OSR, VDD = 1.2, VCM = 0.6;
-const N_FFT = 2048, N_OUT = N_FFT + 100, N_DSM = N_OUT * OSR;
-const PUF_BITS = 600, ID_BITS = 16;
-const PREAMBLE = Uint8Array.from({ length: 32 }, (_, i) => (i % 2 ? 0 : 1));
-const SYNC = Uint8Array.from((0xB5E3).toString(2).padStart(16, "0"), c => +c);
-
-// ---------- random numbers (seeded, so every run is repeatable)
-function makeRng(seed) {
-  let a = seed >>> 0, spare = null;
-  const u = () => {
-    a = (a + 0x6D2B79F5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-  return {
-    u,
-    int: n => Math.floor(u() * n),
-    n() {
-      if (spare !== null) { const s = spare; spare = null; return s; }
-      let x, y, s;
-      do { x = u() * 2 - 1; y = u() * 2 - 1; s = x * x + y * y; } while (s >= 1 || s === 0);
-      const m = Math.sqrt(-2 * Math.log(s) / s);
-      spare = y * m; return x * m;
-    },
-  };
-}
-
-// ---------- keystream generators
-class LFSR16 {                       // x^16 + x^14 + x^13 + x^11 + 1 (stand-in polynomial)
-  constructor(seed) { this.s = (seed & 0xFFFF) || 1; }
-  bit() {
-    const s = this.s, fb = (s ^ (s >> 2) ^ (s >> 3) ^ (s >> 5)) & 1;
-    this.s = (s >> 1) | (fb << 15); return s & 1;
-  }
-  bits(n) { const o = new Uint8Array(n); for (let i = 0; i < n; i++) o[i] = this.bit(); return o; }
-}
-
-class NLFSR128 {                     // feedback taps borrowed from Grain-128's NFSR (illustrative)
-  constructor(keyBits, ivBits) {
-    this.s = Uint8Array.from(keyBits.slice(0, 128));
-    if (ivBits) for (let i = 0; i < 64; i++) this.s[64 + i] ^= ivBits[i];   // 64-bit IV = session nonce | frame counter
-    if (!this.s.some(x => x)) this.s[0] = 1;
-    this.p = 0;
-    for (let i = 0; i < 256; i++) this.bit();       // warm-up mixes the key
-  }
-  bit() {
-    const s = this.s, p = this.p, b = i => s[(p + i) & 127];
-    const out = s[p];
-    const fb = b(0) ^ b(26) ^ b(56) ^ b(91) ^ b(96)
-      ^ (b(3) & b(67)) ^ (b(11) & b(13)) ^ (b(17) & b(18))
-      ^ (b(27) & b(59)) ^ (b(40) & b(48)) ^ (b(61) & b(65)) ^ (b(68) & b(84));
-    s[p] = fb; this.p = (p + 1) & 127; return out;
-  }
-  bits(n) { const o = new Uint8Array(n); for (let i = 0; i < n; i++) o[i] = this.bit(); return o; }
-}
-
-// ---------- frame counter + MAC (proposal)
-// Grain-128a-style authentication: after IV loading, the first 64 keystream bits fill a 32-bit
-// accumulator A and a 32-bit shift register R; then even bits encrypt and odd bits drive the MAC.
-// For each message bit m: if m, A ^= R; R shifts in the next auth bit. Tag = A after a final 1 pad bit.
-const u32bits = v => Uint8Array.from({ length: 32 }, (_, i) => (v >>> (31 - i)) & 1);
-const bitsU32 = (b, o = 0) => { let v = 0; for (let i = 0; i < 32; i++) v = ((v << 1) | (b[o + i] & 1)) >>> 0; return v; };
-const ivBits = (nonce, ctr) => { const o = new Uint8Array(64); o.set(u32bits(nonce), 0); o.set(u32bits(ctr), 32); return o; };
-function keystreamNL(key, iv, nEnc) {
-  if (!iv) return { enc: new NLFSR128(key).bits(nEnc) };
-  const g = new NLFSR128(key, iv), z0 = g.bits(64), m = nEnc + 33;
-  const enc = new Uint8Array(m), auth = new Uint8Array(m);
-  for (let i = 0; i < m; i++) { enc[i] = g.bit(); auth[i] = g.bit(); }
-  return { enc, auth, A0: bitsU32(z0, 0), R0: bitsU32(z0, 32) };
-}
-function macTag(msg, ks) {           // msg: bits covered by the MAC (counter | enc ID | ciphertext)
-  let A = ks.A0, R = ks.R0;
-  for (let i = 0; i < msg.length; i++) { if (msg[i]) A ^= R; R = ((R << 1) | ks.auth[i]) >>> 0; }
-  return (A ^ R) >>> 0;              // the appended 1 pad bit
-}
-function macMsg(ctrBits, encId, C) { const m = new Uint8Array(32 + ID_BITS + C.length); m.set(ctrBits, 0); m.set(encId, 32); m.set(C, 32 + ID_BITS); return m; }
-// Receiver side: rebuild the keystream from (key, nonce, received counter) and compare tags
-function macVerify(key, nonce, ctr, encId, C, tag) {
-  const ks = keystreamNL(key, ivBits(nonce, ctr), ID_BITS + C.length), t = macTag(macMsg(u32bits(ctr), encId, C), ks);
-  return { ok: t === tag, tag: t, ks };
-}
-
-// ---------- analog front end
-const tia = (i, r) => Math.min(VDD, Math.max(0, VCM + i * r));
-const s2d = (v, g) => g * (v - VCM) / (VDD / 2);
-
-// ---------- 2nd-order 1-bit DSM (Boser-Wooley), dither at the comparator decision
-function dsm2(u, o, rng) {
-  const n = u.length, D = new Uint8Array(n), X1 = new Float32Array(n), X2 = new Float32Array(n), DI = new Float32Array(n);
-  const l1 = new LFSR16(o.seeds[0]), l2 = new LFSR16(o.seeds[1]);
-  let x1 = 0, x2 = 0, y = 1, clip = 0;
-  for (let k = 0; k < n; k++) {
-    const v = y ? 1 : -1;
-    x1 += 0.5 * (u[k] - v);
-    x2 += 0.5 * (x1 - v);
-    if (Math.abs(x1) > o.xlim || Math.abs(x2) > o.xlim) {
-      clip++;
-      x1 = Math.max(-o.xlim, Math.min(o.xlim, x1));
-      x2 = Math.max(-o.xlim, Math.min(o.xlim, x2));
-    }
-    const d = o.dither ? o.amp * (l1.bit() - l2.bit()) : 0;
-    y = x2 * (1 + d) + d + o.noise * rng.n() >= 0 ? 1 : 0;
-    D[k] = y; X1[k] = x1; X2[k] = x2; DI[k] = d;
-  }
-  return { D, X1, X2, DI, clip: clip / n };
-}
-
-// ---------- Rx decimation
-function cic(D, R = OSR, order = 3) {
-  let x = Float64Array.from(D, b => 2 * b - 1);
-  for (let o = 0; o < order; o++) for (let i = 1; i < x.length; i++) x[i] += x[i - 1];
-  let y = new Float64Array(Math.floor(x.length / R));
-  for (let j = 0; j < y.length; j++) y[j] = x[j * R + R - 1];
-  for (let o = 0; o < order; o++) for (let j = y.length - 1; j > 0; j--) y[j] -= y[j - 1];
-  const g = R ** order;
-  for (let j = 0; j < y.length; j++) y[j] /= g;
-  return y;
-}
-
-const COMP_TAPS = (() => {           // flattens CIC droop up to 0.4 x fs_out (80 kHz)
-  const R = OSR, N = 31, M = 15, h = new Float64Array(N), K = 512;
-  const G = f => {
-    if (f > 0.4) return 0;
-    if (f === 0) return 1;
-    return 1 / Math.abs(Math.sin(Math.PI * f) / (R * Math.sin(Math.PI * f / R))) ** 3;
-  };
-  for (let n = 0; n < N; n++) {
-    let s = 0;
-    for (let k = 0; k <= K; k++) {
-      const f = 0.5 * k / K, w = k === 0 || k === K ? 0.5 : 1;
-      s += w * G(f) * Math.cos(2 * Math.PI * f * (n - M));
-    }
-    h[n] = 2 * s * (0.5 / K) * (0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1)));
-  }
-  const dc = h.reduce((a, b) => a + b, 0);
-  return h.map(v => v / dc);
-})();
-
-function fir(x, h) {
-  const y = new Float64Array(x.length);
-  for (let n = 0; n < x.length; n++) {
-    let s = 0;
-    for (let k = 0; k < h.length && k <= n; k++) s += h[k] * x[n - k];
-    y[n] = s;
-  }
-  return y;
-}
-
-// ---------- FFT / spectra
-function fft(re, im) {
-  const n = re.length;
-  for (let i = 1, j = 0; i < n; i++) {
-    let bit = n >> 1;
-    for (; j & bit; bit >>= 1) j ^= bit;
-    j ^= bit;
-    if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; }
-  }
-  for (let len = 2; len <= n; len <<= 1) {
-    const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
-    for (let i = 0; i < n; i += len) {
-      let cr = 1, ci = 0;
-      for (let k = 0; k < len / 2; k++) {
-        const a = i + k, b = a + len / 2;
-        const tr = re[b] * cr - im[b] * ci, ti = re[b] * ci + im[b] * cr;
-        re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti;
-        const t = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = t;
-      }
-    }
-  }
-}
-
-function bhWindow(n) {
-  return Float64Array.from({ length: n }, (_, i) => {
-    const x = 2 * Math.PI * i / (n - 1);
-    return 0.35875 - 0.48829 * Math.cos(x) + 0.14128 * Math.cos(2 * x) - 0.01168 * Math.cos(3 * x);
-  });
-}
-
-function sndr(y, bin) {
-  const n = N_FFT, seg = y.slice(y.length - n), w = bhWindow(n);
-  const mean = seg.reduce((a, b) => a + b, 0) / n;
-  const re = Float64Array.from(seg, (v, i) => (v - mean) * w[i]), im = new Float64Array(n);
-  fft(re, im);
-  let sig = 0, tot = 0;
-  for (let k = 4; k < n / 2; k++) {
-    const p = re[k] ** 2 + im[k] ** 2;
-    tot += p;
-    if (Math.abs(k - bin) <= 4) sig += p;
-  }
-  return 10 * Math.log10(sig / Math.max(tot - sig, 1e-30));
-}
-
-function psd(x, fs, seg = 8192) {   // averaged, Hann-windowed periodogram
-  seg = Math.min(seg, 1 << Math.floor(Math.log2(x.length)));
-  const w = Float64Array.from({ length: seg }, (_, i) => 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (seg - 1)));
-  const wp = w.reduce((a, b) => a + b * b, 0);
-  const P = new Float64Array(seg / 2);
-  let cnt = 0;
-  for (let s = 0; s + seg <= x.length; s += seg / 2) {
-    let mean = 0;
-    for (let i = 0; i < seg; i++) mean += x[s + i];
-    mean /= seg;
-    const re = Float64Array.from({ length: seg }, (_, i) => (x[s + i] - mean) * w[i]), im = new Float64Array(seg);
-    fft(re, im);
-    for (let k = 0; k < seg / 2; k++) P[k] += (re[k] ** 2 + im[k] ** 2) / (fs * wp);
-    cnt++;
-  }
-  return { f: Float64Array.from({ length: seg / 2 }, (_, k) => k * fs / seg), p: P.map(v => 10 * Math.log10(v / cnt + 1e-30)) };
-}
-
-// ---------- SHA-256 (stand-in for the on-chip hash)
-function sha256(bytes) {
-  const K = new Uint32Array([0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2]);
-  const H = new Uint32Array([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]);
-  const l = bytes.length, padLen = ((l + 9 + 63) >> 6) << 6, m = new Uint8Array(padLen);
-  m.set(bytes); m[l] = 0x80;
-  const bits = l * 8;
-  m[padLen - 4] = (bits >>> 24) & 255; m[padLen - 3] = (bits >>> 16) & 255; m[padLen - 2] = (bits >>> 8) & 255; m[padLen - 1] = bits & 255;
-  const W = new Uint32Array(64), rotr = (x, n) => (x >>> n) | (x << (32 - n));
-  for (let o = 0; o < padLen; o += 64) {
-    for (let i = 0; i < 16; i++) W[i] = (m[o + 4 * i] << 24) | (m[o + 4 * i + 1] << 16) | (m[o + 4 * i + 2] << 8) | m[o + 4 * i + 3];
-    for (let i = 16; i < 64; i++) {
-      const s0 = rotr(W[i - 15], 7) ^ rotr(W[i - 15], 18) ^ (W[i - 15] >>> 3);
-      const s1 = rotr(W[i - 2], 17) ^ rotr(W[i - 2], 19) ^ (W[i - 2] >>> 10);
-      W[i] = (W[i - 16] + s0 + W[i - 7] + s1) >>> 0;
-    }
-    let [a, b, c, d, e, f, g, h] = H;
-    for (let i = 0; i < 64; i++) {
-      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25), ch = (e & f) ^ (~e & g);
-      const t1 = (h + S1 + ch + K[i] + W[i]) >>> 0;
-      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22), mj = (a & b) ^ (a & c) ^ (b & c);
-      const t2 = (S0 + mj) >>> 0;
-      h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
-    }
-    H[0] += a; H[1] += b; H[2] += c; H[3] += d; H[4] += e; H[5] += f; H[6] += g; H[7] += h;
-  }
-  const out = new Uint8Array(32);
-  for (let i = 0; i < 8; i++) { out[4 * i] = H[i] >>> 24; out[4 * i + 1] = (H[i] >>> 16) & 255; out[4 * i + 2] = (H[i] >>> 8) & 255; out[4 * i + 3] = H[i] & 255; }
-  return out;
-}
-
-const packBits = bits => {
-  const out = new Uint8Array(Math.ceil(bits.length / 8));
-  for (let i = 0; i < bits.length; i++) if (bits[i]) out[i >> 3] |= 128 >> (i & 7);
-  return out;
-};
-const unpackBits = (bytes, n) => Uint8Array.from({ length: n }, (_, i) => (bytes[i >> 3] >> (7 - (i & 7))) & 1);
-const hashKey = w => unpackBits(sha256(packBits(w)).slice(0, 16), 128);   // 128-bit key
-
-// ---------- binary BCH over GF(2^10), syndrome construction
-const GF_N = 1023, EXP = new Int32Array(2 * GF_N), LOG = new Int32Array(GF_N + 1);
-(() => { let x = 1; for (let i = 0; i < GF_N; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 1024) x ^= 0x409; } for (let i = GF_N; i < 2 * GF_N; i++) EXP[i] = EXP[i - GF_N]; })();
-const gmul = (a, b) => (a && b ? EXP[LOG[a] + LOG[b]] : 0);
-const gdiv = (a, b) => (a ? EXP[(LOG[a] - LOG[b] + GF_N) % GF_N] : 0);
-
-function bchSyndrome(bits, t) {      // odd syndromes S1, S3, ... S(2t-1); this is the helper data
-  const S = new Int32Array(t);
-  for (let i = 0; i < bits.length; i++) if (bits[i]) for (let j = 0; j < t; j++) S[j] ^= EXP[(i * (2 * j + 1)) % GF_N];
-  return S;
-}
-const synToBits = S => { const o = new Uint8Array(S.length * 10); S.forEach((v, j) => { for (let b = 0; b < 10; b++) o[j * 10 + b] = (v >> (9 - b)) & 1; }); return o; };
-const bitsToSyn = (bits, t) => Int32Array.from({ length: t }, (_, j) => { let v = 0; for (let b = 0; b < 10; b++) v = (v << 1) | bits[j * 10 + b]; return v; });
-
-function bchDecode(synDiff, t, n) {  // synDiff = syndrome(w_noisy) xor h  ->  error pattern e
-  const S = new Int32Array(2 * t + 1);
-  for (let i = 1; i <= 2 * t; i++) S[i] = i % 2 ? synDiff[(i - 1) / 2] : gmul(S[i / 2], S[i / 2]);
-  const e = new Uint8Array(n);
-  if (!S.some(v => v)) return { ok: true, e, L: 0 };
-  let C = [1], B = [1], L = 0, m = 1, b = 1;
-  for (let k = 0; k < 2 * t; k++) {
-    let d = S[k + 1];
-    for (let i = 1; i <= L; i++) d ^= gmul(C[i] || 0, S[k + 1 - i]);
-    if (!d) { m++; continue; }
-    const coef = gdiv(d, b), T = C.slice();
-    while (C.length < B.length + m) C.push(0);
-    for (let i = 0; i < B.length; i++) C[i + m] ^= gmul(coef, B[i]);
-    if (2 * L <= k) { L = k + 1 - L; B = T; b = d; m = 1; } else m++;
-  }
-  if (L > t) return { ok: false, e, L };
-  let roots = 0;
-  for (let pos = 0; pos < n; pos++) {
-    let v = 0;
-    for (let k = 0; k <= L; k++) if (C[k]) v ^= gmul(C[k], EXP[(GF_N - (pos * k) % GF_N) % GF_N]);
-    if (!v) { e[pos] = 1; roots++; }
-  }
-  return roots === L ? { ok: true, e, L } : { ok: false, e: new Uint8Array(n), L };
-}
-
-// ---------- SRAM PUF
-class SRAMPUF {
-  constructor(seed, n = PUF_BITS, sigma25 = 0.06) {
-    const r = makeRng(seed);
-    this.mismatch = Float64Array.from({ length: n }, () => r.n());   // fixed at fabrication
-    this.sigma25 = sigma25;
-  }
-  sigma(T) { return this.sigma25 * (1 + 0.008 * Math.abs(T - 25)); }
-  read(T, rng) {
-    const s = this.sigma(T);
-    return Uint8Array.from(this.mismatch, m => (m + s * rng.n() > 0 ? 1 : 0));
-  }
-}
-
-function enroll(puf, t, rng) {
-  const w = puf.read(25, rng);
-  return { w, h: bchSyndrome(w, t), key: hashKey(w) };
-}
-
-function reconstruct(wNoisy, h, t) {
-  const sn = bchSyndrome(wNoisy, t);
-  const diff = sn.map((v, j) => v ^ h[j]);
-  const dec = bchDecode(diff, t, wNoisy.length);
-  const w = wNoisy.map((b, i) => b ^ dec.e[i]);
-  return { ok: dec.ok, e: dec.e, w, key: hashKey(w), synNoisy: sn };
-}
-
-// ---------- attacks
-function bm2(s) {                    // Berlekamp-Massey over GF(2)
-  const n = s.length, c = new Uint8Array(n + 1);
-  let b = new Uint8Array(n + 1), cc = c;
-  cc[0] = b[0] = 1;
-  let L = 0, m = -1;
-  for (let i = 0; i < n; i++) {
-    let d = s[i];
-    for (let j = 1; j <= L; j++) d ^= cc[j] & s[i - j];
-    if (d) {
-      const t = cc.slice(), sh = i - m;
-      for (let j = 0; j + sh <= n; j++) cc[j + sh] ^= b[j];
-      if (2 * L <= i) { L = i + 1 - L; m = i; b = t; }
-    }
-  }
-  return { L, c: cc.slice(0, L + 1) };
-}
-
-function lfsrPredict(c, L, known, nOut) {
-  const buf = Array.from(known.slice(Math.max(0, known.length - L))), out = new Uint8Array(nOut);
-  for (let k = 0; k < nOut; k++) {
-    let nb = 0;
-    for (let j = 1; j <= L; j++) nb ^= c[j] & buf[buf.length - j];
-    buf.push(nb); out[k] = nb;
-  }
-  return out;
-}
-
-function bmAttack(known, future) {
-  const { L, c } = bm2(known), g = lfsrPredict(c, L, known, future.length);
-  let ok = 0;
-  for (let i = 0; i < g.length; i++) ok += g[i] === future[i];
-  return { acc: ok / future.length, L, guess: g };
-}
-
-function longestRun(D) {
-  let best = 0, run = 0, prev = -1;
-  for (let i = 0; i < D.length; i++) { run = D[i] === prev ? run + 1 : 1; prev = D[i]; if (run > best) best = run; }
-  return best;
-}
-
-// ---------- full link
-const DEFAULTS = {
-  scheme: "proposed", sig: "sine", amp_uA: 0.93, bin: 205, dc_uA: 0.5, force_uA: 10,
-  rtia: 321.88e3, buffer: 0.5, dither: true, dither_amp: 0.022, comp_noise: 1e-3, xlim: 2.5,
-  dither_seeds: [0x1D2B, 0x7A31], key16: 0xC3A5, chip_id: 0x0B77,
-  chip_seed: 7, temp: 37, puf_sigma: 0.06, bch_t: 40, h_tamper: 0,
-  h_source: "own", h_edit: [], puf_edit: [], rx_key16: null,   // workbench edits (arrays are replaced, never mutated)
-  mac: true, frame_ctr: 42, rx_last_ctr: 41, mitm_p: 0,          // proposal: session nonce + frame counter + MAC
-  attack: "none",                                                 // an attack from the lab, run through the live model
-  ber: 0, lead: 200, rx_wrong_key: false, seed: 2026,
-};
-
-function sensorCurrent(P, n) {
-  const i = new Float64Array(n), f = P.bin * FS_OUT / N_FFT;
-  for (let k = 0; k < n; k++) {
-    const t = k / FS;
-    if (P.sig === "sine") i[k] = P.amp_uA * 1e-6 * Math.sin(2 * Math.PI * f * t);
-    else if (P.sig === "dc") i[k] = P.dc_uA * 1e-6;
-    else if (P.sig === "forced") i[k] = P.force_uA * 1e-6;
-    else if (P.sig === "zero") i[k] = 0;
-  }
-  return i;
-}
-
-// ---------- attacks run inside the link model
-// P.attack picks one; P.atk holds its knobs. Each attack hooks in where the attacker acts:
-// the sensor input, the chip's key, the channel, or only in Eve's own processing (S.atk).
-const ATK_DEF = { mismatch: 0.1, kiInput: "dc", flipP: 0.1, fake: 0.3, bmBits: 64, clone: 1, hFlip: 1, chMismatch: 0.1 };
-
-function buildFrame(D, ks, mac, ctr, idBits) {   // ks: keystreamNL-style { enc, auth?, A0?, R0? }
-  const n = D.length, K = ks.enc.subarray(ID_BITS, ID_BITS + n), C = D.map((d, i) => d ^ K[i]);
-  const enc_id = idBits.map((b, i) => b ^ ks.enc[i]), F = { K, C, enc_id };
-  if (mac) {                         // preamble | sync | counter (clear) | enc ID | C | tag
-    F.ctr_bits = u32bits(ctr);
-    F.tag = macTag(macMsg(F.ctr_bits, enc_id, C), ks);
-    F.frame = new Uint8Array(48 + 32 + ID_BITS + n + 32);
-    F.frame.set(PREAMBLE, 0); F.frame.set(SYNC, 32); F.frame.set(F.ctr_bits, 48); F.frame.set(enc_id, 80); F.frame.set(C, 96); F.frame.set(u32bits(F.tag), 96 + n);
-  } else {
-    F.frame = new Uint8Array(48 + ID_BITS + n);
-    F.frame.set(PREAMBLE, 0); F.frame.set(SYNC, 32); F.frame.set(enc_id, 48); F.frame.set(C, 64);
-  }
-  return F;
-}
-
-function bruteLFSR(ks16) {           // try every 16-bit key against 16 known keystream bits
-  for (let k = 1; k <= 0xFFFF; k++) {
-    const l = new LFSR16(k); let ok = true;
-    for (let i = 0; i < ID_BITS && ok; i++) ok = l.bit() === ks16[i];
-    if (ok) return { key: k, tries: k };
-  }
-  return { key: -1, tries: 0xFFFF };
-}
-
-// BM on many 64-bit windows of a keystream guess. A window "breaks" when its LFSR predicts the next 512
-// real key bits; the earliest one is extended over the rest of the stream.
-function windowAttack(Kguess, Ktrue, seed, tries = 80) {
-  const r = makeRng(seed), n = Math.min(Kguess.length, Ktrue.length);
-  let broken = 0, first = -1;
-  for (let k = 0; k < tries; k++) {
-    const s = 200 + r.int(Math.min(n, 30000) - 64 - 512 - 400);
-    const a = bmAttack(Kguess.subarray(s, s + 64), Ktrue.subarray(s + 64, s + 64 + 512));
-    if (a.acc > 0.99) { broken++; if (first < 0 || s < first) first = s; }
-  }
-  return { broken, tries, first };
-}
-
-function simulate(P0) {
-  const P = { ...DEFAULTS, ...P0 };
-  const rng = makeRng(P.seed), n = N_DSM, t = P.bch_t;
-  const S = { P, n }, A = P.attack || "none", AK = { ...ATK_DEF, ...(P.atk || {}) }, base = P.scheme === "baseline";
-
-  // Tx analog chain (some attacks set the input the chip actually sees)
-  S.i_sense = sensorCurrent(P, n);
-  if (A === "knownin") S.i_sense.fill(AK.kiInput === "zero" ? 0 : 0.5e-6);        // Eve forces a known input
-  else if (A === "saturate") S.i_sense.fill(P.force_uA * 1e-6);                     // Eve forces a huge current
-  else if (A === "clone") S.i_sense.fill(AK.fake * 1e-6);                           // the counterfeit reports what Eve wants
-  else if (A === "replay") S.i_sense = S.i_sense.map(v => v * 0.4);                 // the real reading has dropped (a fault)
-  S.v_tia = S.i_sense.map(i => tia(i, P.rtia));
-  S.u = S.v_tia.map(v => s2d(v, P.buffer));
-  const dsm = dsm2(S.u, { dither: P.dither, amp: P.dither_amp, seeds: P.dither_seeds, xlim: P.xlim, noise: P.comp_noise }, rng);
-  Object.assign(S, { D: dsm.D, x1: dsm.X1, x2: dsm.X2, dith: dsm.DI, clip: dsm.clip });
-
-  // key + keystream at the Tx
-  const rxdb = {}, ctrTx = A === "replay" ? P.frame_ctr + 1 : P.frame_ctr;   // during a replay the chip has moved on a frame
-  let ksTx;
-  if (base) {
-    rxdb.key16 = P.key16;
-    ksTx = { enc: new LFSR16(P.key16).bits(ID_BITS + n) };
-  } else {
-    const puf = new SRAMPUF(P.chip_seed, PUF_BITS, P.puf_sigma);
-    const en = enroll(puf, t, makeRng(P.chip_seed * 7919 + 1));      // at test, once
-    S.w_enroll = en.w; S.key_enroll = en.key;
-    rxdb.key = en.key; rxdb.h = en.h;
-    const pufTx = A === "clone" ? new SRAMPUF(P.chip_seed + 500 + AK.clone, PUF_BITS, P.puf_sigma) : puf;
-    S.mismatch = pufTx.mismatch;
-    // Rx sends h at power-up (optionally swapped or tampered on the way)
-    let hBits = synToBits(en.h);
-    S.h_bits = hBits.slice();
-    if (P.h_source === "other") hBits = synToBits(enroll(new SRAMPUF(P.chip_seed + 1000, PUF_BITS, P.puf_sigma), t, makeRng(P.chip_seed * 31 + 5)).h);
-    else if (P.h_source === "zeros") hBits = new Uint8Array(hBits.length);
-    const flipH = (count, seed) => {
-      const r2 = makeRng(seed), idx = new Set();
-      while (idx.size < Math.min(count, hBits.length)) idx.add(r2.int(hBits.length));
-      idx.forEach(i => { hBits[i] ^= 1; });
-    };
-    if (P.h_tamper > 0) flipH(P.h_tamper, P.seed + 99);
-    if (A === "htamper") flipH(AK.hFlip, P.seed + 51);                 // Eve flips helper bits in transit
-    for (const i of P.h_edit) if (i < hBits.length) hBits[i] ^= 1;          // bits the user flipped by hand
-    S.h_rx_bits = hBits;
-    S.h_changed = hBits.some((b, i) => b !== S.h_bits[i]);
-    const hRx = bitsToSyn(hBits, t);
-    S.w_noisy = pufTx.read(P.temp, makeRng(A === "clone" ? P.seed + 41 + AK.clone : P.seed + 17));
-    for (const i of P.puf_edit) if (i < PUF_BITS) S.w_noisy[i] ^= 1;         // cells the user forced to flip
-    S.e_true = S.w_noisy.map((b, i) => b ^ S.w_enroll[i]);
-    const rc = reconstruct(S.w_noisy, hRx, t);
-    S.e_hat = rc.e; S.w_fixed = rc.w; S.key_tx = rc.key; S.fe_ok = rc.ok;
-    S.syn_noisy_bits = synToBits(rc.synNoisy);
-    S.n_err_true = S.e_true.reduce((a, b) => a + b, 0);
-    S.n_err_fixed = rc.e.reduce((a, b) => a + b, 0);
-    S.key_match = S.key_tx.every((b, i) => b === S.key_enroll[i]);
-    S.ber_puf = S.n_err_true / PUF_BITS;
-    S.mac = !!P.mac;
-    if (S.mac) {                     // the receiver sends a fresh session nonce with h at power-up
-      const rn = makeRng(P.seed + 71); S.nonce = ((rn.int(0x10000) << 16) | rn.int(0x10000)) >>> 0; rxdb.nonce = S.nonce;
-    }
-    ksTx = keystreamNL(S.key_tx, S.mac ? ivBits(S.nonce, ctrTx) : null, ID_BITS + n);
-  }
-  S.ks_tx = ksTx; S.ks_all = ksTx.enc;
-  const idBits = Uint8Array.from(P.chip_id.toString(2).padStart(ID_BITS, "0"), c => +c);
-  const F = buildFrame(S.D, ksTx, S.mac, ctrTx, idBits);
-  Object.assign(S, { K: F.K, C: F.C, enc_id: F.enc_id, frame: F.frame, ctr_bits: F.ctr_bits, tag: F.tag });
-  const body = S.mac ? 32 : 0;       // counter field before the encrypted ID
-
-  // what reaches the receiver: the chip's frame, or one Eve substitutes
-  let onAir = S.frame;
-  if (A === "spoof") {               // Eve transmits a forged frame carrying a fake reading
-    const uF = new Float64Array(n).fill(s2d(tia(AK.fake * 1e-6, P.rtia), P.buffer));
-    const Df = dsm2(uF, { dither: P.dither, amp: P.dither_amp, seeds: P.dither_seeds, xlim: P.xlim, noise: P.comp_noise }, makeRng(P.seed + 31)).D;
-    let ksE;
-    if (base) { S.bf = bruteLFSR(S.ks_all.subarray(0, ID_BITS)); ksE = { enc: new LFSR16(S.bf.key > 0 ? S.bf.key : 1).bits(ID_BITS + n) }; }
-    else {
-      const gr = makeRng(P.seed + 33), gk = Uint8Array.from({ length: 128 }, () => gr.int(2));
-      ksE = keystreamNL(gk, S.mac ? ivBits(S.nonce, P.frame_ctr + 1) : null, ID_BITS + n);   // nonce is public; she picks a fresh counter
-    }
-    const FF = buildFrame(Df, ksE, S.mac, P.frame_ctr + 1, idBits);
-    S.fake = { D: Df, K: FF.K, C: FF.C }; onAir = FF.frame;
-  } else if (A === "replay") {       // Eve plays back the frame she recorded while the reading was healthy
-    const old = simulate({ ...P0, attack: "none" });
-    S.old = { D: old.D, y: old.y, ctr: P.frame_ctr }; onAir = old.frame;
-  }
-
-  // channel
-  const rc = makeRng(P.seed + 5);
-  S.rx_bits = new Uint8Array(P.lead + onAir.length);
-  for (let i = 0; i < P.lead; i++) S.rx_bits[i] = rc.int(2);
-  S.rx_bits.set(onAir, P.lead);
-  let flips = 0;
-  if (P.ber > 0) for (let i = 0; i < S.rx_bits.length; i++) if (rc.u() < P.ber) { S.rx_bits[i] ^= 1; flips++; }
-  S.channel_flips = flips;
-  // man-in-the-middle flips a fraction of the payload bits (never the header, so sync and ID survive)
-  const mp = A === "bitflip" ? AK.flipP : P.mitm_p;
-  S.mitm_flips = 0;
-  if (mp > 0) {
-    const rm = makeRng(P.seed + 77), o = P.lead + 48 + body + ID_BITS;
-    S.mitm_mask = new Uint8Array(n);
-    for (let i = 0; i < n; i++) if (rm.u() < mp) { S.rx_bits[o + i] ^= 1; S.mitm_mask[i] = 1; S.mitm_flips++; }
-  }
-
-  // Rx
-  const hdr = new Uint8Array(48); hdr.set(PREAMBLE); hdr.set(SYNC, 32);
-  let pos = -1;
-  for (let i = 0; i + 48 <= S.rx_bits.length && pos < 0; i++) {
-    let ok = true;
-    for (let j = 0; j < 48 && ok; j++) ok = S.rx_bits[i + j] === hdr[j];
-    if (ok) pos = i + 48;
-  }
-  S.sync_pos = pos;
-  if (base) {
-    S.key_rx16 = P.rx_wrong_key ? P.key16 ^ 1 : P.rx_key16 != null ? P.rx_key16 : rxdb.key16;
-    S.ks_rx_all = new LFSR16(S.key_rx16).bits(ID_BITS + n);
-  } else {
-    S.key_rx = P.rx_wrong_key ? Uint8Array.from({ length: 128 }, () => rng.int(2)) : rxdb.key;
-    if (!S.mac) S.ks_rx_all = keystreamNL(S.key_rx, null, ID_BITS + n).enc;
-  }
-  if (pos >= 0) {
-    S.enc_id_rx = S.rx_bits.slice(pos + body, pos + body + ID_BITS);
-    S.C_rx = S.rx_bits.slice(pos + body + ID_BITS, pos + body + ID_BITS + n);
-  } else { S.enc_id_rx = new Uint8Array(ID_BITS); S.C_rx = new Uint8Array(n); }
-  S.rx_last = A === "replay" ? Math.max(P.rx_last_ctr, P.frame_ctr) : P.rx_last_ctr;   // it accepted the original frame
-  if (S.mac) {                       // counter must be fresh, and the tag must match what the Rx recomputes
-    S.ctr_rx = pos >= 0 ? bitsU32(S.rx_bits, pos) : 0;
-    S.tag_rx = pos >= 0 ? bitsU32(S.rx_bits, pos + body + ID_BITS + n) : 0;
-    const v = macVerify(S.key_rx, rxdb.nonce, S.ctr_rx, S.enc_id_rx, S.C_rx, S.tag_rx);
-    S.tag_calc = v.tag; S.mac_ok = pos >= 0 && v.ok; S.ctr_fresh = S.ctr_rx > S.rx_last;
-    S.ks_rx_all = v.ks.enc;
-  }
-  S.K_rx = S.ks_rx_all.subarray(ID_BITS, ID_BITS + n);
-  S.id_rx = S.enc_id_rx.map((b, i) => b ^ S.ks_rx_all[i]);
-  S.id_ok = pos >= 0 && S.id_rx.every((b, i) => b === idBits[i]);
-  S.accepted = S.id_ok && (!S.mac || (S.mac_ok && S.ctr_fresh));
-  S.D_rx = S.C_rx.map((c, i) => c ^ S.K_rx[i]);
-  S.y_cic = cic(S.D_rx);
-  S.y = fir(S.y_cic, COMP_TAPS);
-  S.u_ref = Float64Array.from({ length: S.y.length }, (_, j) => S.u[j * OSR]);
-  S.sndr = P.sig === "sine" && !["knownin", "saturate", "clone"].includes(A) ? sndr(S.y, P.bin) : null;
-  let bitErr = 0;
-  for (let i = 0; i < n; i++) bitErr += S.D_rx[i] !== S.D[i];
-  S.rx_bit_err = bitErr / n;
-
-  // Eve: sees the channel, knows the frame format and the whole design, not the key
-  S.C_eve = S.C_rx;
-  S.K_eve_guess = S.C_eve.map(c => c ^ 1);            // saturation hypothesis: D = all 1s
-  const er = makeRng(P.seed + 31), win = 64, fut = 512;
-  let best = { acc: 0, start: 0, res: null }, broken = 0, tries = 120;
-  for (let k = 0; k < tries; k++) {
-    const s = 200 + er.int(n - win - fut - 400);
-    const r = bmAttack(S.K_eve_guess.subarray(s, s + win), S.K.subarray(s + win, s + win + fut));
-    if (r.acc > 0.99) broken++;
-    if (r.acc > best.acc) best = { acc: r.acc, start: s, res: r };
-  }
-  S.eve_forced_best = best.acc; S.eve_forced_broken = broken / tries;
-  S.eve_pred = new Uint8Array(n); S.eve_match = new Uint8Array(n);
-  {
-    const s = best.start, known = S.K_eve_guess.subarray(s, s + win), { L, c } = bm2(known);
-    const g = lfsrPredict(c, L, known, n - s - win);
-    S.eve_pred.set(g, s + win);
-    for (let i = s + win; i < n; i++) S.eve_match[i] = S.eve_pred[i] === S.K[i] ? 1 : 0;
-    S.eve_window = [s, s + win];
-    S.eve_L = L;
-  }
-  S.eve_probe = bmAttack(S.K.subarray(0, 64), S.K.subarray(64, 1064));
-  S.eve_id = bmAttack(S.ks_all.subarray(0, 16), S.ks_all.subarray(16, 1016));
-
-  // the active attack, as Eve carries it out
-  S.atk = A === "none" ? null : runAttack(S, P, A, AK, base);
-
-  // summary stats
-  S.ones = S.D.reduce((a, b) => a + b, 0) / n;
-  S.run = longestRun(S.D);
-  return S;
-}
-
-// Eve's side of each attack. Key-recovery attacks end in khat, her estimate of the keystream; she decrypts
-// the recorded C with it. Frame attacks (spoof, clone, replay, bit-flip) are judged by what the receiver accepts.
-function runAttack(S, P, A, AK, base) {
-  const n = S.n, E = { id: A }, decode = D => fir(cic(D), COMP_TAPS);
-  E.ytrue = decode(S.D);                               // the reading the chip really measured
-  const guessKs = () => {
-    if (base) return new LFSR16((P.key16 ^ 0x5A5A) || 1).bits(ID_BITS + n).subarray(ID_BITS, ID_BITS + n);
-    const gr = makeRng(P.seed + 33), gk = Uint8Array.from({ length: 128 }, () => gr.int(2));
-    return keystreamNL(gk, null, ID_BITS + n).enc.subarray(ID_BITS, ID_BITS + n);
-  };
-  const recover = (khat, from = 0) => {                // decrypt what she recorded with her keystream estimate
-    let m = 0; for (let i = from; i < n; i++) m += khat[i] === S.K[i];
-    E.khat = khat; E.from = from; E.kacc = m / Math.max(1, n - from);
-    E.dhat = S.C.map((c, i) => c ^ khat[i]); E.yhat = decode(E.dhat);
-    E.v = E.kacc > 0.99 ? "breached" : "safe";
-  };
-  const replica = (Dguess, seed) => {                  // C ⊕ guess of D, then BM windows
-    const kg = S.C.map((c, i) => c ^ Dguess[i]), w = windowAttack(kg, S.K, seed);
-    E.win = w; E.kguess = kg;
-    const kh = kg.slice();
-    let from = Math.floor(n / 2);
-    if (w.first >= 0) {
-      const known = kg.subarray(w.first, w.first + 64), { L, c } = bm2(known);
-      kh.set(lfsrPredict(c, L, known, n - w.first - 64), w.first + 64);
-      from = w.first + 64;
-      if (L > 0 && c[L]) {           // an LFSR runs backwards too: s[i-L] = s[i] ^ sum_{j<L} c_j s[i-j]
-        for (let i = w.first + L - 1; i >= L; i--) { let v = kh[i]; for (let j = 1; j < L; j++) v ^= c[j] & kh[i - j]; kh[i - L] = v; }
-        from = 0;
-      }
-    }
-    if (!base) {                     // BM cannot extend the NLFSR, but a good enough guess of D exposes this frame's keystream directly
-      let m = 0; for (let i = 0; i < n; i++) m += kg[i] === S.K[i];
-      E.raw = m / n;
-      if (E.raw > 0.97) { recover(kg, 0); E.v = S.mac ? "safe" : "breached"; E.reuse = true; return; }   // without a per-frame IV every frame reuses it
-    }
-    recover(kh, from);
-    if (!base) E.v = "safe";
-  };
-  switch (A) {
-    case "eaves": recover(guessKs()); E.v = "safe"; break;
-    case "brute":
-      if (base) { E.bf = bruteLFSR(S.ks_all.subarray(0, ID_BITS)); recover(new LFSR16(E.bf.key > 0 ? E.bf.key : 1).bits(ID_BITS + n).subarray(ID_BITS, ID_BITS + n)); }
-      else recover(guessKs());
-      break;
-    case "extract":
-      if (base) recover(new LFSR16(P.key16).bits(ID_BITS + n).subarray(ID_BITS, ID_BITS + n));   // the key read out of memory
-      else recover(guessKs());
-      break;
-    case "bm": {
-      const m = Math.min(AK.bmBits, n - 1), known = S.K.subarray(0, m), { L, c } = bm2(known), kh = new Uint8Array(n);
-      kh.set(known, 0); kh.set(lfsrPredict(c, L, known, n - m), m);
-      E.L = L; E.m = m; recover(kh, m);
-      break;
-    }
-    case "knownin": {
-      const uR = S.u.map(v => v + AK.mismatch / 100);
-      const Dr = dsm2(uR, { dither: P.dither, amp: P.dither_amp, seeds: [0x2C4D, 0x51E7], xlim: P.xlim, noise: P.comp_noise }, makeRng(P.seed + 2)).D;
-      let f = 0; for (let i = 0; i < n; i++) f += Dr[i] !== S.D[i];
-      E.dguess = Dr; E.flip = f / n; replica(Dr, P.seed + 3);
-      break;
-    }
-    case "saturate": {
-      const g = S.ones >= 0.5 || S.D.reduce((a, b) => a + b, 0) >= n / 2 ? 1 : 0;
-      E.dguess = new Uint8Array(n).fill(g); E.guess = g; replica(E.dguess, P.seed + 23);
-      break;
-    }
-    case "samekey": {                                   // a second frame of the same reading under the same key
-      const u2 = S.u.map(v => v + AK.chMismatch / 100);
-      const D2 = dsm2(u2, { dither: P.dither, amp: P.dither_amp, seeds: [0x3A17, 0x6E29], xlim: P.xlim, noise: P.comp_noise }, makeRng(P.seed + 12)).D;
-      const K2 = !base && S.mac ? keystreamNL(S.key_tx, ivBits(S.nonce, P.frame_ctr + 1), ID_BITS + n).enc.subarray(ID_BITS, ID_BITS + n) : S.K;
-      E.C2 = D2.map((d, i) => d ^ K2[i]); E.X = S.C.map((c, i) => c ^ E.C2[i]);
-      let x = 0, fd = 0; for (let i = 0; i < n; i++) { x += E.X[i]; fd += D2[i] !== S.D[i]; }
-      E.xfrac = x / n; E.dflip = fd / n; E.v = Math.abs(E.xfrac - 0.5) > 0.03 ? "leak" : "safe";
-      break;
-    }
-    case "spoof": E.yfake = decode(S.fake.D); E.v = S.accepted ? "spoofed" : "detected"; break;
-    case "clone": E.v = S.accepted ? "spoofed" : "detected"; break;
-    case "replay": E.yold = S.old.y; E.v = S.accepted ? "spoofed" : "detected"; break;
-    case "bitflip": E.v = !S.mitm_flips ? "safe" : S.accepted ? "spoofed" : "detected"; break;
-    case "htamper": E.v = base ? "na" : S.key_match ? "safe" : "detected"; break;
-    case "hleak": E.residual = PUF_BITS - 10 * P.bch_t; E.v = base ? "na" : E.residual >= 128 ? "safe" : "weak"; break;
-  }
-  return E;
-}
-// ===== CORE-END =====
-if (typeof module !== "undefined") module.exports = { simulate, runAttack, windowAttack, bruteLFSR, SRAMPUF, enroll, reconstruct, bchSyndrome, bchDecode, bm2, bmAttack, LFSR16, NLFSR128, dsm2, makeRng, sha256, psd, longestRun, tia, s2d, PUF_BITS, N_DSM, DEFAULTS, EXP };
-
-</script>
+<script src="model.js?v=1"></script>
 <script>
 // ===== INFO-START =====
 // One entry per block. Each says, in plain language: what it is, an everyday analogy,
@@ -1408,25 +752,29 @@ Attacker (Berlekamp-Massey):
     limits: "The chip's actual polynomial is not published. This one is a standard maximal-length choice, used as a stand-in. Berlekamp-Massey behaviour is the same for any LFSR of this length.",
   },
 
-  // ------------------------------------------------------------------ NLFSR
+  // ------------------------------------------------------------------ Grain-128a
   nlfsr: {
-    key: true, name: "NLFSR-128 keystream generator", where: "Proposed · turns the PUF key into a stream of key bits",
-    plain: "Like the LFSR, but each new bit is made by a rule that includes ANDs, not just XORs. That extra twist ('non-linear') makes the output far harder to reverse-engineer. It is seeded with the 128-bit key made from the PUF.",
-    analogy: "The same shuffle, but now the cards also interact with each other as they move. Watching the output no longer reveals the rule.",
-    io: (S, st) => [`128-bit key from the PUF: ${bitsHex(S.key_tx).slice(0, 16)}…`, `Keystream K, one bit per modulator bit`],
-    model: (S, st) => `state = 128 bits, seeded with the PUF key
-new_bit = s0 ⊕ s26 ⊕ s56 ⊕ s91 ⊕ s96
-        ⊕ s3·s67 ⊕ s11·s13 ⊕ s17·s18
-        ⊕ s27·s59 ⊕ s40·s48 ⊕ s61·s65 ⊕ s68·s84
+    key: true, name: "Grain-128a keystream generator", where: "Proposed · turns the PUF key into a stream of key bits",
+    plain: "A published lightweight stream cipher (Ågren, Hell, Johansson, Meier, 2011): a 128-bit linear register and a 128-bit nonlinear register feed each other, and a small nonlinear output function mixes both. It is keyed with the 128-bit key made from the PUF, and it has an authentication mode built in, which the counter + MAC block uses.",
+    analogy: "Two shuffling machines locked together, one simple and one that makes cards interact, read through a scrambling window. Watching the output no longer reveals the rule.",
+    io: (S, st) => [`128-bit key from the PUF: ${bitsHex(S.key_tx).slice(0, 16)}…${S.mac ? `, IV = 1 | nonce | counter ${st.frame_ctr}` : ", IV = 0"}`, S.mac ? `Even pre-output bits: keystream K, one per modulator bit. Odd bits: the MAC` : `Keystream K, one bit per modulator bit`],
+    model: (S, st) => `LFSR  s: s(t+128) = s0 ⊕ s7 ⊕ s38 ⊕ s70 ⊕ s81 ⊕ s96
+NFSR  b: b(t+128) = s0 ⊕ b0 ⊕ b26 ⊕ b56 ⊕ b91 ⊕ b96
+              ⊕ b3·b67 ⊕ b11·b13 ⊕ b17·b18 ⊕ b27·b59
+              ⊕ b40·b48 ⊕ b61·b65 ⊕ b68·b84
+              ⊕ b88·b92·b93·b95 ⊕ b22·b24·b25 ⊕ b70·b78·b82
+h = b12·s8 ⊕ s13·s20 ⊕ b95·s42 ⊕ s60·s79 ⊕ b12·b95·s94
+y = h ⊕ s93 ⊕ b2 ⊕ b15 ⊕ b36 ⊕ b45 ⊕ b64 ⊕ b73 ⊕ b89
 ( · means AND ; ⊕ means XOR )
-256 warm-up steps before any output is used
+init: b = key, s = IV | 1…1 0, 256 clocks with y fed back
+IV_0 = ${S.mac ? 1 : 0}: ${S.mac ? "authentication mode, K = y64, y66, …" : "no authentication, K = y0, y1, …"}
 
-Attacker (Berlekamp-Massey) sees a huge "linear
-complexity", so 64 bits tell it almost nothing.`,
+Checked against the 26 test vectors of the
+Grain-128a paper (Table 3 and Appendix A).`,
     read: ["Compare with the LFSR block: the same 'Probe / tamper' attack that scored 100% there scores about 50% here, which is just guessing.",
-      "The strip shows a random mix of green and red: the attacker's predictions are no better than coin flips."],
-    why: "This is what your proposal adds. If an attacker can physically read some key bits off the chip, the LFSR falls completely; the NLFSR does not. It is a relatively small change: a few extra gates in the feedback, but 128 memory cells instead of 16.",
-    limits: "The tap positions are borrowed from the Grain-128 stream cipher, only to show the effect. A real design should use a vetted construction with a proven period. The area cost of 128 cells versus 16 is not modelled.",
+      "The strip shows a random mix of right and wrong predictions: the attacker's guesses are no better than coin flips."],
+    why: "This is what your proposal adds. If an attacker can physically read some key bits off the chip, the LFSR falls completely; Grain-128a does not. The price is about 260 state bits instead of 16, and two keystream bits per modulator clock when authentication is on; the cost section puts numbers on it.",
+    limits: "The cipher is the published one, bit for bit. How the page packs the 96-bit IV (flag, 32-bit nonce, 32-bit counter, zeros) is this page's choice.",
   },
 
   // ------------------------------------------------------------------ PUF
@@ -1590,28 +938,28 @@ score = share of the next 512-1000 key bits predicted
     io: (S, st) => S.mac ? [`Frame counter ${st.frame_ctr}, session nonce 0x${S.nonce.toString(16).toUpperCase().padStart(8, "0")}, the frame`, `32-bit tag 0x${S.tag.toString(16).toUpperCase().padStart(8, "0")} appended; the receiver ${S.accepted ? "accepts" : "REJECTS"} the frame`] : ["Turned off", "Frames go out unauthenticated"],
     model: (S, st) => `IV = session nonce (32 bits, from the Rx at power-up)
    | frame counter (32 bits)
-NLFSR: key loaded, IV XORed into bits 64..127, 256 warm-up clocks
-first 64 keystream bits -> accumulator A, shift register R
-then per clock: even bit -> encryption K, odd bit -> MAC
+Grain-128a, IV_0 = 1 (authentication mode), 256 init clocks
+first 64 pre-output bits -> accumulator A, shift register R
+then: even bits -> encryption K, odd bits -> MAC
 
 for each bit m of (counter | enc ID | C):
     if m:  A ^= R
     R = (R << 1) | next odd keystream bit
-tag = A ^ R                     (final pad bit)
+tag = A after the final 1 padding bit
 
 Rx accepts iff  counter > last accepted counter
            and  recomputed tag == tag in frame
            and  decrypted ID is right`,
     read: ["The first panel shows where the counter and the tag sit in the frame.", "The table runs the receiver's checks in order. Any one failing drops the frame."],
     why: "Encryption hides the data but does not protect it. A stream cipher is malleable, and an old frame decrypts just as well as a new one. The counter makes every frame unique and gives each frame its own keystream; the MAC makes any change detectable. Together they close the replay and bit-flipping attacks in the attack lab.",
-    limits: "Grain-128a-style authentication on this page's illustrative NLFSR, not a vetted cipher. The counter restarts each session because the receiver sends a fresh nonce, so the receiver only has to remember the last counter of the current session. One tag per frame means a single channel bit error drops the whole frame; a real link would add FEC, or split the payload into short tagged packets with retransmission.",
+    limits: "Grain-128a's own authentication mode, as published, with a 32-bit tag. The counter restarts each session because the receiver sends a fresh nonce, so the receiver only has to remember the last counter of the current session. One tag per frame means a single channel bit error drops the whole frame; a real link would add FEC, or split the payload into short tagged packets with retransmission.",
   },
   rxdb: {
     key: true, name: "Key database (receiver)", where: "Receiver · the trusted side",
     plain: "The receiver keeps a record for every chip it talks to. In the original design that is just the shared key. In the proposed design it is the key plus the public helper data h.",
     analogy: "A phone book of secrets, one page per chip.",
     io: (S, st) => [state.scheme === "baseline" ? "Programmed at manufacture" : "Recorded once when the chip is tested", state.scheme === "baseline" ? "The key seeds the LFSR" : "At each power-up it sends h to the chip and uses the key for its own NLFSR"],
-    model: (S, st) => state.scheme === "baseline" ? `db[chip_id] = key16` : `db[chip_id] = (key, h)\n\nat power-up:  send h to the chip   (public)\n              seed own NLFSR with key (secret)`,
+    model: (S, st) => state.scheme === "baseline" ? `db[chip_id] = key16` : `db[chip_id] = (key, h)\n\nat power-up:  send h to the chip   (public)\n              key own Grain-128a (secret)`,
     read: ["Nothing to plot. This block is a store of data, not a signal."],
     why: "The receiver is on the safe side of the wireless link, so it can hold secrets that the small floating sensor should not have to keep. Storing h here also means the sensor needs no non-volatile memory at all.",
     limits: "Assumed secure. Enrolment (recording the key and h) is assumed to happen once, in a trusted setting, at test time.",
@@ -1619,6 +967,7 @@ Rx accepts iff  counter > last accepted counter
 });
 
 function renderInfo() {
+  if (!S) return;
   const el = document.getElementById("blockInfo"), b = BLOCKINFO[selected];
   const nm = document.getElementById("inspName"), pl = document.getElementById("inspPlain");
   if (!b) { el.innerHTML = ""; if (nm) { nm.textContent = "Block inspector"; pl.textContent = ""; } return; }
@@ -1653,6 +1002,7 @@ const GLOSS = [
   ["Keystream", "A long sequence of key bits, one per data bit, used to scramble the data."],
   ["LFSR", "Linear feedback shift register. A cheap keystream generator whose rule is linear, so it can be reverse-engineered from a short piece of output."],
   ["NLFSR", "Non-linear feedback shift register. Like an LFSR but with AND terms, which makes reverse-engineering far harder."],
+  ["Grain-128a", "A published lightweight stream cipher built from one LFSR and one NLFSR, with an optional built-in MAC. The proposal's keystream generator."],
   ["Berlekamp-Massey", "An algorithm that finds the simplest linear rule producing a bit sequence. It breaks any LFSR after seeing twice its length in clean bits."],
   ["PUF", "Physically unclonable function. A chip-unique fingerprint created by random manufacturing differences."],
   ["BCH code", "An error-correcting code. It lets you repair a limited number of flipped bits, up to t."],
@@ -1671,7 +1021,8 @@ const GLOSS = [
 // Panels get the sim result S and write into #panels.
 
 function panelCanvas(title, cap, h = 200) {
-  return `<div class="panel"><h2>${title}</h2><div class="cap">${cap}</div><canvas data-h="${h}"></canvas><div class="legend"></div></div>`;
+  const alt = (title + ". " + String(cap).replace(/<[^>]+>/g, "")).replace(/"/g, "&quot;");
+  return `<div class="panel"><h2>${title}</h2><div class="cap">${cap}</div><canvas data-h="${h}" role="img" aria-label="${alt}"></canvas><div class="legend"></div></div>`;
 }
 function panelWide(title, cap, inner) {
   if (inner === undefined) { inner = cap; cap = ""; }   // 2-arg call = (title, inner)
@@ -1849,7 +1200,7 @@ const PANELS = {
   // ---------------------------------------------------------------- key: LFSR / PSK
   psk() { keystreamPanel("The static pre-shared key seeds the LFSR. Same key, same stream, every session."); },
   lfsr() { keystreamPanel("A 16-bit LFSR turns the key into the keystream. Linear feedback — which is exactly what Berlekamp-Massey exploits."); },
-  nlfsr() { keystreamPanel("A 128-bit NLFSR turns the PUF key into the keystream. Nonlinear feedback defeats Berlekamp-Massey."); },
+  nlfsr() { keystreamPanel("Grain-128a turns the PUF key into the keystream. Its nonlinear register and output function defeat Berlekamp-Massey."); },
 
   // ---------------------------------------------------------------- PUF
   puf() {
@@ -1866,11 +1217,11 @@ const PANELS = {
     const cw = (a.X(1) - a.X(0));
     for (let i = 0; i < show; i++) {
       const flipped = S.e_true[i];
-      g.ctx.fillStyle = flipped ? COL.warn() : COL.sig();
+      g.ctx.fillStyle = flipped ? COL.bad() : COL.sig();
       g.ctx.fillRect(a.X(i) + cw * 0.15, a.Y(S.w_noisy[i]) - 2, Math.max(1.5, cw * 0.7), 4);
       g.ctx.fillRect(a.X(i) + cw * 0.15, Math.min(a.Y(S.w_noisy[i]), a.Y(0)), Math.max(1.5, cw * 0.7), Math.abs(a.Y(S.w_noisy[i]) - a.Y(0)));
     }
-    c.parentElement.querySelector(".legend").innerHTML = legend([["stable bit", COL.sig()], ["flipped this power-up", COL.warn()]]);
+    c.parentElement.querySelector(".legend").innerHTML = legend([["stable bit", COL.sig()], ["flipped this power-up", COL.bad()]]);
   },
 
   // ---------------------------------------------------------------- fuzzy extractor
@@ -1955,7 +1306,7 @@ PANELS.eve = function () {
   if (S.atk) { evePanel(); return; }
   keystreamPanel(state.scheme === "baseline"
     ? "Eve attacks the original design's 16-bit LFSR keystream."
-    : "Eve attacks the proposed design's 128-bit NLFSR keystream.");
+    : "Eve attacks the proposed design's Grain-128a keystream.");
 };
 PANELS.mac = function () {
   if (!S.mac) {
@@ -1978,7 +1329,7 @@ PANELS.mac = function () {
       <tr><td><b>Frame</b></td><td class="n">${S.mitm_flips ? S.mitm_flips.toLocaleString() + " bits flipped in transit" : ""}</td><td>${pill(S.accepted, "ACCEPTED", "REJECTED")}</td></tr></table>`)
     + explain(`<b>How this stops replay and bit-flipping.</b> The keystream is now seeded with the key <i>and</i> an IV = session nonce | frame counter. The receiver picks a fresh 32-bit nonce at every power-up and sends it with the helper data; the chip counts frames within the session. The receiver accepts a counter only if it is higher than the last one it accepted, so a recorded frame comes back stale. Rewriting its counter does not help: the counter is part of both the IV and the MAC input, so the tag stops matching.
       <br><br>The 32-bit tag covers the counter, the encrypted ID and every payload bit. Flip any of them and the receiver's tag changes; Eve cannot compute the new tag without the secret MAC keystream, so a forgery gets through with probability 2⁻³². A fresh keystream per frame also ends keystream reuse between frames (the <i>same key, same message</i> attack).
-      <br><br><b>Cost.</b> In the style of Grain-128a: the NLFSR delivers two bits per modulator clock (even bits encrypt, odd bits feed the MAC), plus a 32-bit accumulator, a 32-bit shift register, a 32-bit counter and 64 extra bits per frame.
+      <br><br><b>Cost.</b> Grain-128a's authentication mode delivers two pre-output bits per modulator clock (even bits encrypt, odd bits feed the MAC), plus a 32-bit accumulator, a 32-bit shift register, a 32-bit counter and 64 extra bits per frame.
       ${S.channel_flips ? `<br><br><span style="color:var(--warn)"><b>Side effect:</b></span> the channel flipped ${S.channel_flips} bits, so the MAC rejects this frame too. An authenticated link needs forward error correction, or short packets with retransmission.` : ""}`);
 };
 // Eve's side of the running attack: her keystream guess, what she decrypts, or what the server ends up showing
@@ -2012,10 +1363,10 @@ function evePanel() {
       const cols = 100, cw = (g.w - 4) / cols, ch = 30;
       for (let i = 0; i < NB; i++) {
         const bad = kind === "match" ? a[k0 + i] !== b[k0 + i] : a[k0 + i] === 1;
-        ctx.fillStyle = bad ? COL.warn() : COL.good();
+        ctx.fillStyle = bad ? COL.bad() : COL.ok();
         ctx.fillRect(2 + (i % cols) * cw, 6 + Math.floor(i / cols) * (ch + 6), Math.max(1, cw - 1), ch);
       }
-      lg.innerHTML = kind === "match" ? legend([["K̂ = K", COL.good()], ["K̂ ≠ K", COL.warn()]]) : legend([["C₁ = C₂", COL.good()], ["C₁ ≠ C₂", COL.warn()]]);
+      lg.innerHTML = kind === "match" ? legend([["K̂ = K", COL.ok()], ["K̂ ≠ K", COL.bad()]]) : legend([["C₁ = C₂", COL.ok()], ["C₁ ≠ C₂", COL.bad()]]);
     } else {
       const g = dpiCanvas(c, +c.dataset.h), ctx = g.ctx; let pk = 0.05;
       for (const [y] of a) for (let i = j0; i < j0 + NJ && i < y.length; i++) pk = Math.max(pk, Math.abs(y[i]));
@@ -2055,7 +1406,7 @@ function keystreamPanel(caption) {
       </table>`)
     + panelCanvas("What the attacker predicts vs the real keystream", "Green where the attacker's prediction is correct, red where it's wrong. All green = broken.", 160)
     + explain(isNL
-      ? `<b>Why the NLFSR resists BM.</b> Berlekamp-Massey finds the shortest <i>linear</i> recurrence for a sequence. A 16-bit LFSR has linear complexity 16, so 32 bits break it. The 128-bit NLFSR's nonlinear feedback pushes its linear complexity to roughly half the sequence length, so BM would need an impractical number of clean bits — with 64 probed bits it predicts ~50%, i.e. guessing. This is the upgrade that matters once physical tampering is in scope.`
+      ? `<b>Why Grain-128a resists BM.</b> Berlekamp-Massey finds the shortest <i>linear</i> recurrence for a sequence. A 16-bit LFSR has linear complexity 16, so 32 bits break it. Grain-128a's nonlinear register and output function push its linear complexity to roughly half the sequence length, so BM would need an impractical number of clean bits — with 64 probed bits it predicts ~50%, i.e. guessing. This is the upgrade that matters once physical tampering is in scope.`
       : `<b>Why the LFSR is fragile.</b> It's linear, so Berlekamp-Massey recovers its full 16-bit state from just 32 consecutive keystream bits. The design's real defence is keeping those bits hidden: the buffer stops saturation, and the busy bitstream hides the keystream. But <b>if an attacker probes the keystream wire directly</b> (tampering), 64 bits recover it completely — see the 100% row above. The known ID alone leaks only 16 bits, which isn't enough.`);
   const c = document.querySelector("#panels canvas"); const g = dpiCanvas(c, 160);
   // show the forced-window prediction if in forced mode, else the probe prediction over first bits
@@ -2071,10 +1422,10 @@ function keystreamPanel(caption) {
   const cw = (a.X(1) - a.X(0));
   for (let i = 0; i < show; i++) {
     const idx = startX + i; if (idx >= match.length) break;
-    g.ctx.fillStyle = match[idx] ? COL.good() : COL.warn();
+    g.ctx.fillStyle = match[idx] ? COL.ok() : COL.bad();
     g.ctx.fillRect(a.X(i), a.Y(match[idx]) - 3, Math.max(1.5, cw), 6);
   }
-  c.parentElement.querySelector(".legend").innerHTML = legend([["correct prediction", COL.good()], ["wrong prediction", COL.warn()]]);
+  c.parentElement.querySelector(".legend").innerHTML = legend([["correct prediction", COL.ok()], ["wrong prediction", COL.bad()]]);
 }
 
 // ---- bit coloring helpers
@@ -2088,6 +1439,7 @@ function colorBits2(a, b, off, n) { let s = ""; for (let i = 0; i < n; i++) { co
 function legend(items) { return items.map(([t, c]) => `<span><i class="swatch" style="background:${c}"></i>${t}</span>`).join(""); }
 
 function renderPanels() {
+  if (!S) return;
   dgLive.length = 0;              // the previous panel's per-frame painters
   renderInfo();
   const fn = PANELS[selected];
@@ -2100,7 +1452,7 @@ document.getElementById("wrapGloss") || (function(){
   document.querySelector(".wrap").insertBefore(d, document.getElementById("refs"));
 })();
 document.getElementById("foot").innerHTML =
-  `<b>About this model.</b> Everything runs live in your browser — a behavioural port of the Python model. The DSM is a discrete-time model of the continuous-time loop; TIA clipping, the ×0.5 buffer, the LFSR polynomial, the NLFSR taps (from Grain-128), integrator rails and PUF noise are illustrative, not measured silicon values. SHA-256 stands in for a lightweight on-chip hash. The frame counter + MAC follows Grain-128a's authentication mode (accumulator + shift register fed by every second keystream bit) on the same illustrative NLFSR. The BCH code is real (GF(2¹⁰), syndrome construction). Numbers are meant to show mechanisms and trends, not exact chip performance. Baseline = the ESSERC'25 S-DSM <a href="#ref1">[1]</a>; Proposed = the SRAM-PUF + fuzzy-extractor + NLFSR extension discussed with Alperen, plus a session nonce, frame counter and MAC.<p class="credit">This modelling and animation work could not have been done without the help of <a href="https://claude.com/claude-code">Claude Code</a>.</p>`;
+  `<b>About this model.</b> Everything runs live in your browser, in background workers (<code>model.js</code>), a behavioural port of the Python model. The DSM is a discrete-time model of the continuous-time loop; TIA clipping, the ×0.5 buffer, the LFSR polynomial, integrator rails and PUF mismatch, noise, bias and ageing are illustrative, not measured silicon values. The modulator's thermal noise is derived from the paper's measured 9.48 pA, and the two-channel bit-flip tests are calibrated against its Fig. 4(c); the power and energy figures in the cost section are calibrated on its Fig. 4(a) and reproduce its Fig. 4(b). Grain-128a and its MAC are the published cipher, checked against the paper's test vectors; the BCH code is real (GF(2¹⁰), syndrome construction); SHA-256 stands in for a lightweight on-chip hash. Numbers are meant to show mechanisms and trends, not exact chip performance. Baseline = the ESSERC'25 S-DSM <a href="#ref1">[1]</a>; Proposed = the SRAM-PUF + fuzzy-extractor extension discussed with Alperen, with Grain-128a, a session nonce, a frame counter and a MAC.<p class="credit">This modelling and animation work could not have been done without the help of <a href="https://claude.com/claude-code">Claude Code</a>.</p>`;
 
 // ===== PANELS-END =====
 
@@ -2145,6 +1497,7 @@ function eveRows(A) {                          // Eve's two scopes: [label, gett
     bitflip: { r1: ["bits she flips (1 = flipped)", digi(() => S.mitm_mask)], r2: ["what the server shows", ana(() => S.y)] },
     htamper: { r1: ["helper data h the chip gets", stat(() => S.h_rx_bits)], r2: ["what the server shows", ana(() => S.y)] },
     hleak: { r1: ["public helper data h she reads", stat(() => S.h_bits)], r2: ["what the server shows", ana(() => S.y)] },
+    hmanip: { r1: ["her manipulated h, last power-up", stat(() => S.h_rx_bits)], r2: ["what the server shows", ana(() => S.y)] },
   }[A];
 }
 function atkReason(S) {
@@ -2161,6 +1514,7 @@ function eveMetric(S) {                        // one line under Eve's first sco
     bitflip: () => `${S.mitm_flips.toLocaleString()} of ${S.n.toLocaleString()} payload bits flipped`,
     htamper: () => base ? `no helper data in this design` : `${S.h_rx_bits.reduce((a, b, i) => a + (b !== S.h_bits[i]), 0)} bits flipped, key ${S.key_match ? "still right" : "now wrong"}`,
     hleak: () => base ? `no helper data in this design` : `${Math.max(0, E.residual)} fingerprint bits stay secret (need 128)`,
+    hmanip: () => base ? `no helper data in this design` : `${S.manip.Q} power-ups: same answers as another chip ${S.manip.same}/${S.manip.Q}`,
   }[E.id]();
 }
 function atkSummary(S) {                       // one sentence for the banner
@@ -2170,6 +1524,7 @@ function atkSummary(S) {                       // one sentence for the banner
   if (E.id === "samekey") return `C₁ ⊕ C₂ is ${pc(E.xfrac)} ones: ${E.v === "leak" ? "the key cancels and the two frames are linkable." : "noise, so the key reuse reveals nothing."}`;
   if (E.id === "hleak") return E.v === "na" ? "The original design has no helper data to leak." : `After reading h, ${Math.max(0, E.residual)} fingerprint bits remain unknown to Eve (a 128-bit key needs 128).`;
   if (E.id === "htamper" && E.v === "na") return "The original design has no helper data, so there is nothing to tamper with.";
+  if (E.id === "hmanip") return E.v === "na" ? "The original design has no helper data to manipulate." : `Eve tried ${S.manip.Q} manipulated power-ups; a chip with a different fingerprint gives the same answers ${S.manip.same} of ${S.manip.Q} times, so she learns ${S.manip.same === S.manip.Q ? "nothing" : "something"} about the key. This power-up uses her last h, so the receiver rejects it.`;
   return S.accepted ? `The receiver accepts the frame: the server now shows ${E.id === "replay" ? "the old reading" : E.id === "bitflip" ? "the altered reading" : "Eve's data"}.` : `The receiver rejects the frame (${r || "check failed"}), so Eve's data is never used.`;
 }
 function atkOverlay(A, base) {                 // mark where Eve acts
@@ -2185,6 +1540,7 @@ function atkOverlay(A, base) {                 // mark where Eve acts
     case "extract": return base ? ring(414, 259, 122, 92) + txt(475, 378, "Eve reads the stored key", "middle") : ring(34, 259, 132, 92) + txt(100, 378, "Eve de-caps: no key stored", "middle");
     case "htamper": return dot(24, 455) + txt(36, 459, base ? "no helper data here" : `Eve flips ${lab.hFlip} helper bit${lab.hFlip === 1 ? "" : "s"}`);
     case "hleak": return dot(24, 455) + txt(36, 459, base ? "no helper data here" : "Eve reads h (public)");
+    case "hmanip": return dot(24, 455) + txt(36, 459, base ? "no helper data here" : `Eve rewrites h, ${lab.manipQ} power-ups`);
     case "spoof": return ch("Eve replaces the frame with a forged one");
     case "replay": return ch("Eve replays a recorded frame");
     case "bitflip": return ch(`Eve flips ${Math.round(lab.flipP * 100)}% of payload bits`);
@@ -2331,7 +1687,7 @@ function buildDiagram() {
       extra: `<g id="dg-pufcells"></g>` });
     s += blk({ node: "fe", cls: "key", x: 215, y: 265, w: 150, h: 80, title: "Fuzzy extractor", val: "fev", extra: `<g id="dg-fegauge"></g>` });
     s += blk({ node: "keyd", cls: "key", x: 420, y: 265, w: 110, h: 80, title: "Hash", val: "hashv", extra: `<text class="v" x="475" y="332" text-anchor="middle">= 128-bit key</text>` });
-    s += blk({ node: "nlfsr", cls: "key", x: 600, y: 265, w: 120, h: 80, title: "NLFSR-128", val: "kg", scope: { name: "sc_K", get: k => ({ arr: S.K, idx: k, n: 64, lo: -0.2, hi: 1.2, digital: true }) } });
+    s += blk({ node: "nlfsr", cls: "key", x: 600, y: 265, w: 120, h: 80, title: "Grain-128a", val: "kg", scope: { name: "sc_K", get: k => ({ arr: S.K, idx: k, n: 64, lo: -0.2, hi: 1.2, digital: true }) } });
   }
 
   // ---- receiver
@@ -2344,7 +1700,7 @@ function buildDiagram() {
   s += blk({ node: "rx_out", cls: "an", x: 610, y: 575, w: 150, h: 80, title: "Recovered signal", val: "outv",
     scope: { name: "sc_out", cls: "thick", get: k => ({ arr: S.y, idx: Math.floor(k / OSR), n: 40, lo: -yScale(), hi: yScale() }) } });
   s += blk({ node: "rxdb", cls: "key", x: 40, y: 690, w: 125, h: 75, title: "Key database", val: "dbv" });
-  s += blk({ node: base ? "lfsr" : "nlfsr", cls: "key", x: 195, y: 690, w: 120, h: 75, title: base ? "LFSR-16" : "NLFSR-128", val: "kgrx" });
+  s += blk({ node: base ? "lfsr" : "nlfsr", cls: "key", x: 195, y: 690, w: 120, h: 75, title: base ? "LFSR-16" : "Grain-128a", val: "kgrx" });
   s += label(345, 728, "The receiver holds each chip's key.", "lab key") + label(345, 746, base ? "Same key as on the chip." : "Same key the chip re-creates each power-up.", "lab key");
 
   // ---- wire value badges
@@ -2509,6 +1865,8 @@ function buildDiagramCard() {
         <button id="dgStep" class="tool">Step</button>
         <button id="dgScope" class="tool" aria-pressed="false" title="Plot every probe point on one time axis">All signals</button>
         <label class="speed">Speed <select id="dgSpeed"><option value="8">Slow</option><option value="40" selected>Normal</option><option value="160">Fast</option></select></label>
+        <button class="tool" id="dgShare" title="Copy a link that opens exactly these settings">Share link</button>
+        <label class="speed">Export <select id="dgExport"><option value="">choose…</option><option value="png">Diagram (PNG)</option><option value="sig">Signals (CSV)</option><option value="read">Readings (CSV)</option></select></label>
         <label class="speed atk-pick">Attack <select id="dgAttack"><option value="none">None</option>${ATTACKS.map(a => `<option value="${a.id}">${a.name}</option>`).join("")}</select></label>
       </div>
     </div>
@@ -2528,6 +1886,8 @@ function buildDiagramCard() {
   document.getElementById("dgSpeed").onchange = e => { dgRate = +e.target.value; };
   document.getElementById("dgScope").onclick = () => selectNode("scope");
   document.getElementById("dgAttack").onchange = e => setAttack(e.target.value);
+  document.getElementById("dgShare").onclick = e => shareLink(e.target);
+  document.getElementById("dgExport").onchange = e => { const v = e.target.value; e.target.value = ""; if (!S) return; if (v === "png") exportDiagram(); else if (v === "sig") exportSignals(); else if (v === "read") exportReadings(); };
   if (!dgRaf) dgRaf = requestAnimationFrame(dgTick);
 }
 
@@ -2581,350 +1941,12 @@ function initInspector() {
 // verdicts move when you change dither, the buffer, the key, t, the helper data...
 // Workbench: edit the public helper data, the PUF read-out and the pre-shared keys by hand.
 
-const LAB_N = 30000;                 // DSM clocks used by the attack experiments (600 output samples)
-const lab = { sel: "eaves", bmBits: 64, kiInput: "dc", mismatch: 0.1, chMismatch: 0.1, flipP: 0.1, clone: 1, hFlip: 1, fake: 0.3 };
-let LR = null, labTimer = null, bfCache = null;
+let LR = null, labTimer = null;
 
-const decodeY = D => fir(cic(D), COMP_TAPS);
-const xorBits = (a, b, n = Math.min(a.length, b.length)) => { const o = new Uint8Array(n); for (let i = 0; i < n; i++) o[i] = a[i] ^ b[i]; return o; };
-const flipFrac = (a, b, n) => { let f = 0; for (let i = 0; i < n; i++) f += a[i] !== b[i]; return f / n; };
-const rmsErr = (a, b, from = 60) => { let s = 0, n = 0; for (let i = from; i < Math.min(a.length, b.length); i++) { s += (a[i] - b[i]) ** 2; n++; } return Math.sqrt(s / Math.max(n, 1)); };
-const pct = (v, d = 1) => (v * 100).toFixed(d) + "%";
-const hex16 = v => "0x" + (v & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
-
-function bmProfile(s) {              // linear complexity after each bit (same recursion as bm2)
-  const n = s.length, cc = new Uint8Array(n + 1), prof = new Uint16Array(n);
-  let b = new Uint8Array(n + 1), L = 0, m = -1;
-  cc[0] = b[0] = 1;
-  for (let i = 0; i < n; i++) {
-    let d = s[i];
-    for (let j = 1; j <= L; j++) d ^= cc[j] & s[i - j];
-    if (d) {
-      const t = cc.slice(), sh = i - m;
-      for (let j = 0; j + sh <= n; j++) cc[j + sh] ^= b[j];
-      if (2 * L <= i) { L = i + 1 - L; m = i; b = t; }
-    }
-    prof[i] = L;
-  }
-  return prof;
-}
-
-
-function labDsm(u, seeds, noiseSeed) {
-  return dsm2(u, { dither: state.dither, amp: state.dither_amp, seeds, xlim: state.xlim, noise: state.comp_noise }, makeRng(noiseSeed)).D;
-}
-const labU = (iA, off = 0) => { const u = new Float64Array(LAB_N), v = s2d(tia(iA, state.rtia), state.buffer) + off; u.fill(v); return u; };
-
-// ---------------------------------------------------------------- the attacks
-// Each run() returns { base, prop } outcomes: { v, head, steps[], plot }.
-// v: breached | spoofed | leak | weak | safe | detected | na
-const VERD = {
-  breached: ["DATA BREACHED", "warn"], spoofed: ["FAKE DATA ACCEPTED", "warn"], leak: ["INFORMATION LEAKS", "warn"],
-  weak: ["KEY WEAKENED", "warn"], safe: ["DATA SAFE", "good"], detected: ["ATTACK DETECTED", "good"], na: ["NOT APPLICABLE", "na"],
-};
-
-const ATTACKS = [
-  { id: "eaves", name: "Passive eavesdropping", src: "paper", stop: "Encryption (both designs)",
-    has: "A radio that records every bit on the air, full knowledge of the chip, no key.",
-    desc: "The paper's starting point: Eve sniffs the link to learn the bioreactor's readings (and, later, to set up spoofing). She sees only the encrypted stream C. Without the key, decrypting gives white noise (paper Fig. 3).",
-    run(R) {
-      const o = d => {
-        const Sx = R[d], y = R.yFail[d], e = rmsErr(y, R.yTrue);
-        return { v: "safe", head: `Eve's reading is ${pct(e, 0)} RMS off (noise)`,
-          steps: [`Records the ciphertext C: ${pct(Sx.C.subarray(0, LAB_N).reduce((a, b) => a + b, 0) / LAB_N)} ones, looks random.`,
-            `Decrypts with her best guess of the ${d === "base" ? "16" : "128"}-bit key.`,
-            `Gets noise: reading error ${pct(e, 0)} of full scale. No data leaks.`,
-            d === "base" ? `Only safe while nobody searches the key space - see <b>Brute-force key search</b>.` : `The 128-bit key space cannot be searched.`],
-          plot: { kind: "y", series: [[R.yTrue, "true"], [y, "eve"]] } };
-      };
-      return { base: o("base"), prop: o("prop") };
-    } },
-
-  { id: "brute", name: "Brute-force key search", src: "beyond", stop: "128-bit PUF key (proposal)",
-    has: "Recorded traffic, the public chip ID, a laptop.",
-    desc: "The chip ID sits encrypted right after the sync word, and the ID itself is not secret. So Eve can simply try every key until the decrypted ID is right, then decrypt everything. This only works if the key is short.",
-    run(R) {
-      const Sb = R.base, ks = Sb.ks_all, key = `${state.key16}|${state.chip_id}`;
-      if (!bfCache || bfCache.key !== key) {
-        const t0 = performance.now(); let found = -1, tries = 0;
-        for (let k = 1; k <= 0xFFFF && found < 0; k++) {
-          tries++; const l = new LFSR16(k); let ok = true;
-          for (let i = 0; i < ID_BITS && ok; i++) ok = l.bit() === ks[i];
-          if (ok) found = k;
-        }
-        bfCache = { key, found, tries, ms: performance.now() - t0 };
-      }
-      const f = bfCache, hit = f.found === ((state.key16 & 0xFFFF) || 1);
-      return {
-        base: { v: hit ? "breached" : "safe", head: hit ? `Key ${hex16(f.found)} found in ${f.ms.toFixed(0)} ms` : "Key not found",
-          steps: [`Takes the 16 encrypted ID bits from any frame and XORs off the public ID: that is the first 16 keystream bits.`,
-            `Tries keys 0x0001, 0x0002, ... in a 16-bit LFSR: ${f.tries.toLocaleString()} tries, ${f.ms.toFixed(0)} ms in this browser.`,
-            hit ? `Found <b>${hex16(f.found)}</b> (the real key). Decrypts the payload: the full sensor reading.` : `No match.`],
-          plot: { kind: "y", series: [[R.yTrue, "true"], [hit ? R.yTrue : R.yFail.base, "eve"]] } },
-        prop: { v: "safe", head: "2¹²⁸ keys: about 10¹⁹ years",
-          steps: [`Same trick: the first 16 keystream bits are known.`,
-            `But the key is 128 bits. At 10¹² guesses per second the search takes about 5×10¹⁸ years.`,
-            `The PUF itself cannot be guessed either: it keeps ≥ ${Math.max(0, PUF_BITS - 10 * state.bch_t)} unknown bits after the public helper data.`],
-          plot: { kind: "y", series: [[R.yTrue, "true"], [R.yFail.prop, "eve"]] } },
-      };
-    } },
-
-  { id: "bm", name: "Berlekamp-Massey keystream attack", src: "beyond", stop: "Nonlinear NLFSR (proposal)",
-    has: "A short run of keystream bits: probed on the keystream wire, or recovered from any known-plaintext leak.",
-    desc: "Berlekamp-Massey finds the shortest linear feedback register that reproduces a bit sequence. An n-bit LFSR is recovered from just 2n consecutive keystream bits; from then on Eve predicts every future key bit and decrypts everything. Set how many bits she knows.",
-    knobs: [{ k: "bmBits", label: "Keystream bits Eve knows", min: 8, max: 256, step: 4, fmt: v => v + " bits" }],
-    run(R) {
-      const m = lab.bmBits;
-      const o = (d, Sx) => {
-        const a = bmAttack(Sx.K.subarray(0, m), Sx.K.subarray(m, m + 1000)), br = a.acc > 0.99;
-        const prof = bmProfile(Sx.K.subarray(0, 256));
-        return { v: br ? "breached" : "safe", head: `Predicts the next 1000 bits ${pct(a.acc, 0)} right`,
-          steps: [`Knows ${m} consecutive keystream bits.`,
-            `BM returns a linear register of length L = ${a.L}${d === "base" ? (m >= 32 ? " - the real 16-bit LFSR" : "") : " - it keeps growing with every bit, about half the bits seen"}.`,
-            br ? `Runs it forward: <b>every</b> future key bit is right. Decrypts all later data.` : `Its predictions are ${pct(a.acc, 0)} right - a coin flip. Nothing decrypts.`,
-            d === "base" ? `Needs only 2×16 = 32 bits.` : `No practical amount of known keystream gives a linear model of the NLFSR.`],
-          plot: { kind: "lc", prof, m, lin: d === "base" } };
-      };
-      return { base: o("base", R.base), prop: o("prop", R.prop) };
-    } },
-
-  { id: "knownin", name: "Zero / DC input attack (replica)", src: "paper", stop: () => state.mac ? "Dither + QN (both); per-frame IV as backup" : "Dither + quantisation noise (S-DSM, both)",
-    has: "Control of the sensor's input (e.g. zero or a fixed DC current) and a replica chip to run the same input on.",
-    desc: "The paper's first cryptanalysis test (Fig. 4c). With a conventional ADC + stream cipher, a fixed input gives a known output, so C ⊕ known = keystream. Here Eve feeds the victim a known input, runs her replica on the same input and uses its bits as her guess of D. Dither and quantisation noise make the two modulators disagree about half the time, so the guess is useless. In this model the replica's own analog mismatch already scrambles most bits. Set it to 0 (a perfectly trimmed replica) to isolate dither: at the default strength a few % of bits still differ and short BM windows survive, so the original design breaks. Raise the dither strength to close the gap.",
-    knobs: [{ k: "kiInput", t: "seg", label: "Input Eve applies", opts: [["zero", "Zero"], ["dc", "DC 0.5 µA"]] },
-      { k: "mismatch", label: "Replica vs victim analog mismatch", min: 0, max: 1, step: 0.01, fmt: v => v.toFixed(2) + "% FS" },
-      { g: "dither", label: "Dither enabled (global)" }, { g: "dither_amp", label: "Dither strength (global)", min: 0.01, max: 0.4, step: 0.005, fmt: v => v.toFixed(3) + " ×ref" }],
-    run(R) {
-      const iA = lab.kiInput === "zero" ? 0 : 0.5e-6;
-      const Dv = labDsm(labU(iA), state.dither_seeds, state.seed);
-      const Dr = labDsm(labU(iA, lab.mismatch / 100), [0x2C4D, 0x51E7], state.seed + 2);
-      const flip = flipFrac(Dv, Dr, LAB_N), agree = xorBits(Dv, Dr).subarray(0, 400);
-      const o = (d, Sx) => {
-        const K = Sx.K.subarray(0, LAB_N), C = xorBits(Dv, K), Kg = xorBits(C, Dr);
-        const w = windowAttack(Kg, K, state.seed + 3), raw = 1 - flipFrac(Kg, K, LAB_N), reuse = d === "prop" && raw > 0.97;
-        const br = (w.broken > 0 && d === "base") || (reuse && !state.mac);
-        return { v: br ? "breached" : "safe", head: reuse ? `Keystream of this frame exposed (${pct(raw)})` : `Replica disagrees on ${pct(flip)} of bits`,
-          steps: [`Forces the input to ${lab.kiInput === "zero" ? "zero" : "0.5 µA DC"} and records C from the victim.`,
-            `Runs her replica on the same input: its bits differ from the victim's D on <b>${pct(flip)}</b> of clocks (50% = no information; the paper measured 50.05%).`,
-            `Uses C ⊕ replica as the keystream and runs BM on ${w.tries} windows of 64 bits: ${w.broken} window${w.broken === 1 ? "" : "s"} came out exactly right.`,
-            d === "base" ? (br ? `One clean window is enough: the 16-bit LFSR state falls out, and every later reading decrypts.` : `No clean window, so no LFSR state. The keystream stays hidden.`)
-              : reuse ? (state.mac ? `The replica is so close that C ⊕ replica <i>is</i> this frame's keystream (${pct(raw)} right). But the frame counter gives every frame a fresh keystream, so nothing else decrypts.` : `The replica is so close that C ⊕ replica <i>is</i> this frame's keystream (${pct(raw)} right). With counter + MAC off every frame reuses it, so all other frames decrypt.`)
-              : (w.broken ? `Even the clean windows don't help: BM cannot model the NLFSR, so nothing beyond them decrypts.` : `No clean window, and the NLFSR would resist BM anyway.`)],
-          plot: { kind: "bits", bits: agree, on: "replica wrong", off: "replica right" } };
-      };
-      return { base: o("base", R.base), prop: o("prop", R.prop) };
-    } },
-
-  { id: "samekey", name: "Same key, same message", src: "paper", stop: () => state.mac ? "Dither + QN (both); per-frame IV (proposal)" : "Dither + quantisation noise (S-DSM, both)",
-    has: "Two encryptions of the same reading under the same key (the paper uses two channels of one chip).",
-    desc: "Re-using a stream-cipher key is the classic 'two-time pad' mistake: C₁ ⊕ C₂ = D₁ ⊕ D₂, the keystream cancels, and identical messages give identical ciphertexts. The original design uses the same keystream for every frame, so it relies on S-DSM here: quantisation noise and dither make D₁ ≠ D₂ even for the same input (paper: 49.8% bit flips). Set the mismatch to 0 and dither low to see the leak. With the frame counter on, the proposal gives every frame its own keystream, so K₁ ≠ K₂ and the XOR is noise whatever the modulator does.",
-    knobs: [{ k: "chMismatch", label: "Mismatch between the two channels", min: 0, max: 1, step: 0.01, fmt: v => v.toFixed(2) + "% FS" },
-      { g: "dither", label: "Dither enabled (global)" }, { g: "dither_amp", label: "Dither strength (global)", min: 0.01, max: 0.4, step: 0.005, fmt: v => v.toFixed(3) + " ×ref" }],
-    run(R) {
-      const i = sensorCurrent(state, LAB_N);
-      const u1 = Float64Array.from(i, x => s2d(tia(x, state.rtia), state.buffer)), u2 = u1.map(v => v + lab.chMismatch / 100);
-      const D1 = labDsm(u1, state.dither_seeds, state.seed), D2 = labDsm(u2, [0x3A17, 0x6E29], state.seed + 12);
-      const flip = flipFrac(D1, D2, LAB_N), leak = Math.abs(flip - 0.5) > 0.03;
-      const o = () => ({ v: leak ? "leak" : "safe", head: `C₁ ⊕ C₂ has ${pct(flip)} ones`,
-        steps: [`Captures two frames carrying the same reading, encrypted with the same keystream K.`,
-          `XORs them: C₁ ⊕ C₂ = D₁ ⊕ D₂, the key cancels out.`,
-          `The two modulator streams differ on <b>${pct(flip)}</b> of bits (a plain stream cipher gives 0%).`,
-          leak ? `Far from 50%: the XOR reveals that both frames carry nearly the same signal, and one known frame gives away the other.` : `≈50%: the XOR is noise, and Eve learns nothing from the key reuse.`],
-        plot: { kind: "bits", bits: xorBits(D1, D2).subarray(0, 400), on: "C₁ ≠ C₂", off: "C₁ = C₂" } });
-      const Sp = R.prop;
-      if (!Sp.mac) return { base: o(), prop: o() };
-      const K1 = keystreamNL(Sp.key_enroll, ivBits(Sp.nonce, state.frame_ctr), ID_BITS + LAB_N).enc.subarray(ID_BITS);
-      const K2 = keystreamNL(Sp.key_enroll, ivBits(Sp.nonce, state.frame_ctr + 1), ID_BITS + LAB_N).enc.subarray(ID_BITS);
-      const X = xorBits(xorBits(D1, K1), xorBits(D2, K2)), fp = X.reduce((a, b) => a + b, 0) / LAB_N;
-      return { base: o(), prop: { v: Math.abs(fp - 0.5) > 0.03 ? "leak" : "safe", head: `C₁ ⊕ C₂ has ${pct(fp)} ones`,
-        steps: [`Captures two frames carrying the same reading under the same key.`,
-          `But they carry counters ${state.frame_ctr} and ${state.frame_ctr + 1}, so each was encrypted with its own keystream: C₁ ⊕ C₂ = D₁ ⊕ D₂ ⊕ K₁ ⊕ K₂.`,
-          `The keys no longer cancel: <b>${pct(fp)}</b> of the XOR bits are 1, whatever the modulators did (${pct(flip)} of D bits differ).`,
-          `The XOR is noise. Key reuse is gone, not just hidden.`],
-        plot: { kind: "bits", bits: X.subarray(0, 400), on: "C₁ ≠ C₂", off: "C₁ = C₂" } } };
-    } },
-
-  { id: "saturate", name: "Forced-input saturation", src: "beyond", stop: () => state.mac ? "S2D ×0.5 buffer; per-frame IV as backup" : "S2D ×0.5 buffer",
-    has: "The ability to inject a large current at the electrode.",
-    desc: "If the modulator saturates, its output freezes at all 1s, so C ⊕ 1 is the keystream in the clear. The S2D buffer halves the input so the loop stays in control. Turn the buffer off (global) to see what happens.",
-    knobs: [{ g: "buffer", t: "seg", label: "S2D buffer (global)", opts: [[0.5, "×0.5 (on)"], [1.0, "×1 (off)"]] },
-      { g: "force_uA", label: "Forced current (global)", min: 0.5, max: 20, step: 0.5, fmt: v => v + " µA" }],
-    run(R) {
-      const D = labDsm(labU(state.force_uA * 1e-6), state.dither_seeds, state.seed);
-      const ones = D.reduce((a, b) => a + b, 0) / LAB_N, run = longestRun(D), guess = ones >= 0.5 ? 1 : 0;
-      const o = (d, Sx) => {
-        const K = Sx.K.subarray(0, LAB_N), C = xorBits(D, K), Kg = C.map(c => c ^ guess);
-        const w = windowAttack(Kg, K, state.seed + 23), raw = 1 - flipFrac(Kg, K, LAB_N), reuse = d === "prop" && raw > 0.97;
-        const br = (w.broken > 0 && d === "base") || (reuse && !state.mac);
-        return { v: br ? "breached" : "safe", head: `Modulator ${pct(ones, 0)} ones, longest run ${run}`,
-          steps: [`Forces ${state.force_uA} µA; the buffer is ${state.buffer === 0.5 ? "on (×0.5)" : "<b>off</b>"}.`,
-            run > 200 ? `The modulator saturates: D is stuck at ${guess}s, so C ⊕ ${guess} is the keystream itself.` : `The loop stays in control: D keeps toggling (longest run ${run} bits), so guessing D = all ${guess}s is wrong most of the time.`,
-            `BM on ${w.tries} windows: ${w.broken} predicted the future keystream.`,
-            d === "base" ? (br ? `The LFSR is recovered: all later data decrypts.` : `No window breaks the LFSR.`) : (reuse ? (state.mac ? `This frame's keystream is in the clear, but the frame counter gives the next frame a fresh one, and the forced reading itself is worthless.` : `This frame's keystream is in the clear, and with counter + MAC off every frame reuses it: all other frames decrypt.`) : `Nothing to learn.`)],
-          plot: { kind: "bits", bits: D.subarray(2000, 2400), on: "D = 1", off: "D = 0", neutral: true } };
-      };
-      return { base: o("base", R.base), prop: o("prop", R.prop) };
-    } },
-
-  { id: "extract", name: "Key extraction from memory", src: "beyond", stop: "No stored key: PUF (proposal)",
-    has: "Physical access to a sensor: de-capping and reading its non-volatile memory (outside the paper's non-invasive model).",
-    desc: "Floating sensors can be fished out of a bioreactor. The original design must keep its pre-shared key in on-chip memory, where it survives power-off and can be read out. The proposal keeps no key: it is rebuilt from the SRAM power-up pattern, which does not exist while the chip is unpowered.",
-    run(R) {
-      return {
-        base: { v: "breached", head: `Reads the key ${hex16(state.key16)} straight out`,
-          steps: [`De-caps the chip and reads the key register / NVM.`, `Gets ${hex16(state.key16)} - the same key the receiver uses.`,
-            `Decrypts every recorded and future frame, and can clone the sensor (see <b>Cloned sensor</b>).`],
-          plot: { kind: "y", series: [[R.yTrue, "true"], [R.yTrue, "eve"]] } },
-        prop: { v: "safe", head: "Nothing secret is stored",
-          steps: [`De-caps the chip: the NVM holds no key, and the SRAM has no power-up pattern while unpowered.`,
-            `The helper data h is public anyway; without w it gives at most ${10 * state.bch_t} of ${PUF_BITS} bits of information.`,
-            `Nothing to decrypt with. (Probing the SRAM of a <i>running</i> chip is a harder, active attack not modelled here.)`],
-          plot: { kind: "y", series: [[R.yTrue, "true"], [R.yFail.prop, "eve"]] } },
-      };
-    } },
-
-  { id: "spoof", name: "Spoofing: forged sensor frames (MITM)", src: "paper", stop: "Unrecoverable key (proposal)",
-    has: "A transmitter in the link (man-in-the-middle) plus the best key it can get with the attacks above.",
-    desc: "The threat the paper warns about: Eve poses as the sensor and feeds the server a fake reading to misinform the bioreactor's control loop. The receiver accepts a frame when the decrypted ID is right. Eve encrypts her fake reading with the best key she can get: the brute-forced key for the original design, a guess for the proposal.",
-    knobs: [{ k: "fake", label: "Fake reading Eve sends", min: -0.9, max: 0.9, step: 0.05, fmt: v => v.toFixed(2) + " µA DC" }],
-    run(R) {
-      const Dfake = labDsm(labU(lab.fake * 1e-6), state.dither_seeds, state.seed + 31), yFake = decodeY(Dfake);
-      const o = (d, Sx, Katt) => {
-        const idOk = Katt.subarray(0, ID_BITS).every((b, i) => b === Sx.ks_rx_all[i]);
-        const y = decodeY(xorBits(xorBits(Dfake, Katt.subarray(ID_BITS)), Sx.K_rx.subarray(0, LAB_N)));
-        return { v: idOk ? "spoofed" : "detected", head: idOk ? "Server shows Eve's fake reading" : "Receiver rejects the frame",
-          steps: [d === "base" ? `Gets the key by brute force (${bfCache ? bfCache.ms.toFixed(0) : "a few"} ms).` : `No attack above yields the 128-bit key, so she has to guess one.`,
-            `Encrypts a fake ${lab.fake.toFixed(2)} µA reading and its ID, and transmits it as the sensor.`,
-            idOk ? `ID check <b>passes</b>. The server's control loop now acts on the fake value.` : `ID check <b>fails</b>${Sx.mac ? " and so does the MAC" : ""}: the frame is dropped and flagged, and its payload decrypts to noise.`],
-          plot: { kind: "y", series: [[R.yTrue, "true"], [yFake, "fake"], [y, "server"]] } };
-      };
-      const Kb = new LFSR16(bfCache && bfCache.found > 0 ? bfCache.found : 1).bits(ID_BITS + LAB_N);
-      const Kp = new NLFSR128(Uint8Array.from({ length: 128 }, (_, i) => makeRng(state.seed + 33 + i).int(2))).bits(ID_BITS + LAB_N);
-      return { base: o("base", R.base, Kb), prop: o("prop", R.prop, Kp) };
-    } },
-
-  { id: "clone", name: "Cloned / counterfeit sensor", src: "beyond", stop: "Unclonable PUF fingerprint",
-    has: "A copy of the chip built from the same design, the public helper data, and the original's key if it can be extracted.",
-    desc: "Eve drops her own chip into the bioreactor and claims to be the real sensor. With a stored key, a clone is only a firmware copy away. With a PUF, the clone's SRAM powers up in its own pattern, which no helper data can turn into the original's key.",
-    knobs: [{ k: "clone", label: "Counterfeit chip number", min: 1, max: 30, step: 1, fmt: v => "#" + v }],
-    run(R) {
-      const Sp = R.prop, t = state.bch_t, puf = new SRAMPUF(state.chip_seed + 500 + lab.clone, PUF_BITS, state.puf_sigma);
-      const wc = puf.read(state.temp, makeRng(state.seed + 41 + lab.clone));
-      const dist = wc.reduce((a, b, i) => a + (b !== Sp.w_enroll[i]), 0);
-      const rc = reconstruct(wc, bitsToSyn(Sp.h_bits, t), t), ok = rc.key.every((b, i) => b === Sp.key_enroll[i]);
-      return {
-        base: { v: "spoofed", head: "Clone accepted as the real sensor",
-          steps: [`Extracts or brute-forces the key ${hex16(state.key16)} (see above).`, `Loads it into a counterfeit chip of the same design.`,
-            `The receiver cannot tell them apart: ID check <b>passes</b>, and the clone can report whatever it likes.`],
-          plot: { kind: "bar", val: 1, max: 1, lim: 0, ok: false, text: "clone's key = real key: identical identity" } },
-        prop: { v: ok ? "spoofed" : "detected", head: `Clone's fingerprint differs in ${dist} of ${PUF_BITS} bits`,
-          steps: [`Counterfeit chip #${lab.clone} powers up: its SRAM pattern differs from the real chip's in <b>${dist}</b> bits.`,
-            `It uses the real chip's public helper data. The decoder can fix at most t = ${t} bits: ${rc.ok ? "it ‘succeeds’ on the wrong codeword" : "it fails"}.`,
-            ok ? `Key matches - should never happen.` : `Key ≠ the enrolled key, so the ID check <b>fails</b>. The clone is rejected.`],
-          plot: { kind: "bar", val: dist, lim: t, max: Math.max(dist, t) * 1.15, ok: dist > t, text: `fingerprint distance (line = t = ${t})` } },
-      };
-    } },
-
-  { id: "htamper", name: "Helper-data tampering", src: "beyond", stop: "key = hash(w) + ID check",
-    has: "Write access to the link that carries the public helper data h at power-up.",
-    desc: "Helper data is public, but it steers the error correction. Flipping bits of h in transit makes the chip 'correct' the wrong bits, so it rebuilds a wrong key. That can't leak data, and the receiver sees the ID fail at once. It is a denial of service, which the paper leaves out of scope. Try it by hand in the workbench below.",
-    knobs: [{ k: "hFlip", label: "Bits of h Eve flips", min: 0, max: 40, step: 1, fmt: v => v + " bits" }],
-    run(R) {
-      const Sp = R.prop, t = state.bch_t, hb = Sp.h_bits.slice(), r = makeRng(state.seed + 51), idx = new Set();
-      while (idx.size < Math.min(lab.hFlip, hb.length)) idx.add(r.int(hb.length));
-      idx.forEach(i => { hb[i] ^= 1; });
-      const rc = reconstruct(Sp.w_noisy, bitsToSyn(hb, t), t), ok = rc.key.every((b, i) => b === Sp.key_enroll[i]);
-      const kd = rc.key.reduce((a, b, i) => a + (b !== Sp.key_enroll[i]), 0);
-      return {
-        base: { v: "na", head: "No helper data in this design", steps: [`The original design has no helper data. Its only secret is the stored key, whose risks are shown above.`] },
-        prop: { v: ok ? "safe" : "detected", head: ok ? "No change: link works" : `Wrong key (${kd}/128 bits differ)`,
-          steps: [`Flips ${lab.hFlip} of the ${hb.length} helper bits on the way to the chip.`,
-            `The decoder ${rc.ok ? "finds a 'valid' but wrong" : "cannot find a"} correction and hashes the result.`,
-            ok ? `With nothing flipped the key is exact.` : `The key differs in ${kd} of 128 bits (a hash spreads any change). The ID check fails and the receiver raises an alarm; no data is exposed.`],
-          plot: { kind: "bar", val: kd, lim: 0, max: 128, neutral: true, text: "chip key bits wrong, of 128" } },
-      };
-    } },
-
-  { id: "hleak", name: "Helper-data leakage", src: "beyond", stop: "Choose t so n − 10t ≥ 128",
-    has: "The public helper data h, which anyone can read.",
-    desc: "h is 10t bits of information about the 600-bit fingerprint. What is left for Eve to guess is at most 600 − 10t bits (for ideal, full-entropy SRAM bits). A stronger code tolerates more noise but publishes more. Move the BCH t (global) and watch the margin.",
-    knobs: [{ g: "bch_t", label: "BCH correction t (global)", min: 10, max: 60, step: 1, fmt: v => v + "" }],
-    run() {
-      const res = PUF_BITS - 10 * state.bch_t;
-      return {
-        base: { v: "na", head: "Nothing public to leak", steps: [`No helper data. The key is only 16 bits long, which is the real problem (see brute force).`] },
-        prop: { v: res >= 128 ? "safe" : "weak", head: `${Math.max(0, res)} bits left for a 128-bit key`,
-          steps: [`Reads h: ${10 * state.bch_t} bits.`, `At most ${PUF_BITS} − ${10 * state.bch_t} = <b>${Math.max(0, res)}</b> bits of the fingerprint remain unknown.`,
-            res >= 128 ? `That is more than the 128-bit key needs, so hash(w) is still a full-strength key.` : `Fewer than 128: the key is now easier to guess than its length suggests. Use a longer PUF or a smaller t.`],
-          plot: { kind: "bar", val: Math.max(0, res), lim: 128, max: PUF_BITS, ok: res >= 128, text: "secret fingerprint bits left (line = 128)" } },
-      };
-    } },
-
-  { id: "replay", name: "Replay of a recorded frame", src: "beyond", stop: () => state.mac ? "Frame counter + MAC (proposal)" : "Neither - turn on counter + MAC",
-    has: "A recording of any valid earlier frame.",
-    desc: "Eve records a frame while the reactor is healthy and plays it back later, hiding a fault. She needs no key. The original design restarts the same keystream from the same key and nothing in the frame changes with time, so it accepts the old frame. The proposal's frame counter fixes this: the receiver only accepts counters higher than the last one, and the counter is protected by the MAC.",
-    knobs: [{ g: "mac", t: "chk", label: "Frame counter + MAC in the proposal (global)" }],
-    run(R) {
-      const now = R.yTrue.map(v => v * 0.4), Sp = R.prop;
-      const o = () => ({ v: "spoofed", head: "Old frame accepted as new",
-        steps: [`Records a valid frame earlier.`, `Later the real reading has dropped to 40% (a fault).`,
-          `Replays the old frame: same key, same keystream, so the ID check <b>passes</b> and the server shows the old, healthy reading.`],
-        plot: { kind: "y", series: [[now, "true"], [R.yTrue, "server"]] } });
-      if (!Sp.mac) { const p = o(); p.steps.push(`The proposal has its counter + MAC turned off, so it is no better here.`); return { base: o(), prop: p }; }
-      const last = Math.max(state.rx_last_ctr, state.frame_ctr), bump = last + 1;
-      const v = macVerify(Sp.key_enroll, Sp.nonce, bump, Sp.enc_id, Sp.C, Sp.tag);
-      return { base: o(), prop: { v: v.ok ? "spoofed" : "detected", head: "Replayed frame rejected",
-        steps: [`Records frame #${state.frame_ctr}; the receiver accepts it and remembers counter ${last}.`,
-          `Replays it unchanged: counter ${state.frame_ctr} ≤ ${last}, so it is <b>stale</b> and dropped.`,
-          `Rewrites the clear counter to ${bump}: the receiver rebuilds the keystream for counter ${bump} and gets tag 0x${v.tag.toString(16).toUpperCase().padStart(8, "0")} ≠ 0x${Sp.tag.toString(16).toUpperCase().padStart(8, "0")} in the frame. <b>Rejected.</b>`,
-          `Replays it after a reboot: the receiver has sent a new session nonce, so the tag fails again.`],
-        plot: { kind: "y", series: [[now, "true"]] } } };
-    } },
-
-  { id: "bitflip", name: "Bit-flipping in transit (malleability)", src: "beyond", stop: () => state.mac ? "MAC over the payload (proposal)" : "Neither - turn on counter + MAC",
-    has: "A man-in-the-middle who can flip bits it forwards, without any key.",
-    desc: "XOR encryption is malleable: flipping a ciphertext bit flips the same bit of D after decryption. Flipping a random fraction p of payload bits scales the recovered reading by about (1 − 2p). The ID check covers only the ID field, so the original design never notices. The proposal's MAC covers every payload bit, so any flip changes the tag the receiver computes.",
-    knobs: [{ k: "flipP", label: "Payload bits Eve flips", min: 0, max: 0.3, step: 0.01, fmt: v => pct(v, 0) }, { g: "mac", t: "chk", label: "Frame counter + MAC in the proposal (global)" }],
-    run(R) {
-      const r = makeRng(state.seed + 61), D = R.base.D.subarray(0, LAB_N), Dm = D.map(b => (r.u() < lab.flipP ? b ^ 1 : b));
-      const y = decodeY(Dm); let num = 0, den = 0;
-      for (let i = 60; i < y.length; i++) { num += y[i] * R.yTrue[i]; den += R.yTrue[i] ** 2; }
-      const g = den > 1e-9 ? num / den : 1 - 2 * lab.flipP;
-      const o = () => ({ v: lab.flipP > 0 ? "spoofed" : "safe", head: lab.flipP > 0 ? `Reading scaled to ${pct(g, 0)}, undetected` : "Nothing flipped",
-        steps: [`Flips ${pct(lab.flipP, 0)} of the payload bits, leaves the header and ID alone.`,
-          `The receiver decrypts correctly, but D has ${pct(lab.flipP, 0)} of its bits inverted.`,
-          lab.flipP > 0 ? `The recovered reading shrinks to ${pct(g, 0)} of its true value, and the ID check still <b>passes</b>.` : `No change.`],
-        plot: { kind: "y", series: [[R.yTrue, "true"], [y, "server"]] } });
-      const Sp = R.prop;
-      if (!Sp.mac || lab.flipP === 0) return { base: o(), prop: o() };
-      const r2 = makeRng(state.seed + 62), Cm = Sp.C.map(b => (r2.u() < lab.flipP ? b ^ 1 : b));
-      const v = macVerify(Sp.key_enroll, Sp.nonce, state.frame_ctr, Sp.enc_id, Cm, Sp.tag);
-      return { base: o(), prop: { v: v.ok ? "spoofed" : "detected", head: "Tampered frame rejected",
-        steps: [`Flips ${pct(lab.flipP, 0)} of the payload bits, leaves the header and ID alone.`,
-          `The receiver recomputes the MAC over what arrived: 0x${v.tag.toString(16).toUpperCase().padStart(8, "0")}, but the frame says 0x${Sp.tag.toString(16).toUpperCase().padStart(8, "0")}.`,
-          `<b>Rejected</b> before the data is used. Eve cannot fix the tag: it depends on secret keystream bits, so a forgery succeeds with probability 2⁻³².`],
-        plot: { kind: "y", series: [[R.yTrue, "true"], [y, "tamper"]] } } };
-    } },
-];
-
-// ---------------------------------------------------------------- compute
-// the live result S is reused whenever it is the run we need
-const labSim = (scheme, attack) => (S && state.scheme === scheme && (state.attack || "none") === attack ? S : simulate({ ...state, scheme, attack, atk: lab }));
-function labWave(R) { R.wave = { base: labSim("baseline", lab.sel), prop: labSim("proposed", lab.sel), id: lab.sel }; }
-function labCompute() {
-  const Sb = labSim("baseline", "none"), Sp = labSim("proposed", "none");      // the matrix judges attacks from the clean link
-  const R = { base: Sb, prop: Sp };
-  R.yTrue = decodeY(Sb.D.subarray(0, LAB_N));
-  const wrongB = new LFSR16((state.key16 ^ 0x5A5A) || 1).bits(ID_BITS + LAB_N).subarray(ID_BITS);
-  const wrongP = new NLFSR128(Uint8Array.from({ length: 128 }, (_, i) => (i * 7 + 3) % 5 < 2 ? 1 : 0)).bits(ID_BITS + LAB_N).subarray(ID_BITS);
-  R.yFail = { base: decodeY(xorBits(Sb.C.subarray(0, LAB_N), wrongB)), prop: decodeY(xorBits(Sp.C.subarray(0, LAB_N), wrongP)) };
-  R.res = {};
-  for (const a of ATTACKS) R.res[a.id] = a.run(R);
-  labWave(R);
-  LR = R;
-}
-function labSchedule() { clearTimeout(labTimer); labTimer = setTimeout(() => { labCompute(); renderLab(); renderBench(); }, 200); }
-function labNow() { clearTimeout(labTimer); labCompute(); renderLab(); renderBench(); }
+function labSchedule() { clearTimeout(labTimer); labTimer = setTimeout(() => ENGINE.lab(), 150); }
+function labNow() { clearTimeout(labTimer); ENGINE.lab(); }
+function onLab(R) { LR = R; renderLab(); renderBench(); }
+function onWave(w) { if (LR && w.id === lab.sel) { LR.wave = w; renderAttackDetail(); } }
 
 // ---------------------------------------------------------------- render: matrix + detail
 function vpill(o) { const [t, c] = VERD[o.v]; return `<span class="vp ${c}">${t}</span>`; }
@@ -2951,7 +1973,7 @@ function renderLab() {
     const go = () => {
       lab.sel = tr.dataset.id;
       if ((state.attack || "none") !== "none") { setAttack(lab.sel); return; }
-      renderLab(); setTimeout(() => { labWave(LR); renderAttackDetail(); }, 0);
+      renderLab(); ENGINE.wave();
     };
     tr.onclick = go; tr.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
   });
@@ -2976,9 +1998,9 @@ function renderAttackDetail() {
       <p class="atk-desc">${a.desc}</p><p class="atk-has"><b>Attacker has:</b> ${a.has}</p></div>
       <button class="tool" id="atkJump" aria-pressed="${live}">${live ? "Running in the live diagram · stop" : "Run it in the live diagram"}</button></div>
     ${knobs ? `<div class="atk-knobs">${knobs}</div>` : ""}
-    <div class="atk-cols">${col("Original design (S-DSM, 16-bit LFSR, stored key)", r.base)}${col("With our proposal (SRAM PUF, fuzzy extractor, 128-bit NLFSR)", r.prop)}</div>
+    <div class="atk-cols">${col("Original design (S-DSM, 16-bit LFSR, stored key)", r.base)}${col("With our proposal (SRAM PUF, fuzzy extractor, Grain-128a)", r.prop)}</div>
     <div class="wave-head"><h4>Waveforms at every block during this attack</h4><p>The full link model run with the attack in place, same instant in both designs: 200 clocks of bits at each stage, then the readings the server and Eve end up with. Run it in the live diagram to watch it move.</p></div>
-    <div class="atk-cols">${["base", "prop"].map(d => `<div class="atk-col"><h4>${d === "base" ? "Original design" : "With our proposal"}</h4>${wv ? `<canvas class="wv" data-d="${d}"></canvas><div class="legend">${legend([["analog", COL.sig()], ["data bits", CSS("--ink")], ["key / Eve", COL.key()]])}<span><i class="swatch" style="background:${COL.warn()};height:8px;width:8px"></i>Eve's bit wrong</span></div>` : `<p class="hint">Computing…</p>`}</div>`).join("")}</div>`;
+    <div class="atk-cols">${["base", "prop"].map(d => `<div class="atk-col"><h4>${d === "base" ? "Original design" : "With our proposal"}</h4>${wv ? `<canvas class="wv" data-d="${d}"></canvas><div class="legend">${legend([["analog", COL.sig()], ["data bits", CSS("--ink")], ["key / Eve", COL.key()]])}<span><i class="swatch" style="background:${COL.bad()};height:8px;width:8px"></i>Eve's bit wrong</span></div>` : `<p class="hint">Computing…</p>`}</div>`).join("")}</div>`;
   el.querySelectorAll("[data-kn]").forEach(inp => {
     const k = a.knobs[+inp.dataset.kn], key = k.g || k.k, obj = k.g ? state : lab;
     const apply = v => { obj[key] = v; if (k.g || (state.attack || "none") !== "none") { if (k.g) buildControls(); schedule(); } else labNow(); };
@@ -2997,6 +2019,7 @@ function renderAttackDetail() {
 
 // one design's whole chain under the attack: bit-level rows over 200 clocks, then the readings
 function drawBlockWaves(c, Sx) {
+  ariaImg(c, `Signals at each block under the attack: modulator bits, keystream, ciphertext${Sx.atk && Sx.atk.khat ? ", Eve's keystream guess" : ""}, receiver bits, then the readings. The receiver ${Sx.accepted ? "accepts" : "rejects"} the frame; verdict ${VERD[(Sx.atk || { v: "na" }).v][0]}.`);
   const E = Sx.atk || {}, ink = CSS("--ink"), key = COL.key(), sig = COL.sig(), W = 200, k0 = DG_K0 + 100;
   const pk = Math.max(1e-9, peakAbs(Sx.i_sense, 3000));
   const rows = [["sensor current", "a", i => Sx.i_sense[i] / pk, sig], ["modulator bits D", "d", i => Sx.D[i], ink], ["keystream K", "d", i => Sx.K[i], key],
@@ -3019,7 +2042,7 @@ function drawBlockWaves(c, Sx) {
   rows.forEach(([name, kind, f, col], r) => {
     const top = top0 + r * RH, mid = top + RH / 2, hi = top + 5, lo = top + RH - 6;
     ctx.fillStyle = COL.ink(); ctx.textAlign = "right"; ctx.fillText(name, L - 8, mid);
-    if (kind === "k") for (let i = 0; i < W; i++) if (f(k0 + i) !== Sx.K[k0 + i]) { ctx.fillStyle = COL.warn(); ctx.globalAlpha = 0.3; ctx.fillRect(X(i), top + 2, Math.max(1, X(1) - X(0)), RH - 5); ctx.globalAlpha = 1; }
+    if (kind === "k") for (let i = 0; i < W; i++) if (f(k0 + i) !== Sx.K[k0 + i]) { ctx.fillStyle = COL.bad(); ctx.globalAlpha = 0.45; ctx.fillRect(X(i), top + 2, Math.max(1, X(1) - X(0)), RH - 5); ctx.globalAlpha = 1; }
     ctx.strokeStyle = col; ctx.lineWidth = 1.3; ctx.beginPath();
     for (let i = 0; i < W; i++) {
       const v = f(k0 + i);
@@ -3053,6 +2076,8 @@ function drawBlockWaves(c, Sx) {
 const SERIES = { true: ["true reading", () => COL.faint(), [5, 4]], eve: ["what Eve decrypts", () => COL.key()], fake: ["Eve's fake reading", () => COL.sig(), [3, 3]], tamper: ["what Eve tried to deliver (rejected)", () => COL.sig(), [3, 3]], server: ["what the server shows", () => COL.key()] };
 function drawAtkPlot(c, p) {
   const g = dpiCanvas(c, 150), ctx = g.ctx, lg = c.nextElementSibling;
+  ariaImg(c, { y: () => "Readings over time: " + p.series.map(([, s]) => SERIES[s][0]).join(", "), bits: () => `${p.bits.length} consecutive bits, ${(p.bits.reduce((a, b) => a + b, 0) / p.bits.length * 100).toFixed(1)}% ${p.on}`,
+    lc: () => `Linear complexity of the keystream after each bit; Eve knows ${p.m} bits`, fail: () => "Decoder failure rate against the error weight Eve injects", bar: () => p.text + (p.max > 1 ? `: ${p.val}` : "") }[p.kind]());
   if (p.kind === "y") {
     const off = 100, W = 400; let pk = 0.05;
     for (const [y] of p.series) for (let i = off; i < off + W && i < y.length; i++) pk = Math.max(pk, Math.abs(y[i]));
@@ -3067,7 +2092,7 @@ function drawAtkPlot(c, p) {
   } else if (p.kind === "bits") {
     ctx.clearRect(0, 0, g.w, g.h);
     const n = p.bits.length, cols = 100, rows = Math.ceil(n / cols), cw = (g.w - 4) / cols, ch = Math.min(28, (g.h - 30) / rows);
-    const on = p.neutral ? CSS("--ink") : COL.warn(), off = p.neutral ? COL.grid() : COL.good();
+    const on = p.neutral ? CSS("--ink") : COL.bad(), off = p.neutral ? COL.grid() : COL.ok();
     for (let i = 0; i < n; i++) { ctx.fillStyle = p.bits[i] ? on : off; ctx.fillRect(2 + (i % cols) * cw, 4 + Math.floor(i / cols) * (ch + 3), Math.max(1, cw - 1), ch); }
     const f = p.bits.reduce((x, y) => x + y, 0) / n;
     ctx.fillStyle = COL.ink(); ctx.font = "11px " + CSS("--mono"); ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
@@ -3079,11 +2104,17 @@ function drawAtkPlot(c, p) {
     line(ctx, null, Array.from(p.prof), a.X, a.Y, COL.key(), 2);
     ctx.strokeStyle = COL.sig(); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(a.X(Math.min(p.m, n)), 8); ctx.lineTo(a.X(Math.min(p.m, n)), g.h - 26); ctx.stroke();
     lg.innerHTML = legend([["linear complexity L", COL.key()], ["random sequence (n/2)", COL.faint()], ["bits Eve knows", COL.sig()]]);
+  } else if (p.kind === "fail") {              // decoder failure rate against the weight Eve injects
+    const a = axes(ctx, g.w, g.h, { l: 40, r: 10, t: 8, b: 26 }, [0, p.ws[p.ws.length - 1] + 1], [0, 1], { ny: 2, yfmt: v => (v * 100).toFixed(0) + "%", xlabel: "error weight Eve injects" });
+    const bw = Math.max(1, a.X(1) - a.X(0) - 1);
+    ctx.fillStyle = COL.sig(); p.ws.forEach((w, i) => { const v = p.rate[i]; ctx.fillRect(a.X(w) - bw / 2, a.Y(v), bw, a.Y(0) - a.Y(v)); });
+    ctx.strokeStyle = COL.ink(); ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(a.X(p.t), 8); ctx.lineTo(a.X(p.t), g.h - 26); ctx.stroke(); ctx.setLineDash([]);
+    lg.innerHTML = legend([["decoder fails (same for any fingerprint)", COL.sig()]]) + `<span><i class="swatch dashed" style="border-color:${COL.ink()}"></i>t</span>`;
   } else if (p.kind === "bar") {
     ctx.clearRect(0, 0, g.w, g.h);
     const L = 10, R = g.w - 10, X = v => L + Math.min(1, v / p.max) * (R - L), y0 = 50;
     ctx.fillStyle = COL.grid(); ctx.fillRect(L, y0, R - L, 26);
-    ctx.fillStyle = p.neutral ? COL.sig() : p.ok ? COL.good() : COL.warn();
+    ctx.fillStyle = p.neutral ? COL.sig() : p.ok ? COL.ok() : COL.bad();
     ctx.fillRect(L, y0, X(p.val) - L, 26);
     if (p.lim > 0) { ctx.strokeStyle = COL.ink(); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(p.lim), y0 - 8); ctx.lineTo(X(p.lim), y0 + 34); ctx.stroke(); }
     ctx.fillStyle = COL.ink(); ctx.font = "12px " + CSS("--mono"); ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
@@ -3123,7 +2154,7 @@ function renderBench() {
   const hexDiff = [...kHex].map((c, i) => c === kHex0[i] ? c : `<b class="warn">${c}</b>`).join("");
   let noiseErr = 0;
   for (let i = 0; i < PUF_BITS; i++) noiseErr += (Sp.w_noisy[i] ^ (forced.has(i) ? 1 : 0)) !== Sp.w_enroll[i];
-  const residual = PUF_BITS - 10 * t;
+  const residual = pufResidual(state);
   const step = (k, v, ok, d) => `<div class="bstep"><div class="k">${k}</div><div class="v ${ok == null ? "" : ok ? "good" : "warn"}">${v}</div><div class="d">${d}</div></div>`;
   const src = state.h_source;
   const ksC = Sb.ks_all, ksR = Sb.ks_rx_all;
@@ -3157,8 +2188,8 @@ function renderBench() {
           <button class="tool" id="pPlus">Force ${Math.max(1, t + 1 - Sp.n_err_true)} more flip${t + 1 - Sp.n_err_true === 1 ? "" : "s"} (exceed t)</button><button class="tool" id="pClear">Undo my cell edits</button>
         </div>
         <div class="pgrid">${cells}</div>
-        <div class="legend">${legend([["error fixed by the decoder", COL.good()], ["error the decoder missed", COL.warn()]])}<span><i class="swatch mis"></i>good bit the decoder wrongly flipped</span><span><i class="swatch you"></i>flipped by you</span></div>
-        <div class="leak"><div><b>${Math.max(0, residual)}</b> fingerprint bits stay secret after publishing h (600 − 10t); a 128-bit key needs ≥ 128.</div>
+        <div class="legend">${legend([["error fixed by the decoder", COL.ok()], ["error the decoder missed", COL.bad()]])}<span><i class="swatch mis"></i>good bit the decoder wrongly flipped</span><span><i class="swatch you"></i>flipped by you</span></div>
+        <div class="leak"><div><b>${Math.max(0, residual)}</b> fingerprint bits stay secret after publishing h (600 × ${minEntBit(state.puf_bias).toFixed(3)} − 10t, for cell bias ${state.puf_bias.toFixed(2)}); a 128-bit key needs ≥ 128. A power-up like this one gets the key wrong with probability <b>${fmtE(Sp.key_fail)}</b>.</div>
           <div class="track"><i style="width:${Math.max(0, residual) / PUF_BITS * 100}%" class="${residual >= 128 ? "good" : "warn"}"></i><em style="left:${128 / PUF_BITS * 100}%"></em></div></div>
       </div>
 
@@ -3222,13 +2253,446 @@ function renderBench() {
 // ===== LAB-END =====
 </script>
 <script>
+// ===== EXTRA-START =====
+// Analysis sections (paper vs model, PUF reliability, sweeps, cost), shareable links, exports.
+// Heavy work runs as worker tasks; each section reruns when it is on screen and the settings changed.
+
+// ---------------------------------------------------------------- sequential ramp (one hue, light -> dark on light surfaces)
+const SEQ = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"];
+const dark = () => document.documentElement.getAttribute("data-theme") === "dark";
+const seqColor = f => { const r = dark() ? SEQ.slice().reverse() : SEQ; return r[Math.max(0, Math.min(r.length - 1, Math.round(f * (r.length - 1))))]; };
+const fmtE = v => (v <= 0 ? "0" : v < 1e-3 ? v.toExponential(1) : v < 0.01 ? v.toFixed(4) : v.toFixed(3));
+
+// ---------------------------------------------------------------- section manager
+const CARDS = [];
+function card(id, task, args, render) {
+  const c = { id, task, args, render, stale: true, visible: false, out: null };
+  CARDS.push(c);
+  return c;
+}
+function runCard(c) {
+  c.stale = false;
+  const el = document.getElementById(c.id + "Status"); if (el) el.textContent = "computing…";
+  ENGINE.task(c.task, c.args(), r => {
+    if (r.type === "progress") { if (el) el.textContent = `computing… ${Math.round(r.p * 100)}%`; return; }
+    c.out = r.out; if (el) el.textContent = ""; c.render(c.out);
+  });
+}
+let cardTimer = null;
+function cardsStale() {                       // called after every settings change
+  CARDS.forEach(c => { c.stale = true; });
+  clearTimeout(cardTimer);
+  cardTimer = setTimeout(() => CARDS.forEach(c => { if (c.visible) runCard(c); }), 500);
+}
+function watchCards() {
+  const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+    const c = CARDS.find(x => x.id === e.target.id); if (!c) return;
+    c.visible = e.isIntersecting; if (c.visible && c.stale) runCard(c);
+  }), { rootMargin: "200px" }) : null;
+  CARDS.forEach(c => { const el = document.getElementById(c.id); if (io && el) io.observe(el); else { c.visible = true; runCard(c); } });
+}
+
+// small drawing helpers shared by the sections
+function hatch(ctx, x, y, w, h, col) {        // 45° lines: the texture channel for "breached" cells
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.strokeStyle = col; ctx.lineWidth = 1.4;
+  for (let d = -h; d < w; d += 6) { ctx.beginPath(); ctx.moveTo(x + d, y + h); ctx.lineTo(x + d + h, y); ctx.stroke(); }
+  ctx.restore();
+}
+function tipFor(canvas, find) {               // hover tooltip: find(x, y) -> html or null
+  let tip = canvas.parentElement.querySelector(".ctip");
+  if (!tip) { tip = document.createElement("div"); tip.className = "ctip"; tip.hidden = true; canvas.parentElement.appendChild(tip); canvas.parentElement.style.position = "relative"; }
+  canvas.onmousemove = e => {
+    const r = canvas.getBoundingClientRect(), h = find(e.clientX - r.left, e.clientY - r.top);
+    if (!h) { tip.hidden = true; return; }
+    tip.innerHTML = h; tip.hidden = false;
+    const x = e.clientX - r.left + canvas.offsetLeft, y = e.clientY - r.top + canvas.offsetTop;
+    tip.style.left = Math.min(x + 14, canvas.offsetLeft + r.width - tip.offsetWidth - 4) + "px"; tip.style.top = Math.max(0, y - tip.offsetHeight - 10) + "px";
+  };
+  canvas.onmouseleave = () => { tip.hidden = true; };
+}
+const ariaImg = (c, label) => { c.setAttribute("role", "img"); c.setAttribute("aria-label", label); };
+
+// ---------------------------------------------------------------- paper vs model
+function buildPaperCard() {
+  document.getElementById("paperModel").innerHTML = `
+    <div class="dg-head"><div><h2>The paper's measurements next to this model</h2>
+      <p>What the ESSERC'25 chip measured, what this behavioural model gives with the current settings, and how the model gets there. The two-channel tests of Fig. 4(c) are rerun live and split up by what makes two identical channels disagree.</p></div><span class="card-status" id="paperModelStatus"></span></div>
+    <div id="paperBody"><p class="hint">Scroll here to run the comparison.</p></div>`;
+}
+function renderPaper(o) {
+  const cur = o.rows[0], pc = v => (v * 100).toFixed(1) + "%";
+  const rng = makeRng(4242), N = o.nBytes, cnt = new Float64Array(256);   // an ideal random source of the same length, for the finite-sample bias
+  for (let i = 0; i < N; i++) cnt[rng.int(256)]++;
+  let Hi = 0; for (const c of cnt) if (c) { const q = c / N; Hi -= q * Math.log2(q); }
+  const ph = Math.max(...cnt) / N, mcvI = -Math.log2(Math.min(1, ph + 2.576 * Math.sqrt(ph * (1 - ph) / (N - 1)))) / 8;
+  const pw = PAPER.power, base = pw.fe + pw.tia + pw.s2d + pw.dsm;
+  const eRows = PAPER.energy.map(([osr, dr, sr, tri, sd]) => {
+    const t = energyWords(sr, pw.trivium) * 1e6, d = energySDSM(osr, pw.sdsm) * 1e6;
+    return `<tr><td class="n">${osr}</td><td class="n">${dr}</td><td class="n">${sr}</td><td class="n">${tri} / <b>${t.toFixed(2)}</b></td><td class="n">${sd} / <b>${d.toFixed(2)}</b></td><td class="n">${(tri / sd).toFixed(2)}× / <b>${(t / d).toFixed(2)}×</b></td></tr>`;
+  }).join("");
+  const rowName = r => `${r.at === "feedback" ? "feedback dither" : r.dither ? "dither" : "no dither"}, ${r.noise ? "thermal noise" : "no noise"}, ${r.mismatch ? r.mismatch.toFixed(2) + "% mismatch" : "no mismatch"}`;
+  document.getElementById("paperBody").innerHTML = `
+    <div class="pm-grid">
+      <div><h4>Measured vs modelled</h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>Quantity</th><th>Paper (measured)</th><th>This model</th><th>How</th></tr>
+        <tr><td>Bit flips between two channels, zero input</td><td class="n">50.05%</td><td class="n"><b>${pc(cur.zero)}</b></td><td>computed live (two channels, ${o.mm.toFixed(2)}% mismatch)</td></tr>
+        <tr><td>Bit flips, same message and same key</td><td class="n">49.8%</td><td class="n"><b>${pc(cur.same)}</b></td><td>computed live</td></tr>
+        <tr><td>Shannon entropy of the ciphertext</td><td class="n">0.9999978907 bit/bit<br><small>120 MB</small></td><td class="n"><b>${o.shannon.toFixed(5)}</b><br><small>${(o.nBytes / 1024).toFixed(1)} kB; a perfect source this long: ${(Hi / 8).toFixed(5)}</small></td><td>8-bit symbols; short samples read low</td></tr>
+        <tr><td>Min-entropy</td><td class="n">0.907679 bit/bit<br><small>SP 800-90B non-IID, all estimators</small></td><td class="n"><b>${o.mcv.toFixed(3)}</b><br><small>perfect source this long: ${mcvI.toFixed(3)}</small></td><td>only the MCV estimator (§6.3.1)</td></tr>
+        <tr><td>Integrated input noise</td><td class="n">9.48 pA rms, 100 kHz</td><td class="n">${(o.noise * 1e5).toFixed(1)}×10⁻⁵ FS per clock</td><td>derived: 9.48 pA × R<sub>TIA</sub> × 0.5 / 0.6 V, spread over 5 MHz</td></tr>
+        <tr><td>Clock, OSR, TIA gains</td><td class="n">10 MHz, 50, 3.30 / 31.81 / 321.88 / 3055.22 kΩ</td><td class="n">same</td><td>by construction</td></tr>
+        <tr><td>Security power (Fig. 4a)</td><td class="n">S-DSM 24 µW (1.8%), Trivium 220 µW (16.27%)</td><td class="n">used as given</td><td>calibrates the cost section</td></tr>
+        <tr><td>SNDR with dither at the comparator / in the feedback</td><td class="n">not reported</td><td class="n">${o.sndr.comparator.toFixed(1)} / ${o.sndr.feedback.toFixed(1)} dB</td><td>the paper says dither does not disrupt the signal, which fits the comparator</td></tr>
+        <tr><td>Dynamic range, noise floor, area, glucose / E. coli</td><td class="n">140.55 dB, 9.48 pA, 0.39 mm², R² 0.9981</td><td class="n">not modelled</td><td>analog front end and biology are out of scope</td></tr></table></div>
+      <h4>Fig. 4(b) energy table, reproduced <small>paper / <b>this page</b></small></h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>OSR</th><th>DR</th><th>SR/NR</th><th>Trivium µJ</th><th>S-DSM µJ</th><th>ratio</th></tr>${eRows}</table></div>
+      <p class="hint">E = bits sent × 15.5 nJ (3.1 mW radio at 200 kb/s [10]) + security power × 100 µs, for 20 Nyquist-rate samples: the S-DSM sends OSR bits per sample, the Trivium design 16-bit words at SR/NR per sample. This reproduces every entry to within 0.03 µJ, so it is the model the cost section extends.</p></div>
+      <div><h4>What makes two identical channels disagree <small>same input, same key, different dither sequence (Fig. 4c setup)</small></h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>Channels differ by</th><th>zero input</th><th>same message</th></tr>
+        ${o.rows.map(r => `<tr><td>${rowName(r)}</td><td class="n">${pc(r.zero)}</td><td class="n">${pc(r.same)}</td></tr>`).join("")}</table></div>
+      <canvas id="calTrace" data-h="210"></canvas><div class="legend" id="calLegend"></div>
+      <div class="explain" style="margin-top:10px">${calibText(o)}</div></div>
+    </div>`;
+  drawCalTrace(o);
+}
+function calibText(o) {
+  const f = (d, nz, mm, at = "comparator") => o.rows.find(r => r.dither === d && !!r.noise === nz && !!r.mismatch === mm && r.at === at);
+  const pc = v => (v * 100).toFixed(1) + "%", all = f(true, true, true), only = f(true, false, false), none = f(false, false, false), nz = f(true, true, false), mm = f(true, false, true);
+  return `<b>Reading it.</b> With everything a real pair of channels has (dither, thermal noise, ${o.mm.toFixed(2)}% mismatch) the model gives ${pc(all.zero)} and ${pc(all.same)}, close to the paper's 50.05% and 49.8%.
+    Take it apart and the mismatch does most of the work (${pc(mm.same)} on its own with dither), thermal noise next (${pc(nz.same)}), and dither alone only ${pc(only.same)}, though that still beats ${pc(none.same)} without it, where two noiseless channels lock onto the same limit cycle.
+    So in this model, dither's job is to break limit cycles and add a little randomness; what keeps a replica from matching the chip is noise and mismatch that no one can copy. Placing the dither in the feedback path would decorrelate on its own but costs ${(o.sndr.comparator - o.sndr.feedback).toFixed(0)} dB of SNDR.`;
+}
+function drawCalTrace(o) {
+  const c = document.getElementById("calTrace"); if (!c) return;
+  const g = dpiCanvas(c, 210), ctx = g.ctx, pick = [[true, true, true, "all three (real chip)"], [true, false, true, "dither + mismatch"], [true, true, false, "dither + thermal noise"], [true, false, false, "dither only"]];
+  const cols = dark() ? ["#3987e5", "#d95926", "#199e70", "#c98500"] : ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"];
+  const cum = tr => { let s = 0; return Array.from(tr, (v, i) => (s += v) / (i + 1)); };     // flip rate averaged from the start
+  const series = pick.map(([d, nz, mm, name], i) => ({ name, col: cols[i], tr: cum(o.rows.find(r => r.dither === d && !!r.noise === nz && !!r.mismatch === mm && r.at === "comparator").trace) }));
+  const n = series[0].tr.length, a = axes(ctx, g.w, g.h, { l: 40, r: 10, t: 10, b: 30 }, [0, n - 1], [0, 0.6], { ny: 3, yfmt: v => (v * 100).toFixed(0) + "%", xlabel: "clocks since start (×500), same-message test: running average" });
+  ctx.setLineDash([4, 4]); line(ctx, [0, n], [0.498, 0.498], a.X, a.Y, COL.faint(), 1); ctx.setLineDash([]);
+  ctx.fillStyle = COL.faint(); ctx.font = "11px " + CSS("--sans"); ctx.textAlign = "right"; ctx.fillText("paper: 49.8%", g.w - 12, a.Y(0.498) - 5);
+  series.forEach(s => line(ctx, null, Array.from(s.tr), a.X, a.Y, s.col, 2));
+  document.getElementById("calLegend").innerHTML = legend(series.map(s => [s.name, s.col]));
+  ariaImg(c, "Bit-flip probability between two channels over time for four cases: " + series.map(s => `${s.name} ends near ${(s.tr[s.tr.length - 1] * 100).toFixed(0)}%`).join("; "));
+  tipFor(c, x => { const i = Math.round((x - 40) / (g.w - 50) * (n - 1)); if (i < 0 || i >= n) return null; return `first ${((i + 1) * 500).toLocaleString()} clocks<br>` + series.map(s => `${s.name}: <b>${(s.tr[i] * 100).toFixed(1)}%</b>`).join("<br>"); });
+}
+
+// ---------------------------------------------------------------- PUF reliability
+function buildPufCard() {
+  document.getElementById("pufRel").innerHTML = `
+    <div class="dg-head"><div><h2>PUF reliability: how often does a power-up get the key wrong?</h2>
+      <p>One power-up says the key is right or wrong; a product needs the probability. For this chip, each cell's chance of flipping follows from its mismatch, the temperature and its age, and the chance of more than t flips is computed exactly. A Monte Carlo run of thousands of power-ups checks it. Bias and ageing are in the sidebar under PUF + key.</p></div><span class="card-status" id="pufRelStatus"></span></div>
+    <div id="pufBody"><p class="hint">Scroll here to run it.</p></div>`;
+}
+function renderPuf(o) {
+  const target = 1e-6, cur = o.curves.find(c => c.t === o.t), Tmax = (() => { let m = null; o.temps.forEach((T, i) => { if (cur.p[i] < target) m = T; }); return m; })();
+  const mcRate = o.fails / o.N, h = minEntBit(state.puf_bias), res = pufResidual(state);
+  document.getElementById("pufBody").innerHTML = `
+    <div class="bchain">
+      ${pstep("Key fails, this power-up's conditions", fmtE(o.pNow), o.pNow < target, `${o.temp} °C, t = ${o.t}${o.age ? `, ${o.age} years old` : ""}`)}
+      ${pstep("Monte Carlo check", `${o.fails} / ${o.N.toLocaleString()}`, null, o.pNow * o.N < 0.05 ? "expected ≈ 0 at this rate" : `expected ≈ ${(o.pNow * o.N).toFixed(1)}`)}
+      ${pstep("Hottest it stays below 10⁻⁶", Tmax == null ? "none" : `${Tmax} °C`, Tmax != null && Tmax >= 85, `with t = ${o.t}`)}
+      ${pstep("Secret bits left after h", res, res >= 128, `600 × ${h.toFixed(3)} − 10t, need 128`)}
+    </div>
+    <div class="pm-grid">
+      <div><h4>Key failure probability against temperature</h4><canvas id="pufCurve" data-h="250"></canvas><div class="legend" id="pufLegend"></div></div>
+      <div><h4>Flipped cells per power-up at ${o.temp} °C <small>bars: ${o.N.toLocaleString()} simulated power-ups; line: exact distribution</small></h4><canvas id="pufHist" data-h="250"></canvas><div class="legend" id="pufHLegend"></div></div>
+    </div>
+    <p class="hint">Typical key generators aim for a failure rate of 10⁻⁶ or lower per power-up. A larger t pushes the curve down but publishes more helper data; the sweep section maps both limits at once.</p>`;
+  drawPufCurve(o, target); drawPufHist(o);
+}
+const pstep = (k, v, ok, d) => `<div class="bstep"><div class="k">${k}</div><div class="v ${ok == null ? "" : ok ? "good" : "warn"}">${v}</div><div class="d">${d}</div></div>`;
+function drawPufCurve(o, target) {
+  const c = document.getElementById("pufCurve"), g = dpiCanvas(c, 250), ctx = g.ctx, lg = v => Math.max(-24, Math.log10(Math.max(v, 1e-30)));
+  const cols = dark() ? ["#3987e5", "#d95926", "#199e70"] : ["#2a78d6", "#eb6834", "#1baf7a"];
+  const a = axes(ctx, g.w, g.h, { l: 52, r: 12, t: 10, b: 30 }, [o.temps[0], o.temps[o.temps.length - 1]], [-24, 0], { ny: 4, yfmt: v => "1e" + v.toFixed(0), xlabel: "temperature (°C)" });
+  ctx.fillStyle = dark() ? "rgba(57,135,229,.18)" : "rgba(42,120,214,.14)"; ctx.beginPath();     // spread over 16 other chips
+  o.temps.forEach((T, i) => { const y = a.Y(lg(o.band[i][1])); i ? ctx.lineTo(a.X(T), y) : ctx.moveTo(a.X(T), y); });
+  for (let i = o.temps.length - 1; i >= 0; i--) ctx.lineTo(a.X(o.temps[i]), a.Y(lg(o.band[i][0])));
+  ctx.closePath(); ctx.fill();
+  ctx.setLineDash([5, 4]); line(ctx, [o.temps[0], o.temps[o.temps.length - 1]], [-6, -6], a.X, a.Y, COL.faint(), 1); ctx.setLineDash([]);
+  ctx.fillStyle = COL.faint(); ctx.font = "11px " + CSS("--sans"); ctx.textAlign = "left"; ctx.fillText("10⁻⁶ target", a.X(o.temps[0]) + 4, a.Y(-6) - 4);
+  o.curves.forEach((cv, i) => line(ctx, o.temps, cv.p.map(lg), a.X, a.Y, cols[i], cv.t === o.t ? 2.4 : 1.6));
+  ctx.strokeStyle = COL.ink(); ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(a.X(o.temp), 10); ctx.lineTo(a.X(o.temp), g.h - 30); ctx.stroke(); ctx.setLineDash([]);
+  document.getElementById("pufLegend").innerHTML = legend(o.curves.map((cv, i) => [`this chip, t = ${cv.t}`, cols[i]])) + `<span><i class="swatch" style="background:${dark() ? "rgba(57,135,229,.4)" : "rgba(42,120,214,.3)"};height:9px"></i>16 other chips, t = ${o.t}</span>`;
+  ariaImg(c, `Key failure probability against temperature for t = ${o.curves.map(cv => cv.t).join(", ")}; at ${o.temp} °C and t = ${o.t} it is ${fmtE(o.pNow)}.`);
+  tipFor(c, x => { const T = o.temps[0] + (x - 52) / (g.w - 64) * (o.temps[o.temps.length - 1] - o.temps[0]), i = Math.round((T - o.temps[0]) / 5); if (i < 0 || i >= o.temps.length) return null; return `<b>${o.temps[i]} °C</b><br>` + o.curves.map(cv => `t = ${cv.t}: ${fmtE(cv.p[i])}`).join("<br>") + `<br>other chips: ${fmtE(o.band[i][0])} – ${fmtE(o.band[i][1])}`; });
+}
+function drawPufHist(o) {
+  const c = document.getElementById("pufHist"), g = dpiCanvas(c, 250), ctx = g.ctx;
+  let lo = 0, hi = PUF_BITS; for (let k = 0; k <= PUF_BITS; k++) if (o.dist[k] > 1e-6 || o.hist[k]) { lo = k; break; }
+  for (let k = PUF_BITS; k >= 0; k--) if (o.dist[k] > 1e-6 || o.hist[k]) { hi = k; break; }
+  lo = Math.max(0, Math.min(lo, o.t) - 3); hi = Math.max(hi, o.t) + 3;
+  let pk = 0; for (let k = lo; k <= hi; k++) pk = Math.max(pk, o.dist[k], o.hist[k] / o.N);
+  const a = axes(ctx, g.w, g.h, { l: 44, r: 12, t: 10, b: 30 }, [lo - 0.5, hi + 0.5], [0, pk * 1.15], { ny: 3, yfmt: v => (v * 100).toFixed(0) + "%", xlabel: "flipped cells" });
+  const bw = Math.max(1, (a.X(1) - a.X(0)) - 2);
+  ctx.fillStyle = COL.sig();
+  for (let k = lo; k <= hi; k++) { const v = o.hist[k] / o.N; if (v > 0) ctx.fillRect(a.X(k) - bw / 2, a.Y(v), bw, a.Y(0) - a.Y(v)); }
+  const ks = [], vs = []; for (let k = lo; k <= hi; k++) { ks.push(k); vs.push(o.dist[k]); }
+  line(ctx, ks, vs, a.X, a.Y, COL.bad(), 2);
+  ctx.strokeStyle = COL.ink(); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(a.X(o.t + 0.5), 10); ctx.lineTo(a.X(o.t + 0.5), g.h - 30); ctx.stroke();
+  ctx.fillStyle = COL.ink(); ctx.textAlign = "right"; ctx.font = "11px " + CSS("--sans"); ctx.fillText(`t = ${o.t}: more fails`, a.X(o.t + 0.5) - 4, 22);
+  document.getElementById("pufHLegend").innerHTML = legend([["simulated power-ups", COL.sig()], ["exact distribution", COL.bad()]]);
+  ariaImg(c, `Distribution of flipped cells per power-up at ${o.temp} °C, simulated and exact; the decoder fixes up to ${o.t}.`);
+  tipFor(c, x => { const k = Math.round(lo - 0.5 + (x - 44) / (g.w - 56) * (hi - lo + 1)); if (k < lo || k > hi) return null; return `<b>${k} flipped cells</b><br>simulated: ${(o.hist[k] / o.N * 100).toFixed(2)}%<br>exact: ${(o.dist[k] * 100).toFixed(2)}%`; });
+}
+
+// ---------------------------------------------------------------- sweeps
+const SWEEPS = {
+  replica: { name: "Replica attack: dither strength × replica mismatch", xl: "dither strength (×ref, 0 = off)", yl: "replica mismatch (% FS)", zl: "replica bits wrong", fx: v => v ? v.toFixed(3) : "off", fy: v => v + "%", fz: v => (v * 100).toFixed(1) + "%", zmax: 0.5,
+    note: "Each cell runs the attack lab's zero/DC replica experiment. Bottom rows are a replica trimmed closer to the chip than any real one could be." },
+  saturate: { name: "Saturation attack: buffer gain × forced current", xl: "S2D buffer gain", yl: "forced current (µA)", zl: "longest run of equal bits", fx: v => "×" + v, fy: v => v + " µA", fz: v => v.toFixed(0), log: true,
+    note: "Each cell forces the input and checks whether 'D is stuck' gives the keystream away. The design point is the ×0.5 column." },
+  puf: { name: "PUF key: temperature × BCH strength t", xl: "temperature (°C)", yl: "BCH correction t", zl: "P(key fails)", fx: v => v + "°", fy: v => v, fz: fmtE, logp: true,
+    note: "Exact failure probability per power-up. Hatched rows publish so much helper data that fewer than 128 secret bits remain. The outlined region is the design window: below 10⁻⁶ and at least 128 secret bits." },
+};
+function buildSweepCard() {
+  document.getElementById("sweeps").innerHTML = `
+    <div class="dg-head"><div><h2>Sweeps: where each design's security boundary lies</h2>
+      <p>The attack lab answers one point at a time. Here a whole grid is run, so you can see how far the current settings are from the edge. The ring marks the current settings. Hover a cell for its numbers, or switch to the table.</p></div><span class="card-status" id="sweepsStatus"></span></div>
+    <div class="bench-tools"><div class="seg" id="swKind">${Object.entries(SWEEPS).map(([k, v]) => `<button data-k="${k}" aria-pressed="${k === sweepKind}">${v.name.split(":")[0]}</button>`).join("")}</div>
+      <label class="chk inl"><input type="checkbox" id="swTable"> show as a table</label><button class="tool" id="swPng">Download PNG</button></div>
+    <div id="sweepBody"><p class="hint">Scroll here to run it.</p></div>`;
+  document.querySelectorAll("#swKind button").forEach(b => { b.onclick = () => { sweepKind = b.dataset.k; document.querySelectorAll("#swKind button").forEach(x => x.setAttribute("aria-pressed", x === b)); runCard(SWEEP_CARD); }; });
+  document.getElementById("swTable").onchange = () => { if (SWEEP_CARD.out) renderSweep(SWEEP_CARD.out); };
+  document.getElementById("swPng").onclick = () => { const cs = document.querySelectorAll("#sweepBody canvas"); cs.forEach((c, i) => downloadCanvas(c, `sweep-${sweepKind}-${i + 1}.png`)); };
+}
+let sweepKind = "replica";
+function renderSweep(o) {
+  const D = SWEEPS[o.kind], el = document.getElementById("sweepBody");
+  const maps = o.kind === "puf" ? [["P(key fails per power-up), this chip", "z"]] : [[D.zl, "z"], ["Original design: verdict", "vb"], ["With our proposal: verdict", "vp"]];
+  if (document.getElementById("swTable").checked) {
+    el.innerHTML = maps.map(([t, k]) => `<h4>${t}</h4><div class="atk-scroll"><table class="mini sw"><tr><th>${D.yl} \\ ${D.xl}</th>${o.x.map(x => `<th>${D.fx(x)}</th>`).join("")}</tr>${o.y.map((y, j) => `<tr><th>${D.fy(y)}</th>${o.x.map((_, i) => `<td class="n">${k === "z" ? D.fz(o.z[j][i]) : o[k][j][i]}</td>`).join("")}</tr>`).join("")}</table></div>`).join("") + `<p class="hint">${D.note}</p>`;
+    return;
+  }
+  el.innerHTML = `<div class="sw-grid ${maps.length === 1 ? "one" : ""}">${maps.map(([t, k], n) => `<div><h4>${t}</h4><canvas data-k="${k}" data-h="${maps.length === 1 ? 300 : 250}"></canvas></div>`).join("")}</div>
+    <div class="legend" id="swLegend"></div><p class="hint">${D.note}</p>`;
+  el.querySelectorAll("canvas").forEach(c => drawHeat(c, o, D, c.dataset.k));
+  const ok = COL.ok(), bad = COL.bad();
+  document.getElementById("swLegend").innerHTML = (o.kind === "puf" ? `<span><i class="swatch" style="background:${seqColor(0)};height:10px"></i>below 10⁻²⁰</span><span><i class="swatch" style="background:${seqColor(0.7)};height:10px"></i>10⁻⁶</span><span><i class="swatch" style="background:${seqColor(1)};height:10px"></i>certain to fail</span><span><i class="swatch hatchsw"></i>under 128 secret bits</span><span><i class="swatch" style="background:none;border:2px solid var(--ink);height:10px"></i>design window</span>`
+    : `<span><i class="swatch" style="background:${seqColor(0)};height:10px"></i>${o.kind === "replica" ? "0%: replica matches" : "short runs"}</span><span><i class="swatch" style="background:${seqColor(1)};height:10px"></i>${o.kind === "replica" ? "50%: replica useless" : "stuck for the whole frame"}</span>${legend([["data safe", ok], ["breached (hatched)", bad]])}`) + `<span><i class="swatch ring"></i>current settings</span>`;
+}
+function drawHeat(c, o, D, k) {
+  const H = +c.dataset.h, g = dpiCanvas(c, H), ctx = g.ctx, L = 58, B = 40, T = 8, R = 8, nx = o.x.length, ny = o.y.length;
+  ctx.clearRect(0, 0, g.w, g.h);
+  const cw = (g.w - L - R) / nx, ch = (H - T - B) / ny, cx = i => L + i * cw, cy = j => H - B - (j + 1) * ch;   // y grows upward
+  const zf = v => D.logp ? Math.min(1, Math.max(0, (Math.log10(Math.max(v, 1e-20)) + 20) / 20)) : D.log ? Math.min(1, Math.log10(1 + v) / Math.log10(1 + LAB_N)) : Math.min(1, v / D.zmax);
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+    const x = cx(i) + 1, y = cy(j) + 1, w = cw - 2, h = ch - 2;
+    if (k === "z") { ctx.fillStyle = seqColor(zf(o.z[j][i])); ctx.fillRect(x, y, w, h); if (D.logp && o.weak[j]) hatch(ctx, x, y, w, h, COL.ink()); }
+    else { const br = o[k][j][i] === "breached"; ctx.fillStyle = br ? COL.bad() : COL.ok(); ctx.globalAlpha = br ? 1 : 0.35; ctx.fillRect(x, y, w, h); ctx.globalAlpha = 1; if (br) hatch(ctx, x, y, w, h, dark() ? "#0f1620" : "#ffffff"); }
+  }
+  const near = (arr, v) => { let b = 0; arr.forEach((a, i) => { if (Math.abs(a - v) < Math.abs(arr[b] - v)) b = i; }); return b; };
+  const ci = near(o.x, o.cur[0]), cj = near(o.y, o.cur[1]);
+  if (D.logp && k === "z") {                    // outline the design window: below 10^-6 and at least 128 secret bits
+    const inW = (i, j) => i >= 0 && j >= 0 && i < nx && j < ny && !o.weak[j] && o.z[j][i] < 1e-6;
+    ctx.strokeStyle = dark() ? "#ffffff" : "#131c28"; ctx.lineWidth = 2.5; ctx.beginPath();
+    for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) if (inW(i, j)) {
+      const x0 = cx(i), x1 = cx(i) + cw, y0 = cy(j), y1 = cy(j) + ch;
+      if (!inW(i - 1, j)) { ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); } if (!inW(i + 1, j)) { ctx.moveTo(x1, y0); ctx.lineTo(x1, y1); }
+      if (!inW(i, j + 1)) { ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); } if (!inW(i, j - 1)) { ctx.moveTo(x0, y1); ctx.lineTo(x1, y1); }
+    }
+    ctx.stroke();
+  }
+  ctx.strokeStyle = COL.ink(); ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx(ci) + cw / 2, cy(cj) + ch / 2, Math.max(6, Math.min(cw, ch) / 2 - 2), 0, 7); ctx.stroke();
+  ctx.fillStyle = COL.faint(); ctx.font = "11px " + CSS("--mono"); ctx.textAlign = "center"; ctx.textBaseline = "top";
+  const every = Math.max(1, Math.ceil(nx * 46 / (g.w - L - R))); o.x.forEach((x, i) => { if (i % every === 0) ctx.fillText(D.fx(x), cx(i) + cw / 2, H - B + 4); });
+  ctx.textAlign = "right"; ctx.textBaseline = "middle"; const ev = Math.ceil(ny / 9); o.y.forEach((y, j) => { if (j % ev === 0) ctx.fillText(D.fy(y), L - 5, cy(j) + ch / 2); });
+  ctx.fillStyle = COL.ink(); ctx.font = "11px " + CSS("--sans"); ctx.textAlign = "center"; ctx.textBaseline = "alphabetic"; ctx.fillText(D.xl, (L + g.w - R) / 2, H - 6);
+  ctx.save(); ctx.translate(11, (T + H - B) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText(D.yl, 0, 0); ctx.restore();
+  ariaImg(c, `${D.name}. ${k === "z" ? D.zl : k === "vb" ? "original design verdict" : "proposal verdict"} for each cell; current settings at ${D.fx(o.x[ci])}, ${D.fy(o.y[cj])}. A table view is available.`);
+  tipFor(c, (x, y) => {
+    const i = Math.floor((x - L) / cw), j = Math.floor((H - B - y) / ch); if (i < 0 || j < 0 || i >= nx || j >= ny) return null;
+    return `<b>${D.xl}: ${D.fx(o.x[i])}<br>${D.yl}: ${D.fy(o.y[j])}</b><br>${D.zl}: ${D.fz(o.z[j][i])}` + (o.vb ? `<br>original: ${o.vb[j][i]}<br>proposal: ${o.vp[j][i]}` : "") + (o.weak && o.weak[j] ? "<br>under 128 secret bits" : "");
+  });
+}
+let SWEEP_CARD = null;
+
+// ---------------------------------------------------------------- share links
+const HASH_SKIP = ["seed"];
+function encodeState() {
+  const d = {}, l = {};
+  for (const k in DEFAULTS) if (!HASH_SKIP.includes(k) && JSON.stringify(state[k]) !== JSON.stringify(DEFAULTS[k])) d[k] = state[k];
+  for (const k in lab) l[k] = lab[k];
+  const o = { s: d, l, n: selected };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function decodeState(h) {
+  try {
+    const o = JSON.parse(decodeURIComponent(escape(atob(h.replace(/-/g, "+").replace(/_/g, "/")))));
+    if (o.s) for (const k in o.s) if (k in DEFAULTS) state[k] = o.s[k];
+    if (o.l) for (const k in o.l) if (k in lab) lab[k] = o.l[k];
+    if (o.n) selected = o.n;
+    return true;
+  } catch (e) { return false; }
+}
+let hashTimer = null;
+function saveHash() { clearTimeout(hashTimer); hashTimer = setTimeout(() => { try { history.replaceState(null, "", "#" + encodeState()); } catch (e) {} }, 300); }
+function shareLink(btn) {
+  const url = location.href.split("#")[0] + "#" + encodeState();
+  const done = ok => { const t = btn.textContent; btn.textContent = ok ? "Link copied" : "Copy failed"; setTimeout(() => { btn.textContent = t; }, 1600); };
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => done(true), () => { prompt("Copy this link:", url); done(true); });
+  else { prompt("Copy this link:", url); done(true); }
+}
+
+// ---------------------------------------------------------------- exports
+function download(name, blob) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+function downloadCanvas(c, name) {           // re-paint on the panel colour so the PNG is not transparent
+  const o = document.createElement("canvas"); o.width = c.width; o.height = c.height;
+  const x = o.getContext("2d"); x.fillStyle = CSS("--panel"); x.fillRect(0, 0, o.width, o.height); x.drawImage(c, 0, 0);
+  o.toBlob(b => download(name, b), "image/png");
+}
+function csv(rows) { return rows.map(r => r.join(",")).join("\n") + "\n"; }
+function exportSignals() {                   // modulator-rate signals of the current run
+  const n = Math.min(S.n, 20000), hdr = ["clock", "i_sense_A", "v_tia_V", "u_FS", "x1", "x2", "D", "K", "C", "C_rx", "D_rx"];
+  if (S.atk && S.atk.khat) hdr.push("eve_K_hat", "eve_D_hat");
+  const rows = [hdr];
+  for (let k = 0; k < n; k++) { const r = [k, S.i_sense[k].toExponential(4), S.v_tia[k].toFixed(6), S.u[k].toFixed(6), S.x1[k].toFixed(5), S.x2[k].toFixed(5), S.D[k], S.K[k], S.C[k], S.C_rx[k], S.D_rx[k]]; if (S.atk && S.atk.khat) r.push(S.atk.khat[k], S.atk.dhat[k]); rows.push(r); }
+  download(`signals-${state.scheme}${S.atk ? "-" + S.atk.id : ""}.csv`, new Blob([csv(rows)], { type: "text/csv" }));
+}
+function exportReadings() {                  // output-rate readings
+  const rows = [["sample", "t_us", "server_output", "true_reading"].concat(S.atk && S.atk.yhat ? ["eve_reading"] : [])], yt = S.atk ? S.atk.ytrue : S.y;
+  for (let j = 0; j < S.y.length; j++) rows.push([j, (j / FS_OUT * 1e6).toFixed(1), S.y[j].toFixed(6), (yt ? yt[j] : S.y[j]).toFixed(6)].concat(S.atk && S.atk.yhat ? [S.atk.yhat[j].toFixed(6)] : []));
+  download(`readings-${state.scheme}${S.atk ? "-" + S.atk.id : ""}.csv`, new Blob([csv(rows)], { type: "text/csv" }));
+}
+const FONTS = {};
+async function fontData(file) {
+  if (FONTS[file]) return FONTS[file];
+  const b = await (await fetch("/fonts/" + file)).blob();
+  return (FONTS[file] = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }));
+}
+async function exportDiagram() {             // the live SVG with its styles inlined and the fonts embedded
+  const svg = document.querySelector("svg.dg"); if (!svg) return;
+  const clone = svg.cloneNode(true), src = svg.querySelectorAll("*"), dst = clone.querySelectorAll("*");
+  const props = ["fill", "stroke", "stroke-width", "stroke-dasharray", "stroke-linejoin", "opacity", "font-family", "font-size", "font-weight", "paint-order", "text-anchor", "visibility"];
+  src.forEach((el, i) => { const cs = getComputedStyle(el); dst[i].setAttribute("style", props.map(p => `${p}:${cs.getPropertyValue(p)}`).join(";") + ";animation:none"); });
+  const vb = svg.viewBox.baseVal, W = vb.width * 2, H = vb.height * 2;
+  clone.setAttribute("width", W); clone.setAttribute("height", H); clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  try {
+    const [m, b, t] = await Promise.all(["KaTeX_Main-Regular.woff2", "KaTeX_Main-Bold.woff2", "KaTeX_Typewriter-Regular.woff2"].map(fontData));
+    const st = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    st.textContent = `@font-face{font-family:"KaTeX_Main";src:url(${m})}@font-face{font-family:"KaTeX_Main";font-weight:700;src:url(${b})}@font-face{font-family:"KaTeX_Typewriter";src:url(${t})}`;
+    clone.insertBefore(st, clone.firstChild);
+  } catch (e) { /* fonts are optional: the export falls back to the system serif */ }
+  const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml" }));
+  const img = new Image();
+  img.onload = () => { const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); x.fillStyle = CSS("--panel"); x.fillRect(0, 0, W, H); x.drawImage(img, 0, 0, W, H); URL.revokeObjectURL(url); c.toBlob(bl => download(`diagram-${state.scheme}${S && S.atk ? "-" + S.atk.id : ""}.png`, bl), "image/png"); };
+  img.src = url;
+}
+// ---------------------------------------------------------------- cost
+const costA = {};                             // assumption overrides from the inputs
+const COST_IN = [["ge_dff", "D flip-flop", "GE"], ["ge_xor", "XOR2", "GE"], ["ge_and", "AND2", "GE"], ["ge_mux", "MUX2", "GE"], ["trivium_ge", "Trivium area (blank = counted)", "GE"], ["osr", "OSR", ""], ["srnr", "SR/NR (Trivium design)", ""]];
+function buildCostCard() {
+  document.getElementById("cost").innerHTML = `
+    <div class="dg-head"><div><h2>What each design costs</h2>
+      <p>The paper's headline is efficiency: its S-DSM adds 24 µW, Trivium 220 µW (Fig. 4a), and sending the raw modulator bits still saves energy overall (Fig. 4b). Here the same yardsticks are applied to the proposal. Gate counts come from each block's published structure; power per gate is calibrated on the paper's measured Trivium; energy uses the Fig. 4(b) model, which reproduces the paper's table. Every assumption below can be changed.</p></div></div>
+    <div id="costBody"></div>`;
+  renderCost();
+}
+function renderCost() {
+  const el = document.getElementById("costBody"); if (!el) return;
+  const r = costModel(costA), R = r.rows, uw = v => v.toFixed(v < 100 ? 1 : 0) + " µW", pc = v => (v * 100).toFixed(1) + "%", uj = v => (v * 1e6).toFixed(2) + " µJ";
+  const rows = [
+    ["Original S-DSM (measured)", null, null, R.origMeasured, "paper, Fig. 4(a)"],
+    ["Original S-DSM (this count)", R.orig.ge, R.orig.act, R.orig, "3 LFSR-16s"],
+    ["Conventional: Trivium (measured)", R.trivium.ge, R.trivium.act, R.trivium, "paper; encrypts decimated 16-bit words"],
+    ["Proposal: Grain-128a + MAC", R.prop.ge, R.prop.act, R.prop, "2 keystream bits per clock"],
+    ["Proposal without the MAC", R.propNoMac.ge, R.propNoMac.act, R.propNoMac, "counter only: replay still blocked, bit-flips not"],
+  ];
+  const O = r.once, ck = r.check, cmp = ([a, b]) => `<td class="n">${Math.round(a).toLocaleString()} GE</td><td class="n">${Math.round(b).toLocaleString()} GE</td><td class="n">${a >= b ? "+" : "−"}${Math.abs((a / b - 1) * 100).toFixed(0)}%</td>`;
+  const once = [
+    ["SRAM PUF, 600 cells", `≈ ${Math.round(O.pufUm2).toLocaleString()} µm² at 65 nm and ${(O.pufJ * 1e12).toFixed(0)} pJ per read <small>[derived] from: ${COST_PUB.sram.src} [16]</small>`],
+    ["Key-derivation hash", `≈ ${(O.hashCycles / 1e3).toFixed(0)}k cycles = ${O.hashMs.toFixed(1)} ms at 10 MHz, ≈ ${(O.hashJ * 1e6).toFixed(1)} µJ per power-up <small>[derived] from: ${COST_PUB.hash.src} [14]. This page's model computes the key with SHA-256; the cost assumes a lightweight hash like this one.</small>`],
+    ["BCH decoder, t = 40 over GF(2¹⁰)", `<span class="warnt">not found in GE</span> <small>${COST_PUB.bch.src} [15]. A t = 40 decoder needs more; it runs once per power-up.</small>`],
+  ];
+  el.innerHTML = `
+    <div class="pm-grid"><div>
+      <h4>Continuous cost: the parts clocked with the modulator</h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>Design</th><th>Area</th><th>Switching</th><th>Power</th><th>Of chip power</th><th>Energy, same information</th></tr>
+        ${rows.map(([n, ge, act, x, note]) => `<tr><td>${n}<br><small>${note}</small></td><td class="n">${ge == null ? "-" : Math.round(ge).toLocaleString() + " GE"}</td><td class="n">${act == null ? "-" : Math.round(act).toLocaleString() + " GE"}</td><td class="n"><b>${uw(x.p)}</b></td><td class="n">${pc(x.pct)}</td><td class="n">${uj(x.e)}</td></tr>`).join("")}</table></div>
+      <canvas id="costBars" data-h="200"></canvas><div class="legend" id="costLegend"></div>
+      <div class="explain" style="margin-top:10px"><b>Reading it.</b> Counting the original design's three LFSRs the same way gives ${uw(R.orig.p)} against the measured 24 µW, so the calibration is within about ${Math.round(Math.abs(R.orig.p / 24 - 1) * 100)}%.
+        The proposal clocks a full 128-bit cipher, twice per modulator clock when it authenticates, so its digital overhead is about <b>${pc(R.prop.pct)}</b> of the chip's power: more than Trivium's 16.27%, against the S-DSM's 1.8%. That is the price of a key that cannot be read out, brute-forced or modelled, and of frames that cannot be replayed or altered.
+        Energy is a different story: the radio dominates, and the proposal still sends the same undecimated bits as the S-DSM plus 64 bits per frame, so it keeps the S-DSM's advantage: <b>${(R.trivium.e / R.prop.e).toFixed(2)}×</b> less energy than the Trivium design at OSR ${r.A.osr} (the paper's S-DSM: ${(R.trivium.e / R.origMeasured.e).toFixed(2)}×).</div>
+    </div><div>
+      <h4>Proposal, part by part</h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>Part</th><th>Area</th><th>Switches every clock</th></tr>
+        ${r.designs.prop.map(([n, ge, on]) => `<tr><td>${n}</td><td class="n">${Math.round(ge).toLocaleString()} GE</td><td>${on ? "yes" : "no (static)"}</td></tr>`).join("")}</table></div>
+      <h4>One-time, at power-up <small>run once, then clock-gated: area, not continuous power</small></h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>Part</th><th>Cost</th></tr>${once.map(([n, v]) => `<tr><td>${n}</td><td>${v}</td></tr>`).join("")}</table></div>
+      <h4>This page's counts against published figures</h4>
+      <div class="atk-scroll"><table class="mini pm"><tr><th>Block</th><th>Counted here</th><th>Published</th><th>Diff</th></tr>
+        <tr><td>Trivium, 1 bit per clock <small>synthesised, 0.35 µm [12]</small></td>${cmp(ck.trivium)}</tr>
+        <tr><td>Grain-128a, encryption only, 1× <small>designers' estimate, FF = 8 GE [9]</small></td>${cmp(ck.grainEnc)}</tr>
+        <tr><td>Grain-128a + 32-bit MAC, 1 keystream bit per clock <small>same [9]</small></td>${cmp(ck.grainMac)}</tr></table></div>
+      <p class="hint">${COST_PUB.trivium_pw.src} [13]: the same order as the paper's measured 220 µW, which supports the power calibration.</p>
+      <h4>Assumptions</h4>
+      <div class="cost-in">${COST_IN.map(([k, l, u]) => `<label>${l}<span><input type="number" step="any" data-k="${k}" value="${costA[k] != null ? costA[k] : (r.A[k] != null ? r.A[k] : "")}" placeholder="${k === "trivium_ge" ? Math.round(r.triviumCount) : ""}">${u}</span></label>`).join("")}</div>
+      <p class="hint">Gate equivalents are NAND2-sized units; the default cell costs are the UMC 0.18 µm library tabulated in [17]. Power per GE (${r.uwPerGE.toFixed(4)} µW at 10 MHz) is the paper's 220 µW Trivium divided by its area, assuming the on-chip Trivium also ran at the 10 MHz modulator clock. Static registers are counted in area but not in power. These are estimates to compare designs, not a synthesis result.</p>
+    </div></div>`;
+  el.querySelectorAll(".cost-in input").forEach(i => { i.onchange = () => { const v = parseFloat(i.value); if (i.value === "" || !isFinite(v)) delete costA[i.dataset.k]; else costA[i.dataset.k] = v; renderCost(); }; });
+  drawCostBars(R);
+}
+function drawCostBars(R) {
+  const c = document.getElementById("costBars"); if (!c) return;
+  const g = dpiCanvas(c, 200), ctx = g.ctx, items = [["S-DSM, measured", R.origMeasured.p], ["Trivium, measured", R.trivium.p], ["Proposal + MAC", R.prop.p], ["Proposal, no MAC", R.propNoMac.p]];
+  const mx = Math.max(...items.map(x => x[1])) * 1.15, L = 120, Rr = 12, bh = 26;
+  ctx.clearRect(0, 0, g.w, g.h); ctx.font = "12px " + CSS("--sans"); ctx.textBaseline = "middle";
+  items.forEach(([n, v], i) => {
+    const y = 14 + i * (bh + 16), w = (g.w - L - Rr) * v / mx;
+    ctx.fillStyle = COL.ink(); ctx.textAlign = "right"; ctx.fillText(n, L - 8, y + bh / 2);
+    ctx.fillStyle = i < 2 ? COL.faint() : COL.sig(); ctx.fillRect(L, y, Math.max(2, w), bh);
+    ctx.fillStyle = COL.ink(); ctx.textAlign = "left"; ctx.font = "12px " + CSS("--mono"); ctx.fillText(v.toFixed(0) + " µW", L + w + 6, y + bh / 2); ctx.font = "12px " + CSS("--sans");
+  });
+  document.getElementById("costLegend").innerHTML = legend([["measured in the paper", COL.faint()], ["this page's estimate", COL.sig()]]);
+  ariaImg(c, "Continuous security power: " + items.map(([n, v]) => `${n} ${v.toFixed(0)} µW`).join(", "));
+}
+// ===== EXTRA-END =====
+</script>
+<script>
 // ===== APP-START =====
-const state = { ...DEFAULTS };
 let S = null, selected = "afe_out", raf = null;
+
+// ---- compute engine: the model runs in Web Workers so the page never freezes. One worker per kind
+// of request; each keeps only the newest pending request. Without workers it runs on the main thread.
+const MODEL_V = "?v=1";                       // bump together with model.js / worker.js
+const ENGINE = (() => {
+  function lane(onDone, keyed) {
+    let w = null, busy = false, next = null, cur = null;
+    const queue = new Map();                  // keyed lanes keep the newest request per task name
+    try {
+      w = new Worker("worker.js" + MODEL_V);
+      w.onmessage = e => done(e.data);
+      w.onerror = e => { if (e.preventDefault) e.preventDefault(); w = null; if (busy && cur) { busy = false; const m = cur; cur = null; send(m); } };
+    } catch (e) { w = null; }
+    function send(m) {
+      if (keyed) { queue.set(m.name, m); if (busy) return; m = queue.values().next().value; queue.delete(m.name); }
+      else if (busy) { next = m; return; }
+      busy = true; cur = m;
+      if (w) w.postMessage(m);
+      else setTimeout(() => { let r; try { r = handleRequest(m, p => onDone({ type: "progress", name: m.name, p }), false); } catch (err) { r = { type: "error", message: String(err && err.stack || err) }; } done(r); }, 0);
+    }
+    function done(r) {
+      if (r.type === "progress") { onDone(r); return; }
+      busy = false; cur = null;
+      if (r.type === "error") console.error("model:", r.message); else onDone(r);
+      if (keyed && queue.size) { const m = queue.values().next().value; send(m); return; }
+      if (next) { const m = next; next = null; send(m); }
+    }
+    return { send };
+  }
+  const msg = (type, extra) => ({ type, state: { ...state }, lab: { ...lab }, ...extra });
+  const sim = lane(r => onSim(r.S)), labL = lane(r => onLab(r.LR)), wave = lane(r => onWave(r.wave));
+  const taskCbs = {}, task = lane(r => { const cb = taskCbs[r.name]; if (cb) cb(r); }, true);
+  return {
+    sim: () => sim.send(msg("sim")), lab: () => labL.send(msg("lab")), wave: () => wave.send(msg("wave")),
+    task: (name, args, cb) => { taskCbs[name] = cb; task.send(msg("task", { name, args })); },
+  };
+})();
 
 // ---- helpers to read theme colors
 const CSS = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-const COL = { sig: () => CSS("--sig"), sigd: () => CSS("--sig-dim"), key: () => CSS("--key"),
+const COL = { ok: () => CSS("--ok-c"), bad: () => CSS("--bad-c"), sig: () => CSS("--sig"), sigd: () => CSS("--sig-dim"), key: () => CSS("--key"),
   keyd: () => CSS("--key-dim"), grid: () => CSS("--grid"), ink: () => CSS("--ink-soft"),
   faint: () => CSS("--ink-faint"), warn: () => CSS("--warn"), good: () => CSS("--good") };
 
@@ -3247,12 +2711,16 @@ const CONTROLS = [
   { k: "dither", t: "chk", label: "Dither enabled" },
   { k: "dither_amp", t: "range", min: 0.01, max: 0.4, step: 0.005, label: "Dither strength", unit: "×ref", show: p => p.dither },
   { k: "xlim", t: "range", min: 0.8, max: 3.0, step: 0.1, label: "Integrator rail", unit: "" },
+  { k: "dither_at", t: "seg", label: "Dither acts on", opts: [["comparator", "Comparator"], ["feedback", "Feedback"]], show: p => p.dither, hint: "Comparator: shaped out of band, as the paper's 'without disrupting the signal' implies. Feedback: decorrelates more but costs about 20 dB SNDR." },
+  { k: "int_noise", t: "range", min: 0, max: 1e-4, step: 1e-6, label: "Integrator thermal noise", fmt: v => (v * 1e5).toFixed(1) + "e-5 FS", hint: "Default 1.8e-5 of full scale per clock, derived from the paper's 9.48 pA. No replica can copy it." },
   { h: "Security", scheme: "baseline" },
   { k: "key16", t: "range", min: 1, max: 65535, step: 1, label: "Pre-shared key", fmt: v => "0x" + (v & 0xFFFF).toString(16).toUpperCase(), scheme: "baseline" },
   { h: "PUF + key", scheme: "proposed" },
   { k: "chip_seed", t: "range", min: 1, max: 40, step: 1, label: "Chip # (PUF identity)", scheme: "proposed" },
   { k: "temp", t: "range", min: -20, max: 125, step: 1, label: "Temperature", unit: "°C", scheme: "proposed" },
   { k: "puf_sigma", t: "range", min: 0.02, max: 0.14, step: 0.005, label: "PUF noise σ", scheme: "proposed", hint: "Higher σ = more unstable PUF bits per power-up." },
+  { k: "puf_bias", t: "range", min: 0.5, max: 0.75, step: 0.01, label: "PUF bias P(cell = 1)", fmt: v => v.toFixed(2), scheme: "proposed", hint: "Biased cells carry less entropy, so publishing h leaves fewer secret bits." },
+  { k: "puf_years", t: "range", min: 0, max: 20, step: 0.5, label: "Years since enrolment", unit: "y", scheme: "proposed", hint: "Ageing drifts each cell's mismatch, so more cells flip than at enrolment." },
   { k: "bch_t", t: "range", min: 10, max: 60, step: 1, label: "BCH correction t", scheme: "proposed", hint: "Bits the ECC can fix. Below the PUF error count, the key fails." },
   { k: "h_tamper", t: "range", min: 0, max: 120, step: 1, label: "Tamper helper data", unit: "bits", scheme: "proposed", hint: "Attacker flips bits in h in transit. Any flip breaks the key → Rx catches it." },
   { h: "Frame counter + MAC", scheme: "proposed" },
@@ -3292,7 +2760,7 @@ function buildControls() {
       for (const [v, t] of item.opts) {
         const b = document.createElement("button"); b.textContent = t;
         b.setAttribute("aria-pressed", String(state[item.k] == v));
-        b.onclick = () => { state[item.k] = typeof v === "number" ? v : v; buildControls(); schedule(); };
+        b.onclick = () => { state[item.k] = v; buildControls(); schedule(); };
         seg.appendChild(b);
       }
       div.appendChild(seg);
@@ -3364,15 +2832,16 @@ function fmtBits(bits, off, n) { let s = ""; for (let i = 0; i < n; i++) s += bi
 function pill(ok, tOk, tNo) { return `<span class="pill ${ok ? "good" : "warn"}">${ok ? tOk : tNo}</span>`; }
 
 function schedule() { if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { run(); }); }
-function run() {
-  S = simulate({ ...state, atk: lab });
+function run() { ENGINE.sim(); }
+function onSim(S2) {
+  S = S2;
   if (dgMac !== (state.scheme === "proposed" && !!state.mac) || dgAtk !== atkSig()) buildDiagram();   // MAC block and attack marks come and go
   const pick = document.getElementById("dgAttack"); if (pick && pick.value !== state.attack) pick.value = state.attack;
-  renderVerdict(); renderPanels(); paintRun(); renderAtkBanner(); labSchedule();
+  renderVerdict(); renderPanels(); paintRun(); renderAtkBanner(); labSchedule(); saveHash(); cardsStale();
 }
 
 // the diagram is rebuilt when the attack or a knob its labels mention changes
-const atkSig = () => (state.attack || "none") === "none" ? "none" : state.attack + JSON.stringify([lab.kiInput, lab.fake, lab.bmBits, lab.hFlip, lab.flipP, state.force_uA]);
+const atkSig = () => (state.attack || "none") === "none" ? "none" : state.attack + JSON.stringify([lab.kiInput, lab.fake, lab.bmBits, lab.hFlip, lab.flipP, lab.manipQ, state.force_uA]);
 function setAttack(id) {
   state.attack = id || "none";
   if (state.attack !== "none") lab.sel = state.attack;
@@ -3414,7 +2883,7 @@ const SCEN = [
   { t: "Probe the key: original", s: { ...DEFAULTS, scheme: "baseline" }, sel: "lfsr",
     cap: "<b>Physical tampering, original design.</b> If an attacker can read even 64 key bits off the chip, the 16-bit LFSR is fully predictable: Eve's third bar goes to 100%." },
   { t: "Probe the key: our proposal", s: { ...DEFAULTS, scheme: "proposed" }, sel: "nlfsr",
-    cap: "<b>Same tampering, our proposal.</b> A 128-bit non-linear generator seeded from the chip's PUF. The same 64 leaked bits let Eve guess no better than a coin flip (about 50%)." },
+    cap: "<b>Same tampering, our proposal.</b> Grain-128a, keyed from the chip's PUF. The same 64 leaked bits let Eve guess no better than a coin flip (about 50%)." },
   { t: "Hot chip (85°C)", s: { ...DEFAULTS, scheme: "proposed", temp: 85 }, sel: "fe",
     cap: "<b>The fingerprint gets noisier when hot.</b> More PUF bits flip, but the error-correcting code still restores the exact key (the gauge stays inside its limit)." },
   { t: "Too many flips", s: { ...DEFAULTS, scheme: "proposed", temp: 115, bch_t: 15 }, sel: "fe",
@@ -3459,7 +2928,7 @@ function renderVerdict() {
     items.push({ k: "Keystream vs BM", v: S.eve_probe.acc > 0.99 ? "BROKEN" : (S.eve_forced_broken > 0.5 ? "BROKEN" : "safe"), cls: S.eve_probe.acc > 0.99 ? "warn" : "good", d: "probe recovers LFSR" });
   } else {
     items.push({ k: "PUF key", v: S.key_match ? "OK" : "FAIL", cls: S.key_match ? "good" : "warn", d: `${S.n_err_true} flips, t=${state.bch_t}` });
-    items.push({ k: "Probe vs NLFSR", v: S.eve_probe.acc > 0.99 ? "broken" : "resists", cls: S.eve_probe.acc > 0.99 ? "warn" : "good", d: `BM predicts ${(S.eve_probe.acc * 100).toFixed(0)}%` });
+    items.push({ k: "Probe vs Grain-128a", v: S.eve_probe.acc > 0.99 ? "broken" : "resists", cls: S.eve_probe.acc > 0.99 ? "warn" : "good", d: `BM predicts ${(S.eve_probe.acc * 100).toFixed(0)}%` });
   }
   items.push({ k: "DSM output", v: (S.ones * 100).toFixed(0) + "% ones", d: "longest run " + S.run + " bits" });
   v.innerHTML = items.map(i => `<div class="vcard"><div class="k">${i.k}</div><div class="v ${i.cls || ""}">${i.v}</div><div class="d">${i.d}</div></div>`).join("");
@@ -3470,13 +2939,20 @@ function renderVerdict() {
 initInspector();
 buildScenarios();
 buildDiagramCard();
-buildLabCard(); buildBenchCard();
-setScheme("proposed");
-selectNode("dsm_out", { quiet: true });      // pre-select a block but leave the inspector folded
+buildLabCard(); buildBenchCard(); buildCostCard(); buildPaperCard(); buildPufCard(); buildSweepCard();
+card("paperModel", "calib", () => ({}), renderPaper);
+card("pufRel", "pufRel", () => ({ N: 4000 }), renderPuf);
+SWEEP_CARD = card("sweeps", "sweep", () => ({ kind: sweepKind }), renderSweep);
+const fromLink = location.hash.length > 2 && decodeState(location.hash.slice(1));
+const startNode = fromLink ? selected : "dsm_out";
+setScheme(state.scheme);
+selectNode(startNode, { quiet: true });      // pre-select a block but leave the inspector folded
+watchCards();
 document.getElementById("themeBtn").addEventListener("click", () => {
   const r = document.documentElement, n = r.getAttribute("data-theme") === "dark" ? "light" : "dark";
   r.setAttribute("data-theme", n); try { localStorage.setItem("theme", n); } catch (e) {}
-  buildDiagram(); renderPanels(); paintRun(); dgHighlight(); renderLab(); renderBench();   // canvases read the palette when they draw
+  buildDiagram(); renderPanels(); paintRun(); dgHighlight(); renderLab(); renderBench(); renderCost();   // canvases read the palette when they draw
+  CARDS.forEach(c => { if (c.out) c.render(c.out); });
 });
 if (document.fonts) document.fonts.ready.then(() => { setHH(); renderPanels(); });
 

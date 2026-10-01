@@ -123,6 +123,18 @@ and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
 nithinpuru.com. Cloudflare, Akamai, Fastly (iCloud Private Relay), Microsoft,
 Google and Zscaler are deliberately not on that list - they carry real people.
 
+## Secure sensor + PUF explorer (`/secure_sensor_with_puf/`)
+
+Not a copied repo: built here. `model.js` holds the whole behavioural model (S-DSM link, SRAM PUF +
+BCH fuzzy extractor, Grain-128a with its MAC, the attacks, calibration, PUF reliability, sweeps) with no
+DOM access; `worker.js` runs it off the main thread (one worker per request kind) and `index.html` is
+the UI, falling back to the main thread without workers. Bump `MODEL_V` in `index.html` and the
+`model.js?v=` script tag together when `model.js` or `worker.js` change. `npm run test:sensor`
+(`scripts/test-secure-sensor.mjs`, run by the CI `checks` job) checks Grain-128a against the paper's
+test vectors, the Fig. 4(b)/(c) reproductions and the full verdict table against
+`scripts/secure-sensor-verdicts.json`; after an intended model change, review the diff and rerun with
+`-- --update`.
+
 ## Brand assets
 
 `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png`,
