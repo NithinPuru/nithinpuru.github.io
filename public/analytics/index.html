@@ -92,11 +92,31 @@
 
   /* Map */
   .map-wrap { position: relative; }
-  #map { width: 100%; height: auto; display: block; }
-  #map .land { fill: var(--land); stroke: #d4cfbf; stroke-width: .5; }
-  #map .sphere { fill: none; stroke: var(--rule); }
-  #map .cell { fill: var(--visitors); fill-opacity: .78; stroke: var(--paper); stroke-width: .6; }
-  #map .cell:hover { fill-opacity: 1; stroke: var(--ink); }
+  .geo { width: 100%; height: auto; display: block; }
+  .geo .land, .geo .nodata { fill: var(--land); stroke: #d4cfbf; stroke-width: .5; }
+  .geo .sphere { fill: none; stroke: var(--rule); }
+  .geo .shape { stroke: #cfc9b8; stroke-width: .5; }
+  .geo .borders { fill: none; stroke: #d4cfbf; stroke-width: .5; pointer-events: none; }
+  .geo .shape:hover { stroke: var(--ink); stroke-width: 1; }
+  .geo .cell, .geo .dot { fill: var(--visitors); fill-opacity: .78; stroke: var(--paper); stroke-width: .6; }
+  .geo .cell:hover, .geo .dot:hover { fill-opacity: 1; stroke: var(--ink); }
+  .geo path, .geo circle { vector-effect: non-scaling-stroke; }
+  .geo .lbl { font-family: inherit; fill: var(--ink); paint-order: stroke; stroke: var(--paper); stroke-width: 3px; pointer-events: none; }
+  .geo { touch-action: pan-y; cursor: grab; }
+  .zoombar { position: absolute; top: .4rem; right: .4rem; display: flex; gap: 1px; z-index: 4; }
+  .zoombar button { font: inherit; font-size: .95rem; line-height: 1; min-width: 1.9rem; padding: .3rem .45rem; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); cursor: pointer; }
+  .zoombar button:hover { border-color: var(--ink); }
+  .zoomhint { color: var(--muted); font-size: .85rem; font-style: italic; margin: .25rem 0 0; }
+  .maps2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .maps2 h3, .region-maps h3 { margin-bottom: .25rem; }
+  .region-maps { display: grid; grid-template-columns: 3fr 2fr; gap: 2rem; align-items: start; }
+  .region-maps .tables { grid-template-columns: 1fr; gap: 1.5rem; margin: 0; }
+  .unlock { display: inline-flex; gap: .4rem; align-items: center; }
+  .unlock input { font: inherit; font-size: .92rem; border: 1px solid var(--rule); background: #fff; padding: .2rem .4rem; width: 12rem; }
+  .unlock button { font: inherit; font-size: .92rem; background: var(--ink); color: var(--paper); border: 0; padding: .25rem .7rem; cursor: pointer; }
+  .tag--cloud { color: var(--muted); border-style: dashed; }
+  .span2 { grid-column: span 2; }
+  .visit.is-cloud .visit__who { color: var(--muted); }
 
   /* Chart */
   .controls { display: flex; gap: .75rem 1.25rem; flex-wrap: wrap; align-items: center; margin-bottom: .75rem; font-size: .95rem; }
@@ -156,7 +176,8 @@
   footer { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
 
   @media (max-width: 860px) {
-    .tables, .tables.wide, .dists { grid-template-columns: 1fr; }
+    .tables, .tables.wide, .dists, .maps2, .region-maps { grid-template-columns: 1fr; }
+    .span2 { grid-column: auto; }
     .figures { grid-template-columns: repeat(2, 1fr); }
     .figures div:nth-child(4n+1) { border-left: 1px solid var(--rule); padding-left: 1rem; }
     .figures div:nth-child(odd) { border-left: 0; padding-left: 0; }
@@ -187,13 +208,17 @@
       <option value="nithinpuru.github.io">nithinpuru.github.io (tools)</option>
     </select>
     <span id="owner-status" class="muted"></span>
+    <form class="unlock" id="unlock" hidden>
+      <input type="password" id="unlock-key" placeholder="Owner key" autocomplete="off" aria-label="Owner key">
+      <button type="submit">Unlock</button>
+    </form>
   </div>
 
   <dl class="figures">
     <div><dt>Unique visitors</dt><dd id="f-visitors">–</dd></div>
     <div><dt>Page views</dt><dd id="f-views">–</dd></div>
-    <div><dt>Visitors today</dt><dd id="f-visitors-today">–</dd></div>
-    <div><dt>Views today</dt><dd id="f-views-today">–</dd></div>
+    <div><dt>Today</dt><dd><span id="f-visitors-today">–</span> <small>visitors · <span id="f-views-today">–</span> views</small></dd></div>
+    <div><dt>Likely people</dt><dd id="f-people">–</dd></div>
     <div><dt>Academic visitors</dt><dd id="f-academic">–</dd></div>
     <div><dt>Returning visitors</dt><dd id="f-returning">–</dd></div>
     <div><dt>Avg. time on page</dt><dd id="f-time">–</dd></div>
@@ -203,13 +228,50 @@
   <section aria-labelledby="h-visits">
     <div class="head"><h2 id="h-visits">Who visited</h2>
       <span class="note">One line per visitor per day, newest first · times in your timezone
-        · <label><input type="checkbox" id="only-academic"> academic only</label></span></div>
+        · <label><input type="checkbox" id="only-academic"> academic only</label>
+        · <label><input type="checkbox" id="hide-cloud"> hide cloud / VPN</label></span></div>
     <div id="visits-wrap"><p class="locked">Loading…</p></div>
   </section>
 
   <section aria-labelledby="h-origins">
-    <div class="head"><h2 id="h-origins">Origins</h2><span class="note">Requests grouped into 1° cells</span></div>
-    <div class="map-wrap"><svg id="map" role="img" aria-label="World map of visitor origins"></svg><div class="tip" id="map-tip"></div></div>
+    <div class="head"><h2 id="h-origins">Where they come from</h2><span class="note" id="origins-note">Visitors by place</span></div>
+    <p class="zoomhint">Zoom any map with + / −, double-click, Ctrl/⌘ + scroll or a pinch; drag to move once zoomed. Hover or tap a dot for the place.</p>
+    <div class="maps2">
+      <div><h3>Portfolio · nithinpuru.com</h3><div class="map-wrap"><svg id="map-com" class="geo" role="img" aria-label="World map of portfolio visitors"></svg><div class="tip" id="tip-com"></div></div></div>
+      <div><h3>Tools · nithinpuru.github.io</h3><div class="map-wrap"><svg id="map-io" class="geo" role="img" aria-label="World map of tools visitors"></svg><div class="tip" id="tip-io"></div></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-europe">
+    <div class="head"><h2 id="h-europe">Europe</h2><span class="note">Countries shaded by visitors · dots are cities</span></div>
+    <div class="region-maps">
+      <div class="map-wrap"><svg id="map-eu" class="geo" role="img" aria-label="Map of European visitors"></svg><div class="tip" id="tip-eu"></div></div>
+      <div class="tables">
+        <section><table><thead><tr><th>Country</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-eu-countries"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><table><thead><tr><th>City, region</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-eu-places"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-us">
+    <div class="head"><h2 id="h-us">United States</h2><span class="note">States shaded by visitors · dots are cities</span></div>
+    <div class="region-maps">
+      <div class="map-wrap"><svg id="map-us" class="geo" role="img" aria-label="Map of US visitors"></svg><div class="tip" id="tip-us"></div></div>
+      <div class="tables">
+        <section><table><thead><tr><th>State</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-us-states"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><table><thead><tr><th>City</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-us-cities"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-why">
+    <div class="head"><h2 id="h-why">Why they come</h2><span class="note">Where visits start, and the first page they open</span></div>
+    <div class="dists">
+      <div><h3>Kind of source</h3><ul class="dist" id="d-why"></ul>
+        <p class="zoomhint">Direct = typed, bookmark, app or email · Social = LinkedIn, X, WhatsApp… · Academic = Scholar, IEEE, universities · Code = GitHub, Colab</p></div>
+      <div class="span2"><h3>Source → first page</h3>
+        <table><thead><tr><th>From → landed on</th><th>Visits</th></tr></thead><tbody id="t-landing"><tr class="empty"><td colspan="2">Loading…</td></tr></tbody></table></div>
+    </div>
   </section>
 
   <section aria-labelledby="h-daily">
@@ -317,7 +379,7 @@
     </section>
   </div>
 
-  <footer style="margin-top:3.5rem">No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. The visit log, networks and cities are only returned with the owner key.
+  <footer style="margin-top:3.5rem">No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. The visit log, networks, regions and cities are only returned with the owner key - the same private key as your nithinpuru.com owner link (the part after <code>?owner=</code>). "Cloud / VPN" marks hosting and VPN networks, which are mostly bots, link previews and VPN users.
     <p class="notrack" id="notrack" hidden><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
   </footer>
 </main>
@@ -395,7 +457,7 @@ function demoData(from, to) {
     total: { visitors: V + 1240, views: sum("views") + 2210 },
     today: daily.at(-1),
     daily,
-    countries: share([["IN", .46], ["US", .17], ["ES", .08], ["DE", .06], ["GB", .04], ["CN", .04], ["TW", .03], ["NL", .02], ["XX", .01]], V),
+    countries: share([["US", .3], ["CH", .14], ["DE", .12], ["GB", .08], ["NL", .07], ["FR", .05], ["JP", .04], ["SE", .03], ["IT", .03], ["ES", .02]], V),
     sources: share([["(direct)", .41], ["linkedin.com", .24], ["google", .17], ["github.com", .1], ["colab.research.google.com", .05], ["scholar.google.com", .03]], V),
     pages: share([["nithinpuru.com/", .62], ["nithinpuru.com/rongm", .14], ["nithinpuru.github.io/gmid", .12], ["nithinpuru.github.io/research-radar", .08], ["nithinpuru.github.io/fx-quant", .04]], V),
     origins: [[13,78,40],[19,73,18],[28,77,15],[17,78,11],[23,72,9],[23,88,5],[37,-122,12],[40,-74,8],[42,-71,7],[47,-122,5],[30,-98,4],[40,3,9],[40,-4,5],[48,11,6],[52,13,4],[51,0,5],[31,121,4],[25,121,5],[52,5,3],[35,139,3],[1,104,3],[-34,151,2]]
@@ -418,6 +480,16 @@ function demoData(from, to) {
     scrollBuckets: [150, 90, 80, 60, 140],
     pageSections: { "nithinpuru.com/": [["experience", 300], ["education", 250], ["skills", 210], ["publications", 190], ["awards", 150], ["work", 140], ["finance", 70], ["hobbies", 60], ["cv", 110], ["contact", 90]].map(([key, views]) => ({ key, views })) },
     newReturning: { new: Math.round(V * .8), returning: Math.round(V * .2) },
+    cloudVisitors: Math.round(V * .25),
+    landing: [["linkedin.com", "nithinpuru.com/", .2], ["(direct)", "nithinpuru.com/", .15], ["google", "nithinpuru.github.io/gmid", .1],
+      ["scholar.google.com", "nithinpuru.com/", .05], ["github.com", "nithinpuru.github.io/research-radar", .04], ["nithinpuru.github.io", "nithinpuru.com/rongm", .03]]
+      .map(([source, page, w]) => ({ source, page, visits: Math.round(V * w) })),
+    regions: [["CH", "Zurich", 40], ["US", "Massachusetts", 33], ["DE", "Bavaria", 27], ["US", "California", 25], ["NL", "South Holland", 17], ["GB", "England", 15], ["US", "New York", 12], ["FR", "Île-de-France", 9]]
+      .map(([country, region, v]) => ({ country, region, visitors: v, views: v * 2 })),
+    places: [["nithinpuru.com", "Zurich", "Zurich", "CH", 47, 9, 30], ["nithinpuru.com", "Boston", "Massachusetts", "US", 42, -71, 25], ["nithinpuru.github.io", "Munich", "Bavaria", "DE", 48, 12, 20],
+      ["nithinpuru.com", "Delft", "South Holland", "NL", 52, 4, 14], ["nithinpuru.com", "London", "England", "GB", 52, 0, 12], ["nithinpuru.github.io", "San Jose", "California", "US", 37, -122, 18],
+      ["nithinpuru.com", "Lausanne", "Vaud", "CH", 47, 7, 9], ["nithinpuru.github.io", "Paris", "Île-de-France", "FR", 49, 2, 8], ["nithinpuru.com", "New York City", "New York", "US", 41, -74, 10]]
+      .map(([host, city, region, country, lat, lon, v]) => ({ host, city, region, country, lat, lon, visitors: v, views: v * 2 })),
     hours: Array.from({ length: 7 }, (_, wd) => Array.from({ length: 24 }, (_, h) => Math.round((wd > 0 && wd < 6 ? 6 : 2) * Math.exp(-((h - 11) ** 2) / 18) + (rnd() * 2)))),
     visits: [
       visit(1, "Zurich", "CH", "ETH Zurich", true, "desktop", "Safari", "macOS", "de-CH", "Europe/Zurich", "scholar.google.com", "scholar.google.com/citations", "nithinpuru.com/ > nithinpuru.com/rongm", 430000, 95, "experience,education,publications,awards,cv", "drive.google.com/file/d/cv/view", false),
@@ -437,40 +509,164 @@ async function load(from, to) {
   return r.json();
 }
 
-/* ---- Map ---------------------------------------------------------------- */
-let mapInit = null;
-const landPromise = fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json").then(r => r.json());
-async function drawMap(origins) {
+/* ---- Maps --------------------------------------------------------------- */
+const ATLAS = "https://cdn.jsdelivr.net/npm/";
+const topo = {};
+const getTopo = (file) => (topo[file] ||= fetch(ATLAS + file).then(r => r.json()));
+// ISO 3166 alpha-2 -> numeric ids used by world-atlas, for European countries.
+const EU_NUM = { AL: "008", AD: "020", AT: "040", BY: "112", BE: "056", BA: "070", BG: "100", HR: "191", CY: "196", CZ: "203",
+  DK: "208", EE: "233", FI: "246", FR: "250", DE: "276", GR: "300", HU: "348", IS: "352", IE: "372", IT: "380", LV: "428",
+  LI: "438", LT: "440", LU: "442", MT: "470", MD: "498", MC: "492", ME: "499", NL: "528", MK: "807", NO: "578", PL: "616",
+  PT: "620", RO: "642", RU: "643", SM: "674", RS: "688", SK: "703", SI: "705", ES: "724", SE: "752", CH: "756", UA: "804",
+  GB: "826", VA: "336", TR: "792", XK: "-99" };
+const EUROPE = new Set(Object.keys(EU_NUM));
+const shade = (max) => d3.scaleSequential([0, max || 1], t => d3.interpolateRgb("#e9e5d9", "#22408c")(Math.sqrt(t)));
+
+// Zoom and pan: +/-/reset buttons, double-click, Ctrl/Cmd + scroll, pinch; drag
+// pans once zoomed in. Plain scrolling still scrolls the page. Returns the
+// group to draw into; dots keep their size and city labels show as you zoom in.
+function zoomable(svg, W, H) {
+  const g = svg.append("g").attr("class", "zoom");
+  let k = 1;
+  const zoom = d3.zoom().scaleExtent([1, 16]).translateExtent([[0, 0], [W, H]]).extent([[0, 0], [W, H]])
+    .filter(e => e.type === "wheel" ? (e.ctrlKey || e.metaKey)
+      : e.type === "touchstart" ? (e.touches.length > 1 || k > 1)
+      : e.type === "mousedown" ? (k > 1 && !e.button) : !e.button)
+    .on("zoom", e => {
+      k = e.transform.k;
+      g.attr("transform", e.transform);
+      g.selectAll("circle").attr("r", function () { return +this.dataset.r / k; });
+      g.selectAll(".lbl").attr("font-size", 11 / k).attr("dx", 6 / k).attr("dy", 4 / k)
+        .style("display", k >= 2.5 ? null : "none");
+    });
+  svg.call(zoom).on("dblclick.zoom", null)
+    .on("dblclick", e => svg.transition().duration(300).call(zoom.scaleBy, 2, d3.pointer(e)));
+  const wrap = svg.node().parentNode;
+  wrap.querySelector(".zoombar")?.remove();
+  const bar = document.createElement("div");
+  bar.className = "zoombar";
+  bar.innerHTML = `<button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">−</button><button type="button" aria-label="Reset zoom">reset</button>`;
+  const [zin, zout, zreset] = bar.querySelectorAll("button");
+  zin.onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 2);
+  zout.onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 0.5);
+  zreset.onclick = () => svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+  wrap.appendChild(bar);
+  return g;
+}
+// Dots: remember the base radius for zooming, add a city label (owner view).
+function addDots(g, pts, xy, size, tipFn, named) {
+  const sel = g.append("g").selectAll("g").data(pts).join("g");
+  sel.append("circle").attr("class", "dot")
+    .attr("data-r", d => size(d.visitors)).attr("r", d => size(d.visitors))
+    .attr("cx", d => xy(d)[0]).attr("cy", d => xy(d)[1]).call(tipFn);
+  if (named) sel.append("text").attr("class", "lbl").attr("x", d => xy(d)[0]).attr("y", d => xy(d)[1])
+    .attr("font-size", 11).style("display", "none").text(d => d.city || "");
+}
+
+function placeTip(svgSel, tipId, html) {
+  const tip = $(tipId);
+  const show = (e, d) => {
+      const box = svgSel.node().parentNode.getBoundingClientRect();
+      tip.innerHTML = html(d);
+      tip.style.left = Math.min(e.clientX - box.left + 12, box.width - 200) + "px";
+      tip.style.top = (e.clientY - box.top + 12) + "px"; tip.style.opacity = 1;
+  };
+  return (sel) => sel.on("mousemove", show).on("click", show)   // click = tap on phones
+    .on("mouseleave", () => tip.style.opacity = 0);
+}
+const placeName = d => [d.city, d.region, countryName(d.country)].filter(Boolean).join(", ");
+const counts = d => `${fmt(d.visitors)} visitor${d.visitors === 1 ? "" : "s"}, ${fmt(d.views)} view${d.views === 1 ? "" : "s"}`;
+// Sum city points over both sites (for the Europe / US maps and tables).
+function mergePlaces(places) {
+  const m = new Map();
+  for (const p of places) {
+    const k = [p.city, p.region, p.country].join("|");
+    const o = m.get(k) || { ...p, visitors: 0, views: 0 };
+    o.visitors += p.visitors; o.views += p.views; m.set(k, o);
+  }
+  return [...m.values()].sort((a, b) => b.visitors - a.visitors);
+}
+
+// World map for one site: named city dots for the owner, 1-degree cells otherwise.
+async function drawWorld(svgId, tipId, points, named) {
   const W = 960, H = 480;
-  const svg = d3.select("#map").attr("viewBox", `0 0 ${W} ${H}`);
+  const svg = d3.select("#" + svgId).attr("viewBox", `0 0 ${W} ${H}`);
   const proj = d3.geoNaturalEarth1().fitExtent([[4, 4], [W - 4, H - 4]], { type: "Sphere" });
   const path = d3.geoPath(proj);
-  mapInit ||= landPromise.then(topo => {
-    svg.append("path").attr("class", "sphere").attr("d", path({ type: "Sphere" }));
-    svg.append("path").attr("class", "land").attr("d", path(topojson.feature(topo, topo.objects.land)));
-    svg.append("g").attr("class", "cells");
-  });
-  await mapInit;
-  const max = d3.max(origins, d => d.visitors) || 1;
-  const size = d3.scaleSqrt().domain([0, max]).range([3, 20]);
-  const tip = $("map-tip");
-  svg.select(".cells").selectAll("rect")
-    .data(origins.slice().sort((a, b) => b.visitors - a.visitors), d => d.lat + "," + d.lon)
-    .join("rect")
-      .attr("class", "cell")
-      .each(function (d) {
-        const [x, y] = proj([d.lon, d.lat]); const s = size(d.visitors);
-        d3.select(this).attr("x", x - s / 2).attr("y", y - s / 2).attr("width", s).attr("height", s);
-      })
-      .on("mousemove", (e, d) => {
-        const box = e.currentTarget.ownerSVGElement.parentNode.getBoundingClientRect();
-        const ns = d.lat >= 0 ? "N" : "S", ew = d.lon >= 0 ? "E" : "W";
-        tip.innerHTML = `${Math.abs(d.lat)}°${ns}, ${Math.abs(d.lon)}°${ew}<br>${fmt(d.visitors)} visitors, ${fmt(d.views)} views`;
-        tip.style.left = (e.clientX - box.left + 12) + "px";
-        tip.style.top = (e.clientY - box.top + 12) + "px";
-        tip.style.opacity = 1;
-      })
-      .on("mouseleave", () => tip.style.opacity = 0);
+  const t = await getTopo("world-atlas@2/countries-50m.json");
+  svg.selectAll("*").remove();
+  const g = zoomable(svg, W, H);
+  g.append("path").attr("class", "sphere").attr("d", path({ type: "Sphere" }));
+  g.append("path").attr("class", "land").attr("d", path(topojson.feature(t, t.objects.land)));
+  g.append("path").attr("class", "borders").attr("d", path(topojson.mesh(t, t.objects.countries, (a, b) => a !== b)));
+  const max = d3.max(points, d => d.visitors) || 1;
+  const size = d3.scaleSqrt().domain([0, max]).range([3.5, 16]);
+  addDots(g, points.slice().sort((a, b) => b.visitors - a.visitors), d => proj([d.lon, d.lat]), size,
+    placeTip(svg, tipId, d => named ? `${esc(placeName(d))}<br>${counts(d)}`
+      : `${Math.abs(d.lat)}°${d.lat >= 0 ? "N" : "S"}, ${Math.abs(d.lon)}°${d.lon >= 0 ? "E" : "W"}<br>${counts(d)}`), named);
+}
+
+// Europe: countries shaded by visitors, city dots on top.
+async function drawEurope(countries, places) {
+  const W = 760, H = 620;
+  const svg = d3.select("#map-eu").attr("viewBox", `0 0 ${W} ${H}`); svg.selectAll("*").remove();
+  const t = await getTopo("world-atlas@2/countries-50m.json");
+  const feats = topojson.feature(t, t.objects.countries).features;
+  const proj = d3.geoConicConformal().rotate([-12, 0]).parallels([40, 64])
+    .fitExtent([[0, 0], [W, H]], { type: "MultiPoint", coordinates: [[-11, 35], [32, 35], [-20, 64], [40, 71]] });
+  const path = d3.geoPath(proj);
+  const byNum = new Map(countries.filter(c => EUROPE.has(c.key)).map(c => [EU_NUM[c.key], c]));
+  const color = shade(d3.max([...byNum.values()], c => c.visitors));
+  const g = zoomable(svg, W, H);
+  g.append("g").selectAll("path").data(feats).join("path")
+    .attr("d", path).attr("class", d => byNum.has(d.id) ? "shape" : "nodata")
+    .attr("fill", d => byNum.has(d.id) ? color(byNum.get(d.id).visitors) : null)
+    .call(placeTip(svg, "tip-eu", d => { const c = byNum.get(d.id); return `${esc(d.properties.name)}<br>${c ? counts(c) : "no visits"}`; }));
+  const pts = places.filter(p => EUROPE.has(p.country));
+  const size = d3.scaleSqrt().domain([0, d3.max(pts, d => d.visitors) || 1]).range([3, 12]);
+  addDots(g, pts, d => proj([d.lon, d.lat]), size, placeTip(svg, "tip-eu", d => `${esc(placeName(d))}<br>${counts(d)}`), true);
+}
+
+// United States: states shaded by visitors (owner view), city dots on top.
+async function drawUS(regions, places) {
+  const W = 960, H = 600;
+  const svg = d3.select("#map-us").attr("viewBox", `0 0 ${W} ${H}`); svg.selectAll("*").remove();
+  const t = await getTopo("us-atlas@3/states-10m.json");
+  const states = topojson.feature(t, t.objects.states);
+  const proj = d3.geoAlbersUsa().fitExtent([[8, 8], [W - 8, H - 8]], states);
+  const path = d3.geoPath(proj);
+  const byName = new Map(regions.filter(r => r.country === "US").map(r => [r.region, r]));
+  const color = shade(d3.max([...byName.values()], r => r.visitors));
+  const g = zoomable(svg, W, H);
+  g.append("g").selectAll("path").data(states.features).join("path")
+    .attr("d", path).attr("class", d => byName.has(d.properties.name) ? "shape" : "nodata")
+    .attr("fill", d => byName.has(d.properties.name) ? color(byName.get(d.properties.name).visitors) : null)
+    .call(placeTip(svg, "tip-us", d => { const r = byName.get(d.properties.name); return `${esc(d.properties.name)}<br>${r ? counts(r) : "no visits"}`; }));
+  const pts = places.filter(p => p.country === "US" && proj([p.lon, p.lat]));
+  const size = d3.scaleSqrt().domain([0, d3.max(pts, d => d.visitors) || 1]).range([3.5, 14]);
+  addDots(g, pts, d => proj([d.lon, d.lat]), size, placeTip(svg, "tip-us", d => `${esc(placeName(d))}<br>${counts(d)}`), true);
+}
+
+/* ---- Why they come ------------------------------------------------------- */
+function sourceKind(k) {
+  if (k === "(direct)") return "Direct";
+  if (/^nithinpuru\.(com|github\.io|pages\.dev)$/.test(k)) return "Your other site";
+  if (/scholar|researchgate|ieee|acm\.org|arxiv|semanticscholar|orcid|dblp|openreview|\.edu$|\.ac\.[a-z]+$|univ/.test(k)) return "Academic";
+  if (/^(google|bing\.com|duckduckgo\.com|yahoo|ecosia|baidu|yandex|search\.brave|startpage|perplexity|chatgpt|openai)/.test(k)) return "Search & AI";
+  if (/linkedin|twitter|^x\.com|facebook|reddit|mastodon|bsky|instagram|youtube|t\.me|whatsapp|slack|discord/.test(k)) return "Social & chat";
+  if (/github|gitlab|huggingface|colab|kaggle/.test(k)) return "Code & notebooks";
+  return "Other websites";
+}
+function drawWhy(sources, landing) {
+  const kinds = new Map();
+  for (const r of sources) kinds.set(sourceKind(r.key), (kinds.get(sourceKind(r.key)) || 0) + r.visitors);
+  const total = d3.sum([...kinds.values()]);
+  fillDist("d-why", [...kinds].sort((a, b) => b[1] - a[1]).map(([label, v]) => ({ label, value: v, max: total, text: pct(100 * v / total) })), "No outside visits yet.");
+  const tb = $("t-landing");
+  const rows = landing.filter(r => r.source !== "(internal)");
+  if (!rows.length) { tb.innerHTML = `<tr class="empty"><td colspan="2">No visits in this range yet.</td></tr>`; return; }
+  const max = d3.max(rows, r => r.visits) || 1;
+  tb.innerHTML = rows.map(r => `<tr><td>${esc(r.source === "(direct)" ? "direct" : r.source)} → ${esc(r.page)}<span class="bar" style="width:${(r.visits / max * 100).toFixed(1)}%"></span></td><td>${fmt(r.visits)}</td></tr>`).join("");
 }
 
 /* ---- Daily chart -------------------------------------------------------- */
@@ -588,28 +784,28 @@ let lastVisits = null, lastAuthorized = false;
 function renderVisits() {
   const wrap = $("visits-wrap");
   if (!lastAuthorized) {
-    wrap.innerHTML = `<p class="locked">The visit log is private. Open this page once with <code>?key=</code> followed by your owner key; it is kept in this browser only.</p>`;
+    wrap.innerHTML = `<p class="locked">The visit log is private. Paste your owner key (the part after <code>?owner=</code> in your nithinpuru.com owner link) into the box at the top and press Unlock. It is kept in this browser only.</p>`;
     return;
   }
-  const onlyAcad = $("only-academic").checked;
-  const rows = (lastVisits || []).filter(v => !onlyAcad || v.academic);
+  const onlyAcad = $("only-academic").checked, hideCloud = $("hide-cloud").checked;
+  const rows = (lastVisits || []).filter(v => (!onlyAcad || v.academic) && (!hideCloud || !v.cloud));
   if (!rows.length) { wrap.innerHTML = `<p class="locked">No visits in this range${onlyAcad ? " from academic networks" : ""} yet.</p>`; return; }
   const when = t => new Date(t).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   const theirs = (t, tz) => { try { return tz ? new Date(t).toLocaleTimeString([], { timeZone: tz, hour: "2-digit", minute: "2-digit" }) + " their time" : ""; } catch { return ""; } };
   wrap.innerHTML = `<ol class="visits">${rows.map(v => {
-    const place = [v.city, countryName(v.country)].filter(Boolean).join(", ") || "Unknown place";
+    const place = [v.city, v.region, countryName(v.country)].filter(Boolean).join(", ") || "Unknown place";
     const how = [cap(v.device), v.browser, v.os, v.lang].filter(Boolean).join(" · ");
     const from = v.source && v.source !== "(direct)" ? `from ${esc(v.ref || v.source)}` : "direct visit";
     const read = v.sections ? [...new Set(v.sections.split(","))].map(sectionName).join(", ") : "";
     const pages = esc(v.pages || "").replaceAll(" &gt; ", " → ");
-    return `<li class="visit">
+    return `<li class="visit${v.cloud ? " is-cloud" : ""}">
       <div class="visit__when"><b>${esc(when(v.start))}</b>${esc(theirs(v.start, v.tz))}</div>
-      <div class="visit__who">${flag(v.country)}${esc(place)}${v.org ? ` · ${esc(v.org)}` : ""}${v.academic ? `<span class="tag tag--acad">academic</span>` : ""}${v.returning ? `<span class="tag">returning</span>` : `<span class="tag tag--new">new</span>`}</div>
+      <div class="visit__who">${flag(v.country)}${esc(place)}${v.org ? ` · ${esc(v.org)}` : ""}${v.academic ? `<span class="tag tag--acad">academic</span>` : ""}${v.cloud ? `<span class="tag tag--cloud">cloud / VPN</span>` : ""}${v.returning ? `<span class="tag">returning</span>` : `<span class="tag tag--new">new</span>`}</div>
       <div class="visit__how">${esc(how) || "Device unknown"} · ${from}</div>
       <div class="visit__what">${pages} · ${v.views} view${v.views === 1 ? "" : "s"}${v.ms != null ? ` · read ${dur(v.ms)}` : ""}${v.scroll != null ? ` · scrolled ${pct(v.scroll)}` : ""}</div>
       <div class="visit__read">${read ? `Sections: ${esc(read)}` : ""}${read && v.clicks ? " · " : ""}${v.clicks ? `Clicked: ${esc(v.clicks)}` : ""}</div>
     </li>`;
-  }).join("")}</ol><p class="visits-foot muted">${rows.length} visit${rows.length === 1 ? "" : "s"} shown (latest 80 in the range).</p>`;
+  }).join("")}</ol><p class="visits-foot muted">${rows.length} visit${rows.length === 1 ? "" : "s"} shown (latest 150 in the range).</p>`;
 }
 
 /* ---- Tables ------------------------------------------------------------- */
@@ -633,17 +829,23 @@ async function refresh() {
   if (!from || !to || from > to) return;
   try {
     const s = await load(from, to);
-    const auth = !!s.authorized, locked = auth ? null : "Owner key needed.";
+    const auth = !!s.authorized, locked = auth ? null : "Unlock with your owner key (box at the top).";
     lastAuthorized = auth; lastVisits = s.visits || [];
     $("owner-status").innerHTML = auth
       ? `Owner view <button type="button" class="linkish" id="lock">forget key</button>`
-      : "Public view: visit log, networks and cities are hidden.";
+      : "Public view: the visit log, networks, regions and cities need your owner key.";
+    $("unlock").hidden = auth || DEMO;
+    if (!auth && statsKey()) {   // a stored key the Worker didn't accept
+      try { localStorage.removeItem("np_stats_key"); } catch (e) {}
+      $("owner-status").textContent = "That key wasn't accepted - check it and try again.";
+    }
     $("lock")?.addEventListener("click", () => { try { localStorage.removeItem("np_stats_key"); } catch (e) {} refresh(); });
     $("f-visitors").textContent = fmt(s.total.visitors || 0);
     $("f-views").textContent = fmt(s.total.views || 0);
     $("f-visitors-today").textContent = fmt(s.today?.visitors || 0);
     $("f-views-today").textContent = fmt(s.today?.views || 0);
     $("f-academic").textContent = auth ? fmt(s.academicVisitors || 0) : "–";
+    $("f-people").textContent = auth ? fmt(Math.max(0, (s.total?.visitors || 0) - (s.cloudVisitors || 0))) : "–";
     const nr = s.newReturning || {}, nrTot = (nr.new || 0) + (nr.returning || 0);
     $("f-returning").innerHTML = nrTot ? `${fmt(nr.returning || 0)} <small>${pct(100 * (nr.returning || 0) / nrTot)}</small>` : "–";
     $("f-time").textContent = dur(s.engagement?.avg_ms);
@@ -668,7 +870,19 @@ async function refresh() {
     fillTable("t-campaigns", s.campaigns || [], k => k);
     fillTable("t-clicks", s.clicks || [], clickLabel);
     fillEngagement(s.pageEngagement || []);
-    drawMap(s.origins);
+    const places = auth ? (s.places || []) : [];
+    const bySite = s.originsBySite || {};
+    for (const [svgId, tipId, host] of [["map-com", "tip-com", "nithinpuru.com"], ["map-io", "tip-io", "nithinpuru.github.io"]])
+      drawWorld(svgId, tipId, auth ? places.filter(p => p.host === host) : (bySite[host] || []), auth);
+    $("origins-note").textContent = auth ? "Dots are cities - hover for names" : "1° cells - unlock for city names";
+    const merged = mergePlaces(places);
+    drawEurope(s.countries || [], merged);
+    drawUS(auth ? (s.regions || []) : [], merged);
+    fillTable("t-eu-countries", (s.countries || []).filter(c => EUROPE.has(c.key)), regionLabel);
+    fillTable("t-eu-places", merged.filter(p => EUROPE.has(p.country)).map(p => ({ ...p, key: `${p.city}${p.region && p.region !== p.city ? ", " + p.region : ""} (${p.country})` })), k => k, locked);
+    fillTable("t-us-states", (s.regions || []).filter(r => r.country === "US").map(r => ({ ...r, key: r.region })), k => k, locked);
+    fillTable("t-us-cities", merged.filter(p => p.country === "US").map(p => ({ ...p, key: `${p.city}${p.region ? ", " + p.region : ""}` })), k => k, locked);
+    drawWhy(s.sources || [], s.landing || []);
   } catch (err) {
     $("updated").innerHTML = `<span class="status">Couldn't load stats: ${esc(err.message)}. Check API_BASE and the Worker's SITE_ORIGIN.</span>`;
   }
@@ -682,6 +896,14 @@ function setPreset(days) {
 
 $("site").addEventListener("change", refresh);
 $("only-academic").addEventListener("change", renderVisits);
+$("hide-cloud").addEventListener("change", renderVisits);
+$("unlock").addEventListener("submit", e => {
+  e.preventDefault();
+  const k = $("unlock-key").value.trim();
+  if (!k) return;
+  try { localStorage.setItem("np_stats_key", k); localStorage.setItem("np_notrack", "1"); } catch (err) {}
+  $("unlock-key").value = ""; renderNotrack(); refresh();
+});
 $("preset").addEventListener("change", e => {
   if (e.target.value !== "custom") { setPreset(+e.target.value); refresh(); }
 });

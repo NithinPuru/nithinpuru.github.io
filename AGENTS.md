@@ -115,8 +115,13 @@ Tool pages load it with `<script src="/np.js" defer></script>` before
 through a hostname-gated snippet (its e2e test fails on a 404). The dashboard
 is `public/analytics/`; `/stats` returns aggregates to anyone and the visit
 log, networks and cities only with the `X-Stats-Key` header (the owner key,
-stored in the browser by opening `/analytics/?key=<key>` once). Never commit
-the key.
+stored in the browser by opening `/analytics/?key=<key>` once, or pasting it
+into the Unlock box). Never commit the key.
+
+Bots: the Worker drops events from cloud / hosting / VPN networks (`BOT_ASNS`
+and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
+nithinpuru.com. Cloudflare, Akamai, Fastly (iCloud Private Relay), Microsoft,
+Google and Zscaler are deliberately not on that list - they carry real people.
 
 ## Brand assets
 
