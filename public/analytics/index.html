@@ -188,6 +188,7 @@
   .signin details { color: var(--muted); font-size: .95rem; margin: .5rem 0 1rem; }
   .signin details summary { cursor: pointer; color: var(--ink); }
   .signin details li { margin: .2rem 0; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .toast { border-left: 3px solid var(--views); background: #fff; padding: .6rem .9rem; margin: 0 0 1.5rem; font-size: .95rem; }
 
   /* sticky controls + section links */
@@ -223,8 +224,10 @@
   <div class="signin" id="signin" hidden>
     <h2>Sign in</h2>
     <p>This page is private. Enter your analytics password.</p>
-    <form id="signin-form">
-      <input type="password" id="signin-key" placeholder="Password" autocomplete="current-password" aria-label="Analytics password">
+    <form id="signin-form" method="post" action="#">
+      <!-- a username lets browsers / password managers offer to save the password -->
+      <input type="text" name="username" value="nithinpuru-analytics" autocomplete="username" readonly tabindex="-1" aria-hidden="true" class="visually-hidden">
+      <input type="password" name="password" id="signin-key" placeholder="Password" autocomplete="current-password" aria-label="Analytics password">
       <button type="submit">Sign in</button>
     </form>
     <p class="signin-msg" id="signin-msg" role="status"></p>
@@ -236,7 +239,7 @@
         <li>stops counting your own visits on nithinpuru.com and on the tools,</li>
         <li>lets that device open nithinpuru.com from India.</li>
       </ul>
-      <p>It is kept only in that browser. Anyone with the password can do the same, so don't share it.</p>
+      <p>It is kept only in that browser. Let your browser save it when it offers, and you won't have to type it again. Anyone with the password can do the same, so don't share it.</p>
     </details>
     <p><a href="?demo">Preview with sample data</a></p>
   </div>
