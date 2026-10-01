@@ -3,25 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Site Analytics - Nithin Purushothama</title>
-<meta name="description" content="First-party site analytics: unique visitors, page views, request origins, and traffic sources.">
+<title>Analytics - nithinpuru</title>
+<meta name="description" content="Private first-party analytics for nithinpuru.com and nithinpuru.github.io.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#faf9f4">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://nithinpuru.github.io/analytics/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bitmaks/cm-web-fonts@latest/fonts.css">
-<script>
-  // Owner key: /analytics/?key=<owner key> stores it for this browser (it unlocks
-  // the visit log, networks and cities) and stops counting this browser on
-  // nithinpuru.github.io. The parameter is removed from the address bar.
-  (function () {
-    var m = /[?&]key=([A-Za-z0-9_-]+)/.exec(location.search);
-    if (!m) return;
-    try { localStorage.setItem("np_stats_key", m[1]); localStorage.setItem("np_notrack", "1"); } catch (e) {}
-    var q = location.search.replace(/([?&])key=[^&]*&?/, "$1").replace(/[?&]$/, "");
-    history.replaceState(null, "", location.pathname + q + location.hash);
-  })();
-</script>
 <style>
   :root {
     --paper: #faf9f4;
@@ -111,9 +99,6 @@
   .maps2 h3, .region-maps h3 { margin-bottom: .25rem; }
   .region-maps { display: grid; grid-template-columns: 3fr 2fr; gap: 2rem; align-items: start; }
   .region-maps .tables { grid-template-columns: 1fr; gap: 1.5rem; margin: 0; }
-  .unlock { display: inline-flex; gap: .4rem; align-items: center; }
-  .unlock input { font: inherit; font-size: .92rem; border: 1px solid var(--rule); background: #fff; padding: .2rem .4rem; width: 12rem; }
-  .unlock button { font: inherit; font-size: .92rem; background: var(--ink); color: var(--paper); border: 0; padding: .25rem .7rem; cursor: pointer; }
   .tag--cloud { color: var(--muted); border-style: dashed; }
   .span2 { grid-column: span 2; }
   .visit.is-cloud .visit__who { color: var(--muted); }
@@ -192,6 +177,40 @@
     .figures dd { font-size: 1.7rem; }
     .dist li { grid-template-columns: 6.5rem 1fr 2.8rem; }
   }
+
+  /* sign-in */
+  .signin { max-width: 30rem; margin: 2.5rem 0 4rem; padding: 1.5rem 1.6rem; border: 1px solid var(--rule); background: #fff; }
+  .signin h2 { margin-bottom: .5rem; }
+  .signin form { display: flex; gap: .5rem; margin: 1rem 0 .5rem; }
+  .signin input { flex: 1; min-width: 0; font: inherit; border: 1px solid var(--ink); background: #fff; padding: .45rem .6rem; }
+  .signin button, .btn { font: inherit; background: var(--ink); color: var(--paper); border: 0; padding: .45rem 1rem; cursor: pointer; }
+  .signin-msg { min-height: 1.4em; margin: 0 0 .75rem; color: var(--visitors); font-style: italic; }
+  .signin details { color: var(--muted); font-size: .95rem; margin: .5rem 0 1rem; }
+  .signin details summary { cursor: pointer; color: var(--ink); }
+  .signin details li { margin: .2rem 0; }
+  .toast { border-left: 3px solid var(--views); background: #fff; padding: .6rem .9rem; margin: 0 0 1.5rem; font-size: .95rem; }
+
+  /* sticky controls + section links */
+  .bar { position: sticky; top: 0; z-index: 20; background: var(--paper); border-bottom: 1px solid var(--rule);
+         margin: 0 -1.5rem 2rem; padding: .6rem 1.5rem .5rem; }
+  .bar .row { display: flex; gap: .5rem 1.1rem; flex-wrap: wrap; align-items: center; font-size: .95rem; }
+  .bar label { color: var(--muted); }
+  .bar .who { margin-left: auto; color: var(--muted); }
+  .toc { display: flex; gap: .2rem 1.1rem; flex-wrap: wrap; margin-top: .45rem; font-size: .93rem; }
+  .toc a { text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--rule); }
+  .toc a:hover { border-color: var(--views); color: var(--views); }
+  main section[id] { scroll-margin-top: 6.5rem; }
+  .group { margin: 0 0 3.75rem; }
+  .group > h2.gtitle { font-size: 1.75rem; margin: 0 0 1.25rem; padding-bottom: .35rem; border-bottom: 1.5px solid var(--ink); }
+  .group > .figures { border-top: 0; }
+  .alltime { color: var(--muted); font-size: .95rem; margin: -2.25rem 0 2.5rem; font-style: italic; }
+  @media (max-width: 860px) {
+    .bar .who { margin-left: 0; }
+    .bar { position: static; }          /* on phones the controls scroll away with the page */
+    main section[id] { scroll-margin-top: 1rem; }
+    .toc { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .2rem; }
+    .toc a { white-space: nowrap; }
+  }
 </style>
 </head>
 <body>
@@ -199,198 +218,202 @@
 <main id="content">
   <a class="back" href="https://nithinpuru.com/">← nithinpuru.com</a>
   <h1>Analytics</h1>
-  <p class="sub">First-party counts for the portfolio (nithinpuru.com) and the tools (nithinpuru.github.io). <span id="updated">Loading…</span></p>
-  <div class="filters">
-    <label for="site">Site</label>
-    <select id="site">
-      <option value="">Both sites</option>
-      <option value="nithinpuru.com">nithinpuru.com (portfolio)</option>
-      <option value="nithinpuru.github.io">nithinpuru.github.io (tools)</option>
-    </select>
-    <span id="owner-status" class="muted"></span>
-    <form class="unlock" id="unlock" hidden>
-      <input type="password" id="unlock-key" placeholder="Owner key" autocomplete="off" aria-label="Owner key">
-      <button type="submit">Unlock</button>
+  <p class="sub">Visits to the portfolio (nithinpuru.com) and the tools (nithinpuru.github.io). <span id="updated"></span></p>
+
+  <div class="signin" id="signin" hidden>
+    <h2>Sign in</h2>
+    <p>This page is private. Enter your analytics password.</p>
+    <form id="signin-form">
+      <input type="password" id="signin-key" placeholder="Password" autocomplete="current-password" aria-label="Analytics password">
+      <button type="submit">Sign in</button>
     </form>
+    <p class="signin-msg" id="signin-msg" role="status"></p>
+    <details>
+      <summary>What is the password, and what does signing in do?</summary>
+      <p>It is the private key set up for you - the same text that comes after <code>?owner=</code> in your nithinpuru.com owner link. Sign in once on each browser or phone; that one step:</p>
+      <ul>
+        <li>shows you this page (it stays signed in on that device),</li>
+        <li>stops counting your own visits on nithinpuru.com and on the tools,</li>
+        <li>lets that device open nithinpuru.com from India.</li>
+      </ul>
+      <p>It is kept only in that browser. Anyone with the password can do the same, so don't share it.</p>
+    </details>
+    <p><a href="?demo">Preview with sample data</a></p>
   </div>
 
-  <dl class="figures">
-    <div><dt>Unique visitors</dt><dd id="f-visitors">–</dd></div>
-    <div><dt>Page views</dt><dd id="f-views">–</dd></div>
-    <div><dt>Today</dt><dd><span id="f-visitors-today">–</span> <small>visitors · <span id="f-views-today">–</span> views</small></dd></div>
-    <div><dt>Likely people</dt><dd id="f-people">–</dd></div>
-    <div><dt>Academic visitors</dt><dd id="f-academic">–</dd></div>
-    <div><dt>Returning visitors</dt><dd id="f-returning">–</dd></div>
-    <div><dt>Avg. time on page</dt><dd id="f-time">–</dd></div>
-    <div><dt>Avg. scroll depth</dt><dd id="f-scroll">–</dd></div>
-  </dl>
-
-  <section aria-labelledby="h-visits">
-    <div class="head"><h2 id="h-visits">Who visited</h2>
-      <span class="note">One line per visitor per day, newest first · times in your timezone
-        · <label><input type="checkbox" id="only-academic"> academic only</label>
-        · <label><input type="checkbox" id="hide-cloud"> hide cloud / VPN</label></span></div>
-    <div id="visits-wrap"><p class="locked">Loading…</p></div>
-  </section>
-
-  <section aria-labelledby="h-origins">
-    <div class="head"><h2 id="h-origins">Where they come from</h2><span class="note" id="origins-note">Visitors by place</span></div>
-    <p class="zoomhint">Zoom any map with + / −, double-click, Ctrl/⌘ + scroll or a pinch; drag to move once zoomed. Hover or tap a dot for the place.</p>
-    <div class="maps2">
-      <div><h3>Portfolio · nithinpuru.com</h3><div class="map-wrap"><svg id="map-com" class="geo" role="img" aria-label="World map of portfolio visitors"></svg><div class="tip" id="tip-com"></div></div></div>
-      <div><h3>Tools · nithinpuru.github.io</h3><div class="map-wrap"><svg id="map-io" class="geo" role="img" aria-label="World map of tools visitors"></svg><div class="tip" id="tip-io"></div></div></div>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-europe">
-    <div class="head"><h2 id="h-europe">Europe</h2><span class="note">Countries shaded by visitors · dots are cities</span></div>
-    <div class="region-maps">
-      <div class="map-wrap"><svg id="map-eu" class="geo" role="img" aria-label="Map of European visitors"></svg><div class="tip" id="tip-eu"></div></div>
-      <div class="tables">
-        <section><table><thead><tr><th>Country</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-eu-countries"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
-        <section><table><thead><tr><th>City, region</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-eu-places"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-us">
-    <div class="head"><h2 id="h-us">United States</h2><span class="note">States shaded by visitors · dots are cities</span></div>
-    <div class="region-maps">
-      <div class="map-wrap"><svg id="map-us" class="geo" role="img" aria-label="Map of US visitors"></svg><div class="tip" id="tip-us"></div></div>
-      <div class="tables">
-        <section><table><thead><tr><th>State</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-us-states"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
-        <section><table><thead><tr><th>City</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-us-cities"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-why">
-    <div class="head"><h2 id="h-why">Why they come</h2><span class="note">Where visits start, and the first page they open</span></div>
-    <div class="dists">
-      <div><h3>Kind of source</h3><ul class="dist" id="d-why"></ul>
-        <p class="zoomhint">Direct = typed, bookmark, app or email · Social = LinkedIn, X, WhatsApp… · Academic = Scholar, IEEE, universities · Code = GitHub, Colab</p></div>
-      <div class="span2"><h3>Source → first page</h3>
-        <table><thead><tr><th>From → landed on</th><th>Visits</th></tr></thead><tbody id="t-landing"><tr class="empty"><td colspan="2">Loading…</td></tr></tbody></table></div>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-daily">
-    <div class="head"><h2 id="h-daily">Daily traffic</h2><span class="note" id="range-note"></span></div>
-    <div class="controls">
-      <div class="legend">
-        <button type="button" data-series="views" aria-pressed="true">Views</button>
-        <button type="button" data-series="visitors" aria-pressed="true">Visitors</button>
-      </div>
-      <div class="range">
-        <select id="preset" aria-label="Date range">
+  <div id="app" hidden>
+    <div class="bar">
+      <div class="row">
+        <label for="site">Site</label>
+        <select id="site">
+          <option value="">Both sites</option>
+          <option value="nithinpuru.com">nithinpuru.com (portfolio)</option>
+          <option value="nithinpuru.github.io">nithinpuru.github.io (tools)</option>
+        </select>
+        <label for="preset">Dates</label>
+        <select id="preset">
+          <option value="1">Today (UTC)</option>
           <option value="7">Last 7 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="90" selected>Last 90 days</option>
+          <option value="30" selected>Last 30 days</option>
+          <option value="90">Last 90 days</option>
           <option value="365">Last 12 months</option>
           <option value="custom">Custom</option>
         </select>
-        <label for="from">From</label><input type="date" id="from">
-        <label for="to">To</label><input type="date" id="to">
+        <input type="date" id="from" aria-label="From"> <span class="muted">–</span> <input type="date" id="to" aria-label="To">
+        <span class="who" id="who"></span>
       </div>
+      <nav class="toc" aria-label="Sections">
+        <a href="#overview">Overview</a><a href="#visitors">Who visited</a><a href="#where">Where</a><a href="#why">Why</a>
+        <a href="#reading">Reading</a><a href="#when">When</a><a href="#networks">Networks</a><a href="#tech">Devices</a>
+      </nav>
     </div>
-    <div class="map-wrap"><svg id="chart" role="img" aria-label="Daily views and visitors"></svg><div class="tip" id="chart-tip"></div></div>
-  </section>
+    <div id="toast"></div>
 
-  <section aria-labelledby="h-when">
-    <div class="head"><h2 id="h-when">When they visit</h2><span class="note">Page views by weekday and hour, in the visitor's own timezone</span></div>
-    <div class="map-wrap"><svg id="heat" role="img" aria-label="Page views by weekday and hour"></svg><div class="tip" id="heat-tip"></div></div>
-  </section>
-
-  <section aria-labelledby="h-reading">
-    <div class="head"><h2 id="h-reading">How they read</h2><span class="note">Per page load</span></div>
-    <div class="dists">
-      <div><h3>Portfolio sections reached</h3><ul class="dist" id="d-sections"></ul></div>
-      <div><h3>Time on page</h3><ul class="dist" id="d-time"></ul></div>
-      <div><h3>Scroll depth</h3><ul class="dist" id="d-scroll"></ul></div>
-    </div>
-  </section>
-
-  <div class="tables">
-    <section aria-labelledby="h-regions">
-      <div class="head"><h2 id="h-regions">Regions</h2><span class="note">ISO 3166</span></div>
-      <table><thead><tr><th>Region</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-regions"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-sources">
-      <div class="head"><h2 id="h-sources">Sources</h2><span class="note">Referrer or utm_source</span></div>
-      <table><thead><tr><th>Source</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-sources"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-pages">
-      <div class="head"><h2 id="h-pages">Pages</h2><span class="note">By views</span></div>
-      <table><thead><tr><th>Path</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-pages"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    <section class="group" id="overview" aria-labelledby="g-overview">
+      <h2 class="gtitle" id="g-overview">Overview</h2>
+      <dl class="figures">
+        <div><dt>Visitors</dt><dd id="f-visitors">–</dd></div>
+        <div><dt>Page views</dt><dd id="f-views">–</dd></div>
+        <div><dt>Likely people</dt><dd id="f-people">–</dd></div>
+        <div><dt>Academic visitors</dt><dd id="f-academic">–</dd></div>
+        <div><dt>Returning visitors</dt><dd id="f-returning">–</dd></div>
+        <div><dt>Avg. time on page</dt><dd id="f-time">–</dd></div>
+        <div><dt>Avg. scroll depth</dt><dd id="f-scroll">–</dd></div>
+        <div><dt>Today (UTC)</dt><dd><span id="f-visitors-today">–</span> <small>visitors · <span id="f-views-today">–</span> views</small></dd></div>
+      </dl>
+      <p class="alltime" id="alltime"></p>
+      <section aria-labelledby="h-daily">
+        <div class="head"><h2 id="h-daily">Daily traffic</h2><span class="note" id="range-note"></span></div>
+        <div class="controls"><div class="legend">
+          <button type="button" data-series="views" aria-pressed="true">Views</button>
+          <button type="button" data-series="visitors" aria-pressed="true">Visitors</button>
+        </div></div>
+        <div class="map-wrap"><svg id="chart" role="img" aria-label="Daily views and visitors"></svg><div class="tip" id="chart-tip"></div></div>
+      </section>
     </section>
 
-    <section aria-labelledby="h-academic">
-      <div class="head"><h2 id="h-academic">Academic networks</h2><span class="note">Universities, institutes, research networks</span></div>
-      <table><thead><tr><th>Network</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-academic"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-orgs">
-      <div class="head"><h2 id="h-orgs">All networks</h2><span class="note">Who owns the IP</span></div>
-      <table><thead><tr><th>Network</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-orgs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-cities">
-      <div class="head"><h2 id="h-cities">Cities</h2><span class="note">Cloudflare geolocation</span></div>
-      <table><thead><tr><th>City</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-cities"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    <section class="group" id="visitors" aria-labelledby="g-visitors">
+      <h2 class="gtitle" id="g-visitors">Who visited</h2>
+      <div class="head"><span class="note">One line per visitor per day, newest first · times in your timezone</span>
+        <span class="note"><label><input type="checkbox" id="only-academic"> academic only</label>
+        · <label><input type="checkbox" id="hide-cloud" checked> hide cloud / VPN</label></span></div>
+      <div id="visits-wrap"><p class="locked">Loading…</p></div>
     </section>
 
-    <section aria-labelledby="h-refs">
-      <div class="head"><h2 id="h-refs">Referring pages</h2><span class="note">Exact page, no query</span></div>
-      <table><thead><tr><th>Page</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-refs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-sites">
-      <div class="head"><h2 id="h-sites">Sites</h2><span class="note">Before the split, all github.io</span></div>
-      <table><thead><tr><th>Site</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-sites"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-devices">
-      <div class="head"><h2 id="h-devices">Devices</h2></div>
-      <table><thead><tr><th>Device</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-devices"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    <section class="group" id="where" aria-labelledby="g-where">
+      <h2 class="gtitle" id="g-where">Where they come from</h2>
+      <p class="zoomhint">Zoom any map with + / −, double-click, Ctrl/⌘ + scroll or a pinch; drag to move once zoomed. Hover or tap a dot for the place.</p>
+      <div class="maps2">
+        <div><h3>Portfolio · nithinpuru.com</h3><div class="map-wrap"><svg id="map-com" class="geo" role="img" aria-label="World map of portfolio visitors"></svg><div class="tip" id="tip-com"></div></div></div>
+        <div><h3>Tools · nithinpuru.github.io</h3><div class="map-wrap"><svg id="map-io" class="geo" role="img" aria-label="World map of tools visitors"></svg><div class="tip" id="tip-io"></div></div></div>
+      </div>
+      <section aria-labelledby="h-europe" style="margin-top:2.5rem">
+        <div class="head"><h2 id="h-europe">Europe</h2><span class="note">Countries shaded by visitors · dots are cities</span></div>
+        <div class="region-maps">
+          <div class="map-wrap"><svg id="map-eu" class="geo" role="img" aria-label="Map of European visitors"></svg><div class="tip" id="tip-eu"></div></div>
+          <div class="tables">
+            <section><table><thead><tr><th>Country</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-eu-countries"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+            <section><table><thead><tr><th>City, region</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-eu-places"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="h-us">
+        <div class="head"><h2 id="h-us">United States</h2><span class="note">States shaded by visitors · dots are cities</span></div>
+        <div class="region-maps">
+          <div class="map-wrap"><svg id="map-us" class="geo" role="img" aria-label="Map of US visitors"></svg><div class="tip" id="tip-us"></div></div>
+          <div class="tables">
+            <section><table><thead><tr><th>State</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-us-states"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+            <section><table><thead><tr><th>City</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-us-cities"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+          </div>
+        </div>
+      </section>
+      <div class="tables wide">
+        <section><div class="head"><h2>All countries</h2><span class="note">ISO 3166</span></div>
+        <table><thead><tr><th>Country</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-countries"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>All cities</h2><span class="note">Cloudflare geolocation</span></div>
+        <table><thead><tr><th>City</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-cities"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
     </section>
 
-    <section aria-labelledby="h-browsers">
-      <div class="head"><h2 id="h-browsers">Browsers</h2></div>
-      <table><thead><tr><th>Browser</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-browsers"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+    <section class="group" id="why" aria-labelledby="g-why">
+      <h2 class="gtitle" id="g-why">Why they come</h2>
+      <div class="dists">
+        <div><h3>Kind of source</h3><ul class="dist" id="d-why"></ul>
+          <p class="zoomhint">Direct = typed, bookmark, app or email · Social = LinkedIn, X, WhatsApp… · Academic = Scholar, IEEE, universities · Code = GitHub, Colab</p></div>
+        <div class="span2"><h3>Source → first page</h3>
+          <table><thead><tr><th>From → landed on</th><th>Visits</th></tr></thead><tbody id="t-landing"><tr class="empty"><td colspan="2">Loading…</td></tr></tbody></table></div>
+      </div>
+      <div class="tables" style="margin-top:2.25rem">
+        <section><div class="head"><h2>Sources</h2><span class="note">Referrer or utm_source</span></div>
+        <table><thead><tr><th>Source</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-sources"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Referring pages</h2><span class="note">Exact page, no query</span></div>
+        <table><thead><tr><th>Page</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-refs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Campaigns</h2><span class="note">utm_campaign / medium</span></div>
+        <table><thead><tr><th>Campaign</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-campaigns"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
     </section>
-    <section aria-labelledby="h-os">
-      <div class="head"><h2 id="h-os">Operating systems</h2></div>
-      <table><thead><tr><th>System</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-os"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+
+    <section class="group" id="reading" aria-labelledby="g-reading">
+      <h2 class="gtitle" id="g-reading">What they read</h2>
+      <div class="dists">
+        <div><h3>Portfolio sections reached</h3><ul class="dist" id="d-sections"></ul></div>
+        <div><h3>Time on page</h3><ul class="dist" id="d-time"></ul></div>
+        <div><h3>Scroll depth</h3><ul class="dist" id="d-scroll"></ul></div>
+      </div>
+      <div class="tables" style="margin-top:2.25rem">
+        <section><div class="head"><h2>Pages</h2><span class="note">By visitors</span></div>
+        <table><thead><tr><th>Page</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-pages"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Reading by page</h2><span class="note">Time visible, deepest scroll</span></div>
+          <table><thead><tr><th>Page</th><th>Loads</th><th>Avg. time</th><th>Scroll</th></tr></thead><tbody id="t-engagement"><tr class="empty"><td colspan="4">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Outbound clicks</h2><span class="note">CV, email, profiles, tools</span></div>
+        <table><thead><tr><th>Target</th><th>Visitors</th><th>Clicks</th></tr></thead><tbody id="t-clicks"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
     </section>
-    <section aria-labelledby="h-langs">
-      <div class="head"><h2 id="h-langs">Languages</h2><span class="note">Browser setting</span></div>
-      <table><thead><tr><th>Language</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-langs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
+
+    <section class="group" id="when" aria-labelledby="g-when">
+      <h2 class="gtitle" id="g-when">When they visit</h2>
+      <p class="zoomhint">Page views by weekday and hour, in the visitor's own timezone.</p>
+      <div class="map-wrap"><svg id="heat" role="img" aria-label="Page views by weekday and hour"></svg><div class="tip" id="heat-tip"></div></div>
     </section>
+
+    <section class="group" id="networks" aria-labelledby="g-networks">
+      <h2 class="gtitle" id="g-networks">Networks</h2>
+      <div class="tables wide">
+        <section><div class="head"><h2>Academic networks</h2><span class="note">Universities, institutes, research networks</span></div>
+        <table><thead><tr><th>Network</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-academic"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>All networks</h2><span class="note">Who owns the IP</span></div>
+        <table><thead><tr><th>Network</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-orgs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
+    </section>
+
+    <section class="group" id="tech" aria-labelledby="g-tech">
+      <h2 class="gtitle" id="g-tech">Devices and languages</h2>
+      <div class="tables">
+        <section><div class="head"><h2>Devices</h2></div>
+        <table><thead><tr><th>Device</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-devices"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Browsers</h2></div>
+        <table><thead><tr><th>Browser</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-browsers"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Operating systems</h2></div>
+        <table><thead><tr><th>System</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-os"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Languages</h2><span class="note">Browser setting</span></div>
+        <table><thead><tr><th>Language</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-langs"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+        <section><div class="head"><h2>Sites</h2><span class="note">Before the split, all github.io</span></div>
+        <table><thead><tr><th>Site</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-sites"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table></section>
+      </div>
+    </section>
+
+    <footer>No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. Visits from cloud, hosting and VPN networks are not recorded; "cloud / VPN" marks any that slip through.
+      <p class="notrack" id="notrack"><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
+    </footer>
   </div>
-
-  <div class="tables wide">
-    <section aria-labelledby="h-engagement">
-      <div class="head"><h2 id="h-engagement">Reading by page</h2><span class="note">Time visible, deepest scroll</span></div>
-      <table><thead><tr><th>Path</th><th>Loads</th><th>Avg. time</th><th>Scroll</th></tr></thead><tbody id="t-engagement"><tr class="empty"><td colspan="4">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-clicks">
-      <div class="head"><h2 id="h-clicks">Outbound clicks</h2><span class="note">CV, email, profiles, tools</span></div>
-      <table><thead><tr><th>Target</th><th>Visitors</th><th>Clicks</th></tr></thead><tbody id="t-clicks"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-    <section aria-labelledby="h-campaigns">
-      <div class="head"><h2 id="h-campaigns">Campaigns</h2><span class="note">utm_campaign / utm_medium</span></div>
-      <table><thead><tr><th>Campaign</th><th>Visitors</th><th>Views</th></tr></thead><tbody id="t-campaigns"><tr class="empty"><td colspan="3">Loading…</td></tr></tbody></table>
-    </section>
-  </div>
-
-  <footer style="margin-top:3.5rem">No cookies for visitors. Visitors are counted by a salted hash; raw IP addresses are never stored. The visit log, networks, regions and cities are only returned with the owner key - the same private key as your nithinpuru.com owner link (the part after <code>?owner=</code>). "Cloud / VPN" marks hosting and VPN networks, which are mostly bots, link previews and VPN users.
-    <p class="notrack" id="notrack" hidden><span id="notrack-status"></span><button type="button" id="notrack-toggle"></button></p>
-  </footer>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
 /* ---- Configuration ------------------------------------------------------ */
-// Your Cloudflare Worker URL (no trailing slash). Leave empty to preview with demo data.
 const API_BASE = "https://nithin-analytics.nithinpurushothama.workers.dev";
-const DEMO = !API_BASE || API_BASE.includes("YOUR-SUBDOMAIN") || new URLSearchParams(location.search).has("demo");
+const DEMO = new URLSearchParams(location.search).has("demo");
 // The portfolio's sections in page order (for "sections reached").
 const PORTFOLIO_SECTIONS = ["experience", "education", "skills", "publications", "awards", "work", "finance", "hobbies", "cv", "contact"];
 const SECTION_NAMES = { cv: "CV", work: "Work & tools" };
@@ -435,6 +458,7 @@ function clickLabel(key) {
   return kind === "email" ? `email ${target}` : target;
 }
 const statsKey = () => { try { return localStorage.getItem("np_stats_key") || ""; } catch { return ""; } };
+
 
 /* ---- Demo data (used until the Worker is configured) -------------------- */
 function demoData(from, to) {
@@ -499,15 +523,6 @@ function demoData(from, to) {
   };
 }
 
-/* ---- Data loading ------------------------------------------------------- */
-async function load(from, to) {
-  if (DEMO) return demoData(from, to);
-  const site = $("site").value, key = statsKey();
-  const r = await fetch(`${API_BASE}/stats?from=${from}&to=${to}${site ? `&site=${site}` : ""}`,
-                        key ? { headers: { "X-Stats-Key": key } } : undefined);
-  if (!r.ok) throw new Error(`Stats API returned ${r.status}`);
-  return r.json();
-}
 
 /* ---- Maps --------------------------------------------------------------- */
 const ATLAS = "https://cdn.jsdelivr.net/npm/";
@@ -669,6 +684,7 @@ function drawWhy(sources, landing) {
   tb.innerHTML = rows.map(r => `<tr><td>${esc(r.source === "(direct)" ? "direct" : r.source)} → ${esc(r.page)}<span class="bar" style="width:${(r.visits / max * 100).toFixed(1)}%"></span></td><td>${fmt(r.visits)}</td></tr>`).join("");
 }
 
+
 /* ---- Daily chart -------------------------------------------------------- */
 const visible = { views: true, visitors: true };
 let lastDaily = [], lastRange = [];
@@ -726,6 +742,7 @@ function drawChart(daily, from, to) {
   $("range-note").textContent = `${n} day${n === 1 ? "" : "s"}, UTC`;
 }
 
+
 /* ---- Weekday x hour heatmap --------------------------------------------- */
 function drawHeat(hours) {
   const svg = d3.select("#heat"); svg.selectAll("*").remove();
@@ -753,6 +770,7 @@ function drawHeat(hours) {
   [0, 3, 6, 9, 12, 15, 18, 21].forEach(h => svg.append("text").attr("x", 44 + h * cw + 2).attr("y", H - 4).text(String(h).padStart(2, "0")));
 }
 
+
 /* ---- Distributions ------------------------------------------------------ */
 function fillDist(id, rows, emptyText) {
   const ul = $(id);
@@ -778,6 +796,7 @@ function drawReading(s) {
   fillDist("d-sections", PORTFOLIO_SECTIONS.map(id => ({ label: sectionName(id), value: byId.get(id) || 0, max: denom,
     text: denom ? pct(100 * (byId.get(id) || 0) / denom) : "–" })), "No portfolio reading data yet.");
 }
+
 
 /* ---- Visit log ---------------------------------------------------------- */
 let lastVisits = null, lastAuthorized = false;
@@ -808,6 +827,7 @@ function renderVisits() {
   }).join("")}</ol><p class="visits-foot muted">${rows.length} visit${rows.length === 1 ? "" : "s"} shown (latest 150 in the range).</p>`;
 }
 
+
 /* ---- Tables ------------------------------------------------------------- */
 function fillTable(id, rows, label, lockedText) {
   const tb = $(id);
@@ -823,68 +843,114 @@ function fillEngagement(rows) {
   tb.innerHTML = rows.map(r => `<tr><td>${esc(r.key)}<span class="bar" style="width:${(r.avg_ms / max * 100).toFixed(1)}%"></span></td><td>${fmt(r.views)}</td><td>${dur(r.avg_ms)}</td><td>${pct(r.avg_scroll)}</td></tr>`).join("");
 }
 
+
+/* ---- Sign-in ------------------------------------------------------------ */
+// One password (the owner key). Signing in stores it here, stops counting this
+// browser on the tools, then visits nithinpuru.com once (?owner=…&return=…) to
+// set the owner cookie there - which also lets this device past the India
+// block and stops counting it on the portfolio - and comes straight back.
+const setKey = k => { try { localStorage.setItem("np_stats_key", k); localStorage.setItem("np_notrack", "1"); } catch (e) {} };
+const forgetKey = () => { try { localStorage.removeItem("np_stats_key"); } catch (e) {} };
+function stripParams(...names) {
+  const u = new URL(location.href);
+  names.forEach(n => u.searchParams.delete(n));
+  history.replaceState(null, "", u.pathname + (u.search || "") + u.hash);
+}
+async function verify(k) {
+  try {
+    const r = await fetch(`${API_BASE}/stats?from=${todayUTC()}&to=${todayUTC()}`, { headers: { "X-Stats-Key": k } });
+    return r.status === 200 ? "ok" : r.status === 401 ? "bad" : "error";
+  } catch { return "error"; }
+}
+function showSignIn(message) {
+  $("app").hidden = true; $("signin").hidden = false;
+  $("signin-msg").textContent = message || "";
+  $("updated").textContent = "";
+  setTimeout(() => $("signin-key").focus(), 0);
+}
+async function signIn(k) {
+  $("signin-msg").textContent = "Checking…";
+  const v = await verify(k);
+  if (v === "bad") return showSignIn("That password isn't right.");
+  if (v === "error") return showSignIn("Couldn't reach the stats service - check your connection and try again.");
+  setKey(k);
+  if (location.hostname === "nithinpuru.github.io") {
+    location.href = `https://nithinpuru.com/?owner=${encodeURIComponent(k)}&return=analytics`;
+    return;
+  }
+  start();
+}
+$("signin-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const k = $("signin-key").value.trim();
+  $("signin-key").value = "";
+  if (k) signIn(k);
+});
+
+/* ---- Data loading ------------------------------------------------------- */
+async function load(from, to) {
+  if (DEMO) return demoData(from, to);
+  const site = $("site").value;
+  const r = await fetch(`${API_BASE}/stats?from=${from}&to=${to}${site ? `&site=${site}` : ""}`,
+                        { headers: { "X-Stats-Key": statsKey() } });
+  if (r.status === 401) { const e = new Error("signed out"); e.auth = true; throw e; }
+  if (!r.ok) throw new Error(`Stats API returned ${r.status}`);
+  return r.json();
+}
+
 /* ---- Wiring ------------------------------------------------------------- */
 async function refresh() {
   const from = $("from").value, to = $("to").value;
   if (!from || !to || from > to) return;
   try {
     const s = await load(from, to);
-    const auth = !!s.authorized, locked = auth ? null : "Unlock with your owner key (box at the top).";
-    lastAuthorized = auth; lastVisits = s.visits || [];
-    $("owner-status").innerHTML = auth
-      ? `Owner view <button type="button" class="linkish" id="lock">forget key</button>`
-      : "Public view: the visit log, networks, regions and cities need your owner key.";
-    $("unlock").hidden = auth || DEMO;
-    if (!auth && statsKey()) {   // a stored key the Worker didn't accept
-      try { localStorage.removeItem("np_stats_key"); } catch (e) {}
-      $("owner-status").textContent = "That key wasn't accepted - check it and try again.";
-    }
-    $("lock")?.addEventListener("click", () => { try { localStorage.removeItem("np_stats_key"); } catch (e) {} refresh(); });
-    $("f-visitors").textContent = fmt(s.total.visitors || 0);
-    $("f-views").textContent = fmt(s.total.views || 0);
-    $("f-visitors-today").textContent = fmt(s.today?.visitors || 0);
-    $("f-views-today").textContent = fmt(s.today?.views || 0);
-    $("f-academic").textContent = auth ? fmt(s.academicVisitors || 0) : "–";
-    $("f-people").textContent = auth ? fmt(Math.max(0, (s.total?.visitors || 0) - (s.cloudVisitors || 0))) : "–";
+    lastAuthorized = true; lastVisits = s.visits || [];
+    const rng = s.range || s.total || {};
+    $("f-visitors").textContent = fmt(rng.visitors || 0);
+    $("f-views").textContent = fmt(rng.views || 0);
+    $("f-people").textContent = fmt(Math.max(0, (rng.visitors || 0) - (s.cloudVisitors || 0)));
+    $("f-academic").textContent = fmt(s.academicVisitors || 0);
     const nr = s.newReturning || {}, nrTot = (nr.new || 0) + (nr.returning || 0);
     $("f-returning").innerHTML = nrTot ? `${fmt(nr.returning || 0)} <small>${pct(100 * (nr.returning || 0) / nrTot)}</small>` : "–";
     $("f-time").textContent = dur(s.engagement?.avg_ms);
     $("f-scroll").textContent = pct(s.engagement?.avg_scroll);
-    $("updated").textContent = DEMO ? "Showing demo data until the stats API is connected." : `Updated ${ago(s.updated)}.`;
+    $("f-visitors-today").textContent = fmt(s.today?.visitors || 0);
+    $("f-views-today").textContent = fmt(s.today?.views || 0);
+    $("alltime").textContent = `All time${$("site").value ? " on " + $("site").value : ""}: ${fmt(s.total?.visitors || 0)} visitors, ${fmt(s.total?.views || 0)} page views.`;
+    $("updated").textContent = DEMO ? "Showing sample data." : `Updated ${ago(s.updated)}.`;
     renderVisits();
     drawChart(s.daily, from, to);
     drawHeat(s.hours);
     drawReading(s);
-    fillTable("t-regions", s.countries, regionLabel);
-    fillTable("t-sources", s.sources, k => k);
-    fillTable("t-pages", s.pages, k => k);
-    fillTable("t-academic", s.academic || [], k => k, locked);
-    fillTable("t-orgs", s.orgs || [], k => k, locked);
-    fillTable("t-cities", s.cities || [], k => k, locked);
-    fillTable("t-refs", s.refs || [], k => k, locked);
-    fillTable("t-sites", s.sites || [], k => k);
+    const places = s.places || [];
+    for (const [svgId, tipId, host] of [["map-com", "tip-com", "nithinpuru.com"], ["map-io", "tip-io", "nithinpuru.github.io"]])
+      drawWorld(svgId, tipId, places.filter(p => p.host === host), true);
+    const merged = mergePlaces(places);
+    drawEurope(s.countries || [], merged);
+    drawUS(s.regions || [], merged);
+    fillTable("t-eu-countries", (s.countries || []).filter(c => EUROPE.has(c.key)), regionLabel);
+    fillTable("t-eu-places", merged.filter(p => EUROPE.has(p.country)).map(p => ({ ...p, key: `${p.city}${p.region && p.region !== p.city ? ", " + p.region : ""} (${p.country})` })), k => k);
+    fillTable("t-us-states", (s.regions || []).filter(r => r.country === "US").map(r => ({ ...r, key: r.region })), k => k);
+    fillTable("t-us-cities", merged.filter(p => p.country === "US").map(p => ({ ...p, key: `${p.city}${p.region ? ", " + p.region : ""}` })), k => k);
+    fillTable("t-countries", s.countries || [], regionLabel);
+    fillTable("t-cities", s.cities || [], k => k);
+    drawWhy(s.sources || [], s.landing || []);
+    fillTable("t-sources", s.sources || [], k => k);
+    fillTable("t-refs", s.refs || [], k => k);
+    fillTable("t-campaigns", s.campaigns || [], k => k);
+    fillTable("t-pages", s.pages || [], k => k);
+    fillEngagement(s.pageEngagement || []);
+    fillTable("t-clicks", s.clicks || [], clickLabel);
+    fillTable("t-academic", s.academic || [], k => k);
+    fillTable("t-orgs", s.orgs || [], k => k);
     fillTable("t-devices", s.devices || [], cap);
     fillTable("t-browsers", s.browsers || [], k => k);
     fillTable("t-os", s.os || [], k => k);
     fillTable("t-langs", s.langs || [], langLabel);
-    fillTable("t-campaigns", s.campaigns || [], k => k);
-    fillTable("t-clicks", s.clicks || [], clickLabel);
-    fillEngagement(s.pageEngagement || []);
-    const places = auth ? (s.places || []) : [];
-    const bySite = s.originsBySite || {};
-    for (const [svgId, tipId, host] of [["map-com", "tip-com", "nithinpuru.com"], ["map-io", "tip-io", "nithinpuru.github.io"]])
-      drawWorld(svgId, tipId, auth ? places.filter(p => p.host === host) : (bySite[host] || []), auth);
-    $("origins-note").textContent = auth ? "Dots are cities - hover for names" : "1° cells - unlock for city names";
-    const merged = mergePlaces(places);
-    drawEurope(s.countries || [], merged);
-    drawUS(auth ? (s.regions || []) : [], merged);
-    fillTable("t-eu-countries", (s.countries || []).filter(c => EUROPE.has(c.key)), regionLabel);
-    fillTable("t-eu-places", merged.filter(p => EUROPE.has(p.country)).map(p => ({ ...p, key: `${p.city}${p.region && p.region !== p.city ? ", " + p.region : ""} (${p.country})` })), k => k, locked);
-    fillTable("t-us-states", (s.regions || []).filter(r => r.country === "US").map(r => ({ ...r, key: r.region })), k => k, locked);
-    fillTable("t-us-cities", merged.filter(p => p.country === "US").map(p => ({ ...p, key: `${p.city}${p.region ? ", " + p.region : ""}` })), k => k, locked);
-    drawWhy(s.sources || [], s.landing || []);
+    fillTable("t-sites", s.sites || [], k => k);
   } catch (err) {
-    $("updated").innerHTML = `<span class="status">Couldn't load stats: ${esc(err.message)}. Check API_BASE and the Worker's SITE_ORIGIN.</span>`;
+    if (err.auth) { forgetKey(); return showSignIn("Your saved password no longer works - please sign in again."); }
+    $("updated").innerHTML = `<span class="status">Couldn't load stats: ${esc(err.message)}.</span>`;
   }
 }
 
@@ -893,17 +959,9 @@ function setPreset(days) {
   $("to").value = iso(to);
   $("from").value = iso(new Date(to.getTime() - (days - 1) * DAY));
 }
-
 $("site").addEventListener("change", refresh);
 $("only-academic").addEventListener("change", renderVisits);
 $("hide-cloud").addEventListener("change", renderVisits);
-$("unlock").addEventListener("submit", e => {
-  e.preventDefault();
-  const k = $("unlock-key").value.trim();
-  if (!k) return;
-  try { localStorage.setItem("np_stats_key", k); localStorage.setItem("np_notrack", "1"); } catch (err) {}
-  $("unlock-key").value = ""; renderNotrack(); refresh();
-});
 $("preset").addEventListener("change", e => {
   if (e.target.value !== "custom") { setPreset(+e.target.value); refresh(); }
 });
@@ -919,11 +977,8 @@ let resizeT; addEventListener("resize", () => { clearTimeout(resizeT); resizeT =
 function renderNotrack() {
   let off = false;
   try { off = localStorage.getItem("np_notrack") === "1"; } catch (e) {}
-  $("notrack-status").textContent = (off ? "Visits from this browser to nithinpuru.github.io are not counted." : "Visits from this browser to nithinpuru.github.io are counted.")
-    + " For nithinpuru.com, open your owner link (nithinpuru.com/?owner=…) once in this browser.";
-  $("notrack-toggle").textContent = off ? "Count this browser again" : "Stop counting this browser";
-  // only shown to the owner: an opted-out browser, a stored key, or /analytics/?admin
-  $("notrack").hidden = !(off || statsKey() || /[?&]admin\b/.test(location.search));
+  $("notrack-status").textContent = off ? "This browser's visits to the tools are not counted." : "This browser's visits to the tools are counted.";
+  $("notrack-toggle").textContent = off ? "Count them again" : "Stop counting them";
 }
 $("notrack-toggle").addEventListener("click", () => {
   try {
@@ -932,11 +987,31 @@ $("notrack-toggle").addEventListener("click", () => {
   } catch (e) {}
   renderNotrack();
 });
-renderNotrack();
 
-$("to").max = todayUTC();
-setPreset(90);
-refresh();
+function start() {
+  $("signin").hidden = true; $("app").hidden = false;
+  $("who").innerHTML = DEMO ? "Sample data · <a href=\"./\">sign in</a>"
+    : `Signed in · <button type="button" class="linkish" id="signout">sign out</button>`;
+  $("signout")?.addEventListener("click", () => { forgetKey(); showSignIn("Signed out. Your own visits still aren't counted on this device."); });
+  renderNotrack();
+  $("to").max = todayUTC();
+  if (!$("from").value) setPreset(30);
+  refresh();
+}
+
+// Entry: ?demo, ?key=… (sign in from a link), back from nithinpuru.com, a saved password, or the sign-in box.
+(function () {
+  const q = new URLSearchParams(location.search);
+  if (q.has("signed-in")) {
+    stripParams("signed-in");
+    $("toast").innerHTML = `<p class="toast">Signed in on this device. Your own visits aren't counted on either site, and this device can open nithinpuru.com from India.</p>`;
+  }
+  if (DEMO) return start();
+  const k = q.get("key");
+  if (k) { stripParams("key"); return signIn(k); }
+  if (statsKey()) return start();
+  showSignIn();
+})();
 </script>
 </body>
 </html>

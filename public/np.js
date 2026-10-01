@@ -28,9 +28,13 @@
   function send(o) {
     o.v = view; o.h = host; o.p = location.pathname;
     var data = JSON.stringify(o);
-    // text/plain beacon = no CORS preflight; it also survives page unload
-    if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT, data)) return;
-    try { fetch(ENDPOINT, { method: "POST", body: data, keepalive: true, mode: "no-cors" }); } catch (e) {}
+    // A keepalive fetch survives page unload like sendBeacon, but common
+    // blocklists (uBlock/AdGuard "$ping,3p") drop every third-party beacon.
+    // text/plain + no-cors = no CORS preflight.
+    try {
+      if (window.fetch) return void fetch(ENDPOINT, { method: "POST", body: data, keepalive: true, mode: "no-cors", headers: { "Content-Type": "text/plain" } }).catch(function () {});
+    } catch (e) {}
+    if (navigator.sendBeacon) navigator.sendBeacon(ENDPOINT, data);
   }
 
   var tz = "";
