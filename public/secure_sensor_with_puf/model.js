@@ -590,13 +590,13 @@ const pufAge = P => P.puf_age_drift * Math.sqrt(Math.max(0, P.puf_years));
 // Each cell powers up to 1 when its (fixed) mismatch plus read noise is positive. bias shifts the mismatch
 // mean so P(1) = bias; ageing moves each cell's mismatch by a fixed drift direction times age.
 class SRAMPUF {
-  constructor(seed, n = PUF_BITS, sigma25 = 0.06, bias = 0.5) {
+  constructor(seed, n = PUF_BITS, sigma25 = 0.06, bias = 0.5, tc = 0.008) {
     const r = makeRng(seed), mu = bias === 0.5 ? 0 : normInv(bias), rd = makeRng(seed * 31 + 7);
     this.mismatch = Float64Array.from({ length: n }, () => r.n() + mu);   // fixed at fabrication
     this.drift = Float64Array.from({ length: n }, () => rd.n());          // direction each cell ages in
-    this.sigma25 = sigma25;
+    this.sigma25 = sigma25; this.tc = tc;
   }
-  sigma(T) { return this.sigma25 * (1 + 0.008 * Math.abs(T - 25)); }
+  sigma(T) { return this.sigma25 * (1 + this.tc * Math.abs(T - 25)); }
   m(i, age) { return this.mismatch[i] + (age ? age * this.drift[i] : 0); }
   read(T, rng, age = 0) {
     const s = this.sigma(T);
@@ -707,7 +707,7 @@ const DEFAULTS = {
   dither_at: "comparator", int_noise: 1.8e-5,                     // where the dither ladder acts; integrator thermal noise (see calibration)
   dither_seeds: [0x1D2B, 0x7A31], key16: 0xC3A5, chip_id: 0x0B77,
   chip_seed: 7, temp: 37, puf_sigma: 0.06, bch_t: 40, h_tamper: 0,
-  puf_bias: 0.5, puf_years: 0, puf_age_drift: 0.03,               // P(cell = 1); years since enrolment; drift per sqrt(year)
+  puf_bias: 0.5, puf_years: 0, puf_age_drift: 0.03, puf_tc: 0.008,               // P(cell = 1); years since enrolment; drift per sqrt(year)
   h_source: "own", h_edit: [], puf_edit: [], rx_key16: null,   // workbench edits (arrays are replaced, never mutated)
   mac: true, frame_ctr: 42, rx_last_ctr: 41, mitm_p: 0,          // proposal: session nonce + frame counter + MAC
   attack: "none",                                                 // an attack from the lab, run through the live model
@@ -791,11 +791,11 @@ function simulate(P0) {
     rxdb.key16 = P.key16;
     ksTx = { enc: new LFSR16(P.key16).bits(ID_BITS + n) };
   } else {
-    const puf = new SRAMPUF(P.chip_seed, PUF_BITS, P.puf_sigma, P.puf_bias);
+    const puf = new SRAMPUF(P.chip_seed, PUF_BITS, P.puf_sigma, P.puf_bias, P.puf_tc);
     const en = enroll(puf, t, makeRng(P.chip_seed * 7919 + 1));      // at test, once
     S.w_enroll = en.w; S.key_enroll = en.key;
     rxdb.key = en.key; rxdb.h = en.h;
-    const pufTx = A === "clone" ? new SRAMPUF(P.chip_seed + 500 + AK.clone, PUF_BITS, P.puf_sigma, P.puf_bias) : puf;
+    const pufTx = A === "clone" ? new SRAMPUF(P.chip_seed + 500 + AK.clone, PUF_BITS, P.puf_sigma, P.puf_bias, P.puf_tc) : puf;
     S.mismatch = pufTx.mismatch; S.puf_tx = pufTx === puf ? "own" : "clone";
     // Rx sends h at power-up (optionally swapped or tampered on the way)
     let hBits = synToBits(en.h);
@@ -1277,7 +1277,7 @@ const ATTACKS = [
     desc: "Eve drops her own chip into the bioreactor and claims to be the real sensor. With a stored key, a clone is only a firmware copy away. With a PUF, the clone's SRAM powers up in its own pattern, which no helper data can turn into the original's key.",
     knobs: [{ k: "clone", label: "Counterfeit chip number", min: 1, max: 30, step: 1, fmt: v => "#" + v }],
     run(R) {
-      const Sp = R.prop, t = state.bch_t, puf = new SRAMPUF(state.chip_seed + 500 + lab.clone, PUF_BITS, state.puf_sigma);
+      const Sp = R.prop, t = state.bch_t, puf = new SRAMPUF(state.chip_seed + 500 + lab.clone, PUF_BITS, state.puf_sigma, state.puf_bias, state.puf_tc);
       const wc = puf.read(state.temp, makeRng(state.seed + 41 + lab.clone));
       const dist = wc.reduce((a, b, i) => a + (b !== Sp.w_enroll[i]), 0);
       const rc = reconstruct(wc, bitsToSyn(Sp.h_bits, t), t), ok = rc.key.every((b, i) => b === Sp.key_enroll[i]);
@@ -1532,7 +1532,7 @@ TASKS.calib = () => {
 TASKS.pufRel = (args, progress) => {
   const P = { ...state }, age = pufAge(P), temps = [];
   for (let T = -20; T <= 125; T += 5) temps.push(T);
-  const chip = seed => { const puf = new SRAMPUF(seed, PUF_BITS, P.puf_sigma, P.puf_bias); return { puf, w: enroll(puf, P.bch_t, makeRng(seed * 7919 + 1)).w }; };
+  const chip = seed => { const puf = new SRAMPUF(seed, PUF_BITS, P.puf_sigma, P.puf_bias, P.puf_tc); return { puf, w: enroll(puf, P.bch_t, makeRng(seed * 7919 + 1)).w }; };
   const me = chip(P.chip_seed), ts = [P.bch_t - 10, P.bch_t, P.bch_t + 10].filter(x => x >= 1);
   const curves = ts.map(t => ({ t, p: temps.map(T => failTail(me.puf.pErr(me.w, T, age), t)) }));
   const others = [];
@@ -1552,7 +1552,7 @@ TASKS.sweep = (args, progress) => {
     const temps = [], ts = [], age = pufAge(P);
     for (let T = -20; T <= 120; T += 10) temps.push(T);
     for (let t = 10; t <= 58; t += 4) ts.push(t);
-    const puf = new SRAMPUF(P.chip_seed, PUF_BITS, P.puf_sigma, P.puf_bias), w = enroll(puf, P.bch_t, makeRng(P.chip_seed * 7919 + 1)).w;
+    const puf = new SRAMPUF(P.chip_seed, PUF_BITS, P.puf_sigma, P.puf_bias, P.puf_tc), w = enroll(puf, P.bch_t, makeRng(P.chip_seed * 7919 + 1)).w;
     const z = ts.map(() => new Float64Array(temps.length));
     temps.forEach((T, i) => { const d = errDist(puf.pErr(w, T, age)); ts.forEach((t, j) => { let tail = 0; for (let k = t + 1; k < d.length; k++) tail += d[k]; z[j][i] = tail; }); progress((i + 1) / temps.length); });
     return { kind, x: temps, y: ts, z, weak: ts.map(t => PUF_BITS * minEntBit(P.puf_bias) - 10 * t < 128), cur: [P.temp, P.bch_t] };
