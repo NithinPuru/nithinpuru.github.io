@@ -560,7 +560,7 @@ table.sw th,table.sw td{padding:3px 6px;font-size:12px;white-space:nowrap}
     </div>
   </div>
 </aside>
-<script src="model.js?v=1"></script>
+<script src="model.js?v=2"></script>
 <script>
 // ===== INFO-START =====
 // One entry per block. Each says, in plain language: what it is, an everyday analogy,
@@ -2655,7 +2655,7 @@ let S = null, selected = "afe_out", raf = null;
 
 // ---- compute engine: the model runs in Web Workers so the page never freezes. One worker per kind
 // of request; each keeps only the newest pending request. Without workers it runs on the main thread.
-const MODEL_V = "?v=1";                       // bump together with model.js / worker.js
+const MODEL_V = "?v=2";                       // bump together with model.js / worker.js
 const ENGINE = (() => {
   function lane(onDone, keyed) {
     let w = null, busy = false, next = null, cur = null;
