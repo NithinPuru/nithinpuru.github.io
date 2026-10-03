@@ -198,6 +198,9 @@
     #feed-filter:focus { border-color: var(--current-domain-color); }
     #feed-filter::placeholder { color: var(--text-dim); }
     #feed-count-badge { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+    #filter-clear { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 14px; line-height: 1; color: var(--text-dim); background: none; border: none; cursor: pointer; padding: 0 4px; flex-shrink: 0; display: none; }
+    #filter-clear.visible { display: block; }
+    #filter-clear:hover { color: var(--text-primary); }
 
     /* Secondary controls — sort and source narrow */
     #controls-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -258,6 +261,12 @@
     .feed-influential { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-accent); opacity: 0.65; }
     .feed-date { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); }
 
+    .feed-group-hdr {
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 9px; font-weight: 600;
+      letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+      padding: 10px 16px 6px; border-bottom: 1px solid var(--border-primary);
+      position: sticky; top: 0; background: var(--bg-primary); z-index: 10;
+    }
     .age-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
     .age-dot.new    { background: var(--age-new); }
     .age-dot.recent { background: var(--age-recent); }
@@ -499,7 +508,7 @@
     <strong>⚠ FILE:// PROTOCOL DETECTED.</strong> APIs require a web server to work. Fix:
     <br>1. Open a terminal in the <strong>folder containing this file</strong> (e.g. <code>cd ~/Downloads</code>)
     <br>2. Run: <code>python3 -m http.server 8080</code>
-    <br>3. Open: <code>http://localhost:8080/research_radar.html</code> &nbsp; (note: <strong>no trailing slash on the folder</strong>)
+    <br>3. Open: <code>http://localhost:8080/</code> &nbsp; (note: <strong>no trailing slash on the folder</strong>)
     <br>Getting a 404? Your terminal is in the wrong directory — <code>cd</code> to where the .html file is first.
   </div>
 
@@ -512,6 +521,7 @@
         <!-- Filter — full-text search across title, authors, abstract, venue -->
         <div id="filter-row">
           <input type="text" id="feed-filter" placeholder="/ filter — title · authors · abstract · venue..." autocomplete="off">
+          <button id="filter-clear" aria-label="Clear filter">×</button>
           <span id="feed-count-badge"></span>
         </div>
 
@@ -1548,7 +1558,7 @@ Rules:
             raw += evt.delta.text;
             // Live-stream partial JSON into placeholder
             if (ph) {
-              ph.innerHTML = `<div class="section-label">AI EXPLAINER — STREAMING</div><div class="explainer-text" style="color:var(--text-dim);white-space:pre-wrap;font-family:'JetBrains Mono',monospace;font-size:11px">${esc(raw)}</div>`;
+              ph.innerHTML = `<div class="section-label">AI EXPLAINER — STREAMING</div><div class="explainer-text" style="color:var(--text-dim);white-space:pre-wrap;font-family:'KaTeX_Typewriter','Latin Modern Mono',monospace;font-size:11px">${esc(raw)}</div>`;
             }
           }
         } catch(_) {}
@@ -1645,6 +1655,14 @@ Rules:
     return d<3?'new':d<30?'recent':'old';
   }
   function isNew(iso){return iso&&(Date.now()-new Date(iso).getTime())<3*86400000;}
+  function getDateGroup(iso) {
+    if (!iso) return 'Older';
+    const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (d < 1)  return 'Today';
+    if (d < 7)  return 'This week';
+    if (d < 30) return 'This month';
+    return 'Older';
+  }
   const SOURCE_LABELS = { arxiv:'arXiv', s2:'S2', openalex:'OpenAlex', crossref:'CrossRef', blog:'BLOG', scholar:'Scholar', journal:'JOURNAL', hf:'HF TRENDING' };
   function badgeHtml(src,large=false){
     return `<span class="source-badge source-${src}${large?' large':''}">${SOURCE_LABELS[src]||src.toUpperCase()}</span>`;
@@ -1710,20 +1728,32 @@ Rules:
     const targetIds = new Set(papers.map(p => p.id));
 
     // Build ordered array of elements (reuse existing, create new as needed)
-    const orderedEls = papers.map((p, i) => {
-      let el = rendered.get(p.id);
-      if (!el) {
-        el = renderFeedItem(p, i);
+    // Interleave date group headers when sorted by date
+    const useGroups = STATE.sortMode === 'date' && STATE.sourceFilter !== 'saved' && !STATE.filterText;
+    const orderedEls = [];
+    let lastGroup = null;
+    papers.forEach((p, i) => {
+      if (useGroups) {
+        const group = getDateGroup(p.published);
+        if (group !== lastGroup) {
+          const hdr = document.createElement('div');
+          hdr.className = 'feed-group-hdr';
+          hdr.textContent = group;
+          orderedEls.push(hdr);
+          lastGroup = group;
+        }
       }
-      return el;
+      let el = rendered.get(p.id);
+      if (!el) el = renderFeedItem(p, i);
+      orderedEls.push(el);
     });
 
     // Remove elements no longer needed
     rendered.forEach((el, id) => { if (!targetIds.has(id)) el.remove(); });
 
     // Re-insert all in correct order using replaceChildren (maintains sort, no flicker)
-    // Remove any stale skeleton items first
-    list.querySelectorAll('.skeleton-item').forEach(el => el.remove());
+    // Remove any stale skeleton / error / empty-state items first
+    list.querySelectorAll('.skeleton-item,.feed-error,.feed-empty,.feed-group-hdr').forEach(el => el.remove());
     const frag = document.createDocumentFragment();
     orderedEls.forEach(el => frag.appendChild(el));
     list.appendChild(frag);
@@ -1855,7 +1885,7 @@ Rules:
     // Provide actionable help for CORS errors
     const isNetwork=msg.toLowerCase().includes('networkerror')||msg.toLowerCase().includes('failed to fetch')||msg.toLowerCase().includes('proxies failed');
     const hint=isNetwork
-      ?`<br><br><strong>Getting 404?</strong> Your terminal must be in the same folder as the .html file.<br>Run: <code>cd ~/Downloads && python3 -m http.server 8080</code><br>Then open: <code>http://localhost:8080/research_radar.html</code>`
+      ?`<br><br><strong>Getting 404?</strong> Your terminal must be in the <code>public/research-radar/</code> folder (or run <code>npm run dev</code> from the repo root).<br>Then open: <code>http://localhost:8080/</code>`
       :'';
     el.innerHTML=`<div class="feed-error-msg">FETCH ERROR: ${esc(msg)}${hint}</div><button class="feed-error-retry">RETRY</button>`;
     el.querySelector('.feed-error-retry').addEventListener('click',()=>{STATE.domainCache.delete(STATE.currentDomain);selectDomain(STATE.currentDomain);});
@@ -1870,6 +1900,8 @@ Rules:
     if (total > 0) {
       const parts = [];
       if (counts.arxiv)    parts.push(`arXiv:${counts.arxiv}`);
+      if (counts.hf)       parts.push(`HF:${counts.hf}`);
+      if (counts.journal)  parts.push(`Journals:${counts.journal}`);
       if (counts.s2)       parts.push(`Profs:${counts.s2}`);
       if (counts.blog)     parts.push(`Blog:${counts.blog}`);
       if (counts.scholar)  parts.push(`Scholar:${counts.scholar}`);
@@ -1931,6 +1963,7 @@ Rules:
     renderSkeletonFeed();
     document.getElementById('load-more').classList.add('hidden');
     document.getElementById('feed-filter').value=''; STATE.filterText='';
+    document.getElementById('filter-clear').classList.remove('visible');
     document.getElementById('feed-count-badge').textContent='';
 
     if(STATE.domainCache.has(key)){
@@ -2000,11 +2033,12 @@ Rules:
 
   async function loadMore() {
     if(STATE.loading)return;
-    STATE.arXivStart+=50;
+    const nextStart = STATE.arXivStart + 50;
     STATE.loading=true;
     const btn=document.getElementById('load-more'); btn.textContent='LOADING...';
     try {
-      const more=await fetchArxiv(STATE.currentDomain,STATE.arXivStart);
+      const more=await fetchArxiv(STATE.currentDomain, nextStart);
+      STATE.arXivStart = nextStart; // only advance on success; a failed fetch retries same window
       ingestPapers(applyDomainFilter(more,STATE.currentDomain),STATE.currentDomain);
       STATE.domainCache.set(STATE.currentDomain,[...STATE.papers]);
     } catch(e){showToast('LOAD MORE FAILED');}
@@ -2119,9 +2153,16 @@ Rules:
     document.getElementById('kbd-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('kbd-overlay'))toggleKbd();});
 
     // Filter — debounced 120ms
+    const filterInput = document.getElementById('feed-filter');
+    const filterClear = document.getElementById('filter-clear');
     let ft=null;
-    document.getElementById('feed-filter').addEventListener('input',e=>{
-      clearTimeout(ft);ft=setTimeout(()=>{STATE.filterText=e.target.value.trim();renderFeed();},120);
+    filterInput.addEventListener('input',e=>{
+      clearTimeout(ft);ft=setTimeout(()=>{STATE.filterText=e.target.value.trim();filterClear.classList.toggle('visible',!!STATE.filterText);renderFeed();},120);
+    });
+    filterClear.addEventListener('click', () => {
+      filterInput.value = ''; STATE.filterText = '';
+      filterClear.classList.remove('visible');
+      renderFeed(); filterInput.focus();
     });
 
     // Sort buttons (data-sort)
