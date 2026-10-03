@@ -2000,11 +2000,12 @@ Rules:
 
   async function loadMore() {
     if(STATE.loading)return;
-    STATE.arXivStart+=50;
+    const nextStart = STATE.arXivStart + 50;
     STATE.loading=true;
     const btn=document.getElementById('load-more'); btn.textContent='LOADING...';
     try {
-      const more=await fetchArxiv(STATE.currentDomain,STATE.arXivStart);
+      const more=await fetchArxiv(STATE.currentDomain, nextStart);
+      STATE.arXivStart = nextStart; // only advance on success; a failed fetch retries same window
       ingestPapers(applyDomainFilter(more,STATE.currentDomain),STATE.currentDomain);
       STATE.domainCache.set(STATE.currentDomain,[...STATE.papers]);
     } catch(e){showToast('LOAD MORE FAILED');}
