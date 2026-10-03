@@ -47,6 +47,13 @@ const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox']
 const page = await browser.newPage();
 await page.setViewport({ width: 1440, height: 900 });
 const errors = [];
+// Offline runs: CDN_DIR=<dir with node_modules/{chart.js,lightweight-charts}> serves the two CDN scripts locally.
+if (process.env.CDN_DIR) {
+  const local = { 'chart.js@4.5.1/dist/chart.umd.min.js': 'chart.js/dist/chart.umd.min.js', 'lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js': 'lightweight-charts/dist/lightweight-charts.standalone.production.js' };
+  await page.setRequestInterception(true);
+  page.on('request', req => { const m = Object.entries(local).find(([k]) => req.url().includes('cdn.jsdelivr.net/npm/' + k));
+    m ? req.respond({ status: 200, contentType: 'text/javascript', body: fs.readFileSync(path.join(process.env.CDN_DIR, 'node_modules', m[1])) }) : req.continue(); });
+}
 page.on('pageerror', e => errors.push('pageerror: ' + e.message));
 page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 page.on('requestfailed', r => { if (r.url().startsWith(origin)) errors.push('requestfailed: ' + r.url()); });
@@ -63,6 +70,8 @@ try {
   const dash = await page.evaluate(() => ({ ok: Object.values(D).filter(d => d.ok).length, total: PUB.length, cards: document.querySelectorAll('#grid .card').length, scoreMax: Math.max(...Object.values(D).filter(d => d.ok).map(d => d.score)) }));
   check(dash.ok === dash.total && dash.total >= 60, `all ${dash.total} tickers load (${dash.ok} ok) in ${Date.now() - t0} ms`);
   check(dash.scoreMax < 99, `quant score is not clamped (max ${dash.scoreMax})`);
+  const disp = await page.evaluate(() => document.getElementById('s-disp').textContent);
+  check(/\d+\.\d%/.test(disp), `header shows cross-sectional dispersion (${disp})`);
   await shot('01-dashboard');
 
   // ── Detail modal incl. regime & factor profile ────────────────────────────
@@ -70,8 +79,10 @@ try {
   for (const t of ['NVDA', '005930.KS', 'SPY']) {
     await page.evaluate(t => openDetail(t), t);
     await page.waitForFunction(() => document.querySelector('#det-profile canvas'), { timeout: 20000 });
-    const info = await page.evaluate(() => ({ lw: !!document.querySelector('#det-lw-chart canvas'), prof: document.getElementById('det-profile').textContent.includes('P(turbulent)') }));
+    const info = await page.evaluate(() => ({ lw: !!document.querySelector('#det-lw-chart canvas'), prof: document.getElementById('det-profile').textContent.includes('P(turbulent)'),
+      vol: ['det-garch-chart', 'det-vts-chart', 'det-nic-chart'].every(id => Chart.getChart(id)?.data.datasets[0].data.length > 0), grid: /Leverage γ[\s\S]*CDaR 95%/.test(document.getElementById('det-grid').textContent) }));
     check(info.lw && info.prof, `${t}: price chart + regime/factor profile render`);
+    check(info.vol && info.grid, `${t}: GJR-GARCH, vol term structure, news impact + CDaR render`);
     if (t === 'NVDA') { await page.evaluate(() => (document.getElementById('det-scroll').scrollTop = 99999)); await sleep(300); await shot('02-detail-profile'); }
     await page.keyboard.press('Escape');
   }
@@ -96,7 +107,7 @@ try {
 
   // ── Every tool and tab ───────────────────────────────────────────────────
   console.log('Tools');
-  const toolTabs = { factor: ['exp', 'scores', 'quality', 'fret'], regime: ['mkt', 'uni', 'corr'], lab: ['main', 'dd', 'vt', 'attr'], pairs: ['main'], rrg: ['main'], backtest: ['main'], earnings: ['up', 'study'], replay: ['replay', 'ic'] };
+  const toolTabs = { factor: ['exp', 'scores', 'quality', 'fret', 'ic', 'roll', 'fmb'], regime: ['mkt', 'uni', 'corr'], lab: ['main', 'dd', 'vt', 'attr', 'active'], pairs: ['main'], rrg: ['main'], backtest: ['main'], earnings: ['up', 'study'], replay: ['replay', 'ic'], vol: ['garch', 'var', 'uni'], struct: ['pca', 'denoise', 'kalman'], validate: ['dsr', 'boot'] };
   for (const [tool, tabs] of Object.entries(toolTabs)) {
     for (const tab of tabs) {
       await page.evaluate((tool, tab) => openTool(tool, tab), tool, tab);
@@ -125,7 +136,7 @@ try {
     check(!!kp, `backtest ${strat} @25bps: ${kp}`);
     await page.keyboard.press('Escape');
   }
-  for (const src of ['maxSharpe', 'erc', 'hrp', 'bl']) {
+  for (const src of ['maxSharpe', 'erc', 'hrp', 'bl', 'minCVaR']) {
     await page.evaluate(() => openTool('lab'));
     await page.waitForFunction(() => document.getElementById('lab-src'));
     await page.select('#lab-src', src);
@@ -157,6 +168,48 @@ try {
     await page.keyboard.press('Escape');
   }
 
+  // Factor IC horizon + rolling exposures company / window switches
+  await page.evaluate(() => openTool('factor', 'ic'));
+  await page.waitForFunction(() => document.getElementById('fic-h') && document.querySelector('#fic-tbl tbody tr'), { timeout: 90000 });
+  await page.select('#fic-h', '4');
+  await page.waitForFunction(() => document.getElementById('fic-h')?.value === '4' && document.querySelectorAll('#fic-tbl tbody tr').length === 5, { timeout: 90000 });
+  const icT = await page.evaluate(() => [...document.querySelectorAll('#fic-tbl tbody tr')].map(r => r.cells[5].textContent));
+  check(icT.every(v => /^-?\d+\.\d$/.test(v)), `factor IC: 5 signals with Newey-West t-stats (${icT.join(', ')})`);
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => openTool('factor', 'roll'));
+  await page.waitForFunction(() => document.getElementById('rl-t') && document.querySelector('#rl-tbl tbody tr'), { timeout: 60000 });
+  await page.select('#rl-t', 'AMD');
+  await page.waitForFunction(() => document.getElementById('rl-t')?.value === 'AMD' && document.querySelector('#rl-tbl tbody tr'), { timeout: 60000 });
+  await page.click('#tool-body [data-w="26"]');
+  await page.waitForFunction(() => document.querySelector('#tool-body [data-w="26"].on') && document.querySelector('#rl-tbl tbody tr'), { timeout: 60000 });
+  check(true, 'factor rolling exposures: company and 26-week window switch');
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => openTool('regime', 'corr'));
+  await page.waitForFunction(() => document.querySelector('#cd-disp') && !document.querySelector('#tool-body .tool-loading'), { timeout: 60000 });
+  check(await page.evaluate(() => Chart.getChart('cd-disp')?.data.datasets[1].data.some(v => v != null)), 'regimes: cross-sectional dispersion chart renders');
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => openTool('lab', 'main'));
+  await page.waitForFunction(() => document.querySelector('#lab-sc tbody tr'), { timeout: 60000 });
+  check(await page.evaluate(() => /CDaR 95%/.test(document.querySelector('#tool-body .kpis').textContent)), 'portfolio lab: CDaR shown with the risk KPIs');
+  await page.keyboard.press('Escape');
+
+  await page.evaluate(() => openTool('factor', 'fmb'));
+  await page.waitForFunction(() => document.getElementById('fm-h') && document.querySelectorAll('#fm-tbl tbody tr').length === 5, { timeout: 90000 });
+  await page.select('#fm-h', '13');
+  await page.waitForFunction(() => document.getElementById('fm-h')?.value === '13' && document.querySelectorAll('#fm-tbl tbody tr').length === 5, { timeout: 90000 });
+  const fmT = await page.evaluate(() => [...document.querySelectorAll('#fm-tbl tbody tr')].map(r => r.cells[3].textContent));
+  check(fmT.every(v => /^-?\d+\.\d$/.test(v)), `Fama-MacBeth: 5 premia with Newey-West t-stats (${fmT.join(', ')})`);
+  await page.keyboard.press('Escape');
+  for (const b of ['SPY', 'cap']) {
+    await page.evaluate(() => openTool('lab', 'active'));
+    await page.waitForFunction(() => document.getElementById('ar-b') && document.querySelector('#ar-tbl tbody tr'), { timeout: 90000 });
+    await page.select('#ar-b', b);
+    await page.waitForFunction(v => document.getElementById('ar-b')?.value === v && document.querySelector('#ar-tbl tbody tr'), { timeout: 90000 }, b);
+    const k = await page.evaluate(() => document.querySelector('#tool-body .kpis').innerText.replace(/\s+/g, ' '));
+    check(/Tracking error/i.test(k) && /Bias statistic \d\.\d\d/i.test(k), `portfolio lab/active vs ${b}: ${k.slice(0, 60)} … ${k.slice(k.search(/Bias/i))}`);
+    await page.keyboard.press('Escape');
+  }
+
   // Pairs: FDR + split-sample columns present; RRG sector mode + window switch
   await page.evaluate(() => openTool('pairs'));
   await page.waitForFunction(() => document.querySelector('#pr-tbl tbody tr'), { timeout: 90000 });
@@ -183,10 +236,10 @@ try {
   // ── Optimizer incl. Black-Litterman views ────────────────────────────────
   console.log('Optimizer');
   await page.evaluate(() => togglePortfolio());
-  await page.waitForFunction(() => document.querySelectorAll('.pf-card').length === 6, { timeout: 60000 });
+  await page.waitForFunction(() => document.querySelectorAll('.pf-card').length === 7, { timeout: 60000 });
   await page.click('#bl-sug'); await page.waitForFunction(() => document.querySelectorAll('.bl-row').length === 6, { timeout: 60000 });
-  const bl = await page.evaluate(() => document.querySelectorAll('.pf-card').length);
-  check(bl === 6, 'optimizer: 6 portfolios + Black-Litterman suggested views');
+  const bl = await page.evaluate(() => ({ n: document.querySelectorAll('.pf-card').length, cvar: [...document.querySelectorAll('.pf-card')].some(c => /Minimum CVaR[\s\S]*CVaR 95% \(wk\) [\d.]+%/.test(c.textContent)) }));
+  check(bl.n === 7 && bl.cvar, 'optimizer: 7 portfolios incl. minimum CVaR + Black-Litterman suggested views');
   await shot('04-optimizer');
   await page.evaluate(() => localStorage.removeItem('csq_bl_views'));
   await page.keyboard.press('Escape');

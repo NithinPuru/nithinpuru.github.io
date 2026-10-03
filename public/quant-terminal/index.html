@@ -22,6 +22,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
 <script src="js/quant-lib.js"></script>
+<script src="js/quant-ext.js"></script>
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d1117'/%3E%3Cpath d='M6 22 L12 15 L17 19 L26 9' stroke='%2358a6ff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -83,16 +84,19 @@
     <div class="stat" title="Fear &amp; Greed above 75 — sentiment stretched"><div class="stat-label">Extreme Greed</div><div class="stat-val g" id="s-greed">0</div></div>
     <div class="stat" title="Below lower Bollinger Band or RSI &lt; 30"><div class="stat-label">Oversold</div><div class="stat-val c" id="s-buy">0</div></div>
     <div class="stat" title="Average composite quant score"><div class="stat-label">Avg Score</div><div class="stat-val b" id="s-score">—</div></div>
+    <div class="stat" id="s-disp-box" title="Cross-sectional dispersion: standard deviation of weekly returns across the universe, 4-week average. High = stock-picker's market. See Regimes → Correlation dynamics"><div class="stat-label">Dispersion</div><div class="stat-val" id="s-disp">—</div></div>
   </div>
 
   <div class="tools">
     <div class="tool-group">
       <div class="tg-label">Research</div>
-      <button class="tool" onclick="openTool('factor')"><span class="ti">∑</span><span><b>Factor Model</b><small>Exposures &amp; risk attribution</small></span></button>
+      <button class="tool" onclick="openTool('factor')"><span class="ti">∑</span><span><b>Factor Model</b><small>Exposures, IC, Fama-MacBeth</small></span></button>
       <button class="tool" onclick="openTool('regime')"><span class="ti">≋</span><span><b>Regimes</b><small>Hidden Markov model</small></span></button>
       <button class="tool" onclick="openTool('rrg')"><span class="ti">⟳</span><span><b>Rotation</b><small>Relative strength map</small></span></button>
       <button class="tool" onclick="openTool('pairs')"><span class="ti">⇄</span><span><b>Pairs</b><small>Cointegration screener</small></span></button>
       <button class="tool" onclick="openTool('earnings')"><span class="ti">◷</span><span><b>Earnings</b><small>Event study, post-earnings drift</small></span></button>
+      <button class="tool" onclick="openTool('vol')"><span class="ti">σ</span><span><b>Volatility &amp; Tail Risk</b><small>GARCH, EVT, VaR backtests</small></span></button>
+      <button class="tool" onclick="openTool('struct')"><span class="ti">◈</span><span><b>Market Structure</b><small>PCA, denoising, Kalman beta</small></span></button>
       <button class="tool" onclick="toggleCorrelation()"><span class="ti">▦</span><span><b>Correlation</b><small>Who moves together</small></span></button>
       <button class="tool" onclick="toggleRiskMap()"><span class="ti">◉</span><span><b>Risk Map</b><small>Return vs volatility</small></span></button>
     </div>
@@ -105,6 +109,7 @@
     <div class="tool-group">
       <div class="tg-label">Signals &amp; data</div>
       <button class="tool" onclick="openTool('backtest')"><span class="ti">↻</span><span><b>Backtest</b><small>Walk-forward, with costs</small></span></button>
+      <button class="tool" onclick="openTool('validate')"><span class="ti">✓</span><span><b>Strategy Validation</b><small>Deflated Sharpe, bootstrap CIs</small></span></button>
       <button class="tool" onclick="openTool('replay')"><span class="ti">⏮</span><span><b>Timeline Replay</b><small>Past signals &amp; information coefficient</small></span></button>
       <button class="tool" onclick="exportCSV()"><span class="ti">⤓</span><span><b>Export</b><small>Download CSV</small></span></button>
     </div>
@@ -265,7 +270,7 @@
 
       <div style="display:flex; gap:12px; margin-top:4px;">
         <div style="flex:1;">
-          <h3 class="det-h">GARCH(1,1) Conditional Volatility &amp; 12-Wk Forecast</h3>
+          <h3 class="det-h">GJR-GARCH(1,1) Conditional Volatility &amp; 12-Wk Forecast</h3>
           <div class="det-chart" style="height:170px;">
             <canvas id="det-garch-chart"></canvas>
           </div>
@@ -274,6 +279,21 @@
           <h3 class="det-h">Growth of $1 — Stock vs S&amp;P 500 vs Semis (SOXX)</h3>
           <div class="det-chart" style="height:170px;">
             <canvas id="det-rel-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="det-row" style="display:flex; gap:12px; margin-top:16px;">
+        <div style="flex:1;">
+          <h3 class="det-h" title="Annualized volatility over trailing windows (realized) and the GJR-GARCH expectation over the same number of weeks ahead (forecast). Short end above long end = stressed, inverted term structure.">Volatility Term Structure — Realized vs GJR Forecast</h3>
+          <div class="det-chart" style="height:170px;">
+            <canvas id="det-vts-chart"></canvas>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <h3 class="det-h" title="Next week's volatility as a function of this week's return shock, from the fitted models (Engle &amp; Ng 1993). A steeper left side is the leverage effect: sell-offs raise volatility more than rallies of the same size.">News Impact Curve — GJR vs Symmetric GARCH</h3>
+          <div class="det-chart" style="height:170px;">
+            <canvas id="det-nic-chart"></canvas>
           </div>
         </div>
       </div>
@@ -390,7 +410,7 @@
     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0;">
       <div>
         <h3 style="margin-bottom:4px;">Portfolio Optimizer · Efficient Frontier, Risk Parity, HRP &amp; Black-Litterman</h3>
-        <p style="margin-bottom:0;">Exact long-only mean-variance frontier plus four alternative constructions institutions use. Add your own return views to Black-Litterman below the charts on the right.</p>
+        <p style="margin-bottom:0;">Exact long-only mean-variance frontier plus five alternative constructions institutions use, including a minimum-CVaR (expected shortfall) portfolio. Add your own return views to Black-Litterman below the charts on the right.</p>
       </div>
       <button class="btn" onclick="togglePortfolio()">Close</button>
     </div>
@@ -1241,24 +1261,23 @@ function normInv(p){
 // EWMA volatility — JP Morgan RiskMetrics (lambda = 0.94), annualized %
 function calcEWMAVol(prices,lambda=0.94){const r=_rets(prices);if(!r.length)return 0;let v=r.slice(0,Math.min(10,r.length)).reduce((a,b)=>a+b*b,0)/Math.min(10,r.length);for(const x of r)v=lambda*v+(1-lambda)*x*x;return Math.sqrt(v)*Math.sqrt(52)*100;}
 
-// GARCH(1,1) conditional volatility — grid-MLE fit, returns series + multi-step forecast
+// GJR-GARCH(1,1) conditional volatility (QL.fitGARCH, quant-ext.js), annualized %, with a
+// likelihood-ratio test of the leverage term against symmetric GARCH, the vol term structure
+// (realized vs forecast) and the news impact curve.
+const VOL_TERMS = [4, 8, 13, 26, 52];
 function calcGARCH(prices,fw=12){
-  const r=_rets(prices),n=r.length;
-  if(n<20)return{condVol:[],forecast:[],current:0,longRun:0,alpha:0,beta:0,persistence:0};
-  const mean=r.reduce((a,b)=>a+b,0)/n;
-  const uv=r.reduce((a,b)=>a+(b-mean)*(b-mean),0)/n;
-  let best=-Infinity,bA=0.1,bB=0.85;
-  for(const a of [0.05,0.08,0.1,0.12,0.15,0.18])for(const b of [0.75,0.8,0.85,0.88,0.9]){
-    if(a+b>=0.999)continue;const om=uv*(1-a-b);let vt=uv,ll=0,ok=true;
-    for(let i=0;i<n;i++){if(vt<=0){ok=false;break;}const e2=(r[i]-mean)**2;ll+=-0.5*(Math.log(2*Math.PI)+Math.log(vt)+e2/vt);vt=om+a*e2+b*vt;}
-    if(ok&&ll>best){best=ll;bA=a;bB=b;}
-  }
-  const alpha=bA,beta=bB,om=uv*(1-alpha-beta);
-  const condVol=[];let vt=uv;
-  for(let i=0;i<n;i++){condVol.push(Math.sqrt(vt)*Math.sqrt(52)*100);vt=om+alpha*(r[i]-mean)**2+beta*vt;}
-  const forecast=[];let f=vt;for(let h=0;h<fw;h++){forecast.push(Math.sqrt(f)*Math.sqrt(52)*100);f=om+(alpha+beta)*f;}
-  return{condVol,forecast,current:Math.sqrt(vt)*Math.sqrt(52)*100,longRun:Math.sqrt(uv)*Math.sqrt(52)*100,alpha,beta,persistence:alpha+beta};
+  const r=_rets(prices), A=Math.sqrt(52)*100, term=VOL_TERMS.map(h=>({h, realized:null, forecast:null}));
+  const g=QL.fitGARCH(r,{gjr:true}), s=g&&QL.fitGARCH(r);
+  if(!g||!s)return{condVol:[],forecast:[],current:0,longRun:0,alpha:0,gamma:0,beta:0,persistence:0,halfLife:0,pLR:1,term,slope:null,nic:[]};
+  const ts=QL.volTermStructure(r,VOL_TERMS);
+  ts.pts.forEach((p,i)=>{term[i].realized=p.vol==null?null:p.vol*100;term[i].forecast=QL.forecastTermVol(g,p.h)*100;});
+  const sd=Math.sqrt(g.uncondVar), eps=Array.from({length:41},(_,i)=>(i-20)/5*sd);
+  const nic=QL.newsImpact(g,s,eps).map(p=>({x:p.eps*100,gjr:p.gjr*100,garch:p.garch*100}));
+  return{condVol:g.sigma.map(v=>v*A),forecast:g.forecast(fw).map(v=>v*A),current:g.next*A,longRun:g.uncondVol*100,
+    alpha:g.alpha,gamma:g.gamma,beta:g.beta,persistence:g.persistence,halfLife:g.halfLife,pLR:QL.garchLR(g,s).p,
+    term,slope:ts.slope,nic};
 }
+function calcCDaR(prices,alpha=0.95){const c=QL.cdar(_rets(prices),alpha);return c?{cdar:c.cdar*100,dar:c.dar*100,avgDD:c.avgDD*100}:{cdar:0,dar:0,avgDD:0};}
 
 // Probabilistic Sharpe Ratio (Lopez de Prado) — P(true SR > benchmark) adjusting for skew/kurtosis & sample length
 function calcPSR(returns,benchSR=0){
@@ -1577,7 +1596,8 @@ async function fetchOne(ticker, isBench = false) {
 
   // --- Advanced factor / vol / tail analytics (added) ---
   const ewmaVol     = calcEWMAVol(closes);
-  const garch       = calcGARCH(closes, 12);
+  const garch       = calcGARCH(s.closes.filter(v => v != null), 12); // fit on full history: MLE needs years, not the Range window
+  const cdar        = calcCDaR(closes, 0.95);
   const psr         = calcPSR(returns);
   const paramVaR95  = calcParametricVaR(returns, 0.95);
   const paramVaR99  = calcParametricVaR(returns, 0.99);
@@ -1616,7 +1636,7 @@ async function fetchOne(ticker, isBench = false) {
     calmar, atrPct, priceZ, upCapture, downCapture,
     momentsJB, cfVaR, hurst, autoCorr, omega, ulcer, tailRatio,
     gainToPain, painIndex, recoveryF, momFactor, volRegime, ddDuration, serenity, varFull,
-    ewmaVol, garch, psr, paramVaR95, paramVaR99, twoFactor, asymBeta, cagr, sharpeAnn
+    ewmaVol, garch, cdar, psr, paramVaR95, paramVaR99, twoFactor, asymBeta, cagr, sharpeAnn
   };
 }
 
@@ -1811,7 +1831,7 @@ function cardHTML(co) {
 // ============================
 // DETAIL MODAL & CHART
 // ============================
-let chartInst = null, chartInst2 = null, chartInst3 = null, chartInst4 = null, chartInst5 = null, chartInst6 = null, chartInst7 = null, chartInst8 = null, chartInst9 = null, chartInst10 = null, chartInst11 = null, chartInst12 = null;
+let chartInst = null, chartInst2 = null, chartInst3 = null, chartInst4 = null, chartInst5 = null, chartInst6 = null, chartInst7 = null, chartInst8 = null, chartInst9 = null, chartInst10 = null, chartInst11 = null, chartInst12 = null, chartInstVts = null, chartInstNic = null;
 function closeDetail() { document.getElementById('detail-modal').style.display = 'none'; pushUrlState({ company: '' }); }
 function openDetail(ticker, name) {
   const d = D[ticker];
@@ -1835,6 +1855,8 @@ function openDetail(ticker, name) {
   if (chartInst10) chartInst10.destroy();
   if (chartInst11) chartInst11.destroy();
   if (chartInst12) chartInst12.destroy();
+  if (chartInstVts) chartInstVts.destroy();
+  if (chartInstNic) chartInstNic.destroy();
 
   const dates = [], sma40 = [], bbUp = [], bbDn = [], ddData = [], wRets = [];
   let peak = d.prices[0];
@@ -2123,6 +2145,35 @@ function openDetail(ticker, name) {
     }
   });
 
+  // ---- Volatility term structure: realized (trailing) vs GJR-GARCH forecast (ahead) ----
+  const term = garch.term || [];
+  const detTip = { backgroundColor:C('--tooltip-bg'), titleColor:C('--ink-3'), bodyColor:C('--ink'), borderColor:C('--rule-strong'), borderWidth:1 };
+  chartInstVts = new Chart(document.getElementById('det-vts-chart').getContext('2d'), {
+    data: { labels: term.map(p => p.h + 'W'), datasets: [
+      { type:'bar', label: 'Realized (trailing)', data: term.map(p => p.realized), backgroundColor: CA('--accent', 0.55), borderRadius: 3 },
+      { type:'line', label: 'GJR forecast (ahead)', data: term.map(p => p.forecast), borderColor: C('--violet'), borderWidth: 1.8, pointRadius: 3, pointBackgroundColor: C('--violet'), fill: false, tension: 0.2 },
+      { type:'line', label: 'Long-run σ', data: term.map(() => garch.longRun), borderColor: CA('--ink', 0.3), borderWidth: 1, borderDash:[2,3], pointRadius: 0, fill: false }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false, interaction:{mode:'index',intersect:false},
+      plugins: { legend: { display: true, labels:{boxWidth:8, font:{size:9}, color:C('--ink-3')} }, tooltip: { ...detTip, callbacks:{label:(c)=>c.dataset.label+': '+(c.parsed.y==null?'—':c.parsed.y.toFixed(1)+'%')} } },
+      scales: { x: { grid:{display:false}, ticks:{font:{size:9}} }, y: { position:'right', beginAtZero:true, grid: { color: CA('--ink', 0.05) }, ticks:{callback:(v)=>v+'%'} } }
+    }
+  });
+
+  // ---- News impact curve: next-week vol vs this week's shock ----
+  const nic = garch.nic || [];
+  chartInstNic = new Chart(document.getElementById('det-nic-chart').getContext('2d'), {
+    type: 'line',
+    data: { datasets: [
+      { label: 'GJR-GARCH', data: nic.map(p => ({x:p.x, y:p.gjr})), borderColor: C('--warn'), borderWidth: 1.8, pointRadius: 0, fill: false },
+      { label: 'Symmetric GARCH', data: nic.map(p => ({x:p.x, y:p.garch})), borderColor: CA('--ink', 0.45), borderWidth: 1.2, borderDash:[4,3], pointRadius: 0, fill: false }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false, interaction:{mode:'index',intersect:false}, parsing: false,
+      plugins: { legend: { display: true, labels:{boxWidth:8, font:{size:9}, color:C('--ink-3')} }, tooltip: { ...detTip, callbacks:{title:(it)=>'Shock '+(it[0].parsed.x>=0?'+':'')+it[0].parsed.x.toFixed(1)+'% this week', label:(c)=>c.dataset.label+': '+c.parsed.y.toFixed(1)+'% vol next week'} } },
+      scales: { x: { type:'linear', grid:{display:false}, ticks:{font:{size:9}, callback:(v)=>v+'%'}, title:{display:true,text:'Weekly return shock',color:C('--ink-4'),font:{size:9}} }, y: { position:'right', grid: { color: CA('--ink', 0.05) }, ticks:{callback:(v)=>v.toFixed(0)+'%'} } }
+    }
+  });
+
   // ---- Chart 11: Growth of $1 — Stock vs SPY vs SOXX (rebased relative performance) ----
   const rebase = (series, n) => { const s = series.slice(-n); if(!s.length) return []; const b = s[0]; return s.map(v => v / b); };
   const relN = 52;
@@ -2223,8 +2274,8 @@ function openDetail(ticker, name) {
 
     <div class="q-box"><span class="q-lbl">CAGR (1Y)</span><span class="q-val ${d.cagr>0?'g':'r'}">${d.cagr.toFixed(1)}%</span></div>
     <div class="q-box"><span class="q-lbl">EWMA Vol (λ=.94)</span><span class="q-val y">${d.ewmaVol.toFixed(1)}%</span></div>
-    <div class="q-box"><span class="q-lbl">GARCH Vol (now)</span><span class="q-val y">${d.garch.current.toFixed(1)}%</span></div>
-    <div class="q-box"><span class="q-lbl">GARCH Persist.</span><span class="q-val ${d.garch.persistence>0.95?'r':''}">${d.garch.persistence.toFixed(3)}</span></div>
+    <div class="q-box" title="Next-week conditional volatility from the fitted GJR-GARCH(1,1), annualized"><span class="q-lbl">GJR Vol (now)</span><span class="q-val y">${d.garch.current.toFixed(1)}%</span></div>
+    <div class="q-box" title="α + γ/2 + β. Near 1 means volatility shocks fade slowly"><span class="q-lbl">GARCH Persist.</span><span class="q-val ${d.garch.persistence>0.95?'r':''}">${d.garch.persistence.toFixed(3)}</span></div>
     <div class="q-box"><span class="q-lbl">Prob. Sharpe</span><span class="q-val ${d.psr>0.95?'g':d.psr<0.5?'r':'y'}">${(d.psr*100).toFixed(1)}%</span></div>
 
     <div class="q-box"><span class="q-lbl">Param VaR 95%</span><span class="q-val r">-${d.paramVaR95.toFixed(2)}%</span></div>
@@ -2238,6 +2289,12 @@ function openDetail(ticker, name) {
     <div class="q-box"><span class="q-lbl">Bull Beta (up)</span><span class="q-val g">${d.asymBeta.bull.toFixed(2)}</span></div>
     <div class="q-box"><span class="q-lbl">Bear Beta (down)</span><span class="q-val ${d.asymBeta.bear>d.asymBeta.bull?'r':'g'}">${d.asymBeta.bear.toFixed(2)}</span></div>
     <div class="q-box"><span class="q-lbl">β Asymmetry</span><span class="q-val ${(d.asymBeta.bear-d.asymBeta.bull)>0.3?'r':''}">${(d.asymBeta.bear-d.asymBeta.bull).toFixed(2)}</span></div>
+
+    <div class="q-box" title="GJR-GARCH γ: extra variance response to negative weeks. Above 0 = leverage effect"><span class="q-lbl">Leverage γ</span><span class="q-val ${d.garch.gamma>0.1?'r':''}">${d.garch.gamma.toFixed(3)}</span></div>
+    <div class="q-box" title="Likelihood-ratio test of γ = 0 (GJR vs symmetric GARCH). Below 5% = the asymmetry is statistically real"><span class="q-lbl">Leverage p-val</span><span class="q-val ${d.garch.pLR<0.05?'r':''}">${d.garch.pLR<0.001?'<0.001':d.garch.pLR.toFixed(3)}</span></div>
+    <div class="q-box" title="Weeks for a volatility shock to decay halfway back to its long-run level: ln 0.5 / ln(persistence)"><span class="q-lbl">Vol Half-Life</span><span class="q-val">${isFinite(d.garch.halfLife)?d.garch.halfLife.toFixed(1)+'w':'∞'}</span></div>
+    <div class="q-box" title="Realized 4-week vol ÷ 52-week vol. Above 1 = inverted (stressed) volatility term structure"><span class="q-lbl">Vol Term Slope</span><span class="q-val ${d.garch.slope>1.2?'r':d.garch.slope!=null&&d.garch.slope<0.8?'g':'y'}">${d.garch.slope==null?'—':d.garch.slope.toFixed(2)+'x'}</span></div>
+    <div class="q-box" title="Conditional Drawdown at Risk (95%): average drawdown in the worst 5% of weeks of the drawdown path. DaR 95% = ${d.cdar.dar.toFixed(1)}%, average drawdown ${d.cdar.avgDD.toFixed(1)}%"><span class="q-lbl">CDaR 95%</span><span class="q-val r">-${d.cdar.cdar.toFixed(1)}%</span></div>
   `;
   
   document.getElementById('detail-modal').style.display = 'flex';
@@ -2388,6 +2445,11 @@ function updateStats(cnt) {
   document.getElementById('s-buy').textContent     = vals.filter(d => d.momentum === 'OVERSOLD').length;
   const avg = vals.reduce((a, b) => a + b.score, 0) / (vals.length || 1);
   document.getElementById('s-score').textContent   = vals.length ? avg.toFixed(0) : '—';
+  const disp = typeof dispersionNow === 'function' ? dispersionNow() : null;
+  if (disp) {
+    document.getElementById('s-disp').innerHTML = `${(disp.now * 100).toFixed(1)}%<small class="stat-sub"> p${Math.round(disp.pct * 100)}</small>`;
+    document.getElementById('s-disp-box').title = `Cross-sectional dispersion: standard deviation of weekly returns across the universe, 4-week average. Now at the ${Math.round(disp.pct * 100)}th percentile of the last 3 years. High = stock-picker's market. See Regimes → Correlation dynamics`;
+  }
 }
 
 function setPill(cls, txt) {
@@ -2838,7 +2900,7 @@ function pfWeightTable(key, stats, tickers) {
     <div class="pf-card" style="border-left-color:${color}">
       <div class="pf-head"><span style="color:${color}">${title}</span><span class="pf-sh">Sharpe ${stats.sharpe.toFixed(2)}</span></div>
       <div class="pf-desc">${desc}</div>
-      <div class="pf-stats"><span>Exp. return <b class="up">${(stats.ret*100).toFixed(1)}%</b></span><span>Vol <b>${(stats.vol*100).toFixed(1)}%</b></span><span>${held} holdings</span></div>
+      <div class="pf-stats"><span>Exp. return <b class="up">${(stats.ret*100).toFixed(1)}%</b></span><span>Vol <b>${(stats.vol*100).toFixed(1)}%</b></span>${stats.cvar != null ? `<span title="Average weekly loss in the worst 5% of weeks of the Range window">CVaR 95% (wk) <b>${(stats.cvar*100).toFixed(2)}%</b></span>` : ''}<span>${held} holdings</span></div>
       ${bars}
     </div>`;
 }
@@ -2859,7 +2921,7 @@ function renderPortfolio() {
     const tk = pf.M.tickers;
     results.innerHTML = `<p class="tool-note">Expected returns: historical means over the Range window, shrunk 50% toward the cross-sectional average; covariance shrunk toward constant correlation (25%). Long-only, fully invested, risk-free 4.5%. ${tk.length} assets, ${pf.M.dates.length} weeks. Past covariance isn't predictive of future co-movement — for research only.</p>
       <div id="bl-views"></div>` +
-      ['maxSharpe', 'minVar', 'erc', 'hrp', 'bl', 'ew'].map(k => pfWeightTable(k, pf.ports[k], tk)).join('') +
+      ['maxSharpe', 'minVar', 'erc', 'hrp', 'bl', 'minCVaR', 'ew'].map(k => pfWeightTable(k, pf.ports[k], tk)).join('') +
       `<button class="btn" style="width:100%;margin-top:4px" onclick="togglePortfolio();openTool('lab')">Stress-test these portfolios in Risk &amp; Stress →</button>`;
     blViewsUI(document.getElementById('bl-views'), pf, renderPortfolio);
 
@@ -2883,7 +2945,7 @@ function renderPortfolio() {
         { label: 'Random portfolios', data: cloud, backgroundColor: CA('--accent', 0.10), pointRadius: 1.4, pointHoverRadius: 1.4 },
         { label: 'Efficient frontier', data: pf.frontier, showLine: true, borderColor: cv('--green-bright'), borderWidth: 2, pointRadius: 0, fill: false },
         { label: 'Assets', data: assetPts, backgroundColor: CA('--warn', 0.85), pointRadius: 3.5, pointHoverRadius: 6, pointStyle: 'rectRot' },
-        pt('maxSharpe', 'star', 10), pt('minVar', 'circle', 7), pt('erc', 'rect', 7), pt('hrp', 'rectRounded', 7), pt('bl', 'triangle', 8), pt('ew', 'crossRot', 8),
+        pt('maxSharpe', 'star', 10), pt('minVar', 'circle', 7), pt('erc', 'rect', 7), pt('hrp', 'rectRounded', 7), pt('bl', 'triangle', 8), pt('minCVaR', 'triangle', 8), pt('ew', 'crossRot', 8),
       ]},
       options: {
         responsive: true, maintainAspectRatio: false,
@@ -2975,6 +3037,7 @@ document.getElementById('clear-cache-btn').addEventListener('click', async () =>
 })();
 </script>
 <script src="js/tools.js"></script>
+<script src="js/tools2.js"></script>
 <script>
 // Visit analytics (nithinpuru.github.io/np.js) - loaded only on the live site,
 // so local runs and tests don't request it.

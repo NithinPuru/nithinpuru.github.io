@@ -12,6 +12,10 @@
  *   Factors ............... long-short factor returns, factor regression + attribution
  *   Relative rotation ..... RRG-style RS-Ratio / RS-Momentum
  *   Walk-forward backtest . causal indicators, strategy engine with costs
+ *   Volatility & drawdown . GARCH leverage LR test, news impact, vol term structure
+ *                           (on QL.fitGARCH fits), CDaR, cross-sectional dispersion, rolling betas
+ *   Risk model & research . structural factor covariance (BΣ_fBᵀ + D), active risk, bias
+ *                           statistic, Fama-MacBeth, minimum-CVaR portfolio
  */
 (function (root) {
   'use strict';
@@ -656,6 +660,160 @@
     return c / Math.sqrt(va * vb || 1);
   }
 
+  // t-stat of a series' mean with a Newey-West (Bartlett) HAC variance, for overlapping
+  // observations such as weekly ICs measured on multi-week forward returns.
+  function neweyWestT(x, lags = 0) {
+    const v = x.filter(z => z != null && isFinite(z)), n = v.length;
+    if (n < 3) return null;
+    const m = mean(v), e = v.map(z => z - m), g = l => { let s = 0; for (let t = l; t < n; t++) s += e[t] * e[t - l]; return s / n; };
+    let S = g(0); for (let l = 1; l <= Math.min(lags, n - 1); l++) S += 2 * (1 - l / (lags + 1)) * g(l);
+    return S > 0 ? m / Math.sqrt(S / n) : null;
+  }
+
+  // ─── Volatility models ───────────────────────────────────────────────────
+  // Helpers on QL.fitGARCH output (quant-ext.js): weekly decimal vols, uncondVar, forecast(h).
+  // Likelihood-ratio test of the GJR leverage term γ against symmetric GARCH. γ = 0 sits on the
+  // boundary of the parameter space, so the null distribution is a 50:50 χ²₀/χ²₁ mixture.
+  function garchLR(gjr, sym) {
+    const lr = Math.max(0, 2 * (gjr.loglik - sym.loglik));
+    return { lr, p: lr > 0 ? 1 - normCdf(Math.sqrt(lr)) : 0.5 }; // ½·P(χ²₁ > LR) = 1 − Φ(√LR)
+  }
+  // Next-week annualized vol as a function of this week's shock ε (news impact curve, Engle & Ng
+  // 1993), holding σ²ₜ at its long-run level, for a GJR fit and its symmetric counterpart.
+  function newsImpact(gjr, sym, eps) {
+    const v = f => z => Math.sqrt(f.uncondVar * (1 - f.persistence) + (f.alpha + (z < 0 ? f.gamma : 0)) * z * z + f.beta * f.uncondVar) * Math.sqrt(W);
+    const g = v(gjr), s = v(sym);
+    return eps.map(z => ({ eps: z, gjr: g(z), garch: s(z) }));
+  }
+  // Average annualized vol over the next h weeks implied by a GARCH forecast path.
+  const forecastTermVol = (fit, h) => Math.sqrt(mean(fit.forecast(h).map(s => s * s)) * W);
+  // Realized volatility over trailing horizons (weeks), annualized; slope = shortest ÷ longest.
+  function volTermStructure(r, horizons = [4, 8, 13, 26, 52]) {
+    const x = r.filter(v => v != null && isFinite(v));
+    const pts = horizons.map(h => ({ h, vol: x.length >= h && h > 1 ? std(x.slice(-h)) * Math.sqrt(W) : null }));
+    const a = pts[0].vol, b = pts[pts.length - 1].vol;
+    return { pts, slope: a != null && b ? a / b : null };
+  }
+
+  // Drawdown risk (Chekhlov, Uryasev & Zabarankin 2005). From a return series: the drawdown
+  // path (positive fractions), DaR_α = α-quantile of drawdowns and CDaR_α = mean of the worst
+  // (1 − α) share of drawdowns. CDaR_0 is the average drawdown, CDaR_1 the max drawdown.
+  function cdar(r, alpha = 0.95) {
+    const x = r.filter(v => v != null && isFinite(v));
+    if (!x.length) return null;
+    let w = 1, pk = 1; const dd = x.map(v => { w *= 1 + v; pk = Math.max(pk, w); return 1 - w / pk; });
+    const s = [...dd].sort((a, b) => b - a), k = Math.max(1, Math.ceil((1 - alpha) * s.length)), tail = s.slice(0, k);
+    return { dar: tail[k - 1], cdar: mean(tail), avgDD: mean(dd), maxDD: s[0], dd };
+  }
+
+  // Cross-sectional dispersion: per week, the standard deviation of returns across assets
+  // (R is assets × weeks; needs ≥ minN names that week).
+  function xsDispersion(R, minN = 5) {
+    const T = R.length ? R[0].length : 0, out = new Array(T).fill(null);
+    for (let t = 0; t < T; t++) {
+      const v = R.map(r => r[t]).filter(z => z != null && isFinite(z));
+      if (v.length >= minN) { const m = mean(v); out[t] = Math.sqrt(v.reduce((s, z) => s + (z - m) ** 2, 0) / v.length); }
+    }
+    return out;
+  }
+
+  // Rolling OLS betas of y on factor series F (k arrays aligned with y), window `win` weeks.
+  // out[t] = {b: [β₁..βₖ], alpha, r2, n} over weeks t−win+1..t, or null with < 75% coverage.
+  function rollingBetas(y, F, win = 52) {
+    const out = new Array(y.length).fill(null);
+    for (let t = win - 1; t < y.length; t++) {
+      const yy = [], X = [];
+      for (let s = t - win + 1; s <= t; s++) { if (y[s] == null || F.some(f => f[s] == null)) continue; yy.push(y[s]); X.push([1, ...F.map(f => f[s])]); }
+      if (yy.length < Math.max(F.length + 5, 0.75 * win)) continue;
+      const reg = ols(yy, X); out[t] = { b: reg.b.slice(1), alpha: reg.b[0], r2: reg.r2, n: yy.length };
+    }
+    return out;
+  }
+
+  // ─── Structural factor risk model ────────────────────────────────────────
+  // Time-series factor model (Barra/Axioma structure): Σ = B·Σ_f·Bᵀ + D. R is assets × weeks,
+  // F is k factor-return series on the same weeks (nulls allowed). Each row of B comes from an
+  // OLS of the asset on the factors; D holds the residual (specific) variances. Assets with
+  // fewer than minObs complete weeks get B = null and are left to the caller to drop.
+  function factorRiskModel(R, F, { minObs = 26 } = {}) {
+    const k = F.length, T = F[0].length, full = [];
+    for (let t = 0; t < T; t++) if (F.every(f => f[t] != null)) full.push(t);
+    const Sf = covMatrix(F.map(f => full.map(t => f[t])));
+    const B = [], d = [];
+    R.forEach(r => {
+      const ix = full.filter(t => r[t] != null);
+      if (ix.length < Math.max(minObs, k + 5)) { B.push(null); d.push(null); return; }
+      const reg = ols(ix.map(t => r[t]), ix.map(t => [1, ...F.map(f => f[t])]));
+      B.push(reg.b.slice(1)); d.push(reg.s2);
+    });
+    return { B, Sf, d, k };
+  }
+  // Model covariance of the assets with exposures (B·Σ_f·Bᵀ + D).
+  function riskModelCov({ B, Sf, d }) {
+    const BS = B.map(b => mv(Sf, b));
+    return B.map((bi, i) => B.map((bj, j) => dot(BS[i], bj) + (i === j ? d[i] : 0)));
+  }
+  // Ex-ante risk of a weight (or active-weight) vector a under the model, split into factor and
+  // specific parts. contrib (per asset) and factorContrib + specContrib both sum to sigma.
+  function activeRisk({ B, Sf, d }, a) {
+    const k = Sf.length, x = new Array(k).fill(0);
+    a.forEach((w, i) => B[i].forEach((b, j) => (x[j] += w * b)));
+    const Sx = mv(Sf, x), facVar = dot(x, Sx), specVar = a.reduce((s, w, i) => s + w * w * d[i], 0), sigma = Math.sqrt(facVar + specVar);
+    const Ca = a.map((w, i) => dot(B[i], Sx) + d[i] * w), mctr = Ca.map(v => (sigma ? v / sigma : 0));
+    return { sigma, facVar, specVar, x, mctr, contrib: a.map((w, i) => w * mctr[i]), factorContrib: x.map((v, j) => (sigma ? (v * Sx[j]) / sigma : 0)), specContrib: sigma ? specVar / sigma : 0 };
+  }
+  // Risk-model bias statistic: the standard deviation of returns divided by their ex-ante sigma.
+  // A calibrated model gives ≈ 1, inside 1 ± 1.96/√(2T) at 95%; > 1 under-forecasts risk.
+  function biasStat(z) {
+    const v = z.filter(x => x != null && isFinite(x)), n = v.length;
+    if (n < 5) return null;
+    const b = Math.sqrt(v.reduce((s, x) => s + x * x, 0) / n), h = 1.96 * Math.sqrt(1 / (2 * n));
+    return { b, lo: 1 - h, hi: 1 + h, n, ok: Math.abs(b - 1) <= h };
+  }
+
+  // Fama-MacBeth (1973): one cross-sectional OLS per period of y on [1, X], then the time-series
+  // mean of each coefficient with a Newey-West t-stat (lags for overlapping forward returns).
+  // periods: [{ y: [...], X: [[x₁..xₖ], ...] }]; rows with any null are dropped per period.
+  function famaMacBeth(periods, { lags = 0, minN } = {}) {
+    const k = periods.reduce((m, p) => Math.max(m, p.X.length ? p.X[0].length : 0), 0), need = minN || k + 5;
+    const gammas = periods.map(p => {
+      const ix = p.y.map((_, i) => i).filter(i => p.y[i] != null && p.X[i].every(v => v != null && isFinite(v)));
+      if (ix.length < need) return null;
+      const reg = ols(ix.map(i => p.y[i]), ix.map(i => [1, ...p.X[i]]));
+      return { g: reg.b, r2: reg.r2, n: ix.length };
+    });
+    const ok = gammas.filter(Boolean);
+    const coef = j => ok.map(x => x.g[j]);
+    return {
+      gammas, n: ok.length, r2: mean(ok.map(x => x.r2)),
+      mean: Array.from({ length: k + 1 }, (_, j) => mean(coef(j))),
+      t: Array.from({ length: k + 1 }, (_, j) => neweyWestT(coef(j), lags)),
+      pos: Array.from({ length: k + 1 }, (_, j) => coef(j).filter(v => v > 0).length / (ok.length || 1)),
+    };
+  }
+
+  // Historical CVaR (expected shortfall) of a loss vector: mean of the worst ⌈(1 − β)·T⌉ losses.
+  function cvarOf(losses, beta = 0.95) {
+    const s = [...losses].sort((a, b) => b - a), k = Math.max(1, Math.ceil((1 - beta) * s.length));
+    return { cvar: mean(s.slice(0, k)), varq: s[k - 1] };
+  }
+  // Minimum-CVaR long-only portfolio (Rockafellar & Uryasev 2000) on historical scenarios S (weeks ×
+  // assets). Minimizing ζ + E[(L − ζ)⁺]/(1 − β) over ζ gives the tail mean, so we take projected
+  // subgradient steps on the simplex: the subgradient is minus the mean of the tail scenarios.
+  function minCVaR(S, beta = 0.95, { iters = 2500 } = {}) {
+    const n = S[0].length, T = S.length, k = Math.max(1, Math.ceil((1 - beta) * T));
+    let w = new Array(n).fill(1 / n), best = null;
+    for (let it = 0; it < iters; it++) {
+      const L = S.map(s => -dot(s, w)), ix = L.map((_, t) => t).sort((a, b) => L[b] - L[a]).slice(0, k);
+      const f = mean(ix.map(t => L[t]));
+      if (!best || f < best.cvar) best = { w: w.slice(), cvar: f, varq: L[ix[k - 1]] };
+      const g = new Array(n).fill(0); ix.forEach(t => S[t].forEach((v, j) => (g[j] -= v / k)));
+      const gn = Math.sqrt(dot(g, g)) || 1, step = 0.2 / Math.sqrt(it + 1);
+      w = projectSimplex(w.map((v, j) => v - (step * g[j]) / gn));
+    }
+    return best;
+  }
+
   const QL = {
     zeros, eye, T, mul, mv, dot, inv, ols, mean, variance, std, rets, covMatrix, shrinkCov, corrFromCov, maxDrawdown, perfStats, normInv,
     fitHMM, adf, EG_CRIT, mackinnonp, benjaminiHochberg, normCdf, cointegration, halfLife,
@@ -663,6 +821,8 @@
     longShortFactor, factorRegression, zscores, rankZ, qualityScores, QUALITY_PILLARS, rrg, rrgSeries, rrgHeading,
     emaSeries, rsiSeries, smaSeries, STRATEGIES, strategyReturns, walkForward, momentumRotation,
     mulberry32, eventStudy, eventWeekIndex, simulateDrawdowns, avgCorr, rollingAvgCorr, ewmaAvgCorr, brinson, carinoLink, ewmaVolSeries, volManaged, spearman,
+    neweyWestT, garchLR, newsImpact, forecastTermVol, volTermStructure, cdar, xsDispersion, rollingBetas,
+    factorRiskModel, riskModelCov, activeRisk, biasStat, famaMacBeth, cvarOf, minCVaR,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = QL; else root.QL = QL;
 })(typeof window !== 'undefined' ? window : globalThis);
