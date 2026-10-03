@@ -356,15 +356,21 @@ class Explainer:
         msg = (f"Title: {p['title']}\nAuthors: {auth}\nVenue: {p.get('venue') or 'Unknown'}\n"
                f"Year: {p.get('year') or ''}\nDomain: {p['domain']}\n\nAbstract:\n{p['abstract']}")
         keys = ("what_doing", "problem_solved", "key_contribution")
+        # Use tool use to guarantee structured JSON output — output_config is not a valid API param.
         r = self.client.messages.create(
             model=EXPLAIN_MODEL, max_tokens=1000, thinking={"type": "disabled"},
             system=self.system, messages=[{"role": "user", "content": msg}],
-            output_config={"format": {"type": "json_schema", "schema": {
-                "type": "object", "properties": {k: {"type": "string"} for k in keys},
-                "required": list(keys), "additionalProperties": False}}})
-        if r.stop_reason != "end_turn":  # refusal / max_tokens: skip, the page can still ask live
+            tools=[{"name": "explainer", "description": "Structured paper analysis",
+                    "input_schema": {"type": "object",
+                                     "properties": {k: {"type": "string"} for k in keys},
+                                     "required": list(keys), "additionalProperties": False}}],
+            tool_choice={"type": "tool", "name": "explainer"})
+        if r.stop_reason not in ("tool_use", "end_turn"):
             return None
-        e = json.loads(next(b.text for b in r.content if b.type == "text"))
+        block = next((b for b in r.content if b.type == "tool_use"), None)
+        if not block:
+            return None
+        e = block.input
         if not all(e.get(k) for k in keys):
             return None
         return {k: e[k] for k in keys}
