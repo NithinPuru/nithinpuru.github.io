@@ -1548,7 +1548,7 @@ Rules:
             raw += evt.delta.text;
             // Live-stream partial JSON into placeholder
             if (ph) {
-              ph.innerHTML = `<div class="section-label">AI EXPLAINER — STREAMING</div><div class="explainer-text" style="color:var(--text-dim);white-space:pre-wrap;font-family:'JetBrains Mono',monospace;font-size:11px">${esc(raw)}</div>`;
+              ph.innerHTML = `<div class="section-label">AI EXPLAINER — STREAMING</div><div class="explainer-text" style="color:var(--text-dim);white-space:pre-wrap;font-family:'KaTeX_Typewriter','Latin Modern Mono',monospace;font-size:11px">${esc(raw)}</div>`;
             }
           }
         } catch(_) {}
