@@ -1870,6 +1870,8 @@ Rules:
     if (total > 0) {
       const parts = [];
       if (counts.arxiv)    parts.push(`arXiv:${counts.arxiv}`);
+      if (counts.hf)       parts.push(`HF:${counts.hf}`);
+      if (counts.journal)  parts.push(`Journals:${counts.journal}`);
       if (counts.s2)       parts.push(`Profs:${counts.s2}`);
       if (counts.blog)     parts.push(`Blog:${counts.blog}`);
       if (counts.scholar)  parts.push(`Scholar:${counts.scholar}`);
