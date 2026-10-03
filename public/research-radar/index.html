@@ -198,6 +198,9 @@
     #feed-filter:focus { border-color: var(--current-domain-color); }
     #feed-filter::placeholder { color: var(--text-dim); }
     #feed-count-badge { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+    #filter-clear { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 14px; line-height: 1; color: var(--text-dim); background: none; border: none; cursor: pointer; padding: 0 4px; flex-shrink: 0; display: none; }
+    #filter-clear.visible { display: block; }
+    #filter-clear:hover { color: var(--text-primary); }
 
     /* Secondary controls — sort and source narrow */
     #controls-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -512,6 +515,7 @@
         <!-- Filter — full-text search across title, authors, abstract, venue -->
         <div id="filter-row">
           <input type="text" id="feed-filter" placeholder="/ filter — title · authors · abstract · venue..." autocomplete="off">
+          <button id="filter-clear" aria-label="Clear filter">×</button>
           <span id="feed-count-badge"></span>
         </div>
 
@@ -1933,6 +1937,7 @@ Rules:
     renderSkeletonFeed();
     document.getElementById('load-more').classList.add('hidden');
     document.getElementById('feed-filter').value=''; STATE.filterText='';
+    document.getElementById('filter-clear').classList.remove('visible');
     document.getElementById('feed-count-badge').textContent='';
 
     if(STATE.domainCache.has(key)){
@@ -2122,9 +2127,16 @@ Rules:
     document.getElementById('kbd-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('kbd-overlay'))toggleKbd();});
 
     // Filter — debounced 120ms
+    const filterInput = document.getElementById('feed-filter');
+    const filterClear = document.getElementById('filter-clear');
     let ft=null;
-    document.getElementById('feed-filter').addEventListener('input',e=>{
-      clearTimeout(ft);ft=setTimeout(()=>{STATE.filterText=e.target.value.trim();renderFeed();},120);
+    filterInput.addEventListener('input',e=>{
+      clearTimeout(ft);ft=setTimeout(()=>{STATE.filterText=e.target.value.trim();filterClear.classList.toggle('visible',!!STATE.filterText);renderFeed();},120);
+    });
+    filterClear.addEventListener('click', () => {
+      filterInput.value = ''; STATE.filterText = '';
+      filterClear.classList.remove('visible');
+      renderFeed(); filterInput.focus();
     });
 
     // Sort buttons (data-sort)
