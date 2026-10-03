@@ -261,6 +261,12 @@
     .feed-influential { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-accent); opacity: 0.65; }
     .feed-date { font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 11px; color: var(--text-dim); }
 
+    .feed-group-hdr {
+      font-family: "KaTeX_Typewriter","Latin Modern Mono",monospace; font-size: 9px; font-weight: 600;
+      letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+      padding: 10px 16px 6px; border-bottom: 1px solid var(--border-primary);
+      position: sticky; top: 0; background: var(--bg-primary); z-index: 10;
+    }
     .age-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
     .age-dot.new    { background: var(--age-new); }
     .age-dot.recent { background: var(--age-recent); }
@@ -1649,6 +1655,14 @@ Rules:
     return d<3?'new':d<30?'recent':'old';
   }
   function isNew(iso){return iso&&(Date.now()-new Date(iso).getTime())<3*86400000;}
+  function getDateGroup(iso) {
+    if (!iso) return 'Older';
+    const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (d < 1)  return 'Today';
+    if (d < 7)  return 'This week';
+    if (d < 30) return 'This month';
+    return 'Older';
+  }
   const SOURCE_LABELS = { arxiv:'arXiv', s2:'S2', openalex:'OpenAlex', crossref:'CrossRef', blog:'BLOG', scholar:'Scholar', journal:'JOURNAL', hf:'HF TRENDING' };
   function badgeHtml(src,large=false){
     return `<span class="source-badge source-${src}${large?' large':''}">${SOURCE_LABELS[src]||src.toUpperCase()}</span>`;
@@ -1714,12 +1728,24 @@ Rules:
     const targetIds = new Set(papers.map(p => p.id));
 
     // Build ordered array of elements (reuse existing, create new as needed)
-    const orderedEls = papers.map((p, i) => {
-      let el = rendered.get(p.id);
-      if (!el) {
-        el = renderFeedItem(p, i);
+    // Interleave date group headers when sorted by date
+    const useGroups = STATE.sortMode === 'date' && STATE.sourceFilter !== 'saved' && !STATE.filterText;
+    const orderedEls = [];
+    let lastGroup = null;
+    papers.forEach((p, i) => {
+      if (useGroups) {
+        const group = getDateGroup(p.published);
+        if (group !== lastGroup) {
+          const hdr = document.createElement('div');
+          hdr.className = 'feed-group-hdr';
+          hdr.textContent = group;
+          orderedEls.push(hdr);
+          lastGroup = group;
+        }
       }
-      return el;
+      let el = rendered.get(p.id);
+      if (!el) el = renderFeedItem(p, i);
+      orderedEls.push(el);
     });
 
     // Remove elements no longer needed
@@ -1727,7 +1753,7 @@ Rules:
 
     // Re-insert all in correct order using replaceChildren (maintains sort, no flicker)
     // Remove any stale skeleton / error / empty-state items first
-    list.querySelectorAll('.skeleton-item,.feed-error,.feed-empty').forEach(el => el.remove());
+    list.querySelectorAll('.skeleton-item,.feed-error,.feed-empty,.feed-group-hdr').forEach(el => el.remove());
     const frag = document.createDocumentFragment();
     orderedEls.forEach(el => frag.appendChild(el));
     list.appendChild(frag);
