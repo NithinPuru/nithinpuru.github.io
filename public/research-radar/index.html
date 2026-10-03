@@ -1722,8 +1722,8 @@ Rules:
     rendered.forEach((el, id) => { if (!targetIds.has(id)) el.remove(); });
 
     // Re-insert all in correct order using replaceChildren (maintains sort, no flicker)
-    // Remove any stale skeleton items first
-    list.querySelectorAll('.skeleton-item').forEach(el => el.remove());
+    // Remove any stale skeleton / error / empty-state items first
+    list.querySelectorAll('.skeleton-item,.feed-error,.feed-empty').forEach(el => el.remove());
     const frag = document.createDocumentFragment();
     orderedEls.forEach(el => frag.appendChild(el));
     list.appendChild(frag);
