@@ -499,7 +499,7 @@
     <strong>⚠ FILE:// PROTOCOL DETECTED.</strong> APIs require a web server to work. Fix:
     <br>1. Open a terminal in the <strong>folder containing this file</strong> (e.g. <code>cd ~/Downloads</code>)
     <br>2. Run: <code>python3 -m http.server 8080</code>
-    <br>3. Open: <code>http://localhost:8080/research_radar.html</code> &nbsp; (note: <strong>no trailing slash on the folder</strong>)
+    <br>3. Open: <code>http://localhost:8080/</code> &nbsp; (note: <strong>no trailing slash on the folder</strong>)
     <br>Getting a 404? Your terminal is in the wrong directory — <code>cd</code> to where the .html file is first.
   </div>
 
@@ -1855,7 +1855,7 @@ Rules:
     // Provide actionable help for CORS errors
     const isNetwork=msg.toLowerCase().includes('networkerror')||msg.toLowerCase().includes('failed to fetch')||msg.toLowerCase().includes('proxies failed');
     const hint=isNetwork
-      ?`<br><br><strong>Getting 404?</strong> Your terminal must be in the same folder as the .html file.<br>Run: <code>cd ~/Downloads && python3 -m http.server 8080</code><br>Then open: <code>http://localhost:8080/research_radar.html</code>`
+      ?`<br><br><strong>Getting 404?</strong> Your terminal must be in the <code>public/research-radar/</code> folder (or run <code>npm run dev</code> from the repo root).<br>Then open: <code>http://localhost:8080/</code>`
       :'';
     el.innerHTML=`<div class="feed-error-msg">FETCH ERROR: ${esc(msg)}${hint}</div><button class="feed-error-retry">RETRY</button>`;
     el.querySelector('.feed-error-retry').addEventListener('click',()=>{STATE.domainCache.delete(STATE.currentDomain);selectDomain(STATE.currentDomain);});
