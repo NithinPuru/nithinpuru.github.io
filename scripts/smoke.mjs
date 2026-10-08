@@ -43,11 +43,11 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}`;
 
 // ---- build output ------------------------------------------------------------
-// "/", "/rongm/" and "/tools/" are redirect stubs (the portfolio lives on
-// nithinpuru.com): check them statically - loading them would leave the site.
+// "/" and "/tools/" are redirect stubs (the portfolio lives on nithinpuru.com):
+// check them statically - loading them would leave the site.
+// "/rongm/" is now a real page served directly from GitHub Pages.
 for (const [file, to] of [
   ["index.html", "https://nithinpuru.com/"],
-  ["rongm/index.html", "https://nithinpuru.com/rongm/"],
   ["tools/index.html", "https://nithinpuru.com/#tools"],
 ]) {
   const html = await readFile(join(DIST, file), "utf8").catch(() => "");
@@ -113,7 +113,7 @@ try {
 
 // ---- pages ---------------------------------------------------------------------
 const PAGES = [
-  "/404.html", "/go/",
+  "/404.html", "/go/", "/rongm/",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
   "/secure_sensor_with_puf/", "/analytics/",
