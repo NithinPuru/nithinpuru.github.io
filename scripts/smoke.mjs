@@ -49,6 +49,7 @@ const BASE = `http://127.0.0.1:${server.address().port}`;
 for (const [file, to] of [
   ["index.html", "https://nithinpuru.com/"],
   ["tools/index.html", "https://nithinpuru.com/#tools"],
+  ["puf/index.html", "https://nithinpuru.com/puf/"],
 ]) {
   const html = await readFile(join(DIST, file), "utf8").catch(() => "");
   if (!html.includes("location.replace") || !html.includes(`url=${to}`)) fail(`dist/${file}: does not forward to ${to}`);
@@ -113,7 +114,7 @@ try {
 
 // ---- pages ---------------------------------------------------------------------
 const PAGES = [
-  "/404.html", "/go/", "/rongm/", "/puf/",
+  "/404.html", "/go/", "/rongm/",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
   "/secure_sensor_with_puf/", "/analytics/",
