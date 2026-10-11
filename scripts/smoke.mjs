@@ -113,7 +113,7 @@ try {
 
 // ---- pages ---------------------------------------------------------------------
 const PAGES = [
-  "/404.html", "/go/", "/rongm/",
+  "/404.html", "/go/", "/rongm/", "/puf/",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
   "/secure_sensor_with_puf/", "/analytics/",
