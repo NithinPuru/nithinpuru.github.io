@@ -2527,8 +2527,14 @@ function decodeState(h) {
     return true;
   } catch (e) { return false; }
 }
+// The default view keeps a clean address; only a changed view is written after the #.
+const LAB0 = JSON.stringify(lab), START_NODE = "dsm_out";
+function isDefaultView() {
+  for (const k in DEFAULTS) if (!HASH_SKIP.includes(k) && JSON.stringify(state[k]) !== JSON.stringify(DEFAULTS[k])) return false;
+  return selected === START_NODE && JSON.stringify(lab) === LAB0;
+}
 let hashTimer = null;
-function saveHash() { clearTimeout(hashTimer); hashTimer = setTimeout(() => { try { history.replaceState(null, "", "#" + encodeState()); } catch (e) {} }, 300); }
+function saveHash() { clearTimeout(hashTimer); hashTimer = setTimeout(() => { try { history.replaceState(null, "", isDefaultView() ? location.pathname + location.search : "#" + encodeState()); } catch (e) {} }, 300); }
 function shareLink(btn) {
   const url = location.href.split("#")[0] + "#" + encodeState();
   const done = ok => { const t = btn.textContent; btn.textContent = ok ? "Link copied" : "Copy failed"; setTimeout(() => { btn.textContent = t; }, 1600); };
@@ -2945,7 +2951,7 @@ card("paperModel", "calib", () => ({}), renderPaper);
 card("pufRel", "pufRel", () => ({ N: 4000 }), renderPuf);
 SWEEP_CARD = card("sweeps", "sweep", () => ({ kind: sweepKind }), renderSweep);
 const fromLink = location.hash.length > 2 && decodeState(location.hash.slice(1));
-const startNode = fromLink ? selected : "dsm_out";
+const startNode = fromLink ? selected : START_NODE;
 setScheme(state.scheme);
 selectNode(startNode, { quiet: true });      // pre-select a block but leave the inspector folded
 watchCards();
