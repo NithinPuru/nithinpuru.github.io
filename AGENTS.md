@@ -100,23 +100,45 @@ minutes and iframes otherwise keep showing the old copy. The original repos and 
 ## Analytics
 
 `public/np.js` is the first-party tracker, served by both sites (the portfolio
-repo has an identical copy - keep them in sync). It sends `view`, `end` (time
-visible, scroll depth, sections read) and `click` (outbound / mailto) events
-to the `nithin-analytics` Cloudflare Worker at
+repo has an identical copy - keep them in sync). It sends `view` (referrer,
+#fragment, language, timezone, screen / window size, pixel ratio, touch points,
+headless hints), `end` (time visible, scroll depth, sections read and the time
+each held mid-screen, interaction, taps, copies, load time, and up to 30 steps:
+buttons, tabs, #links, menu picks, switches, sliders - never typed text) and
+`click` (outbound / mailto, with the link text) events to the
+`nithin-analytics` Cloudflare Worker at
 `https://nithin-analytics.nithinpurushothama.workers.dev` (account
-nithinpurushothama@gmail.com; D1 database `nithin-analytics`). The Worker
-source is not in a repo - it lives in `~/nithin-analytics-worker` on the
-owner's machine (`src/index.js`, `migrations/`). No cookies; the Worker stores
-a salted hash, never the IP. Skipped for localhost, `/analytics/`, framed
-pages, `?notrack` browsers and the portfolio's owner-pass cookie.
+nithinpurushothama@gmail.com; D1 database `nithin-analytics`). `end` goes out
+at the first interaction, every 15 s while something changes (at least once a
+minute, for 30 min) and when the page is hidden. The Worker source is only on
+the owner's machine: `~/nithin-analytics-worker` (a local git repo, no remote;
+`src/index.js`, `migrations/` - apply a new migration to the remote D1 before
+deploying code that uses it, and export a backup to `backups/` first). The
+Worker adds the request's side: User-Agent, Accept-Language, Sec-CH-UA client
+hints, HTTP protocol, and Cloudflare's IP timezone and postcode. No cookies;
+it stores salted hashes (IP + User-Agent = visitor, IP alone = network), never
+the IP. Skipped for localhost, `/analytics/`, framed pages, `?notrack` browsers
+and the portfolio's owner-pass cookie.
 
 Tool pages load it with `<script src="/np.js" defer></script>` before
 `</body>`; the Quant Terminal is synced from career-semi-quant, which loads it
 through a hostname-gated snippet (its e2e test fails on a 404). The dashboard
-is `public/analytics/`; `/stats` returns aggregates to anyone and the visit
-log, networks and cities only with the `X-Stats-Key` header (the owner key,
-stored in the browser by opening `/analytics/?key=<key>` once, or pasting it
-into the Unlock box). Never commit the key.
+is `public/analytics/`; `/stats` answers only with the `X-Stats-Key` header
+(the owner key, stored in the browser by signing in there, or opening
+`/analytics/?key=<key>` once). Never commit the key. Each signed-in `/stats`
+call records that browser (and its network) in the Worker's `owners` table;
+`POST /owner` marks or unmarks a visitor ("This is me" in the visit log).
+Owner visits are left out of every count and shown as "you".
+
+The dashboard does the analysis in the browser: each visit-day is scored
+person / unsure / likely scanner from the clues in `analyse()` (clock vs IP
+location, UTC clocks, 800 px headless screens, faked phone screens, client
+hints, HTTP/1.1, no report from the page, silent visits in waves, security-
+vendor and big-tech networks, minus interaction, reading time, clicks), visits
+from the same device on a new IP are joined into one person (Worker: device
+signature twins), and institutions come from academic networks or links from
+university sites (`ACADEMIC` / `ACADEMIC_HOST` in the Worker). `?demo` shows
+sample data.
 
 Bots: the Worker drops events from cloud / hosting / VPN networks (`BOT_ASNS`
 and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
