@@ -2065,14 +2065,22 @@ Rules:
       const cached = STATE.domainCache.get(STATE.currentDomain);
       if (cached) {
         // Append Scholar papers without full re-fetch
+        STATE.fetchProgress.scholar = null; // show pending in status row
+        updateFetchStatus();
         fetchAllScholarAuthors(STATE.currentDomain, STATE.serpApiKey).then(papers => {
+          STATE.fetchProgress.scholar = papers.length > 0 ? true : 'empty';
           if (papers.length > 0) {
             ingestPapers(papers, STATE.currentDomain);
             showToast(`SCHOLAR: +${papers.length} papers from top professors`);
           } else {
             showToast('Scholar: no new papers found');
+            updateFetchStatus();
           }
-        }).catch(e => showToast('Scholar fetch failed: ' + e.message));
+        }).catch(e => {
+          STATE.fetchProgress.scholar = false;
+          updateFetchStatus();
+          showToast('Scholar fetch failed: ' + e.message);
+        });
       }
     }
     updateStatusBar();
