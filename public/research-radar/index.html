@@ -2098,7 +2098,7 @@ Rules:
     if(e.key==='Escape'){
       const ov=document.getElementById('kbd-overlay');
       if(ov.classList.contains('visible')){ov.classList.remove('visible');return;}
-      if(inInput){document.activeElement.value='';document.activeElement.blur();STATE.filterText='';renderFeed();}
+      if(inInput){document.activeElement.value='';document.activeElement.blur();STATE.filterText='';document.getElementById('filter-clear').classList.remove('visible');renderFeed();}
       return;
     }
     if(inInput)return;
