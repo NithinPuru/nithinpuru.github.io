@@ -1993,6 +1993,8 @@ Rules:
     STATE.selectedPaper=paper; STATE.explainer=null; STATE.explainerLoading=false;
     highlightFeedItem(paper.id);
     renderDetailPanel(paper,null,false);
+    // On narrow (stacked) screens scroll detail panel into view
+    if(window.innerWidth<=820)document.getElementById('detail-panel').scrollIntoView({behavior:'smooth',block:'start'});
     if(paper.abstract_trimmed){
       await fullAbstract(paper);
       if(STATE.selectedPaper?.id!==paper.id)return;
