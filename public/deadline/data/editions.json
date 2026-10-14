@@ -367,14 +367,14 @@
     "start": "2027-06-06",
     "end": "2027-06-09",
     "location": "Bordeaux, France",
-    "deadline": "2026-10-13",
+    "deadline": "2026-10-22",
     "deadline_tz": "UTC-5",
-    "note": "Author notification 11 Jan 2027.",
+    "note": "Extended from 13 Oct. Author notification 11 Jan 2027.",
     "url": "https://2027.ieee-iscas.org/",
     "source": "https://2027.ieee-iscas.org/",
-    "confidence": "seed",
+    "confidence": "reviewed",
     "last_checked": null,
-    "last_changed": "2026-09-26",
+    "last_changed": "2026-10-14",
     "pinned": []
   },
   {
