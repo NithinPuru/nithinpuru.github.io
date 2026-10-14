@@ -101,7 +101,7 @@ series:
     focus: Broad circuits and systems (CAS global flagship)
     url: https://ieee-cas.org/
     edition_url: https://{year}.ieee-iscas.org/
-    extra_urls: ["https://{year}.ieee-iscas.org/call-for-papers"]
+    extra_urls: ["https://{year}.ieee-iscas.org/call-for-papers", "https://epapers2.org/iscas{year}/ESR/login.php"]
     typical: Paper deadline usually mid-October
 
   - id: biocas
