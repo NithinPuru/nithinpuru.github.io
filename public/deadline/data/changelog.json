@@ -28,5 +28,25 @@
     "new": "2026-10-22",
     "message": "ISCAS 2027 deadline extended to 22 Oct 2026 (was 13 Oct).",
     "source": "https://epapers2.org/iscas2027/ESR/login.php"
+  },
+  {
+    "date": "2026-10-15",
+    "edition": "isocc-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ISOCC 2027. Dates will appear once announced.",
+    "source": null
+  },
+  {
+    "date": "2026-10-15",
+    "edition": "vlsisoc-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking VLSI-SoC 2027. Dates will appear once announced.",
+    "source": null
   }
 ]
