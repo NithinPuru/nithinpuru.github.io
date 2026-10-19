@@ -9,9 +9,13 @@ browser tools below, their data bots, and a small Astro shell around them.
 The portfolio moved to the private `NithinPuru/portfolio` repo (Cloudflare
 Pages, https://nithinpuru.com) - don't add portfolio content back here.
 
-- `/`, `/rongm/` and `/tools/` are redirect stubs (`src/components/Redirect.astro`)
+- `/` and `/tools/` are redirect stubs (`src/components/Redirect.astro`)
   that forward to nithinpuru.com (`/tools/` to the portfolio's tools list,
   `https://nithinpuru.com/#tools`), keeping `?query` and `#hash`.
+- `/rongm/` is served here too (`src/pages/rongm.md` + `NotebookLayout.astro`), an
+  identical copy of the portfolio's page so it is reachable everywhere: edit both.
+  Its math is backslash-escaped (punctuation inside `$...$`) so markdown hands the
+  TeX to KaTeX unchanged - write new math the same way.
 - Each tool's "home" link points straight at `https://nithinpuru.com/#tools`.
 - `/go/` (`src/pages/go.astro`) is the owner's unlisted links page: every page
   of both sites (tools come from `tools.json`). Not linked anywhere, noindex,
@@ -34,7 +38,7 @@ npm run preview   # serve dist/ (use: node node_modules/astro/astro.js preview -
 ```
 src/
   pages/index.astro          # redirect stub -> https://nithinpuru.com/
-  pages/rongm.astro          # redirect stub -> https://nithinpuru.com/rongm/
+  pages/rongm.md             # the Ron/gm notebook page (copy of the portfolio's)
   pages/tools.astro          # redirect stub -> https://nithinpuru.com/#tools
   pages/404.astro            # generated 404 page
   pages/llms.txt.ts          # plain-text index of the tools
