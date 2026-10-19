@@ -1185,7 +1185,7 @@ const safeJson = t => { try { return JSON.parse(t); } catch { return null; } };
 // Reading time per section: the maps' ramp, from paper to blue (never fully pale when read at all).
 const readShade = t => d3.interpolateRgb("#e9e5d9", "#22408c")(0.18 + 0.82 * Math.sqrt(t));
 const STEP_VERB = { click: "clicked", link: "jumped to", pick: "picked", switch: "switched", set: "set", copy: "copied text in" };
-const stepText = ([, kind, label]) => `${STEP_VERB[kind] || kind} <q>${esc(kind === "copy" ? sectionName(label) : label)}</q>`;
+const stepText = ([, kind, label]) => `${esc(STEP_VERB[kind] || kind)} <q>${esc(kind === "copy" ? sectionName(label) : label)}</q>`;
 function clickText(v) {
   if (!v.click_list) return v.clicks ? esc(v.clicks) : "";
   return splitList(v.click_list, (label, key) => label ? `<q>${esc(label)}</q> <span class="muted">(${esc(clickLabel(key))})</span>` : esc(clickLabel(key))).join(", ");
@@ -1246,7 +1246,7 @@ function visitEntry(v, scale) {
     v.returning || v.sameDevice ? `<span class="tag" title="${esc(v.returning ? "This browser visited before" : `The same device (place, network, screen, language, clock) was seen ${shortDate(v.twinFirst)} under another IP address`)}">returning</span>`
       : `<span class="tag tag--new">new</span>`].filter(Boolean).join("");
   const came = v.source && v.source !== "(direct)" ? `from ${esc(v.ref || v.source)}` : "came directly (typed, bookmark, app, email or PDF)";
-  const how = [v.device ? deviceName(v) : "device unknown", langsLabel(v.alang, v.lang), came + (v.hash ? `, at ${esc(v.hash)}` : "")].filter(Boolean).join(" · ");
+  const how = [v.device ? esc(deviceName(v)) : "device unknown", esc(langsLabel(v.alang, v.lang)), came + (v.hash ? `, at ${esc(v.hash)}` : "")].filter(Boolean).join(" · ");
   const clicks = clickText(v);
   const why = v.verdict === "you" ? "" : v.verdict === "person" ? (v.signs.length ? `Why a person: ${v.signs.join(", ")}.` : "")
     : v.reasons.length ? `Why ${v.verdict === "scanner" ? "a scanner" : "unsure"}: ${v.reasons.join("; ")}${v.signs.length ? `; but ${v.signs.join(", ")}` : ""}.` : "";
