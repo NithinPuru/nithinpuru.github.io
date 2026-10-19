@@ -114,9 +114,14 @@
     const el = $("#health");
     if (!meta.last_run) { el.innerHTML = `<span class="dot"></span>Waiting for the first tracker run`; return; }
     const stale = (Date.now() - new Date(meta.last_run).getTime()) / 36e5 > 50;
-    el.innerHTML = `<span class="dot ${stale ? "stale" : "ok"}"></span>` + (stale
+    const tracking = `tracking ${meta.tracked_series || Object.keys(series).length} conferences`;
+    // a run without the API key only rolls editions over: no page was checked
+    const paused = meta.web_checks === false || !meta.last_check;
+    el.innerHTML = `<span class="dot ${stale || paused ? "stale" : "ok"}"></span>` + (stale
       ? `Tracker hasn't run since <strong>${ago(meta.last_run)}</strong>. Dates may be out of date.`
-      : `Last checked <strong>${ago(meta.last_run)}</strong>, tracking ${meta.tracked_series || Object.keys(series).length} conferences`);
+      : paused
+      ? `Automatic page checks are paused, so dates may be out of date: confirm on the official site. ${tracking[0].toUpperCase() + tracking.slice(1)}.`
+      : `Last checked <strong>${ago(meta.last_check)}</strong>, ${tracking}`);
   }
 
   function renderHero() {

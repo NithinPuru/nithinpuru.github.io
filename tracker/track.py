@@ -562,6 +562,9 @@ def main() -> int:
     api_calls = errors = checked = 0
     if not API_KEY and not a.dry_run:
         log("ANTHROPIC_API_KEY is not set: skipping web checks (rollover and feeds still run).")
+        if os.environ.get("GITHUB_ACTIONS"):
+            print("::warning title=Deadline checks skipped::ANTHROPIC_API_KEY secret is not set, so no conference page was checked.")
+        skipped += len(todo)
         todo = []
     for e in todo:
         s = by_id[e["series"]]
@@ -591,7 +594,10 @@ def main() -> int:
     save_json(SERIES_JSON, [{k: s.get(k) for k in ("id", "name", "full", "org", "category", "focus", "url", "typical")}
                             for s in series])
     meta = load_json(META_FILE, {})
-    meta.update({"last_run": NOW.isoformat(timespec="seconds"), "checked": checked, "api_calls": api_calls,
+    if checked:   # the page's "Last checked" is the last run that actually checked a page
+        meta["last_check"] = NOW.isoformat(timespec="seconds")
+    meta.update({"last_run": NOW.isoformat(timespec="seconds"), "web_checks": bool(API_KEY),
+                 "checked": checked, "api_calls": api_calls,
                  "errors": errors, "deferred": skipped, "changes": len(changes),
                  "pending_review": len(reviews), "model": MODEL,
                  "tracked_series": len(series), "tracked_editions": len(editions)})
