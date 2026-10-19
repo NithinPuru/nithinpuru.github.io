@@ -2518,12 +2518,23 @@ function encodeState() {
   const o = { s: d, l, n: selected };
   return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
+// A shared link is untrusted input: take a value only if it has the shape of its default
+// (finite number, boolean, plain identifier, array of numbers), so no markup gets into the page.
+const LINK_ID = /^[\w.-]{1,40}$/;
+function sameShape(v, d) {
+  if (typeof d === "number" || d === null) return (typeof v === "number" && isFinite(v)) || (d === null && v === null);
+  if (typeof d === "boolean") return typeof v === "boolean";
+  if (typeof d === "string") return typeof v === "string" && LINK_ID.test(v);
+  if (Array.isArray(d)) return Array.isArray(v) && v.length <= 4096 && v.every(x => typeof x === "number" && isFinite(x));
+  return false;
+}
 function decodeState(h) {
   try {
     const o = JSON.parse(decodeURIComponent(escape(atob(h.replace(/-/g, "+").replace(/_/g, "/")))));
-    if (o.s) for (const k in o.s) if (k in DEFAULTS) state[k] = o.s[k];
-    if (o.l) for (const k in o.l) if (k in lab) lab[k] = o.l[k];
-    if (o.n) selected = o.n;
+    const lab0 = JSON.parse(LAB0);
+    if (o.s) for (const k in o.s) if (k in DEFAULTS && sameShape(o.s[k], DEFAULTS[k])) state[k] = o.s[k];
+    if (o.l) for (const k in o.l) if (k in lab0 && sameShape(o.l[k], lab0[k])) lab[k] = o.l[k];
+    if (typeof o.n === "string" && LINK_ID.test(o.n)) selected = o.n;
     return true;
   } catch (e) { return false; }
 }
@@ -2750,7 +2761,7 @@ function buildControls() {
     const div = document.createElement("div"); div.className = "ctl";
     if (item.t === "range") {
       const val = state[item.k], disp = item.fmt ? item.fmt(val) : val + (item.unit ? " " + item.unit : "");
-      div.innerHTML = `<label>${item.label}<b id="lab_${item.k}">${disp}</b></label>`;
+      div.innerHTML = `<label>${item.label}<b id="lab_${item.k}">${esc(disp)}</b></label>`;
       const r = document.createElement("input");
       r.type = "range"; r.min = item.min; r.max = item.max; r.step = item.step; r.value = val;
       r.oninput = () => { state[item.k] = parseFloat(r.value); document.getElementById("lab_" + item.k).textContent = item.fmt ? item.fmt(state[item.k]) : state[item.k] + (item.unit ? " " + item.unit : ""); schedule(); };
