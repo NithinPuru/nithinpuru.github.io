@@ -644,76 +644,93 @@
     'ai-chips':  ['cs.AR','cs.LG','cs.ET','cs.NE','cs.DC'],
   };
 
-  // Semantic Scholar author IDs — top researchers per domain, drawn from resources doc
+  // Semantic Scholar author IDs — top researchers per domain, drawn from resources doc.
+  // Same list as research-radar/sources.json. S2 splits some people across profiles, so a
+  // name can appear twice (one entry per profile that holds their recent papers).
   const PROF_AUTHORS = {
     'ai': [
-      { name:'Yoshua Bengio',      id:'1751762'    },  // Turing Award, Mila
-      { name:'Geoffrey Hinton',    id:'1695689'    },  // Nobel Physics 2024
-      { name:'Yann LeCun',         id:'1716555'    },  // Turing Award, Meta AI
-      { name:'Kaiming He',         id:'39353098'   },  // ResNet, MAE — Meta FAIR
-      { name:'Ilya Sutskever',     id:'2010485'    },  // GPT, SSI
-      { name:'Percy Liang',        id:'1800034'    },  // Stanford HELM, CRFM
-      { name:'Chelsea Finn',       id:'46234526'   },  // Meta-learning, Stanford
-      { name:'Andrej Karpathy',    id:'2082939'    },  // Tesla, OpenAI, Stanford
-      { name:'Jacob Steinhardt',   id:'2054534'    },  // UC Berkeley, alignment
+      { name:'Yoshua Bengio',      id:'1865800402' },  // Turing Award, Mila
+      { name:'Geoffrey Hinton',    id:'2257301155' },  // Nobel Physics 2024
+      { name:'Geoffrey Hinton',    id:'1695689'    },  // second S2 profile
+      { name:'Yann LeCun',         id:'2265899558' },  // Turing Award, Meta AI
+      { name:'Kaiming He',         id:'2270025109' },  // ResNet, MAE — Meta FAIR
+      { name:'Kaiming He',         id:'2346976343' },  // second S2 profile
+      { name:'Ilya Sutskever',     id:'1701686'    },  // GPT, SSI
+      { name:'Percy Liang',        id:'2316436038' },  // Stanford HELM, CRFM
+      { name:'Percy Liang',        id:'2325156543' },  // second S2 profile
+      { name:'Chelsea Finn',       id:'2257346440' },  // Meta-learning, Stanford
+      { name:'Jacob Steinhardt',   id:'2327340186' },  // UC Berkeley, alignment
+      { name:'Jacob Steinhardt',   id:'2346327331' },  // second S2 profile
     ],
     'ai-finance': [
-      { name:'Marcos Lopez de Prado', id:'1740859347' }, // MLFA, Cornell
-      { name:'Andrew Lo',          id:'1783590'    },  // MIT Sloan, adaptive markets
-      { name:'Campbell Harvey',    id:'2113490'    },  // Duke, factor zoo
-      { name:'Stefan Jansen',      id:'2093564384' },  // ML for Algorithmic Trading
+      { name:'Marcos Lopez de Prado', id:'1741105308' }, // MLFA, Cornell
+      { name:'Marcos Lopez de Prado', id:'2245956518' }, // second S2 profile
+      { name:'Andrew Lo',          id:'118887609'  },  // MIT Sloan, adaptive markets
+      { name:'Andrew Lo',          id:'2412890292' },  // second S2 profile
+      { name:'Campbell Harvey',    id:'34913143'   },  // Duke, factor zoo
+      { name:'Campbell Harvey',    id:'2288888862' },  // second S2 profile
     ],
     'quant': [
-      { name:'Marcos Lopez de Prado', id:'1740859347' },
-      { name:'Andrew Lo',          id:'1783590'    },
-      { name:'Campbell Harvey',    id:'2113490'    },  // Duke, factor zoo
-      { name:'Eugene Fama',        id:'3071038'    },  // Chicago, EMH Nobel
-      { name:'Robert Shiller',     id:'2044437'    },  // Yale, CAPE, Nobel
+      { name:'Marcos Lopez de Prado', id:'1741105308' },
+      { name:'Marcos Lopez de Prado', id:'2245956518' }, // second S2 profile
+      { name:'Andrew Lo',          id:'118887609'  },
+      { name:'Andrew Lo',          id:'2412890292' },  // second S2 profile
+      { name:'Campbell Harvey',    id:'34913143'   },  // Duke, factor zoo
+      { name:'Campbell Harvey',    id:'2288888862' },  // second S2 profile
+      { name:'Eugene Fama',        id:'65999231'   },  // Chicago, EMH Nobel
+      { name:'Robert Shiller',     id:'5736726'    },  // Yale, CAPE, Nobel
     ],
     'hft': [
-      { name:'Marcos Lopez de Prado', id:'1740859347' },
-      { name:'Albert Kyle',        id:'2008481'    },  // Kyle model, market impact
-      { name:'Thierry Foucault',   id:'2080498'    },  // HEC Paris, order book
-      { name:'Maureen O\'Hara',    id:'2034283'    },  // Cornell, market microstructure
-      { name:'Lawrence Harris',    id:'2083019'    },  // USC, trading theory
+      { name:'Marcos Lopez de Prado', id:'1741105308' },
+      { name:'Marcos Lopez de Prado', id:'2245956518' }, // second S2 profile
+      { name:'Albert Kyle',        id:'144865543'  },  // Kyle model, market impact
+      { name:'Thierry Foucault',   id:'2884715'    },  // HEC Paris, order book
+      { name:'Maureen O\'Hara',    id:'88087434'   },  // Cornell, market microstructure
+      { name:'Lawrence Harris',    id:'2249443555' },  // USC, trading theory
     ],
     'computing': [
-      { name:'David Patterson',    id:'1760423'    },  // RISC, Turing Award
-      { name:'John Hennessy',      id:'1780870'    },  // ARM, Turing Award
-      { name:'Onur Mutlu',         id:'1780512'    },  // ETH Zurich, memory systems
-      { name:'Ion Stoica',         id:'1734083'    },  // Spark, Ray, Berkeley
-      { name:'Tim Kraska',         id:'2074961'    },  // learned index structures, MIT
-      { name:'Matei Zaharia',      id:'1887870'    },  // Databricks, Spark, Stanford
+      { name:'David Patterson',    id:'2052996328' },  // RISC, Turing Award
+      { name:'John Hennessy',      id:'2328138947' },  // ARM, Turing Award
+      { name:'Onur Mutlu',         id:'2239200492' },  // ETH Zurich, memory systems
+      { name:'Ion Stoica',         id:'2316149874' },  // Spark, Ray, Berkeley
+      { name:'Tim Kraska',         id:'2268325922' },  // learned index structures, MIT
+      { name:'Matei Zaharia',      id:'2221547236' },  // Databricks, Spark, Stanford
     ],
     'vlsi': [
-      { name:'David Pan',          id:'1769593'    },  // UT Austin, ML for EDA
-      { name:'Sachin Sapatnekar',  id:'1791558'    },  // Minnesota, physical design
-      { name:'Rob Rutenbar',       id:'1769400'    },  // UIUC, EDA
-      { name:'Evangeline Young',   id:'2110484'    },  // CUHK, placement
-      { name:'Yibo Lin',           id:'2145831698' },  // PKU, DREAMPlace, ML-EDA
+      { name:'David Pan',          id:'2298889265' },  // UT Austin, ML for EDA
+      { name:'David Pan',          id:'2268673003' },  // second S2 profile
+      { name:'Sachin Sapatnekar',  id:'1761662'    },  // Minnesota, physical design
+      { name:'Rob Rutenbar',       id:'1722400'    },  // UIUC, EDA
+      { name:'Evangeline Young',   id:'2293478123' },  // CUHK, placement
+      { name:'Yibo Lin',           id:'2242493508' },  // PKU, DREAMPlace, ML-EDA
     ],
     'ams': [
-      { name:'Boris Murmann',      id:'1698147'    },  // Stanford, ADC surveys
-      { name:'Behzad Razavi',      id:'1752422'    },  // UCLA, RF CMOS
-      { name:'Elad Alon',          id:'1690845'    },  // Berkeley, mixed-signal
-      { name:'Pieter Harpe',       id:'2063802'    },  // TU/e, ultra-low-power ADC
-      { name:'Willy Sansen',       id:'1706218'    },  // KU Leuven, analog IC
-      { name:'Robert Walden',      id:'2082384'    },  // ADC performance survey
+      { name:'Boris Murmann',      id:'2298297728' },  // Stanford, ADC surveys
+      { name:'Boris Murmann',      id:'2285978933' },  // second S2 profile
+      { name:'Behzad Razavi',      id:'2171561436' },  // UCLA, RF CMOS
+      { name:'Elad Alon',          id:'2076157911' },  // Berkeley, mixed-signal
+      { name:'Elad Alon',          id:'1690845'    },  // second S2 profile
+      { name:'Pieter Harpe',       id:'2351174819' },  // TU/e, ultra-low-power ADC
+      { name:'Pieter Harpe',       id:'1700251'    },  // second S2 profile
+      { name:'Willy Sansen',       id:'2657287'    },  // KU Leuven, analog IC
     ],
     'serdes': [
       { name:'Pavan Hanumolu',     id:'1770635'    },  // UIUC, PLLs CDR
-      { name:'Elad Alon',          id:'1690845'    },  // Berkeley, wireline
-      { name:'Vladimir Stojanovic',id:'2163491'    },  // Berkeley, silicon photonics
-      { name:'Azita Emami',        id:'1706382'    },  // Caltech, high-speed links
-      { name:'Frank O\'Mahony',    id:'2162748'    },  // Intel, high-speed I/O
+      { name:'Elad Alon',          id:'2076157911' },  // Berkeley, wireline
+      { name:'Elad Alon',          id:'1690845'    },  // second S2 profile
+      { name:'Vladimir Stojanovic',id:'2271224688' },  // Berkeley, silicon photonics
+      { name:'Vladimir Stojanovic',id:'144900991'  },  // second S2 profile
+      { name:'Azita Emami',        id:'144143711'  },  // Caltech, high-speed links
+      { name:'Frank O\'Mahony',    id:'1398242347' },  // Intel, high-speed I/O
     ],
     'ai-chips': [
       { name:'Joel Emer',          id:'1775477'    },  // MIT/NVIDIA, Timeloop/Eyeriss
-      { name:'Vivienne Sze',       id:'2055372'    },  // MIT, energy-efficient ML
-      { name:'Tushar Krishna',     id:'2163054'    },  // Georgia Tech, NoC/systolic
-      { name:'Onur Mutlu',         id:'1780512'    },  // ETH Zurich, PIM/memory
-      { name:'Bill Dally',         id:'1709588'    },  // Stanford/NVIDIA Chief Scientist
-      { name:'Kunle Olukotun',     id:'1770437'    },  // Stanford, parallel arch
+      { name:'Vivienne Sze',       id:'2295888787' },  // MIT, energy-efficient ML
+      { name:'Vivienne Sze',       id:'1691305'    },  // second S2 profile
+      { name:'Tushar Krishna',     id:'145984583'  },  // Georgia Tech, NoC/systolic
+      { name:'Onur Mutlu',         id:'2239200492' },  // ETH Zurich, PIM/memory
+      { name:'Bill Dally',         id:'80724002'   },  // Stanford/NVIDIA Chief Scientist
+      { name:'Kunle Olukotun',     id:'1746638'    },  // Stanford, parallel arch
     ],
   };
 
@@ -1133,8 +1150,8 @@ Rules:
 
   async function fetchAuthorPapers(authorId, domain) {
     const fields = 'paperId,title,year,venue,publicationDate,citationCount,influentialCitationCount,abstract,openAccessPdf,authors';
-    // Sort by publication date descending, fetch more to survive venue filtering
-    const url = `https://api.semanticscholar.org/graph/v1/author/${authorId}/papers?fields=${fields}&limit=50&sort=publicationDate:desc`;
+    // No sort parameter: S2 lists newest years first, unordered within a year — take 100, keep the 50 newest
+    const url = `https://api.semanticscholar.org/graph/v1/author/${authorId}/papers?fields=${fields}&limit=100`;
     const resp = await fetchTimeout(url, {}, 12000);
     if (resp.status === 429) throw new Error('S2_RATE_LIMIT');
     if (!resp.ok) return [];
@@ -1142,6 +1159,8 @@ Rules:
     const cutoffYear = new Date().getFullYear() - 6; // keep last 6 years
     return (data.data || [])
       .filter(p => p.abstract && p.title && (p.year || 0) >= cutoffYear)
+      .sort((a, b) => (b.publicationDate || String(b.year)).localeCompare(a.publicationDate || String(a.year)))
+      .slice(0, 50)
       .map(p => parseS2Paper(p, domain));
   }
 

@@ -198,8 +198,10 @@ def fetch_s2(domain: str) -> list[dict]:
     out, ok = [], 0
     cutoff = NOW.year - 6
     for a in CFG["s2_authors"].get(domain, []):
+        # no sort parameter: the API lists newest years first but in no order within a year,
+        # so take a bigger page and keep the 50 newest by date
         url = (f"https://api.semanticscholar.org/graph/v1/author/{a['id']}/papers"
-               f"?fields={S2_FIELDS}&limit=50&sort=publicationDate:desc")
+               f"?fields={S2_FIELDS}&limit=100")
         try:
             data = json.loads(get(url, retries=3)).get("data", [])
             ok += 1
@@ -207,9 +209,9 @@ def fetch_s2(domain: str) -> list[dict]:
             log(f"  s2 {a['name']}: {e}")
             time.sleep(3)
             continue
-        for p in data:
-            if not p.get("title") or not p.get("abstract") or (p.get("year") or 0) < cutoff:
-                continue
+        data = [p for p in data if p.get("title") and p.get("abstract") and (p.get("year") or 0) >= cutoff]
+        data.sort(key=lambda p: p.get("publicationDate") or f"{p.get('year') or 0:04d}", reverse=True)
+        for p in data[:50]:
             out.append(paper(
                 id=p["paperId"], source="s2", domain=domain, title=clean(p["title"], 400),
                 authors=[x.get("name", "") for x in p.get("authors") or []],

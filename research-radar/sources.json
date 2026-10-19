@@ -85,7 +85,11 @@
     "ai": [
       {
         "name": "Yoshua Bengio",
-        "id": "1751762"
+        "id": "1865800402"
+      },
+      {
+        "name": "Geoffrey Hinton",
+        "id": "2257301155"
       },
       {
         "name": "Geoffrey Hinton",
@@ -93,151 +97,195 @@
       },
       {
         "name": "Yann LeCun",
-        "id": "1716555"
+        "id": "2265899558"
       },
       {
         "name": "Kaiming He",
-        "id": "39353098"
+        "id": "2270025109"
+      },
+      {
+        "name": "Kaiming He",
+        "id": "2346976343"
       },
       {
         "name": "Ilya Sutskever",
-        "id": "2010485"
+        "id": "1701686"
       },
       {
         "name": "Percy Liang",
-        "id": "1800034"
+        "id": "2316436038"
+      },
+      {
+        "name": "Percy Liang",
+        "id": "2325156543"
       },
       {
         "name": "Chelsea Finn",
-        "id": "46234526"
-      },
-      {
-        "name": "Andrej Karpathy",
-        "id": "2082939"
+        "id": "2257346440"
       },
       {
         "name": "Jacob Steinhardt",
-        "id": "2054534"
+        "id": "2327340186"
+      },
+      {
+        "name": "Jacob Steinhardt",
+        "id": "2346327331"
       }
     ],
     "ai-finance": [
       {
         "name": "Marcos Lopez de Prado",
-        "id": "1740859347"
+        "id": "1741105308"
+      },
+      {
+        "name": "Marcos Lopez de Prado",
+        "id": "2245956518"
       },
       {
         "name": "Andrew Lo",
-        "id": "1783590"
+        "id": "118887609"
+      },
+      {
+        "name": "Andrew Lo",
+        "id": "2412890292"
       },
       {
         "name": "Campbell Harvey",
-        "id": "2113490"
+        "id": "34913143"
       },
       {
-        "name": "Stefan Jansen",
-        "id": "2093564384"
+        "name": "Campbell Harvey",
+        "id": "2288888862"
       }
     ],
     "quant": [
       {
         "name": "Marcos Lopez de Prado",
-        "id": "1740859347"
+        "id": "1741105308"
+      },
+      {
+        "name": "Marcos Lopez de Prado",
+        "id": "2245956518"
       },
       {
         "name": "Andrew Lo",
-        "id": "1783590"
+        "id": "118887609"
+      },
+      {
+        "name": "Andrew Lo",
+        "id": "2412890292"
       },
       {
         "name": "Campbell Harvey",
-        "id": "2113490"
+        "id": "34913143"
+      },
+      {
+        "name": "Campbell Harvey",
+        "id": "2288888862"
       },
       {
         "name": "Eugene Fama",
-        "id": "3071038"
+        "id": "65999231"
       },
       {
         "name": "Robert Shiller",
-        "id": "2044437"
+        "id": "5736726"
       }
     ],
     "hft": [
       {
         "name": "Marcos Lopez de Prado",
-        "id": "1740859347"
+        "id": "1741105308"
+      },
+      {
+        "name": "Marcos Lopez de Prado",
+        "id": "2245956518"
       },
       {
         "name": "Albert Kyle",
-        "id": "2008481"
+        "id": "144865543"
       },
       {
         "name": "Thierry Foucault",
-        "id": "2080498"
+        "id": "2884715"
       },
       {
         "name": "Maureen O'Hara",
-        "id": "2034283"
+        "id": "88087434"
       },
       {
         "name": "Lawrence Harris",
-        "id": "2083019"
+        "id": "2249443555"
       }
     ],
     "computing": [
       {
         "name": "David Patterson",
-        "id": "1760423"
+        "id": "2052996328"
       },
       {
         "name": "John Hennessy",
-        "id": "1780870"
+        "id": "2328138947"
       },
       {
         "name": "Onur Mutlu",
-        "id": "1780512"
+        "id": "2239200492"
       },
       {
         "name": "Ion Stoica",
-        "id": "1734083"
+        "id": "2316149874"
       },
       {
         "name": "Tim Kraska",
-        "id": "2074961"
+        "id": "2268325922"
       },
       {
         "name": "Matei Zaharia",
-        "id": "1887870"
+        "id": "2221547236"
       }
     ],
     "vlsi": [
       {
         "name": "David Pan",
-        "id": "1769593"
+        "id": "2298889265"
+      },
+      {
+        "name": "David Pan",
+        "id": "2268673003"
       },
       {
         "name": "Sachin Sapatnekar",
-        "id": "1791558"
+        "id": "1761662"
       },
       {
         "name": "Rob Rutenbar",
-        "id": "1769400"
+        "id": "1722400"
       },
       {
         "name": "Evangeline Young",
-        "id": "2110484"
+        "id": "2293478123"
       },
       {
         "name": "Yibo Lin",
-        "id": "2145831698"
+        "id": "2242493508"
       }
     ],
     "ams": [
       {
         "name": "Boris Murmann",
-        "id": "1698147"
+        "id": "2298297728"
+      },
+      {
+        "name": "Boris Murmann",
+        "id": "2285978933"
       },
       {
         "name": "Behzad Razavi",
-        "id": "1752422"
+        "id": "2171561436"
+      },
+      {
+        "name": "Elad Alon",
+        "id": "2076157911"
       },
       {
         "name": "Elad Alon",
@@ -245,15 +293,15 @@
       },
       {
         "name": "Pieter Harpe",
-        "id": "2063802"
+        "id": "2351174819"
+      },
+      {
+        "name": "Pieter Harpe",
+        "id": "1700251"
       },
       {
         "name": "Willy Sansen",
-        "id": "1706218"
-      },
-      {
-        "name": "Robert Walden",
-        "id": "2082384"
+        "id": "2657287"
       }
     ],
     "serdes": [
@@ -263,19 +311,27 @@
       },
       {
         "name": "Elad Alon",
+        "id": "2076157911"
+      },
+      {
+        "name": "Elad Alon",
         "id": "1690845"
       },
       {
         "name": "Vladimir Stojanovic",
-        "id": "2163491"
+        "id": "2271224688"
+      },
+      {
+        "name": "Vladimir Stojanovic",
+        "id": "144900991"
       },
       {
         "name": "Azita Emami",
-        "id": "1706382"
+        "id": "144143711"
       },
       {
         "name": "Frank O'Mahony",
-        "id": "2162748"
+        "id": "1398242347"
       }
     ],
     "ai-chips": [
@@ -285,23 +341,27 @@
       },
       {
         "name": "Vivienne Sze",
-        "id": "2055372"
+        "id": "2295888787"
+      },
+      {
+        "name": "Vivienne Sze",
+        "id": "1691305"
       },
       {
         "name": "Tushar Krishna",
-        "id": "2163054"
+        "id": "145984583"
       },
       {
         "name": "Onur Mutlu",
-        "id": "1780512"
+        "id": "2239200492"
       },
       {
         "name": "Bill Dally",
-        "id": "1709588"
+        "id": "80724002"
       },
       {
         "name": "Kunle Olukotun",
-        "id": "1770437"
+        "id": "1746638"
       }
     ]
   },
