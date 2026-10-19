@@ -163,7 +163,8 @@
       var el = e.target;
       if (el.tagName === "SELECT") step("pick", nameOf(el) + ": " + (el.selectedOptions && el.selectedOptions[0] ? el.selectedOptions[0].text : el.value));
       else if (el.type === "checkbox" || el.type === "radio") step("switch", nameOf(el) + (el.checked ? " on" : " off"));
-      else if (el.type === "range" || el.type === "number") step("set", nameOf(el) + " = " + el.value);
+      else if (el.type === "range") step("set", nameOf(el) + " = " + el.value);
+      else if (el.type === "number") step("set", nameOf(el));   // typed by the visitor: the field only, never its value
     }, true);
 
     // While the page is shown: report every 15 s if anything changed, else once a minute, for 30 min.
