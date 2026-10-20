@@ -86,14 +86,15 @@ if (dl) {
 }
 
 // ---- keeping the two sites in step (warnings only) ------------------------------
-// Every tool page should load the tracker, and the portfolio's tools list
-// (nithinpuru.com/#tools, a separate repo) should match src/data/tools.json.
+// Every tool page should load the tracker (except gm/ID, deliberately untracked),
+// and the portfolio's tools list (nithinpuru.com/#tools, a separate repo) should
+// match src/data/tools.json.
 const tools = JSON.parse(await readFile(new URL("../src/data/tools.json", import.meta.url), "utf8"))
   .groups.flatMap((g) => g.entries);
 for (const e of tools) {
   const html = await readFile(join(DIST, e.url, "index.html"), "utf8").catch(() => "");
   if (!html) fail(`${e.url}: listed in tools.json but missing from the build`);
-  else if (!html.includes("/np.js")) warn(`${e.url}: no /np.js - visits to this tool aren't counted`);
+  else if (!e.url.startsWith("/gmid/") && !html.includes("/np.js")) warn(`${e.url}: no /np.js - visits to this tool aren't counted`);
 }
 try {
   const r = await fetch("https://nithinpuru.com/", { signal: AbortSignal.timeout(15000) });
