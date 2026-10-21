@@ -573,7 +573,7 @@ function demoData(from, to) {
     daily,
     countries: share([["US", .3], ["CH", .14], ["DE", .12], ["GB", .08], ["NL", .07], ["FR", .05], ["JP", .04], ["SE", .03], ["IT", .03], ["ES", .02]], V),
     sources: share([["(direct)", .41], ["linkedin.com", .24], ["google", .17], ["github.com", .1], ["colab.research.google.com", .05], ["scholar.google.com", .03]], V),
-    pages: share([["nithinpuru.com/", .62], ["nithinpuru.com/rongm", .14], ["nithinpuru.github.io/gmid", .12], ["nithinpuru.github.io/research-radar", .08], ["nithinpuru.github.io/fx-quant", .04]], V),
+    pages: share([["nithinpuru.com/", .62], ["nithinpuru.com/rongm", .14], ["nithinpuru.github.io/research-radar", .12], ["nithinpuru.github.io/fx-quant", .08], ["nithinpuru.github.io/quant-terminal", .04]], V),
     origins: [[13,78,40],[19,73,18],[28,77,15],[17,78,11],[23,72,9],[23,88,5],[37,-122,12],[40,-74,8],[42,-71,7],[47,-122,5],[30,-98,4],[40,3,9],[40,-4,5],[48,11,6],[52,13,4],[51,0,5],[31,121,4],[25,121,5],[52,5,3],[35,139,3],[1,104,3],[-34,151,2]]
       .map(([lat, lon, v]) => ({ lat, lon, visitors: Math.round(v * V / 180) + 1, views: Math.round(v * V / 110) + 1 })),
     sites: share([["nithinpuru.com", .7], ["nithinpuru.github.io", .3]], V),
@@ -588,7 +588,7 @@ function demoData(from, to) {
     langs: share([["en-US", .44], ["de-DE", .16], ["en-GB", .12], ["de-CH", .08], ["nl-NL", .05]], V),
     campaigns: share([["phd-applications / email", .06]], V),
     engagement: { views: V, avg_ms: 74000, avg_scroll: 58 },
-    pageEngagement: [["nithinpuru.com/", 124000, 61], ["nithinpuru.com/rongm", 212000, 44], ["nithinpuru.github.io/gmid", 386000, 30]].map(([key, avg_ms, avg_scroll]) => ({ key, views: Math.round(V * .3), avg_ms, avg_scroll })),
+    pageEngagement: [["nithinpuru.com/", 124000, 61], ["nithinpuru.com/rongm", 212000, 44], ["nithinpuru.github.io/research-radar", 386000, 30]].map(([key, avg_ms, avg_scroll]) => ({ key, views: Math.round(V * .3), avg_ms, avg_scroll })),
     clicks: share([["outbound:drive.google.com/file/d/cv/view", .05], ["email:nithinpurushothama@gmail.com", .03], ["outbound:www.linkedin.com/in/nithin-purushothama-70664727b/", .03], ["outbound:nithinpuru.github.io/gmid/", .02]], V),
     timeBuckets: [210, 140, 96, 120, 61, 18],
     scrollBuckets: [150, 90, 80, 60, 140],
@@ -596,7 +596,7 @@ function demoData(from, to) {
     newReturning: { new: Math.round(V * .8), returning: Math.round(V * .2) },
     engagedVisitors: Math.round(V * .62),
     cloudVisitors: Math.round(V * .25),
-    landing: [["linkedin.com", "nithinpuru.com/", .2], ["(direct)", "nithinpuru.com/", .15], ["google", "nithinpuru.github.io/gmid", .1],
+    landing: [["linkedin.com", "nithinpuru.com/", .2], ["(direct)", "nithinpuru.com/", .15], ["google", "nithinpuru.github.io/fx-quant", .1],
       ["scholar.google.com", "nithinpuru.com/", .05], ["github.com", "nithinpuru.github.io/research-radar", .04], ["nithinpuru.github.io", "nithinpuru.com/rongm", .03]]
       .map(([source, page, w]) => ({ source, page, visits: Math.round(V * w) })),
     regions: [["CH", "Zurich", 40], ["US", "Massachusetts", 33], ["DE", "Bavaria", 27], ["US", "California", 25], ["NL", "South Holland", 17], ["GB", "England", 15], ["US", "New York", 12], ["FR", "Île-de-France", 9]]
@@ -621,8 +621,8 @@ function demoData(from, to) {
         ua: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
         trail: trail(["nithinpuru.com/puf", 53000, 40, 1, JSON.stringify({ "abstract": 14000, "the-sensor": 25000, "results": 9000 }), ""]) }),
       visit(9, "Munich", "Bavaria", "DE", "Deutsche Telekom AG", { device: "desktop", browser: "Firefox", os: "Linux", lang: "en-US", tz: "Europe/Berlin", lon: 12,
-        screen: 1920, source: "chatgpt.com", pages: "nithinpuru.github.io/gmid/sky130a", ms: 386000, scroll: 100,
-        trail: trail(["nithinpuru.github.io/gmid/sky130a", 386000, 100, 1, "", JSON.stringify([[12, "pick", "Device: nfet_01v8"], [40, "pick", "Plot: gm/ID vs Vgs"], [90, "set", "L = 0.5"]])]) }),
+        screen: 1920, source: "chatgpt.com", pages: "nithinpuru.github.io/fx-quant", ms: 386000, scroll: 100,
+        trail: trail(["nithinpuru.github.io/fx-quant", 386000, 100, 1, "", JSON.stringify([[12, "pick", "Pair: EUR/INR"], [40, "click", "Forecast"], [90, "set", "Horizon = 30"]])]) }),
       visit(11, "Burnaby", "British Columbia", "CA", "Fortinet Technologies (Canada)", { device: "desktop", browser: "Chrome", os: "Linux", lang: "en-US", tz: "UTC",
         lon: -123, screen: 800, act: 0, engaged: false, ms: 2900, scroll: 0, source: "(direct)", pages: "nithinpuru.com/" }),
       visit(12, "Sunnyvale", "California", "US", "Verizon Business", { device: "mobile", browser: "Safari", os: "iOS", lang: "en-US", tz: "Europe/Istanbul",

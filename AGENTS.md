@@ -125,9 +125,11 @@ the IP. Skipped for localhost, `/analytics/`, framed pages, `?notrack` browsers
 and the portfolio's owner-pass cookie.
 
 Tool pages load it with `<script src="/np.js" defer></script>` before
-`</body>`; the Quant Terminal is synced from career-semi-quant, which loads it
-through a hostname-gated snippet (its e2e test fails on a 404). The dashboard
-is `public/analytics/`; `/stats` answers only with the `X-Stats-Key` header
+`</body>` - except the gm/ID pages (`/gmid/` and its PDK sub-pages), which are
+deliberately untracked: it's a public tool, not what the dashboard is for, so
+don't add the tracker back there. The Quant Terminal is synced from
+career-semi-quant, which loads it through a hostname-gated snippet (its e2e
+test fails on a 404). The dashboard is `public/analytics/`; `/stats` answers only with the `X-Stats-Key` header
 (the owner key, stored in the browser by signing in there, or opening
 `/analytics/?key=<key>` once). Never commit the key. Each signed-in `/stats`
 call records that browser (and its network) in the Worker's `owners` table;
