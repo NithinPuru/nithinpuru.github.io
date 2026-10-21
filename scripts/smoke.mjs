@@ -48,14 +48,21 @@ const BASE = `http://127.0.0.1:${server.address().port}`;
 // "/rongm/" is now a real page served directly from GitHub Pages.
 // "/analytics/" forwards to the dashboard on nithinpuru.com; its relay.html only
 // answers that page (in a frame), so it is only checked for being there.
-for (const [file, to] of [
+const STUBS = [
   ["index.html", "https://nithinpuru.com/"],
   ["tools/index.html", "https://nithinpuru.com/#tools"],
   ["puf/index.html", "https://nithinpuru.com/puf/"],
   ["analytics/index.html", "https://nithinpuru.com/analytics/"],
-]) {
+];
+for (const [file, to] of STUBS) {
   const html = await readFile(join(DIST, file), "utf8").catch(() => "");
   if (!html.includes("location.replace") || !html.includes(`url=${to}`)) fail(`dist/${file}: does not forward to ${to}`);
+}
+// Pages that only forward must stay out of the sitemap (astro.config.mjs "unlisted").
+const sitemap = await readFile(join(DIST, "sitemap-0.xml"), "utf8").catch(() => "");
+for (const [file] of STUBS) {
+  const path = "/" + file.replace(/index\.html$/, "");
+  if (sitemap.includes(`<loc>https://nithinpuru.github.io${path}</loc>`)) fail(`sitemap-0.xml lists ${path}, which only forwards to nithinpuru.com`);
 }
 
 if (!existsSync(join(DIST, "analytics/relay.html"))) fail("dist/analytics/relay.html: missing - the dashboard on nithinpuru.com can't reach the stats");

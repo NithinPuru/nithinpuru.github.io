@@ -8,10 +8,11 @@ import tools from "./src/data/tools.json" with { type: "json" };
 const site = process.env.SITE_URL || "https://nithinpuru.github.io";
 const base = process.env.ASTRO_BASE || "/";
 
-// "/", "/rongm/" and "/tools/" only forward to the portfolio (nithinpuru.com)
-// and /go/ is the owner's unlisted links page, so they stay out of the
-// sitemap; the tools (plain pages in public/) are listed instead.
-const unlisted = ["/", "/rongm/", "/tools/", "/go/"];
+// "/", "/tools/" and "/puf/" only forward to the portfolio (nithinpuru.com),
+// "/rongm/" is a copy of the portfolio's page (search engines should index
+// that one) and /go/ is the owner's unlisted links page, so they stay out of
+// the sitemap; the tools (plain pages in public/) are listed instead.
+const unlisted = ["/", "/rongm/", "/tools/", "/puf/", "/go/"];
 const toolPages = tools.groups.flatMap((g) => g.entries).map((e) => new URL(e.url, site).href);
 
 export default defineConfig({
