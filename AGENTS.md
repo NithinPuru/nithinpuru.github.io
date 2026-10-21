@@ -99,7 +99,15 @@ The gm/ID pages have diverged from their repos (theme, lazy data), so don't
 re-copy them wholesale: port upstream fixes into the local files by hand.
 When a PDK page changes, bump the `?v=` tag on its iframe URL in
 `public/gmid/index.html` - GitHub Pages lets browsers cache pages for 10
-minutes and iframes otherwise keep showing the old copy. The original repos and their Pages sites are untouched.
+minutes and iframes otherwise keep showing the old copy.
+
+The source repos stay as the tools' source code (the "Source code" links), but
+their own GitHub Pages copies are retired: gmid-hub, gmid_SKY130A,
+gmid_GF180MCUD, gmid_IHP130_Tool, FOREX_QUANT and Research-Radar forward to
+the tools here with a hostname-gated `location.replace` at the top of their
+`index.html` (plus a canonical link), career-semi-quant shows a "moved" page,
+and Conf_Deadline_Tracker forwards and no longer runs its own tracker. Don't
+deploy a second copy of a tool anywhere else.
 
 ## Analytics
 
