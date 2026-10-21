@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Analytics relay - nithinpuru</title>
+</head>
+<body>
+<script>
+// The stats Worker answers only this origin (CORS), and the dashboard lives at
+// nithinpuru.com/analytics/. That page loads this one in a hidden frame and sends
+// its /stats and /owner calls here; nothing else is relayed, and only for that page.
+(function () {
+  var API = "https://nithin-analytics.nithinpurushothama.workers.dev";
+  var DASHBOARD = "https://nithinpuru.com";
+  if (window.parent === window) { location.replace(DASHBOARD + "/analytics/"); return; }
+  addEventListener("message", function (e) {
+    var d = e.data;
+    if (e.origin !== DASHBOARD || e.source !== window.parent || !d || typeof d.path !== "string") return;
+    function reply(o) { o.id = d.id; window.parent.postMessage(o, DASHBOARD); }
+    if (!/^\/(stats|owner)(\?[^#]*)?$/.test(d.path)) return reply({ status: 0, error: "not relayed" });
+    var post = d.method === "POST", headers = { "X-Stats-Key": String(d.key || "") };
+    if (post) headers["Content-Type"] = "application/json";
+    fetch(API + d.path, { method: post ? "POST" : "GET", headers: headers, body: post ? String(d.body || "") : undefined })
+      .then(function (r) { return r.text().then(function (t) { reply({ status: r.status, body: t }); }); })
+      .catch(function (err) { reply({ status: 0, error: String((err && err.message) || err) }); });
+  });
+  window.parent.postMessage({ ready: true }, DASHBOARD);
+})();
+</script>
+</body>
+</html>

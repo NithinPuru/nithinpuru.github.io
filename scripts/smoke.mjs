@@ -46,14 +46,19 @@ const BASE = `http://127.0.0.1:${server.address().port}`;
 // "/" and "/tools/" are redirect stubs (the portfolio lives on nithinpuru.com):
 // check them statically - loading them would leave the site.
 // "/rongm/" is now a real page served directly from GitHub Pages.
+// "/analytics/" forwards to the dashboard on nithinpuru.com; its relay.html only
+// answers that page (in a frame), so it is only checked for being there.
 for (const [file, to] of [
   ["index.html", "https://nithinpuru.com/"],
   ["tools/index.html", "https://nithinpuru.com/#tools"],
   ["puf/index.html", "https://nithinpuru.com/puf/"],
+  ["analytics/index.html", "https://nithinpuru.com/analytics/"],
 ]) {
   const html = await readFile(join(DIST, file), "utf8").catch(() => "");
   if (!html.includes("location.replace") || !html.includes(`url=${to}`)) fail(`dist/${file}: does not forward to ${to}`);
 }
+
+if (!existsSync(join(DIST, "analytics/relay.html"))) fail("dist/analytics/relay.html: missing - the dashboard on nithinpuru.com can't reach the stats");
 
 // ---- data freshness ------------------------------------------------------------
 const hoursOld = (iso) => (Date.now() - new Date(iso)) / 36e5;
@@ -118,7 +123,7 @@ const PAGES = [
   "/404.html", "/go/", "/rongm/",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
   "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
-  "/secure_sensor_with_puf/", "/analytics/",
+  "/secure_sensor_with_puf/",
 ];
 const WIDTHS = { "/404.html": [360, 768, 1440] };
 const DEFAULT_WIDTHS = [360, 1440];

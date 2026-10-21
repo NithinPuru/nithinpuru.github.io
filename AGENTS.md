@@ -129,25 +129,21 @@ Tool pages load it with `<script src="/np.js" defer></script>` before
 deliberately untracked: it's a public tool, not what the dashboard is for, so
 don't add the tracker back there. The Quant Terminal is synced from
 career-semi-quant, which loads it through a hostname-gated snippet (its e2e
-test fails on a 404). The dashboard is `public/analytics/`; `/stats` answers only with the `X-Stats-Key` header
-(the owner key, stored in the browser by signing in there, or opening
-`/analytics/?key=<key>` once). Never commit the key. Each signed-in `/stats`
-call records that browser (and its network) in the Worker's `owners` table;
-`POST /owner` marks or unmarks a visitor ("This is me" in the visit log).
-Owner visits are left out of every count and shown as "you".
+test fails on a 404).
 
-The dashboard does the analysis in the browser: each visit-day is scored
-person / unsure / likely scanner from the clues in `analyse()` (clock vs IP
-location, UTC clocks, 800 px headless screens, faked phone screens, client
-hints, HTTP/1.1, no report from the page, silent visits in waves, security-
-vendor and big-tech networks, minus interaction, reading time, clicks), visits
-from the same device on a new IP are joined into one person (Worker: device
-signature twins), and institutions come from academic networks or links from
-university sites (`ACADEMIC` / `ACADEMIC_HOST` in the Worker). `?demo` shows
-sample data. Highlights are one row per finding with one line per visitor
-(the name opens that visitor's entry); the visit log is grouped by day, each
-entry a one-glance summary (`<details>`) that opens to the pages, sections,
-verdict and device details.
+The dashboard lives in the portfolio repo (`public/analytics/index.html`, at
+`https://nithinpuru.com/analytics/`); its AGENTS.md covers sign-in and how it
+scores visits. Two small files stay here:
+
+- `public/analytics/index.html` forwards old links there, keeping the query and
+  #fragment (`?key=` becomes `?owner=`, which the geo rule lets through). On the
+  way, `?optout=1` / `?optout=0` stops or resumes counting this browser on the
+  tools (`np_notrack`): the dashboard's sign-in and opt-out switch hop through it.
+- `public/analytics/relay.html`: the Worker answers `/stats` and `/owner` only to
+  this origin (CORS), so the dashboard loads this page in a hidden frame and
+  sends those calls through it with `postMessage`. It accepts messages only from
+  `https://nithinpuru.com` and relays nothing else. The calls still come from the
+  owner's browser, so the Worker keeps recognising the owner's devices.
 
 Bots: the Worker drops events from cloud / hosting / VPN networks (`BOT_ASNS`
 and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
