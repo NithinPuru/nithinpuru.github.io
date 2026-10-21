@@ -63,24 +63,40 @@
   h3 { font-size: 1.1rem; font-weight: normal; font-style: italic; margin: 0 0 .5rem; }
   .note { color: var(--muted); font-size: .92rem; font-style: italic; }
 
-  /* Visit log: one profile per visitor per day */
+  /* Visit log: one entry per visitor per day, grouped by day; click an entry for the detail */
   .seg { display: flex; flex-wrap: wrap; gap: .3rem 1.4rem; align-items: baseline; margin: 0 0 .4rem; }
   .seg button { font: inherit; background: none; border: 0; border-bottom: 2px solid transparent; padding: .1rem 0; cursor: pointer; color: var(--muted); }
   .seg button:hover { color: var(--ink); }
   .seg button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
   .seg button small { font-size: .85rem; margin-left: .3rem; }
-  .seg-opts { color: var(--muted); font-size: .92rem; margin: 0 0 1rem; }
-  .visits { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
-  .visit { padding: 1.15rem 0 1.1rem; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: .2rem 1.5rem; }
-  .visit__when { color: var(--muted); font-size: .92rem; line-height: 1.45; }
-  .visit__when b { display: block; color: var(--ink); font-weight: normal; font-size: 1rem; }
-  .visit__body { min-width: 0; }
+  .seg-opts { color: var(--muted); font-size: .92rem; margin: 0 0 1.25rem; }
+  .day { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 1.6rem 0 0; padding-bottom: .3rem;
+         border-bottom: 1px solid var(--ink); font-size: 1.1rem; font-weight: normal; }
+  .day:first-child { margin-top: 0; }
+  .day span { color: var(--muted); font-size: .9rem; font-style: italic; }
+  .visits { list-style: none; margin: 0; padding: 0; }
+  .visits > li { border-bottom: 1px solid var(--rule); }
+  .visit { scroll-margin-top: 7rem; }
+  .visit > summary { list-style: none; cursor: pointer; }
+  .visit__row { display: grid; grid-template-columns: 6.4rem minmax(0, 1fr) 8.5rem 1rem; grid-template-areas: "time main read chev";
+                gap: .1rem 1.25rem; align-items: start; padding: .8rem .5rem .8rem 0; }
+  .visit > summary::-webkit-details-marker { display: none; }
+  .visit > summary:hover, .visit[open] > summary { background: rgba(233, 229, 217, .45); }
+  .visit__time { grid-area: time; font-size: 1rem; padding-left: .5rem; white-space: nowrap; }
+  .visit__time small, .visit__read small { display: block; color: var(--muted); font-size: .82rem; line-height: 1.35; }
+  .visit__main { grid-area: main; min-width: 0; }
   .visit__who { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .45rem; }
-  .visit__place { font-size: 1.22rem; line-height: 1.3; margin-right: .2rem; }
-  .visit__org, .visit__how { color: var(--muted); font-size: .94rem; margin-top: .1rem; }
-  .visit__org b { color: var(--ink); font-weight: normal; }
-  .saw { margin: .7rem 0 0; }
-  .saw > i, .did > i { color: var(--muted); font-size: .9rem; margin-right: .35rem; }
+  .visit__place { font-size: 1.12rem; line-height: 1.3; margin-right: .15rem; }
+  .visit__meta, .visit__pages { display: block; color: var(--muted); font-size: .92rem; line-height: 1.45; overflow-wrap: anywhere; }
+  .visit__pages { color: var(--ink); }
+  .visit__pages .muted { font-style: italic; }
+  .visit__read { grid-area: read; text-align: right; white-space: nowrap; }
+  .visit__chev { grid-area: chev; width: .5rem; height: .5rem; margin-top: .5rem; border: solid var(--muted); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+  .visit[open] .visit__chev { transform: rotate(-135deg); margin-top: .75rem; }
+  .visit__body { padding: .2rem .5rem 1.1rem 7.65rem; }
+  .saw { margin: 0; }
+  .saw > i, .did > i, .visit__body h5 { color: var(--muted); font-size: .9rem; font-style: italic; font-weight: normal; margin: 0 .35rem 0 0; }
+  .visit__body h5 { margin: .9rem 0 .2rem; }
   .pg { display: grid; grid-template-columns: minmax(0, 1fr) 9rem minmax(8.5rem, auto); gap: .15rem 1rem; align-items: center; font-size: .95rem; padding: .3rem 0 .1rem; }
   .pg__name { overflow-wrap: anywhere; }
   .pg__bar { height: .5rem; background: var(--land); position: relative; }
@@ -91,8 +107,8 @@
   .strip span:hover { outline: 1px solid var(--ink); }
   .strip__note, .did { color: var(--muted); font-size: .9rem; }
   .did { margin-top: .25rem; }
-  .did q { color: var(--ink); quotes: "\201C" "\201D"; }
-  .visit__why { color: var(--muted); font-size: .88rem; font-style: italic; margin-top: .45rem; }
+  .did q, .visit__pages q { color: var(--ink); quotes: "\201C" "\201D"; }
+  .visit__why { color: var(--muted); font-size: .9rem; margin: 0; }
   .visit--scanner .visit__place, .visit--scanner .pg__name { color: var(--muted); }
   .tag { display: inline-block; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
          border: 1px solid var(--rule); padding: 0 .35rem; line-height: 1.5; }
@@ -102,12 +118,11 @@
   .tag--you { color: var(--paper); background: var(--ink); border-color: var(--ink); }
   .tag--scanner { border-style: dashed; }
   .tag--org { color: var(--visitors); border-color: var(--visitors); }
-  .visit__more { font-size: .9rem; color: var(--muted); margin-top: .35rem; }
-  .visit__more summary { cursor: pointer; color: var(--views); width: max-content; }
-  .visit__more dl { display: grid; grid-template-columns: 8.5rem 1fr; gap: .15rem 1rem; margin: .4rem 0 .5rem; }
-  .visit__more dt { font-style: italic; }
-  .visit__more dd { margin: 0; color: var(--ink); word-break: break-word; }
-  .visit__more .ua { font-size: .82rem; color: var(--muted); }
+  .visit__facts { display: grid; grid-template-columns: 8.5rem 1fr; gap: .15rem 1rem; margin: 0 0 .5rem; font-size: .9rem; color: var(--muted); }
+  .visit__facts dt { font-style: italic; }
+  .visit__facts dd { margin: 0; color: var(--ink); word-break: break-word; }
+  .visit__facts .ua { font-size: .82rem; color: var(--muted); }
+  .visit__body .linkish { font-size: .9rem; }
   .scanners { margin-top: 1.5rem; }
   .scanners > summary { cursor: pointer; color: var(--views); }
   table.scan td, table.scan th { text-align: left; }
@@ -115,9 +130,26 @@
   table.scan td:last-child { color: var(--muted); font-style: italic; }
   .locked { color: var(--muted); font-style: italic; border: 1px dashed var(--rule); padding: 1rem 1.25rem; }
   .visits-foot { margin-top: .75rem; font-size: .95rem; }
+
   .notes { margin: 0 0 2.25rem; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
   .notes li { padding: .55rem 0; border-bottom: 1px solid var(--rule); }
-  .notes li b { font-weight: normal; font-style: italic; margin-right: .35rem; }
+
+  /* Highlights: one row per finding, one line per visitor */
+  .brief { margin: 0 0 2.5rem; border-top: 1px solid var(--ink); }
+  .brief__sum { margin: 0; padding: .65rem 0; border-bottom: 1px solid var(--rule); color: var(--muted); }
+  .brief__sum b { color: var(--ink); font-weight: normal; font-size: 1.2rem; margin-right: .2rem; }
+  .brief dl { margin: 0; }
+  .brief__row { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr); gap: .2rem 1.5rem; padding: .65rem 0; border-bottom: 1px solid var(--rule); }
+  .brief__row dt { font-style: italic; color: var(--muted); }
+  .brief__row dd { margin: 0; }
+  .brief__row dd p { margin: 0 0 .15rem; }
+  .brief__row ul { list-style: none; margin: 0; padding: 0; }
+  .brief__row li { display: grid; grid-template-columns: minmax(0, 21rem) minmax(0, 1fr); gap: 0 1.25rem; padding: .12rem 0; }
+  .brief__row li.muted { display: block; font-size: .92rem; font-style: italic; }
+  .brief__who .muted { font-size: .92rem; }
+  .brief__row q { quotes: "\201C" "\201D"; }
+  a.who { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-strong, #b9b4a6); }
+  a.who:hover { color: var(--views); border-bottom-color: var(--views); }
   #t-people td:first-child, #t-institutions td:first-child { min-width: 14rem; }
   #t-people td:not(:first-child), #t-institutions td:not(:first-child) { white-space: nowrap; }
   .sub2 { display: block; color: var(--muted); font-size: .88rem; }
@@ -211,8 +243,12 @@
     .figures div:nth-child(odd) { border-left: 0; padding-left: 0; }
     .figures div:nth-child(n+3) { border-top: 1px solid var(--rule); }
     .range { margin-left: 0; }
-    .visit { grid-template-columns: 1fr; }
-    .visit__when b { display: inline; margin-right: .5rem; }
+    .visit__row { grid-template-columns: minmax(0, 1fr) auto 1rem; grid-template-areas: "time read chev" "main main main"; gap: .15rem .75rem; }
+    .visit__time small { display: inline; margin-left: .4rem; }
+    .visit__body { padding: .2rem .5rem 1rem .5rem; }
+    .visit__main { padding-left: .5rem; }
+    .brief__row, .brief__row li { grid-template-columns: 1fr; }
+    .brief__what { padding-left: 1.6rem; }
     .pg { grid-template-columns: minmax(0, 1fr) auto; }
     table.scan thead { display: none; }
     table.scan tr { display: block; border-bottom: 1px solid var(--rule); padding: .45rem 0; }
@@ -220,8 +256,8 @@
     #t-people td:first-child, #t-institutions td:first-child { min-width: 0; }
     #t-people td:not(:first-child), #t-institutions td:not(:first-child) { white-space: normal; }
     .pg__name { grid-column: 1 / -1; }
-    .visit__more dl { grid-template-columns: 1fr; }
-    .visit__more dt { margin-top: .3rem; }
+    .visit__facts { grid-template-columns: 1fr; }
+    .visit__facts dt { margin-top: .3rem; }
   }
   @media (max-width: 480px) {
     h1 { font-size: 2.1rem; }
@@ -353,12 +389,12 @@
     <section class="group" id="visitors" aria-labelledby="g-visitors">
       <h2 class="gtitle" id="g-visitors">Who visited</h2>
       <h3>Highlights</h3>
-      <ul class="notes" id="highlights"><li class="muted">Loading…</li></ul>
+      <div class="brief" id="highlights"><p class="brief__sum">Loading…</p></div>
       <h3>Visitors</h3>
       <div class="seg" id="show" role="group" aria-label="Show"></div>
       <p class="seg-opts"><label><input type="checkbox" id="only-engaged"> engaged only</label>
         · <label><input type="checkbox" id="only-academic"> academic only</label>
-        · one entry per visitor per day, newest first, times in your timezone · bars: time on each page · cells: the page's sections in order, darker = longer at mid-screen</p>
+        · one entry per visitor per day, newest first, times in your timezone · open an entry for its pages, sections and device</p>
       <div id="visits-wrap"><p class="locked">Loading…</p></div>
     </section>
 
@@ -973,7 +1009,7 @@ function langsLabel(alang, lang) {
   return [...new Set(out)].join(", ");
 }
 const shortOrg = org => (org || "").replace(/,? (Inc|LLC|Ltd|Limited|Corporation|Corp|SAS|S\.A\.|GmbH|PJSC|Co)\.?$/i, "").replace(/ Communications$/, "");
-const placeOf = v => [v.city, v.region, countryName(v.country)].filter(Boolean).join(", ");
+const placeOf = v => [v.city, v.region !== v.city && v.region, countryName(v.country)].filter(Boolean).join(", ");
 const firstPage = v => (v.pages || "").split(" > ")[0];
 const pathOf = page => page.replace(/^[^/]*/, "") || "/";
 
@@ -1033,6 +1069,7 @@ function analyse(visits) {
     const yours = visits.find(o => (o.mine || o.myNet) && o !== v && v.start - o.start >= 0 && v.start - o.start <= 60e3 && (o.pages || "").includes(firstPage(v)));
     if (yours) { v.score += 3; v.reasons.push(`${Math.round((v.start - yours.start) / 1000)} s after your own visit to the same page: a link preview or safety check`); }
   }
+  visits.forEach((v, i) => { v.key = i; });
   for (const v of visits) {
     v.verdict = v.mine ? "you" : v.score >= 3 ? "scanner" : v.score >= 1 ? "unsure" : "person";
     v.sameDevice = v.twinFirst != null && v.twinFirst < v.start;
@@ -1065,50 +1102,75 @@ const verdictTag = v => ({
   you: `<span class="tag tag--you" title="One of your own browsers: left out of every count">you</span>`,
 }[v.verdict]);
 
-// The briefing: one line per finding, the lead in italics.
+// The briefing: one row per finding, one line per visitor; a visitor's name opens their entry in the log.
 function renderHighlights(visits) {
-  const ul = $("highlights");
-  if (!lastAuthorized) { ul.innerHTML = `<li class="muted">Sign in to see the highlights.</li>`; return; }
+  const box = $("highlights");
+  if (!lastAuthorized) { box.innerHTML = `<p class="brief__sum">Sign in to see the highlights.</p>`; return; }
   const others = visits.filter(v => v.verdict !== "you");
   const real = others.filter(v => v.verdict !== "scanner");
   const by = k => others.filter(v => v.verdict === k).length;
   const mine = visits.length - others.length;
-  const li = [];
-  const add = (lead, text) => li.push(`<li><b>${lead}</b>${text}</li>`);
-  const who = v => `${flag(v.country)}${esc(v.city || countryName(v.country) || "Somewhere")} <span class="muted">(${esc(v.academic ? v.institution : shortOrg(v.org) || "unknown network")}, ${esc(deviceName(v).split(" · ")[0])})</span>`;
   const n = (k, word) => `${k} ${word}${k === 1 ? "" : "s"}`;
-  add("In this range.", `${n(by("person"), "visit")} by likely people, ${by("unsure")} unsure, ${n(by("scanner"), "likely scanner")}${mine ? `; ${mine} of yours, left out of every count` : ""}.`);
-  const readers = real.filter(v => v.ms >= 15000).sort((a, b) => b.ms - a.ms).slice(0, 3);
-  if (readers.length) add("Read the longest.", readers.map(v => `${who(v)}: ${dur(v.ms)} on ${esc(firstPage(v))}${v.source !== "(direct)" ? ` from ${esc(v.source)}` : ""}`).join("; ") + ".");
-  const acad = d3.rollups(real.filter(v => v.academic), vs => ({ n: vs.length, ms: d3.sum(vs, v => v.ms || 0), pages: [...new Set(vs.map(firstPage))] }), v => v.institution)
-    .sort((a, b) => b[1].ms - a[1].ms);
-  if (acad.length) add("From academia.", acad.slice(0, 6).map(([name, a]) => `${esc(name)} (${n(a.n, "visit")}${a.ms ? `, ${dur(a.ms)}` : ""}: ${a.pages.map(esc).join(", ")})`).join("; ") + ".");
-  const research = real.filter(v => v.research);
-  if (research.length) add("From research sites.", research.map(v => `${who(v)} via ${esc(v.source)} to ${esc(firstPage(v))}`).join("; ") + ".");
-  const ai = real.filter(v => AI_SOURCES.test(v.source || ""));
-  if (ai.length) add("Sent by AI assistants.", ai.map(v => `${who(v)} from ${esc(v.source)} to ${esc(firstPage(v))}${v.ms ? `, ${dur(v.ms)}` : ""}`).join("; ") + ".");
+  const rows = [];
+  // A finding: its lead, an optional sentence, and one line per item (at most 4, then "and N more").
+  const add = (lead, items, text = "") => {
+    if (!items.length && !text) return;
+    const list = items.slice(0, 4).map(([who, what]) => `<li><span class="brief__who">${who}</span><span class="brief__what">${what}</span></li>`).join("")
+      + (items.length > 4 ? `<li class="muted">and ${items.length - 4} more</li>` : "");
+    rows.push(`<div class="brief__row"><dt>${lead}</dt><dd>${text ? `<p>${text}</p>` : ""}${list ? `<ul>${list}</ul>` : ""}</dd></div>`);
+  };
+  const who = v => `<a class="who" href="#visit-${v.key}" data-visit="${v.key}">${flag(v.country)}${esc(v.city || countryName(v.country) || "Somewhere")}</a>
+    <span class="muted">${esc(v.academic ? v.institution : shortOrg(v.org) || "unknown network")} · ${esc(deviceName(v).split(" · ")[0])}</span>`;
+  const sum = [[by("person"), by("person") === 1 ? "likely person" : "likely people"], [by("unsure"), "unsure"], [by("scanner"), by("scanner") === 1 ? "likely scanner" : "likely scanners"]]
+    .map(([k, label]) => `<b>${k}</b> ${label}`).join(" · ");
+  const readers = real.filter(v => v.ms >= 15000).sort((a, b) => b.ms - a.ms);
+  add("Read the longest", readers.slice(0, 4).map(v => [who(v), `${dur(v.ms)} on ${esc(firstPage(v))}${v.source !== "(direct)" ? ` <span class="muted">from ${esc(v.source)}</span>` : ""}`]));
+  const acad = d3.groups(real.filter(v => v.academic), v => v.institution)
+    .map(([name, vs]) => ({ name, vs, ms: d3.sum(vs, v => v.ms || 0) })).sort((a, b) => b.ms - a.ms);
+  add("From academia", acad.map(a => [`<a class="who" href="#visit-${a.vs[0].key}" data-visit="${a.vs[0].key}">${flag(a.vs[0].country)}${esc(a.name)}</a>`,
+    `${n(a.vs.length, "visit")}${a.ms ? `, ${dur(a.ms)}` : ""} <span class="muted">on ${[...new Set(a.vs.map(firstPage))].map(esc).join(", ")}</span>`]));
+  add("From research sites", real.filter(v => v.research).map(v => [who(v), `via ${esc(v.source)} to ${esc(firstPage(v))}`]));
+  add("Sent by AI assistants", real.filter(v => AI_SOURCES.test(v.source || "")).map(v => [who(v), `from ${esc(v.source)} to ${esc(firstPage(v))}${v.ms ? `, ${dur(v.ms)}` : ""}`]));
   // A deep link opened directly by several people within a day: shared by message, email or a PDF.
   for (const [page, vs] of d3.groups(real.filter(v => v.source === "(direct)" && pathOf(firstPage(v)) !== "/"), firstPage)) {
     const span = d3.max(vs, v => v.start) - d3.min(vs, v => v.start);
-    if (vs.length >= 2 && span <= DAY) add("A shared link.", `${vs.length} visitors opened ${esc(page)} directly, with no referrer, within ${Math.max(1, Math.round(span / 36e5))} h (${[...new Set(vs.map(v => esc(v.city || "?")))].join(", ")}): probably a link sent by message, email or in a PDF.`);
+    if (vs.length >= 2 && span <= DAY) add("A shared link", vs.map(v => [who(v), `${esc(when(v.start))}, ${esc(clock(v.start))}`]),
+      `${vs.length} visitors opened ${esc(page)} directly within ${Math.max(1, Math.round(span / 36e5))} h, with no referrer: probably a link sent by message, email or in a PDF.`);
   }
   const back = people(visits).filter(p => p.visits.length > 1 || p.first < new Date($("from").value + "T00:00Z").getTime());
-  if (back.length) add("Came back.", back.slice(0, 5).map(p => `${who(p.last)} ${p.visits.length > 1 ? `${p.visits.length} visits` : `first seen ${shortDate(p.first)}`}`).join("; ") + ".");
-  const clicked = real.filter(v => v.click_list || v.clicks);
-  if (clicked.length) add("Clicked through.", clicked.map(v => `${who(v)} to ${clickText(v)}`).join("; ") + ".");
-  const did = real.filter(v => parseTrail(v).some(p => p.steps?.length));
-  if (did.length) add("Used the pages.", did.slice(0, 5).map(v => `${who(v)}: ${parseTrail(v).flatMap(p => p.steps || []).slice(0, 4).map(stepText).join(", ")}`).join("; ") + ".");
-  const away = real.filter(v => v.elsewhere);
-  if (away.length) add("Clock and IP disagree.", away.map(v => `${who(v)} has the clock on ${esc(v.tz)}`).join("; ") + ": travelling, roaming or on a VPN.");
+  add("Came back", back.map(p => [who(p.last), p.visits.length > 1 ? `${p.visits.length} visits` : `first seen ${shortDate(p.first)}`]));
+  add("Clicked through", real.filter(v => v.click_list || v.clicks).map(v => [who(v), `to ${clickText(v)}`]));
+  add("Used the pages", real.filter(v => parseTrail(v).some(p => p.steps?.length))
+    .map(v => [who(v), parseTrail(v).flatMap(p => p.steps || []).slice(0, 3).map(stepText).join(", ")]));
+  add("Clock and IP disagree", real.filter(v => v.elsewhere).map(v => [who(v), `clock on ${esc(v.tz)}`]), "Travelling, roaming or on a VPN.");
   const orgs = real.filter(v => !v.academic && (v.kind === "Organisation" || v.kind === "Company proxy"));
-  if (orgs.length) add("Organisation networks.", [...new Set(orgs.map(v => esc(shortOrg(v.org))))].join(", ") + ".");
+  if (orgs.length) add("Organisation networks", [], [...new Set(orgs.map(v => esc(shortOrg(v.org))))].join(", ") + ".");
   const bots = others.filter(v => v.verdict === "scanner");
   if (bots.length) {
     const g = d3.rollups(bots, vs => vs.length, v => shortOrg(v.org) || "unknown network").sort((a, b) => b[1] - a[1]);
-    add("Scanners, by network.", g.slice(0, 8).map(([o, k]) => `${esc(o)} ×${k}`).join(", ") + (g.length > 8 ? `, and ${g.length - 8} more` : "") + ".");
+    add("Scanners, by network", [], g.slice(0, 8).map(([o, k]) => `${esc(o)} ×${k}`).join(", ") + (g.length > 8 ? `, and ${g.length - 8} more` : "") + ".");
   }
-  ul.innerHTML = li.join("");
+  box.innerHTML = `<p class="brief__sum">${sum}${mine ? ` · ${n(mine, "visit")} of yours left out` : ""}</p>`
+    + (rows.length ? `<dl>${rows.join("")}</dl>` : "");
 }
+// Open a visitor's entry in the log, switching to "All" when the current filter hides it.
+function revealVisit(key) {
+  let el = document.getElementById(`visit-${key}`);
+  if (!el) {
+    showMode = "all"; showLimit = Infinity;
+    $("only-academic").checked = $("only-engaged").checked = false;
+    renderVisits();
+    el = document.getElementById(`visit-${key}`);
+  }
+  if (!el) return;
+  el.open = true;
+  el.scrollIntoView({ block: "start" });
+  el.querySelector("summary").focus({ preventScroll: true });
+}
+$("highlights").addEventListener("click", e => {
+  const a = e.target.closest("a[data-visit]");
+  if (a) { e.preventDefault(); revealVisit(a.dataset.visit); }
+});
 
 function renderPeople(visits) {
   const tb = $("t-people");
@@ -1122,7 +1184,7 @@ function renderPeople(visits) {
     const pages = [...p.pages].sort((a, b) => b[1] - a[1]).map(([pg, n]) => `${esc(pg)}${n > 1 ? ` ×${n}` : ""}`).join(", ");
     const langs = langsLabel(v.alang, v.lang);
     return `<tr><td>${flag(v.country)}${esc(placeOf(v) || "Unknown place")}${p.anyPerson ? "" : ` <span class="tag">unsure</span>`}
-      <span class="sub2">${p.visits.find(x => x.academic) ? `${esc(p.visits.find(x => x.academic).institution)} · ` : ""}${esc(shortOrg(v.org) || "unknown network")} · ${esc(v.kind)} · ${esc(deviceName(v))}${langs ? ` · ${esc(langs)}` : ""}</span>
+      <span class="sub2">${[...new Set([p.visits.find(x => x.academic)?.institution, shortOrg(v.org) || "unknown network"].filter(Boolean))].map(esc).join(" · ")} · ${esc(v.kind)} · ${esc(deviceName(v))}${langs ? ` · ${esc(langs)}` : ""}</span>
       <span class="sub2">${pages}</span><span class="bar" style="width:${(p.ms / max * 100).toFixed(1)}%"></span></td>
       <td>${p.visits.length}</td><td>${dur(p.ms)}</td><td>${esc(day(v.start))}${p.first < v.start - DAY ? `<span class="sub2">first ${esc(new Date(p.first).toLocaleDateString([], { day: "numeric", month: "short" }))}</span>` : ""}</td></tr>`;
   }).join("");
@@ -1227,42 +1289,66 @@ function details(v) {
     v.taps && `${v.taps} click${v.taps === 1 ? "" : "s"} / key presses`, v.copies && `copied text ${v.copies}×`, !v.reported && v.device && "the page never reported back"].filter(Boolean).join(" · ");
   const hints = [v.chua && esc(v.chua), v.chplat && esc(v.chplat), v.chmob != null && (v.chmob ? "mobile" : "not mobile"), v.hl ? `headless hints ${v.hl}` : ""].filter(Boolean).join(" · ");
   const seen = `${esc(v.visitor)}${v.first_seen && v.first_seen < v.start - 36e5 ? ` · first seen ${esc(shortDate(v.first_seen))}` : ""}${v.twins?.length ? ` · same device as ${v.twins.map(t => esc(t.slice(0, 6))).join(", ")}` : ""}`;
-  return `<details class="visit__more"><summary>Details</summary><dl>${row("Visitor", seen)}${row("Device", screen)}
+  const came = v.source && v.source !== "(direct)" ? esc(v.ref || v.source) : "directly (typed, bookmark, app, email or PDF)";
+  return `<dl class="visit__facts">${row("Came", came + (v.hash ? `, at ${esc(v.hash)}` : ""))}${row("Visitor id", seen)}${row("Device", [v.device && esc(deviceName(v)), screen].filter(Boolean).join(" · "))}
     ${row("Languages", v.alang ? `${esc(langsLabel(v.alang, v.lang))} <span class="ua">(${esc(v.alang)})</span>` : esc(v.lang || ""))}${row("Clock", tzs)}${row("Network", net)}
     ${row("On the page", behave)}${row("Client hints", hints)}${row("User-Agent", v.ua && `<span class="ua">${esc(v.ua)}</span>`)}</dl>
-    ${DEMO ? "" : `<button type="button" class="linkish" data-mine="${esc(v.id)}" data-set="${v.mine ? 0 : 1}">${v.mine ? "Not me: count these visits again" : "This is me: leave this browser's visits out"}</button>`}</details>`;
+    ${DEMO ? "" : `<button type="button" class="linkish" data-mine="${esc(v.id)}" data-set="${v.mine ? 0 : 1}">${v.mine ? "Not me: count these visits again" : "This is me: leave this browser's visits out"}</button>`}`;
 }
 const when = t => new Date(t).toLocaleString([], { weekday: "short", day: "numeric", month: "short" });
 const clock = t => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-const theirs = (t, tz) => { try { return tz ? new Date(t).toLocaleTimeString([], { timeZone: tz, hour: "2-digit", minute: "2-digit" }) + " their time" : ""; } catch { return ""; } };
+const theirs = (t, tz) => { try { return tz ? new Date(t).toLocaleTimeString([], { timeZone: tz, hour: "2-digit", minute: "2-digit" }) : ""; } catch { return ""; } };
+// "nithinpuru.com/rongm" -> "/rongm" ("home" for the front page); the tools keep their host so the two sites stay apart.
+const shortPage = page => /^nithinpuru\.com\/?$/.test(page) ? "home" : page.startsWith("nithinpuru.com") ? pathOf(page) : page.replace(/^nithinpuru\.github\.io/, "github.io");
+const dayKey = t => new Date(t).toDateString();
+function dayLabel(t) {
+  const k = dayKey(t);
+  return k === dayKey(Date.now()) ? "Today" : k === dayKey(Date.now() - DAY) ? "Yesterday"
+    : new Date(t).toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" });
+}
+// One visit: a one-glance summary (when, who, where from, what they opened, how long), the rest on opening it.
 function visitEntry(v, scale) {
-  const inst = v.academic ? `<b>${esc(v.institution)}</b>${v.academicBy !== "network" ? ` (${esc(v.academicBy)})` : ""} · ` : "";
+  const trail = parseTrail(v);
   const org = v.kind === "Organisation" || v.kind === "Company proxy";
-  const tags = [verdictTag(v),
+  const tags = [v.verdict !== "person" && verdictTag(v),
     v.academic && `<span class="tag tag--acad" title="${esc(v.institution)}">academic</span>`,
     v.research && `<span class="tag tag--acad" title="Came from a research site">research site</span>`,
     org && `<span class="tag tag--org" title="${esc(v.kind)}: a company or institution's own network">organisation</span>`,
     v.myNet && `<span class="tag" title="Same IP address as one of your browsers">your network</span>`,
-    v.returning || v.sameDevice ? `<span class="tag" title="${esc(v.returning ? "This browser visited before" : `The same device (place, network, screen, language, clock) was seen ${shortDate(v.twinFirst)} under another IP address`)}">returning</span>`
-      : `<span class="tag tag--new">new</span>`].filter(Boolean).join("");
-  const came = v.source && v.source !== "(direct)" ? `from ${esc(v.ref || v.source)}` : "came directly (typed, bookmark, app, email or PDF)";
-  const how = [v.device ? esc(deviceName(v)) : "device unknown", esc(langsLabel(v.alang, v.lang)), came + (v.hash ? `, at ${esc(v.hash)}` : "")].filter(Boolean).join(" · ");
+    (v.returning || v.sameDevice) && `<span class="tag" title="${esc(v.returning ? "This browser visited before" : `The same device (place, network, screen, language, clock) was seen ${shortDate(v.twinFirst)} under another IP address`)}">returning</span>`,
+  ].filter(Boolean).join("");
+  const network = v.academic ? v.institution : shortOrg(v.org) || "Unknown network";
+  const device = v.device ? deviceName(v).split(" · ").slice(0, 2).join(", ") : "device unknown";
+  const source = v.source && v.source !== "(direct)" ? `from ${esc(v.source)}` : "came directly";
+  const pages = [...new Set(trail.map(p => p.page))].map(p => esc(shortPage(p))).join(" → ");
+  const leftFor = v.click_list ? splitList(v.click_list, (label, key) => label ? `<q>${esc(label)}</q>` : esc(clickLabel(key))).join(", ") : v.clicks ? esc(v.clicks) : "";
+  const deepest = d3.max(trail, p => p.scroll) ?? v.scroll;
+  const read = v.ms ? dur(v.ms) : v.reported ? "under 1 s" : "no report";
+  const local = clock(v.start), there = theirs(v.start, v.tz);
   const clicks = clickText(v);
   const why = v.verdict === "you" ? "" : v.verdict === "person" ? (v.signs.length ? `Why a person: ${v.signs.join(", ")}.` : "")
     : v.reasons.length ? `Why ${v.verdict === "scanner" ? "a scanner" : "unsure"}: ${v.reasons.join("; ")}${v.signs.length ? `; but ${v.signs.join(", ")}` : ""}.` : "";
-  return `<li class="visit visit--${v.verdict}">
-    <div class="visit__when"><b>${esc(when(v.start))}</b>${esc(clock(v.start))}<span class="sub2">${esc(theirs(v.start, v.tz))}</span></div>
+  return `<li><details class="visit visit--${v.verdict}" id="visit-${v.key}">
+    <summary><span class="visit__row">
+      <span class="visit__time">${esc(local)}${there && there !== local ? `<small>${esc(there)} theirs</small>` : ""}</span>
+      <span class="visit__main">
+        <span class="visit__who"><span class="visit__place">${flag(v.country)}${esc(placeOf(v) || "Unknown place")}</span>${tags}</span>
+        <span class="visit__meta">${esc(network)} · ${esc(device)} · ${source}</span>
+        <span class="visit__pages">${pages}${leftFor ? ` <span class="muted">· left for</span> ${leftFor}` : ""}</span>
+      </span>
+      <span class="visit__read">${read}<small>${trail.length > 1 ? `${trail.length} pages` : "1 page"}${deepest != null ? ` · ${pct(deepest)} down` : ""}</small></span>
+      <span class="visit__chev" aria-hidden="true"></span>
+    </span></summary>
     <div class="visit__body">
-      <div class="visit__who"><span class="visit__place">${flag(v.country)}${esc(placeOf(v) || "Unknown place")}</span>${tags}</div>
-      <div class="visit__org">${inst}${v.academic && v.academicBy === "network" ? "" : `${esc(v.org || "Unknown network")} · `}${esc(v.kind)}</div>
-      <div class="visit__how">${how}</div>
-      <div class="saw"><i>What they saw</i>${parseTrail(v).map(p => pageRow(p, scale)).join("")}
-        ${v.sections && !parseTrail(v).some(p => p.sec) ? `<div class="did"><i>Reached</i>${esc([...new Set(v.sections.split(","))].map(sectionName).join(", "))}</div>` : ""}
+      <h5>What they saw</h5>
+      <div class="saw">${trail.map(p => pageRow(p, scale)).join("")}
+        ${v.sections && !trail.some(p => p.sec) ? `<div class="did"><i>Reached</i>${esc([...new Set(v.sections.split(","))].map(sectionName).join(", "))}</div>` : ""}
         ${clicks ? `<div class="did"><i>Left for</i>${clicks}</div>` : ""}</div>
-      ${why ? `<div class="visit__why">${esc(why)}</div>` : ""}
+      ${why ? `<h5>Verdict</h5><p class="visit__why">${esc(why)}</p>` : ""}
+      <h5>Details</h5>
       ${details(v)}
     </div>
-  </li>`;
+  </details></li>`;
 }
 function scannerTable(rows) {
   return `<table class="scan"><thead><tr><th>When</th><th>Where · network</th><th>Device · page</th><th>Clues</th></tr></thead><tbody>${rows.map(v =>
@@ -1287,7 +1373,9 @@ function renderVisits() {
   const shown = entries.slice(0, showLimit);
   const scale = Math.max(60000, d3.max(shown.flatMap(v => parseTrail(v).map(p => p.ms || 0))) || 0);
   const hiddenBots = showMode === "people" ? base.filter(v => v.verdict === "scanner") : [];
-  wrap.innerHTML = (shown.length ? `<ol class="visits">${shown.map(v => visitEntry(v, scale)).join("")}</ol>` : "")
+  const days = d3.groups(shown, v => dayKey(v.start)).map(([, vs]) =>
+    `<h4 class="day">${esc(dayLabel(vs[0].start))}<span>${vs.length} visit${vs.length === 1 ? "" : "s"}</span></h4><ol class="visits">${vs.map(v => visitEntry(v, scale)).join("")}</ol>`);
+  wrap.innerHTML = days.join("")
     + (entries.length > showLimit ? `<p class="visits-foot"><button type="button" class="linkish" id="more-visits">Show ${Math.min(60, entries.length - showLimit)} more of ${entries.length - showLimit}</button></p>` : "")
     + (bots.length ? (showMode === "scanner" ? scannerTable(bots) : `<details class="scanners" open><summary>${bots.length} likely scanner visits</summary>${scannerTable(bots)}</details>`) : "")
     + (hiddenBots.length ? `<details class="scanners"><summary>${hiddenBots.length} likely scanner visit${hiddenBots.length === 1 ? "" : "s"} hidden: show them</summary>${scannerTable(hiddenBots)}</details>` : "")

@@ -144,7 +144,10 @@ vendor and big-tech networks, minus interaction, reading time, clicks), visits
 from the same device on a new IP are joined into one person (Worker: device
 signature twins), and institutions come from academic networks or links from
 university sites (`ACADEMIC` / `ACADEMIC_HOST` in the Worker). `?demo` shows
-sample data.
+sample data. Highlights are one row per finding with one line per visitor
+(the name opens that visitor's entry); the visit log is grouped by day, each
+entry a one-glance summary (`<details>`) that opens to the pages, sections,
+verdict and device details.
 
 Bots: the Worker drops events from cloud / hosting / VPN networks (`BOT_ASNS`
 and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
