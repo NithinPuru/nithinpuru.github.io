@@ -684,6 +684,24 @@
     "pinned": []
   },
   {
+    "id": "norcas-2027",
+    "series": "norcas",
+    "year": 2027,
+    "name": "NorCAS 2027",
+    "start": null,
+    "end": null,
+    "location": null,
+    "deadline": null,
+    "deadline_tz": null,
+    "note": null,
+    "url": "https://events.tuni.fi/norcas/",
+    "source": null,
+    "confidence": "unverified",
+    "last_checked": null,
+    "last_changed": "2026-10-22",
+    "pinned": []
+  },
+  {
     "id": "rfic-2027",
     "series": "rfic",
     "year": 2027,

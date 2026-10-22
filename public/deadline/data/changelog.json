@@ -48,5 +48,15 @@
     "new": null,
     "message": "Now tracking VLSI-SoC 2027. Dates will appear once announced.",
     "source": null
+  },
+  {
+    "date": "2026-10-22",
+    "edition": "norcas-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking NorCAS 2027. Dates will appear once announced.",
+    "source": null
   }
 ]
