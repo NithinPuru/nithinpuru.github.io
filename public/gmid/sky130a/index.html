@@ -232,8 +232,8 @@ body { font-family: var(--qt-serif); }
   <div class="badge">SkyWater 130nm</div>
   <div class="badge">BSIM4 · 7 variants</div>
   <div class="header-nav">
-    <button class="nav-btn active" onclick="showPage('explorer')">📈 gm/ID Explorer</button>
-    <button class="nav-btn" onclick="showPage('pdk')">📋 PDK Reference</button>
+    <button class="nav-btn active" onclick="showPage('explorer')">gm/ID Explorer</button>
+    <button class="nav-btn" onclick="showPage('pdk')">PDK Reference</button>
   </div>
 </header>
 
@@ -375,7 +375,7 @@ body { font-family: var(--qt-serif); }
   <!-- Vth flavour explanation -->
   <div class="section-title">Understanding LVT / SVT / HVT in SKY130</div>
   <div class="info-box">
-    <h4>🔵 Vt Flavours — Same Gate Oxide, Different Implants</h4>
+    <h4>Vt Flavours — Same Gate Oxide, Different Implants</h4>
     <p>
       In SKY130, all three 1.8V MOSFET flavours share the <strong>same gate oxide</strong> (NMOS tox ≈ 4.15nm, PMOS toxm ≈ 4.23nm — slightly different due to process). The threshold voltage is adjusted by varying the <strong>channel ion implant dose</strong> — a "Vt-adjust implant" layer that shifts the flat-band voltage and hence Vth:<br><br>
       <strong>LVT (Low-Vt):</strong> reduced channel doping → lower Vth (~0.43–0.55V NMOS, ~0.17–0.33V PMOS). Higher Idsat for same W/L, but higher subthreshold leakage. Best for high-speed analog input pairs or where overdrive headroom is tight at 1.8V supply.<br><br>
@@ -387,7 +387,7 @@ body { font-family: var(--qt-serif); }
 
   <!-- HV device explanation -->
   <div class="warn-box">
-    <h4>⚠ HV Devices: nfet/pfet_g5v0d10v5 — Extended Drain, Not Standard MOSFET</h4>
+    <h4>HV Devices: nfet/pfet_g5v0d10v5 — Extended Drain, Not Standard MOSFET</h4>
     <p>
       The <code>g5v0d10v5</code> family is a <strong>drain-extended (DMOS-style) device</strong>, not a simple thick-oxide gate version of the 1.8V FET. The "g5v0" means 5V gate rating; "d10v5" means 10.5V drain rating. The higher drain voltage is achieved through a lightly-doped extended drain region that drops most of the Vds across a drift region, keeping the high electric field away from the gate oxide. Implications for gm/ID methodology: gm/ID curves will look different from the 1.8V family — lower peak gm/ID (worse intrinsic efficiency), higher Vth, and the fT curves drop off much earlier due to the larger parasitic drain capacitance. Use these only when your supply exceeds ~2.5V or when HV isolation is needed; otherwise the 1.8V SVT device gives far better analog performance per unit current.
     </p>
@@ -523,7 +523,7 @@ body { font-family: var(--qt-serif); }
   </div>
 
   <p class="footnote" style="margin-top:16px">
-    📚 Sources: <a href="https://skywater-pdk.readthedocs.io/en/main/rules/device-details.html">PDK Device Details</a> ·
+    Sources: <a href="https://skywater-pdk.readthedocs.io/en/main/rules/device-details.html">PDK Device Details</a> ·
     <a href="https://github.com/google/skywater-pdk">google/skywater-pdk</a> ·
     BSIM vth0 values from sky130_fd_pr model files ·
     All Vth values are extracted from simulation data (TT 25°C) at Vds=0.05V. They vary significantly with L due to SCE — values shown are min/max across the L range. Official EDR specs are proprietary. Vgs/Vbs operating range from PDK RST.

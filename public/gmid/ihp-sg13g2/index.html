@@ -351,7 +351,6 @@ body { font-family: var(--qt-serif); }
       </div>
       <div class="helper-output" id="helperOutput">
         <div class="helper-empty">
-          <div class="icon">⚙️</div>
           <div style="color:var(--t2);font-size:13px">Set your target specifications and press <strong style="color:var(--t1)">Run Optimiser</strong>.<br><br>
           The helper searches the entire characterisation LUT across all selected devices and channel lengths. It minimises a σ-normalised weighted L² loss:<br><br>
           <code style="font-size:12px;color:var(--gold)">ℒ = w₁·((gm/ID − tA)/σA)² + w₂·((gm/gds − tB)/σB)²</code><br><br>
@@ -559,12 +558,12 @@ body { font-family: var(--qt-serif); }
       <div class="pdk-sec-hdr"><h3>Official Documentation &amp; Resources</h3></div>
       <div class="pdk-sec-body">
         <div class="pdk-link-grid">
-          <a class="pdk-link" href="https://github.com/IHP-GmbH/IHP-Open-PDK" target="_blank"><span class="pdk-link-icon">📦</span><div><div class="pdk-link-text">IHP-Open-PDK GitHub</div><div class="pdk-link-sub">Main repository — models, cells, DRC</div></div></a>
-          <a class="pdk-link" href="https://ihp-open-pdk-docs.readthedocs.io/en/main/" target="_blank"><span class="pdk-link-icon">📖</span><div><div class="pdk-link-text">ReadTheDocs — Official Docs</div><div class="pdk-link-sub">Process specs, layout rules, analog guide</div></div></a>
-          <a class="pdk-link" href="https://github.com/IHP-GmbH/IHP-Open-PDK-docs" target="_blank"><span class="pdk-link-icon">📝</span><div><div class="pdk-link-text">PDK Docs Source</div><div class="pdk-link-sub">RST source — contribute corrections</div></div></a>
-          <a class="pdk-link" href="https://iic-jku.github.io/analog-circuit-design/" target="_blank"><span class="pdk-link-icon">🎓</span><div><div class="pdk-link-text">JKU Analog Design Course</div><div class="pdk-link-sub">gm/ID characterisation notebooks</div></div></a>
-          <a class="pdk-link" href="https://github.com/chennakeshavadasa/gmid_IHP130" target="_blank"><span class="pdk-link-icon">📊</span><div><div class="pdk-link-text">gmid_IHP130 — Data Source</div><div class="pdk-link-sub">ngspice sweep data used in this tool</div></div></a>
-          <a class="pdk-link" href="https://skillsurf.github.io/art_of_aicd/content/04-ihp-pdk.html" target="_blank"><span class="pdk-link-icon">🔬</span><div><div class="pdk-link-text">Art of Analog IC Design Workshop</div><div class="pdk-link-sub">SG13G2 device intro and tutorials</div></div></a>
+          <a class="pdk-link" href="https://github.com/IHP-GmbH/IHP-Open-PDK" target="_blank"><div><div class="pdk-link-text">IHP-Open-PDK GitHub</div><div class="pdk-link-sub">Main repository — models, cells, DRC</div></div></a>
+          <a class="pdk-link" href="https://ihp-open-pdk-docs.readthedocs.io/en/main/" target="_blank"><div><div class="pdk-link-text">ReadTheDocs — Official Docs</div><div class="pdk-link-sub">Process specs, layout rules, analog guide</div></div></a>
+          <a class="pdk-link" href="https://github.com/IHP-GmbH/IHP-Open-PDK-docs" target="_blank"><div><div class="pdk-link-text">PDK Docs Source</div><div class="pdk-link-sub">RST source — contribute corrections</div></div></a>
+          <a class="pdk-link" href="https://iic-jku.github.io/analog-circuit-design/" target="_blank"><div><div class="pdk-link-text">JKU Analog Design Course</div><div class="pdk-link-sub">gm/ID characterisation notebooks</div></div></a>
+          <a class="pdk-link" href="https://github.com/chennakeshavadasa/gmid_IHP130" target="_blank"><div><div class="pdk-link-text">gmid_IHP130 — Data Source</div><div class="pdk-link-sub">ngspice sweep data used in this tool</div></div></a>
+          <a class="pdk-link" href="https://skillsurf.github.io/art_of_aicd/content/04-ihp-pdk.html" target="_blank"><div><div class="pdk-link-text">Art of Analog IC Design Workshop</div><div class="pdk-link-sub">SG13G2 device intro and tutorials</div></div></a>
         </div>
         <p style="margin-top:14px">Contact IHP for fabrication: <a href="mailto:openpdk@ihp-microelectronics.com" style="color:var(--acc)">openpdk@ihp-microelectronics.com</a>. The open-source PDK is released under Apache 2.0 (Copyright 2024 IHP PDK Authors).</p>
       </div>
@@ -928,7 +927,7 @@ function _runHelperSync(){
   const w1=10, w2=20;  // Fixed weights — calibrated, not user-adjustable
 
   const df=buildDfAll(selDevs,selLens);
-  if(!df.length){ document.getElementById('helperOutput').innerHTML='<div class="helper-empty"><div class="icon">⚠️</div><div>No data for selected devices.</div></div>'; return; }
+  if(!df.length){ document.getElementById('helperOutput').innerHTML='<div class="helper-empty"><div>No data for selected devices.</div></div>'; return; }
 
   // Warning is generated after solve using res.max_achievable_gmgds
 
@@ -936,9 +935,9 @@ function _runHelperSync(){
 
   let warnHtml='';
   if(tB > res.max_achievable_gmgds)
-    warnHtml=`<div class="warn-box">⚠ Target gm/gds = ${tB} exceeds the maximum achievable in the selected LUT (${res.max_achievable_gmgds.toFixed(1)}). Search clamped to ${res.optB_search.toFixed(1)} — results show best gm/ID match at highest available gm/gds.</div>`;
+    warnHtml=`<div class="warn-box">Target gm/gds = ${tB} exceeds the maximum achievable in the selected LUT (${res.max_achievable_gmgds.toFixed(1)}). Search clamped to ${res.optB_search.toFixed(1)} — results show best gm/ID match at highest available gm/gds.</div>`;
   else if(bB > res.max_achievable_gmgds)
-    warnHtml=`<div class="warn-box">⚠ Bound (min gm/gds = ${bB}) exceeds max achievable (${res.max_achievable_gmgds.toFixed(1)}). Showing best available operating point.</div>`;
+    warnHtml=`<div class="warn-box">Bound (min gm/gds = ${bB}) exceeds max achievable (${res.max_achievable_gmgds.toFixed(1)}). Showing best available operating point.</div>`;
   renderHelperPlots(df,res,tA,tB,bB,w1,w2);
   renderHelperOutput(res,tA,tB,bB,warnHtml);
 }
@@ -1013,7 +1012,7 @@ function renderHelperPlots(df,res,tA,tB,bB,w1,w2){
 
 function renderHelperOutput(res,tA,tB,bB,warnHtml){
   const {top5,bestRow,logs,optA,optB,optB_search,gmid_tol,phase1_used}=res;
-  if(!bestRow){ document.getElementById('helperOutput').innerHTML=warnHtml+'<div class="helper-empty"><div class="icon">⚠️</div><div>No valid operating point found. Relax constraints.</div></div>'; return; }
+  if(!bestRow){ document.getElementById('helperOutput').innerHTML=warnHtml+'<div class="helper-empty"><div>No valid operating point found. Relax constraints.</div></div>'; return; }
 
   // Distance range for colour coding
   const dMin=top5[0].distance, dMax=top5[top5.length-1].distance, dRange=dMax-dMin||1;
@@ -1034,10 +1033,10 @@ function renderHelperOutput(res,tA,tB,bB,warnHtml){
     </div>
   </div>
   <div class="metric-grid">
-    <div class="metric-item best"><div class="metric-lbl">★ Best L</div><div class="metric-val">${bestRow.length}</div></div>
-    <div class="metric-item best"><div class="metric-lbl">★ fT</div><div class="metric-val">${bestRow.ft.toFixed(2)}<span class="metric-unit">GHz</span></div></div>
-    <div class="metric-item best"><div class="metric-lbl">★ ID <span style="font-size:9px;opacity:.7">(at W=2µm)</span></div><div class="metric-val">${formatIdUa(bestRow.id_uA)}</div></div>
-    <div class="metric-item best"><div class="metric-lbl">★ Device</div><div class="metric-val" style="font-size:13px">${bestRow.dev.replace('_','-')}</div></div>
+    <div class="metric-item best"><div class="metric-lbl">Best L</div><div class="metric-val">${bestRow.length}</div></div>
+    <div class="metric-item best"><div class="metric-lbl">fT</div><div class="metric-val">${bestRow.ft.toFixed(2)}<span class="metric-unit">GHz</span></div></div>
+    <div class="metric-item best"><div class="metric-lbl">ID <span style="font-size:9px;opacity:.7">(at W=2µm)</span></div><div class="metric-val">${formatIdUa(bestRow.id_uA)}</div></div>
+    <div class="metric-item best"><div class="metric-lbl">Device</div><div class="metric-val" style="font-size:13px">${bestRow.dev.replace('_','-')}</div></div>
     <div class="metric-item"><div class="metric-lbl">gm/ID (actual)</div><div class="metric-val">${bestRow.gm_id.toFixed(2)}<span class="metric-unit">V⁻¹</span></div></div>
     <div class="metric-item"><div class="metric-lbl">gm/gds (actual)</div><div class="metric-val">${bestRow.gm_gds.toFixed(1)}</div></div>
   </div>

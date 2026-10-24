@@ -224,8 +224,8 @@ body { font-family: var(--qt-serif); }
   <div class="badge">GF 180nm MCU</div>
   <div class="badge">BSIM4 · 9 variants</div>
   <div class="header-nav">
-    <button class="nav-btn active" onclick="showPage('explorer')">📈 gm/ID Explorer</button>
-    <button class="nav-btn" onclick="showPage('pdk')">📋 PDK Reference</button>
+    <button class="nav-btn active" onclick="showPage('explorer')">gm/ID Explorer</button>
+    <button class="nav-btn" onclick="showPage('pdk')">PDK Reference</button>
   </div>
 </header>
 
@@ -399,7 +399,7 @@ body { font-family: var(--qt-serif); }
   <!-- ── SAB EXPLANATION ── -->
   <div class="section-title">What Is DSS / SAB?</div>
   <div class="sab-box">
-    <h4>🔴 DSS = Drain-Side Silicide Block &nbsp;·&nbsp; SAB = Silicide Abatement Block (same thing)</h4>
+    <h4>DSS = Drain-Side Silicide Block &nbsp;·&nbsp; SAB = Silicide Abatement Block (same thing)</h4>
     <p>
       In standard CMOS, a metal silicide layer (TiSi₂, CoSi₂, or NiSi) is formed on source/drain and gate to reduce contact resistance. The <code>_dss</code> (or equivalently <code>_sab</code>) variant intentionally <strong>blocks silicidation on the drain side</strong> by depositing a dielectric mask before the silicide anneal step. This creates a deliberate, well-controlled series resistance in the drain diffusion region.
       <br><br>
@@ -418,7 +418,7 @@ body { font-family: var(--qt-serif); }
     <div class="corner-card fs"><div class="corner-name">FS</div><div class="corner-desc">Fast NMOS + Slow PMOS. N–P mismatch corner. Critical for pass-gate and CMOS logic static noise margins.</div></div>
     <div class="corner-card sf"><div class="corner-name">SF</div><div class="corner-desc">Slow NMOS + Fast PMOS. Opposite N–P mismatch. Tests latch-up susceptibility and complementary signal paths.</div></div>
   </div>
-  <p class="footnote">⚠ Note: These corners are primarily calibrated for predicting <em>static logic delay</em>, not analog operating points. For analog Monte Carlo, use the global+local statistical model (supported by all devices except nfet_06v0_nvt for local mismatch).</p>
+  <p class="footnote">Note: These corners are primarily calibrated for predicting <em>static logic delay</em>, not analog operating points. For analog Monte Carlo, use the global+local statistical model (supported by all devices except nfet_06v0_nvt for local mismatch).</p>
 
   <!-- ── ELECTRICAL SPECS ── -->
   <div class="section-title">EP Electrical Specifications — Official PDK Numbers</div>
@@ -555,7 +555,7 @@ body { font-family: var(--qt-serif); }
   </div>
 
   <p class="footnote" style="margin-top:16px">
-    📚 Source: <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/analog/model_parameters/LV/LV_2_5.html">PDK §2.5</a> · 
+    Source: <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/analog/model_parameters/LV/LV_2_5.html">PDK §2.5</a> · 
     <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/analog/spice/elec_specs/elec_specs_1.html">Electrical Specs §1.0–§7.0</a> · 
     <a href="https://gf180mcu-pdk.readthedocs.io/en/latest/analog/model_parameters/LV/LV_1_4_1.html">Device List §1.4.1</a> · 
     All data at 25°C unless stated. Vth₀ uses max-Gm extraction.
