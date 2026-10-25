@@ -11,9 +11,12 @@
 // and #fragment (?key=… becomes ?owner=…, which the geo rule there lets through).
 // Signing in there hops through here once (?optout=1) so this browser stops being
 // counted on the tools too; its opt-out switch sends ?optout=0 / 1 the same way.
+// Either hop marks the browser as the owner's (np_owner), which the region gate
+// (scripts/region-gate.mjs) lets through even while it is being counted.
 (function () {
   var q = new URLSearchParams(location.search);
   try {
+    if (q.has("optout")) localStorage.setItem("np_owner", "1");
     if (q.get("optout") === "1") localStorage.setItem("np_notrack", "1");
     if (q.get("optout") === "0") localStorage.removeItem("np_notrack");
   } catch (e) {}

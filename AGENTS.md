@@ -57,6 +57,7 @@ public/
 quant-terminal/ fx-quant/ research-radar/ tracker/   # data-bot back ends
 scripts/smoke.mjs            # smoke test (CI "checks" job)
 scripts/gen-brand.mjs        # regenerates the favicons and og-image
+scripts/region-gate.mjs      # South Asia region gate, written into every built page (see Region gate)
 ```
 
 To add a tool: put it in `public/<tool>/`, add an entry to `src/data/tools.json`
@@ -147,6 +148,8 @@ scores visits. Two small files stay here:
   #fragment (`?key=` becomes `?owner=`, which the geo rule lets through). On the
   way, `?optout=1` / `?optout=0` stops or resumes counting this browser on the
   tools (`np_notrack`): the dashboard's sign-in and opt-out switch hop through it.
+  Either hop also sets `np_owner` in localStorage, which lets the browser past
+  the region gate (below) even while it is being counted.
 - `public/analytics/relay.html`: the Worker answers `/stats` and `/owner` only to
   this origin (CORS), so the dashboard loads this page in a hidden frame and
   sends those calls through it with `postMessage`. It accepts messages only from
@@ -157,6 +160,29 @@ Bots: the Worker drops events from cloud / hosting / VPN networks (`BOT_ASNS`
 and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
 nithinpuru.com. Cloudflare, Akamai, Fastly (iCloud Private Relay), Microsoft,
 Google and Zscaler are deliberately not on that list - they carry real people.
+
+## Region gate (South Asia)
+
+`scripts/region-gate.mjs` - an Astro integration, identical in the portfolio
+repo (keep the copies in sync) - writes a small script into every built page,
+Astro's and the plain ones from `public/` alike (the synced Quant Terminal
+too), as the first script in `<head>`. A browser whose clock is on a South
+Asian time zone (India, Pakistan, Bangladesh, Sri Lanka, Nepal, Bhutan, the
+Maldives, Afghanistan: `ZONES`) gets a one-line "not available in your region"
+page: the gate stops the page loading, so nothing else runs and np.js never
+counts the visit. GitHub Pages can't block by IP the way nithinpuru.com's
+Cloudflare WAF rule does, so this is the only gate on the tools - and a
+client-side one: a visitor who changes their clock or turns off JavaScript
+gets through.
+
+- Not gated: `ungated` in `astro.config.mjs` - `/analytics/` (the dashboard's
+  sign-in hop and relay), `/go/` and `/gmid/` (a public tool, untracked).
+- Let through: browsers with `np_notrack` or `np_owner` in localStorage (the
+  owner's devices: the dashboard's sign-in hop through `/analytics/?optout=`
+  sets both) and URLs with `?notrack` or `?owner=`. On a new device in India,
+  sign in on the dashboard once, or open any tool once with `?notrack`.
+- Countries: edit `ZONES` here and in the portfolio repo, and keep the WAF
+  rule's country list on nithinpuru.com the same.
 
 ## Secure sensor + PUF explorer (`/secure_sensor_with_puf/`)
 
@@ -204,8 +230,10 @@ CI does most of this on every deploy: the `checks` job in `deploy.yml` runs the
 design detector over `src/` and `npm run smoke` (`scripts/smoke.mjs`) against
 the published build - the 404 page and every tool in both themes at phone and
 laptop widths: no script errors, no
-broken same-origin requests, no horizontal overflow; the redirect stubs still
-forward to nithinpuru.com; and the data bots fresh (FX <= 6 days, Quant
+broken same-origin requests, no horizontal overflow (on a UTC clock, so it
+also runs from India); the redirect stubs still forward to nithinpuru.com;
+every page but the ungated ones opens with the region gate, which stops an
+Indian clock but not the owner's opted-out browsers; and the data bots fresh (FX <= 6 days, Quant
 Terminal <= 4 days, Research Radar <= 12 h, deadline tracker <= 3 days). It
 runs beside the deploy and never blocks it.
 
