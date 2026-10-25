@@ -1,8 +1,8 @@
 // Smoke test for the built site (dist/): every page loads without script
 // errors or broken same-origin requests, nothing overflows horizontally at
 // phone / "desktop site" / laptop widths in either theme, the old portfolio
-// addresses still forward to nithinpuru.com, and the data bots are still
-// delivering.
+// addresses still forward to nithinpuru.com, the data bots are still
+// delivering, and the region gate stops South Asian clocks.
 //
 //   npm run build && npm run smoke        (CI: the "checks" job in deploy.yml)
 //
@@ -13,6 +13,7 @@ import { existsSync, globSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { homedir } from "node:os";
 import { chromium } from "playwright-core";
+import { NOTICE, SCRIPT } from "./region-gate.mjs";
 
 const DIST = new URL("../dist/", import.meta.url).pathname;
 const failures = [];
@@ -66,6 +67,15 @@ for (const [file] of STUBS) {
 }
 
 if (!existsSync(join(DIST, "analytics/relay.html"))) fail("dist/analytics/relay.html: missing - the dashboard on nithinpuru.com can't reach the stats");
+
+// Every page but the ungated ones (astro.config.mjs) opens with the region gate.
+const UNGATED = /^(analytics|go|gmid)\//;
+for (const file of globSync("**/*.html", { cwd: DIST })) {
+  const html = await readFile(join(DIST, file), "utf8");
+  const at = html.indexOf(`<script>${SCRIPT}</script>`);
+  if (UNGATED.test(file)) { if (at >= 0) fail(`dist/${file}: has the region gate, but it should stay open`); }
+  else if (at < 0 || html.indexOf("<script") !== at) fail(`dist/${file}: the region gate isn't the first script in <head>`);
+}
 
 // ---- data freshness ------------------------------------------------------------
 const hoursOld = (iso) => (Date.now() - new Date(iso)) / 36e5;
@@ -143,11 +153,12 @@ function browserPath() {
 const exe = browserPath();
 const browser = await chromium.launch(exe && existsSync(exe) ? { executablePath: exe } : {});
 
+// On a UTC clock, so that a run from India checks the pages, not the region gate's notice.
 for (const theme of ["light", "dark"]) {
   for (const path of PAGES) {
     for (const width of WIDTHS[path] || DEFAULT_WIDTHS) {
       const tag = `${path} @${width}px ${theme}`;
-      const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+      const ctx = await browser.newContext({ viewport: { width, height: 900 }, timezoneId: "UTC" });
       await ctx.addInitScript((t) => { try { localStorage.setItem("theme", t); } catch {} }, theme);
       const page = await ctx.newPage();
       const errors = [];
@@ -176,6 +187,29 @@ for (const theme of ["light", "dark"]) {
     }
   }
 }
+
+// ---- region gate ---------------------------------------------------------------
+// On an Indian clock a tool shows only the notice, while the owner's opted-out
+// browsers still get it and gm/ID stays open. A stopped page never fires "load":
+// wait for the commit, then for the document to settle.
+async function shown(path, timezoneId, init) {
+  const ctx = await browser.newContext({ timezoneId });
+  if (init) await ctx.addInitScript(init);
+  const page = await ctx.newPage();
+  try {
+    await page.goto(BASE + path, { waitUntil: "commit", timeout: 45000 });
+    await page.waitForFunction(() => document.readyState === "complete", null, { timeout: 45000 });
+    return await page.evaluate(() => document.body.innerText.trim());
+  } catch (e) {
+    return `error: ${e.message.split("\n")[0]}`;
+  } finally {
+    await ctx.close();
+  }
+}
+if ((await shown("/fx-quant/", "Asia/Kolkata")) !== NOTICE) fail("/fx-quant/: an Indian clock still gets the page - the region gate didn't stop it");
+if ((await shown("/fx-quant/", "Asia/Kolkata", () => localStorage.setItem("np_notrack", "1"))) === NOTICE)
+  fail("/fx-quant/: the region gate stops the owner's opted-out browsers too");
+if ((await shown("/gmid/", "Asia/Kolkata")) === NOTICE) fail("/gmid/: the region gate stops it, but gm/ID should stay open");
 await browser.close();
 server.close();
 
