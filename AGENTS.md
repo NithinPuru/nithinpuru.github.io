@@ -168,7 +168,7 @@ repo (keep the copies in sync) - writes a small script into every built page,
 Astro's and the plain ones from `public/` alike (the synced Quant Terminal
 too), as the first script in `<head>`. A browser whose clock is on a South
 Asian time zone (India, Pakistan, Bangladesh, Sri Lanka, Nepal, Bhutan, the
-Maldives, Afghanistan: `ZONES`) gets a one-line "not available in your region"
+Maldives, Afghanistan: `ZONES`) gets a one-line plain "404 | This page could not be found."
 page: the gate stops the page loading, so nothing else runs and np.js never
 counts the visit. GitHub Pages can't block by IP the way nithinpuru.com's
 Cloudflare WAF rule does, so this is the only gate on the tools - and a

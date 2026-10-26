@@ -1,5 +1,6 @@
 // Region gate: a browser whose clock is on a South Asian time zone gets a
-// one-line "not available in your region" page instead of the site.
+// plain "404 | This page could not be found." page instead of the site (a
+// broken link, not a visible block).
 // nithinpuru.com's Cloudflare WAF rule blocks the same countries by IP, but it
 // can't reach GitHub Pages (the tools), and VPNs and proxies get past it - the
 // browser's clock still gives those visitors away. The same file is in both
@@ -27,12 +28,12 @@ export const ZONES = [
   "Indian/Maldives", "Asia/Kabul",
 ];
 
-export const NOTICE = "This site is not available in your region.";
+export const NOTICE = "404 | This page could not be found.";
 
 const page =
-  '<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Not available</title>' +
+  '<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>404: This page could not be found.</title>' +
   "<style>html{color-scheme:light dark}body{margin:0;min-height:100vh;display:grid;place-items:center;" +
-  `padding:0 16px;font:1.125rem/1.5 Georgia,serif}</style></head><body><p>${NOTICE}</p></body>`;
+  `padding:0 16px;font:1rem/1.5 system-ui,sans-serif}</style></head><body><p>${NOTICE}</p></body>`;
 
 // Browser code, joined into one line: no // comments in it.
 export const SCRIPT = `(function () {
