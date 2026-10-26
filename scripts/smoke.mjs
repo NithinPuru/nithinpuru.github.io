@@ -13,7 +13,7 @@ import { existsSync, globSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { homedir } from "node:os";
 import { chromium } from "playwright-core";
-import { NOTICE, SCRIPT } from "./region-gate.mjs";
+import { SCRIPT } from "./region-gate.mjs";
 
 const DIST = new URL("../dist/", import.meta.url).pathname;
 const failures = [];
@@ -37,7 +37,8 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, { "content-type": TYPES[extname(file)] || "application/octet-stream" });
     res.end(await readFile(file));
   } catch {
-    res.writeHead(404).end("not found");
+    // Like GitHub Pages and Cloudflare Pages: a missing path gets the site's 404 page.
+    res.writeHead(404, { "content-type": TYPES[".html"] }).end(await readFile(join(DIST, "404.html")).catch(() => "not found"));
   }
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
@@ -189,7 +190,7 @@ for (const theme of ["light", "dark"]) {
 }
 
 // ---- region gate ---------------------------------------------------------------
-// On an Indian clock a tool shows only the notice, while the owner's opted-out
+// On an Indian clock a tool shows only the site's 404 page, while the owner's opted-out
 // browsers still get it and gm/ID stays open. A stopped page never fires "load":
 // wait for the commit, then for the document to settle.
 async function shown(path, timezoneId, init) {
@@ -199,6 +200,8 @@ async function shown(path, timezoneId, init) {
   try {
     await page.goto(BASE + path, { waitUntil: "commit", timeout: 45000 });
     await page.waitForFunction(() => document.readyState === "complete", null, { timeout: 45000 });
+    // A stopped page swaps in the site's 404 page once it has fetched it.
+    await page.waitForFunction(() => /Page not found/.test(document.body.innerText), null, { timeout: 5000 }).catch(() => {});
     return await page.evaluate(() => document.body.innerText.trim());
   } catch (e) {
     return `error: ${e.message.split("\n")[0]}`;
@@ -206,10 +209,10 @@ async function shown(path, timezoneId, init) {
     await ctx.close();
   }
 }
-if ((await shown("/fx-quant/", "Asia/Kolkata")) !== NOTICE) fail("/fx-quant/: an Indian clock still gets the page - the region gate didn't stop it");
-if ((await shown("/fx-quant/", "Asia/Kolkata", () => localStorage.setItem("np_notrack", "1"))) === NOTICE)
+if ((await shown("/fx-quant/", "Asia/Kolkata")).includes("Page not found") === false) fail("/fx-quant/: an Indian clock still gets the page - the region gate didn't stop it");
+if ((await shown("/fx-quant/", "Asia/Kolkata", () => localStorage.setItem("np_notrack", "1"))).includes("Page not found"))
   fail("/fx-quant/: the region gate stops the owner's opted-out browsers too");
-if ((await shown("/gmid/", "Asia/Kolkata")) === NOTICE) fail("/gmid/: the region gate stops it, but gm/ID should stay open");
+if ((await shown("/gmid/", "Asia/Kolkata")).includes("Page not found")) fail("/gmid/: the region gate stops it, but gm/ID should stay open");
 await browser.close();
 server.close();
 

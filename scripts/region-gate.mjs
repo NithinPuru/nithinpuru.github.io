@@ -1,6 +1,6 @@
-// Region gate: a browser whose clock is on a South Asian time zone gets a
-// plain "404 | This page could not be found." page instead of the site (a
-// broken link, not a visible block).
+// Region gate: a browser whose clock is on a South Asian time zone gets the
+// site's own 404 page instead of the page it asked for - it reads as a broken
+// link, not a block.
 // nithinpuru.com's Cloudflare WAF rule blocks the same countries by IP, but it
 // can't reach GitHub Pages (the tools), and VPNs and proxies get past it - the
 // browser's clock still gives those visitors away. The same file is in both
@@ -9,8 +9,9 @@
 // The integration writes the gate into every built page - Astro's and the
 // plain ones copied from public/ - as the first script in <head>, except under
 // the `skip` paths. In the browser it runs before anything else: on a match it
-// stops the page loading and swaps in the notice, so no other script,
-// stylesheet or the tracker (np.js) ever runs.
+// stops the page loading, fetches the site's 404 page (any missing path) and
+// shows it with its scripts removed, so nothing else - np.js included - runs.
+// Should that fetch fail it shows a bare 404 line (NOTICE) instead.
 //
 // Let through: the owner pass (np_owner cookie, ?owner=), browsers opted out of
 // counting (np_notrack, ?notrack - the owner's signed-in devices) and np_owner
@@ -35,7 +36,8 @@ const page =
   "<style>html{color-scheme:light dark}body{margin:0;min-height:100vh;display:grid;place-items:center;" +
   `padding:0 16px;font:1rem/1.5 system-ui,sans-serif}</style></head><body><p>${NOTICE}</p></body>`;
 
-// Browser code, joined into one line: no // comments in it.
+// Browser code, joined into one line: no // comments in it. The 404 page keeps
+// the visitor's theme (set here, as the site's own pre-paint script would).
 export const SCRIPT = `(function () {
   try {
     if (/[?&](owner=|notrack\\b)/.test(location.search) || /(^|; )np_owner=/.test(document.cookie)
@@ -45,7 +47,20 @@ export const SCRIPT = `(function () {
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
   if (${JSON.stringify(ZONES)}.indexOf(tz) < 0) return;
   if (window.stop) window.stop();
-  document.documentElement.innerHTML = ${JSON.stringify(page).replace(/<\//g, "<\\/")};
+  var root = document.documentElement, t = null;
+  try { t = localStorage.getItem("theme"); } catch (e) {}
+  if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  root.setAttribute("data-theme", t);
+  root.innerHTML = "<head><title>404<\\/title><\\/head><body><\\/body>";
+  function fallback() { root.innerHTML = ${JSON.stringify(page).replace(/<\//g, "<\\/")}; }
+  try {
+    fetch("/.404", { cache: "no-store" }).then(function (r) { return r.text(); }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      if (!doc.querySelector("h1")) return fallback();
+      [].slice.call(doc.querySelectorAll("script")).forEach(function (s) { s.remove(); });
+      root.innerHTML = doc.documentElement.innerHTML;
+    }).catch(fallback);
+  } catch (e) { fallback(); }
 })();`.replace(/\n\s*/g, " ");
 
 export default function regionGate({ skip = [] } = {}) {
