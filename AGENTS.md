@@ -168,12 +168,14 @@ repo (keep the copies in sync) - writes a small script into every built page,
 Astro's and the plain ones from `public/` alike (the synced Quant Terminal
 too), as the first script in `<head>`. A browser whose clock is on a South
 Asian time zone (India, Pakistan, Bangladesh, Sri Lanka, Nepal, Bhutan, the
-Maldives, Afghanistan: `ZONES`) gets the site's own 404
-page (fetched, scripts removed): the gate stops the page loading, so nothing else runs and np.js never
-counts the visit. GitHub Pages can't block by IP the way nithinpuru.com's
-Cloudflare WAF rule does, so this is the only gate on the tools - and a
-client-side one: a visitor who changes their clock or turns off JavaScript
-gets through.
+Maldives, Afghanistan: `ZONES`) sees the site as crashed, never as blocked:
+the gate stops the page loading and empties it, so nothing else runs, np.js
+never counts the visit and the page stays blank. (On nithinpuru.com it also
+sets the `np_b` cookie and reloads once, so the server answers that browser
+with an empty HTTP 500 - the browser's own "This page isn't working" - from
+then on.) GitHub Pages can't run server code, so this is the only gate on the
+tools - and a client-side one: a visitor who changes their clock or turns off
+JavaScript gets through.
 
 - Not gated: `ungated` in `astro.config.mjs` - `/analytics/` (the dashboard's
   sign-in hop and relay), `/go/` and `/gmid/` (a public tool, untracked).
@@ -181,8 +183,8 @@ gets through.
   owner's devices: the dashboard's sign-in hop through `/analytics/?optout=`
   sets both) and URLs with `?notrack` or `?owner=`. On a new device in India,
   sign in on the dashboard once, or open any tool once with `?notrack`.
-- Countries: edit `ZONES` here and in the portfolio repo, and keep the WAF
-  rule's country list on nithinpuru.com the same.
+- Countries: edit `ZONES` here and in the portfolio repo, and keep the
+  portfolio's server-side list (`BLOCKED` in `functions/_middleware.js`) the same.
 
 ## Secure sensor + PUF explorer (`/secure_sensor_with_puf/`)
 

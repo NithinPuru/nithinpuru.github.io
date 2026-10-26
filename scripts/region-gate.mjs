@@ -1,17 +1,20 @@
-// Region gate: a browser whose clock is on a South Asian time zone gets the
-// site's own 404 page instead of the page it asked for - it reads as a broken
-// link, not a block.
-// nithinpuru.com's Cloudflare WAF rule blocks the same countries by IP, but it
-// can't reach GitHub Pages (the tools), and VPNs and proxies get past it - the
-// browser's clock still gives those visitors away. The same file is in both
-// repos (nithinpuru.github.io and the portfolio): keep the copies identical.
+// Region gate: a browser whose clock is on a South Asian time zone sees the
+// site as if it had crashed - never a "blocked" or "not available" message.
+// nithinpuru.com's server-side block (the portfolio repo's
+// functions/_middleware.js) catches those countries by IP, but it can't reach
+// GitHub Pages (the tools), and VPNs and proxies get past it - the browser's
+// clock still gives those visitors away. The same file is in both repos
+// (nithinpuru.github.io and the portfolio): keep the copies identical.
 //
 // The integration writes the gate into every built page - Astro's and the
 // plain ones copied from public/ - as the first script in <head>, except under
 // the `skip` paths. In the browser it runs before anything else: on a match it
-// stops the page loading, fetches the site's 404 page (any missing path) and
-// shows it with its scripts removed, so nothing else - np.js included - runs.
-// Should that fetch fail it shows a bare 404 line (NOTICE) instead.
+// stops the page loading and empties it, so nothing else - np.js included -
+// runs and the visitor gets a blank page. On nithinpuru.com it also sets the
+// np_b cookie and reloads once: the server then answers that browser, from
+// then on, with the same empty HTTP 500 it gives blocked IPs, which the
+// browser shows as its own "This page isn't working" error. (If the cookie
+// can't be set, or the server ignores it, the page just stays blank.)
 //
 // Let through: the owner pass (np_owner cookie, ?owner=), browsers opted out of
 // counting (np_notrack, ?notrack - the owner's signed-in devices) and np_owner
@@ -29,15 +32,7 @@ export const ZONES = [
   "Indian/Maldives", "Asia/Kabul",
 ];
 
-export const NOTICE = "404 | This page could not be found.";
-
-const page =
-  '<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>404: This page could not be found.</title>' +
-  "<style>html{color-scheme:light dark}body{margin:0;min-height:100vh;display:grid;place-items:center;" +
-  `padding:0 16px;font:1rem/1.5 system-ui,sans-serif}</style></head><body><p>${NOTICE}</p></body>`;
-
-// Browser code, joined into one line: no // comments in it. The 404 page keeps
-// the visitor's theme (set here, as the site's own pre-paint script would).
+// Browser code, joined into one line: no // comments in it.
 export const SCRIPT = `(function () {
   try {
     if (/[?&](owner=|notrack\\b)/.test(location.search) || /(^|; )np_owner=/.test(document.cookie)
@@ -47,20 +42,11 @@ export const SCRIPT = `(function () {
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
   if (${JSON.stringify(ZONES)}.indexOf(tz) < 0) return;
   if (window.stop) window.stop();
-  var root = document.documentElement, t = null;
-  try { t = localStorage.getItem("theme"); } catch (e) {}
-  if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  root.setAttribute("data-theme", t);
-  root.innerHTML = "<head><title>404<\\/title><\\/head><body><\\/body>";
-  function fallback() { root.innerHTML = ${JSON.stringify(page).replace(/<\//g, "<\\/")}; }
-  try {
-    fetch("/.404", { cache: "no-store" }).then(function (r) { return r.text(); }).then(function (html) {
-      var doc = new DOMParser().parseFromString(html, "text/html");
-      if (!doc.querySelector("h1")) return fallback();
-      [].slice.call(doc.querySelectorAll("script")).forEach(function (s) { s.remove(); });
-      root.innerHTML = doc.documentElement.innerHTML;
-    }).catch(fallback);
-  } catch (e) { fallback(); }
+  document.documentElement.innerHTML = "<head></head><body></body>";
+  var flagged = /(^|; )np_b=1/;
+  if (location.hostname !== "nithinpuru.com" || flagged.test(document.cookie)) return;
+  document.cookie = "np_b=1; Max-Age=31536000; Path=/; SameSite=Lax" + (location.protocol === "https:" ? "; Secure" : "");
+  if (flagged.test(document.cookie)) location.reload();
 })();`.replace(/\n\s*/g, " ");
 
 export default function regionGate({ skip = [] } = {}) {
@@ -81,7 +67,7 @@ export default function regionGate({ skip = [] } = {}) {
           await writeFile(join(root, file), `${html.slice(0, at)}<script>${SCRIPT}</script>${html.slice(at)}`);
           gated++;
         }
-        logger.info(`South Asian clocks get the notice on ${gated} pages`);
+        logger.info(`gated ${gated} pages for South Asian clocks`);
       },
     },
   };
