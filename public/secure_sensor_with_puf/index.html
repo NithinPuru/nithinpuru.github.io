@@ -23,7 +23,7 @@
   --sig-dim:rgba(31,79,209,.45); --sig-bg:rgba(31,79,209,.06); --sig-bg2:rgba(31,79,209,.12);
   --key:#b42318;        /* red - key/security path */
   --key-dim:rgba(180,35,24,.45); --key-bg:rgba(180,35,24,.06); --key-bg2:rgba(180,35,24,.12);
-  --warn:#b42318; --good:#077a5d; --good-bg:rgba(11,138,107,.1);
+  --warn:#b42318; --good:#05604a; --good-bg:rgba(11,138,107,.1);
   --ok-c:#2a78d6; --bad-c:#eb6834;   /* right / wrong in bit strips: blue vs orange, checked for colour-vision deficiency */
   --ink-bg:rgba(19,28,40,.07);
   --grid:rgba(19,28,40,.09);
@@ -79,9 +79,9 @@ header{border-bottom:1px solid var(--line);background:var(--panel);position:stic
 /* controls */
 .controls{position:sticky;top:74px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;
   background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-.controls h3{font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-faint);
+.controls h2{font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-faint);
   margin:18px 0 10px;font-weight:700}
-.controls h3:first-child{margin-top:0}
+.controls h2:first-child{margin-top:0}
 .ctl{margin-bottom:13px}
 .ctl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);margin-bottom:5px}
 .ctl label b{color:var(--ink);font-family:var(--mono);font-weight:400;font-size:12.5px}
@@ -455,8 +455,8 @@ ol.steps li{margin-bottom:5px}
 .card-status{font-size:12.5px;color:var(--ink-faint);font-family:var(--mono)}
 .pm-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;margin-top:6px}
 @media(max-width:1180px){.pm-grid{grid-template-columns:minmax(0,1fr)}}
-.pm-grid h4,.lab-card h4{font-size:13.5px;margin:10px 0 6px}
-.pm-grid h4 small,.lab-card h4 small{font-weight:400;color:var(--ink-faint);font-size:12px}
+.pm-grid h4,.lab-card h4,.lab-card h3.sub{font-size:13.5px;margin:10px 0 6px;letter-spacing:normal}
+.pm-grid h4 small,.lab-card h4 small,.lab-card h3.sub small{font-weight:400;color:var(--ink-faint);font-size:12px}
 table.pm{min-width:340px}
 table.pm td{vertical-align:top}
 table.pm small{color:var(--ink-faint)}
@@ -500,12 +500,12 @@ table.sw th,table.sw td{padding:3px 6px;font-size:12px;white-space:nowrap}
   </div>
 </header>
 <div class="wrap">
-  <div class="story">
-    <div class="jump-btns"><a href="#attackLab">Attack lab: which attacks break which design</a><a href="#workbench">Workbench: edit the helper data and keys</a><a href="#cost">What each design costs</a><a href="#paperModel">Paper vs model</a><a href="#pufRel">PUF reliability</a><a href="#sweeps">Sweeps</a></div>
+  <section class="story" aria-label="Overview">
+    <nav class="jump-btns" aria-label="Jump to a section"><a href="#attackLab">Attack lab: which attacks break which design</a><a href="#workbench">Workbench: edit the helper data and keys</a><a href="#cost">What each design costs</a><a href="#paperModel">Paper vs model</a><a href="#pufRel">PUF reliability</a><a href="#sweeps">Sweeps</a></nav>
     <div class="scn-btns" id="scnBtns" role="group" aria-label="Scenarios"></div>
     <p class="caption" id="caption" aria-live="polite"></p>
-  </div>
-  <div class="verdict" id="verdict"></div>
+  </section>
+  <section class="verdict" id="verdict" aria-label="Verdict"></section>
   <div class="layout">
     <aside class="controls" id="controls"></aside>
     <main>
@@ -541,7 +541,7 @@ table.sw th,table.sw td{padding:3px 6px;font-size:12px;white-space:nowrap}
       <li>A. Poschmann, “Lightweight Cryptography: Cryptographic Engineering for a Pervasive World,” PhD thesis, Ruhr-Universität Bochum, 2009 (IACR ePrint 2009/516), Table 2.1.</li>
     </ol>
   </section>
-  <div class="foot" id="foot"></div>
+  <footer class="foot" id="foot"></footer>
 </div>
 <aside class="inspector" id="inspector" aria-label="Block inspector" data-open="false" data-tall="false">
   <div class="insp-in">
@@ -1957,7 +1957,7 @@ function buildLabCard() {
     <div class="dg-head"><div><h2>Attack lab: original design vs our proposal</h2>
       <p>Each attack runs live against <b>both</b> designs with the current settings. Pick one to see what the attacker does, step by step, whether data is breached, and the waveform at every block in both designs. <i>Run it in the live diagram</i> puts the attack into the animated system above, or pick one from its <i>Attack</i> menu. Attacks marked <span class="src paper">paper</span> are the ones the ESSERC'25 paper discusses; the rest go beyond its threat model.</p></div>
       <div class="lab-score" id="labScore"></div></div>
-    <div class="atk-scroll"><table class="atk-table" id="atkTable"></table></div>
+    <div class="atk-scroll" tabindex="0"><table class="atk-table" id="atkTable"></table></div>
     <div class="atk-detail" id="atkDetail"></div>`;
 }
 
@@ -1990,7 +1990,7 @@ function renderAttackDetail() {
     const key = k.g || k.k, obj = k.g ? state : lab, val = obj[key];
     if (k.g === "dither" || k.t === "chk") return `<label class="chk"><input type="checkbox" data-kn="${n}" ${val ? "checked" : ""}> ${k.label}</label>`;
     if (k.t === "seg") return `<div class="ctl"><label>${k.label}</label><div class="seg">${k.opts.map(([v, t]) => `<button data-kn="${n}" data-v="${v}" aria-pressed="${val == v}">${t}</button>`).join("")}</div></div>`;
-    return `<div class="ctl"><label>${k.label}<b id="kn${n}">${k.fmt ? k.fmt(val) : val}</b></label><input type="range" data-kn="${n}" min="${k.min}" max="${k.max}" step="${k.step}" value="${val}"></div>`;
+    return `<div class="ctl"><label>${k.label}<b id="kn${n}">${k.fmt ? k.fmt(val) : val}</b></label><input type="range" data-kn="${n}" aria-label="${k.label}" min="${k.min}" max="${k.max}" step="${k.step}" value="${val}"></div>`;
   }).join("");
   const col = (title, o) => `<div class="atk-col"><h4>${title}</h4><div class="atk-v ${VERD[o.v][1]}">${VERD[o.v][0]}</div><div class="atk-h">${o.head}</div>
     <ol>${o.steps.map(s => `<li>${s}</li>`).join("")}</ol>${o.plot ? `<canvas class="ap" data-h="150"></canvas><div class="legend"></div>` : ""}</div>`;
@@ -2197,9 +2197,9 @@ function renderBench() {
       <div class="bench-side"><div class="bench-part"><h3>Our proposal: frame counter + MAC</h3>
         <label class="chk"><input type="checkbox" id="mOn" ${state.mac ? "checked" : ""}> Counter + MAC enabled</label>
         ${Sp.mac ? `<div class="two-in">
-          <div class="ctl"><label>Counter in this frame</label><input class="hexin" id="mCtr" type="number" min="1" max="1000000" value="${state.frame_ctr}"></div>
-          <div class="ctl"><label>Receiver's last counter</label><input class="hexin" id="mLast" type="number" min="0" max="1000000" value="${state.rx_last_ctr}"></div></div>` : ""}
-        <div class="ctl"><label>Bits a MITM flips in the payload<b id="mPl">${(state.mitm_p * 100).toFixed(0)}%</b></label><input type="range" id="mP" min="0" max="0.3" step="0.01" value="${state.mitm_p}"></div>
+          <div class="ctl"><label for="mCtr">Counter in this frame</label><input class="hexin" id="mCtr" type="number" min="1" max="1000000" value="${state.frame_ctr}"></div>
+          <div class="ctl"><label for="mLast">Receiver's last counter</label><input class="hexin" id="mLast" type="number" min="0" max="1000000" value="${state.rx_last_ctr}"></div></div>` : ""}
+        <div class="ctl"><label for="mP">Bits a MITM flips in the payload<b id="mPl">${(state.mitm_p * 100).toFixed(0)}%</b></label><input type="range" id="mP" min="0" max="0.3" step="0.01" value="${state.mitm_p}"></div>
         ${Sp.mac ? `<div class="bchain two">
           ${step("Counter", Sp.ctr_fresh ? "fresh" : "stale", Sp.ctr_fresh, `${Sp.ctr_rx} vs last ${state.rx_last_ctr}`)}
           ${step("MAC", Sp.mac_ok ? "match" : "mismatch", Sp.mac_ok, Sp.mitm_flips ? `${Sp.mitm_flips.toLocaleString()} bits flipped` : "tag recomputed")}
@@ -2334,8 +2334,8 @@ function renderPaper(o) {
   const rowName = r => `${r.at === "feedback" ? "feedback dither" : r.dither ? "dither" : "no dither"}, ${r.noise ? "thermal noise" : "no noise"}, ${r.mismatch ? r.mismatch.toFixed(2) + "% mismatch" : "no mismatch"}`;
   document.getElementById("paperBody").innerHTML = `
     <div class="pm-grid">
-      <div><h4>Measured vs modelled</h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>Quantity</th><th>Paper (measured)</th><th>This model</th><th>How</th></tr>
+      <div><h3 class="sub">Measured vs modelled</h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>Quantity</th><th>Paper (measured)</th><th>This model</th><th>How</th></tr>
         <tr><td>Bit flips between two channels, zero input</td><td class="n">50.05%</td><td class="n"><b>${pc(cur.zero)}</b></td><td>computed live (two channels, ${o.mm.toFixed(2)}% mismatch)</td></tr>
         <tr><td>Bit flips, same message and same key</td><td class="n">49.8%</td><td class="n"><b>${pc(cur.same)}</b></td><td>computed live</td></tr>
         <tr><td>Shannon entropy of the ciphertext</td><td class="n">0.9999978907 bit/bit<br><small>120 MB</small></td><td class="n"><b>${o.shannon.toFixed(5)}</b><br><small>${(o.nBytes / 1024).toFixed(1)} kB; a perfect source this long: ${(Hi / 8).toFixed(5)}</small></td><td>8-bit symbols; short samples read low</td></tr>
@@ -2345,11 +2345,11 @@ function renderPaper(o) {
         <tr><td>Security power (Fig. 4a)</td><td class="n">S-DSM 24 µW (1.8%), Trivium 220 µW (16.27%)</td><td class="n">used as given</td><td>calibrates the cost section</td></tr>
         <tr><td>SNDR with dither at the comparator / in the feedback</td><td class="n">not reported</td><td class="n">${o.sndr.comparator.toFixed(1)} / ${o.sndr.feedback.toFixed(1)} dB</td><td>the paper says dither does not disrupt the signal, which fits the comparator</td></tr>
         <tr><td>Dynamic range, noise floor, area, glucose / E. coli</td><td class="n">140.55 dB, 9.48 pA, 0.39 mm², R² 0.9981</td><td class="n">not modelled</td><td>analog front end and biology are out of scope</td></tr></table></div>
-      <h4>Fig. 4(b) energy table, reproduced <small>paper / <b>this page</b></small></h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>OSR</th><th>DR</th><th>SR/NR</th><th>Trivium µJ</th><th>S-DSM µJ</th><th>ratio</th></tr>${eRows}</table></div>
+      <h3 class="sub">Fig. 4(b) energy table, reproduced <small>paper / <b>this page</b></small></h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>OSR</th><th>DR</th><th>SR/NR</th><th>Trivium µJ</th><th>S-DSM µJ</th><th>ratio</th></tr>${eRows}</table></div>
       <p class="hint">E = bits sent × 15.5 nJ (3.1 mW radio at 200 kb/s [10]) + security power × 100 µs, for 20 Nyquist-rate samples: the S-DSM sends OSR bits per sample, the Trivium design 16-bit words at SR/NR per sample. This reproduces every entry to within 0.03 µJ, so it is the model the cost section extends.</p></div>
-      <div><h4>What makes two identical channels disagree <small>same input, same key, different dither sequence (Fig. 4c setup)</small></h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>Channels differ by</th><th>zero input</th><th>same message</th></tr>
+      <div><h3 class="sub">What makes two identical channels disagree <small>same input, same key, different dither sequence (Fig. 4c setup)</small></h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>Channels differ by</th><th>zero input</th><th>same message</th></tr>
         ${o.rows.map(r => `<tr><td>${rowName(r)}</td><td class="n">${pc(r.zero)}</td><td class="n">${pc(r.same)}</td></tr>`).join("")}</table></div>
       <canvas id="calTrace" data-h="210"></canvas><div class="legend" id="calLegend"></div>
       <div class="explain" style="margin-top:10px">${calibText(o)}</div></div>
@@ -2396,8 +2396,8 @@ function renderPuf(o) {
       ${pstep("Secret bits left after h", res, res >= 128, `600 × ${h.toFixed(3)} − 10t, need 128`)}
     </div>
     <div class="pm-grid">
-      <div><h4>Key failure probability against temperature</h4><canvas id="pufCurve" data-h="250"></canvas><div class="legend" id="pufLegend"></div></div>
-      <div><h4>Flipped cells per power-up at ${o.temp} °C <small>bars: ${o.N.toLocaleString()} simulated power-ups; line: exact distribution</small></h4><canvas id="pufHist" data-h="250"></canvas><div class="legend" id="pufHLegend"></div></div>
+      <div><h3 class="sub">Key failure probability against temperature</h3><canvas id="pufCurve" data-h="250"></canvas><div class="legend" id="pufLegend"></div></div>
+      <div><h3 class="sub">Flipped cells per power-up at ${o.temp} °C <small>bars: ${o.N.toLocaleString()} simulated power-ups; line: exact distribution</small></h3><canvas id="pufHist" data-h="250"></canvas><div class="legend" id="pufHLegend"></div></div>
     </div>
     <p class="hint">Typical key generators aim for a failure rate of 10⁻⁶ or lower per power-up. A larger t pushes the curve down but publishes more helper data; the sweep section maps both limits at once.</p>`;
   drawPufCurve(o, target); drawPufHist(o);
@@ -2463,10 +2463,10 @@ function renderSweep(o) {
   const D = SWEEPS[o.kind], el = document.getElementById("sweepBody");
   const maps = o.kind === "puf" ? [["P(key fails per power-up), this chip", "z"]] : [[D.zl, "z"], ["Original design: verdict", "vb"], ["With our proposal: verdict", "vp"]];
   if (document.getElementById("swTable").checked) {
-    el.innerHTML = maps.map(([t, k]) => `<h4>${t}</h4><div class="atk-scroll"><table class="mini sw"><tr><th>${D.yl} \\ ${D.xl}</th>${o.x.map(x => `<th>${D.fx(x)}</th>`).join("")}</tr>${o.y.map((y, j) => `<tr><th>${D.fy(y)}</th>${o.x.map((_, i) => `<td class="n">${k === "z" ? D.fz(o.z[j][i]) : o[k][j][i]}</td>`).join("")}</tr>`).join("")}</table></div>`).join("") + `<p class="hint">${D.note}</p>`;
+    el.innerHTML = maps.map(([t, k]) => `<h3 class="sub">${t}</h3><div class="atk-scroll" tabindex="0"><table class="mini sw"><tr><th>${D.yl} \\ ${D.xl}</th>${o.x.map(x => `<th>${D.fx(x)}</th>`).join("")}</tr>${o.y.map((y, j) => `<tr><th>${D.fy(y)}</th>${o.x.map((_, i) => `<td class="n">${k === "z" ? D.fz(o.z[j][i]) : o[k][j][i]}</td>`).join("")}</tr>`).join("")}</table></div>`).join("") + `<p class="hint">${D.note}</p>`;
     return;
   }
-  el.innerHTML = `<div class="sw-grid ${maps.length === 1 ? "one" : ""}">${maps.map(([t, k], n) => `<div><h4>${t}</h4><canvas data-k="${k}" data-h="${maps.length === 1 ? 300 : 250}"></canvas></div>`).join("")}</div>
+  el.innerHTML = `<div class="sw-grid ${maps.length === 1 ? "one" : ""}">${maps.map(([t, k], n) => `<div><h3 class="sub">${t}</h3><canvas data-k="${k}" data-h="${maps.length === 1 ? 300 : 250}"></canvas></div>`).join("")}</div>
     <div class="legend" id="swLegend"></div><p class="hint">${D.note}</p>`;
   el.querySelectorAll("canvas").forEach(c => drawHeat(c, o, D, c.dataset.k));
   const ok = COL.ok(), bad = COL.bad();
@@ -2625,26 +2625,26 @@ function renderCost() {
   ];
   el.innerHTML = `
     <div class="pm-grid"><div>
-      <h4>Continuous cost: the parts clocked with the modulator</h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>Design</th><th>Area</th><th>Switching</th><th>Power</th><th>Of chip power</th><th>Energy, same information</th></tr>
+      <h3 class="sub">Continuous cost: the parts clocked with the modulator</h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>Design</th><th>Area</th><th>Switching</th><th>Power</th><th>Of chip power</th><th>Energy, same information</th></tr>
         ${rows.map(([n, ge, act, x, note]) => `<tr><td>${n}<br><small>${note}</small></td><td class="n">${ge == null ? "-" : Math.round(ge).toLocaleString() + " GE"}</td><td class="n">${act == null ? "-" : Math.round(act).toLocaleString() + " GE"}</td><td class="n"><b>${uw(x.p)}</b></td><td class="n">${pc(x.pct)}</td><td class="n">${uj(x.e)}</td></tr>`).join("")}</table></div>
       <canvas id="costBars" data-h="200"></canvas><div class="legend" id="costLegend"></div>
       <div class="explain" style="margin-top:10px"><b>Reading it.</b> Counting the original design's three LFSRs the same way gives ${uw(R.orig.p)} against the measured 24 µW, so the calibration is within about ${Math.round(Math.abs(R.orig.p / 24 - 1) * 100)}%.
         The proposal clocks a full 128-bit cipher, twice per modulator clock when it authenticates, so its digital overhead is about <b>${pc(R.prop.pct)}</b> of the chip's power: more than Trivium's 16.27%, against the S-DSM's 1.8%. That is the price of a key that cannot be read out, brute-forced or modelled, and of frames that cannot be replayed or altered.
         Energy is a different story: the radio dominates, and the proposal still sends the same undecimated bits as the S-DSM plus 64 bits per frame, so it keeps the S-DSM's advantage: <b>${(R.trivium.e / R.prop.e).toFixed(2)}×</b> less energy than the Trivium design at OSR ${r.A.osr} (the paper's S-DSM: ${(R.trivium.e / R.origMeasured.e).toFixed(2)}×).</div>
     </div><div>
-      <h4>Proposal, part by part</h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>Part</th><th>Area</th><th>Switches every clock</th></tr>
+      <h3 class="sub">Proposal, part by part</h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>Part</th><th>Area</th><th>Switches every clock</th></tr>
         ${r.designs.prop.map(([n, ge, on]) => `<tr><td>${n}</td><td class="n">${Math.round(ge).toLocaleString()} GE</td><td>${on ? "yes" : "no (static)"}</td></tr>`).join("")}</table></div>
-      <h4>One-time, at power-up <small>run once, then clock-gated: area, not continuous power</small></h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>Part</th><th>Cost</th></tr>${once.map(([n, v]) => `<tr><td>${n}</td><td>${v}</td></tr>`).join("")}</table></div>
-      <h4>This page's counts against published figures</h4>
-      <div class="atk-scroll"><table class="mini pm"><tr><th>Block</th><th>Counted here</th><th>Published</th><th>Diff</th></tr>
+      <h3 class="sub">One-time, at power-up <small>run once, then clock-gated: area, not continuous power</small></h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>Part</th><th>Cost</th></tr>${once.map(([n, v]) => `<tr><td>${n}</td><td>${v}</td></tr>`).join("")}</table></div>
+      <h3 class="sub">This page's counts against published figures</h3>
+      <div class="atk-scroll" tabindex="0"><table class="mini pm"><tr><th>Block</th><th>Counted here</th><th>Published</th><th>Diff</th></tr>
         <tr><td>Trivium, 1 bit per clock <small>synthesised, 0.35 µm [12]</small></td>${cmp(ck.trivium)}</tr>
         <tr><td>Grain-128a, encryption only, 1× <small>designers' estimate, FF = 8 GE [9]</small></td>${cmp(ck.grainEnc)}</tr>
         <tr><td>Grain-128a + 32-bit MAC, 1 keystream bit per clock <small>same [9]</small></td>${cmp(ck.grainMac)}</tr></table></div>
       <p class="hint">${COST_PUB.trivium_pw.src} [13]: the same order as the paper's measured 220 µW, which supports the power calibration.</p>
-      <h4>Assumptions</h4>
+      <h3 class="sub">Assumptions</h3>
       <div class="cost-in">${COST_IN.map(([k, l, u]) => `<label>${l}<span><input type="number" step="any" data-k="${k}" value="${costA[k] != null ? costA[k] : (r.A[k] != null ? r.A[k] : "")}" placeholder="${k === "trivium_ge" ? Math.round(r.triviumCount) : ""}">${u}</span></label>`).join("")}</div>
       <p class="hint">Gate equivalents are NAND2-sized units; the default cell costs are the UMC 0.18 µm library tabulated in [17]. Power per GE (${r.uwPerGE.toFixed(4)} µW at 10 MHz) is the paper's 220 µW Trivium divided by its area, assuming the on-chip Trivium also ran at the 10 MHz modulator clock. Static registers are counted in area but not in power. These are estimates to compare designs, not a synthesis result.</p>
     </div></div>`;
@@ -2756,19 +2756,19 @@ function buildControls() {
   c.innerHTML = "";
   for (const item of CONTROLS) {
     if (item.scheme && item.scheme !== state.scheme) continue;
-    if (item.h) { const h = document.createElement("h3"); h.textContent = item.h; c.appendChild(h); continue; }
+    if (item.h) { const h = document.createElement("h2"); h.textContent = item.h; c.appendChild(h); continue; }
     if (item.show && !item.show(state)) continue;
     const div = document.createElement("div"); div.className = "ctl";
     if (item.t === "range") {
       const val = state[item.k], disp = item.fmt ? item.fmt(val) : val + (item.unit ? " " + item.unit : "");
       div.innerHTML = `<label>${item.label}<b id="lab_${item.k}">${esc(disp)}</b></label>`;
       const r = document.createElement("input");
-      r.type = "range"; r.min = item.min; r.max = item.max; r.step = item.step; r.value = val;
+      r.type = "range"; r.min = item.min; r.max = item.max; r.step = item.step; r.value = val; r.setAttribute("aria-label", item.label);
       r.oninput = () => { state[item.k] = parseFloat(r.value); document.getElementById("lab_" + item.k).textContent = item.fmt ? item.fmt(state[item.k]) : state[item.k] + (item.unit ? " " + item.unit : ""); schedule(); };
       div.appendChild(r);
     } else if (item.t === "select") {
       div.innerHTML = `<label>${item.label}</label>`;
-      const s = document.createElement("select");
+      const s = document.createElement("select"); s.setAttribute("aria-label", item.label);
       for (const [v, t] of item.opts) { const o = document.createElement("option"); o.value = v; o.textContent = t; if (+v === +state[item.k]) o.selected = true; s.appendChild(o); }
       s.onchange = () => { state[item.k] = parseFloat(s.value); schedule(); };
       div.appendChild(s);

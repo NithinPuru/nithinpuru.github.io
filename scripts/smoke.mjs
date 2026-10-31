@@ -70,7 +70,7 @@ for (const [file] of STUBS) {
 if (!existsSync(join(DIST, "analytics/relay.html"))) fail("dist/analytics/relay.html: missing - the dashboard on nithinpuru.com can't reach the stats");
 
 // Every page but the ungated ones (astro.config.mjs) opens with the region gate.
-const UNGATED = /^(analytics|go|gmid)\//;
+const UNGATED = /^(analytics|go|gmid|secure_sensor_with_puf)\//;
 for (const file of globSync("**/*.html", { cwd: DIST })) {
   const html = await readFile(join(DIST, file), "utf8");
   const at = html.indexOf(`<script>${SCRIPT}</script>`);
@@ -211,6 +211,9 @@ if ((await shown("/fx-quant/", "Asia/Kolkata")) !== "") fail("/fx-quant/: an Ind
 if ((await shown("/fx-quant/", "Asia/Kolkata", () => localStorage.setItem("np_notrack", "1"))) === "")
   fail("/fx-quant/: the region gate stops the owner's opted-out browsers too");
 if ((await shown("/gmid/", "Asia/Kolkata")) === "") fail("/gmid/: the region gate stops it, but gm/ID should stay open");
+// Conference reviewers open the secure sensor explorer from every country.
+if ((await shown("/secure_sensor_with_puf/", "Asia/Kolkata")) === "")
+  fail("/secure_sensor_with_puf/: blank on an Indian clock - reviewers from every country must be able to open it");
 await browser.close();
 server.close();
 

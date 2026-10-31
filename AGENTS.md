@@ -178,7 +178,9 @@ tools - and a client-side one: a visitor who changes their clock or turns off
 JavaScript gets through.
 
 - Not gated: `ungated` in `astro.config.mjs` - `/analytics/` (the dashboard's
-  sign-in hop and relay), `/go/` and `/gmid/` (a public tool, untracked).
+  sign-in hop and relay), `/go/`, `/gmid/` (a public tool, untracked) and
+  `/secure_sensor_with_puf/`, which conference reviewers from every country
+  must be able to open - never gate it.
 - Let through: browsers with `np_notrack` or `np_owner` in localStorage (the
   owner's devices: the dashboard's sign-in hop through `/analytics/?optout=`
   sets both) and URLs with `?notrack` or `?owner=`. On a new device in India,
@@ -187,6 +189,9 @@ JavaScript gets through.
   portfolio's server-side list (`BLOCKED` in `functions/_middleware.js`) the same.
 
 ## Secure sensor + PUF explorer (`/secure_sensor_with_puf/`)
+
+Reviewed by conference reviewers worldwide: it must open from every country and
+device, so it stays out of the region gate (and the smoke test checks that).
 
 Not a copied repo: built here. `model.js` holds the whole behavioural model (S-DSM link, SRAM PUF +
 BCH fuzzy extractor, Grain-128a with its MAC, the attacks, calibration, PUF reliability, sweeps) with no
