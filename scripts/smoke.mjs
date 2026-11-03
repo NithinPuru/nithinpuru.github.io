@@ -70,7 +70,7 @@ for (const [file] of STUBS) {
 if (!existsSync(join(DIST, "analytics/relay.html"))) fail("dist/analytics/relay.html: missing - the dashboard on nithinpuru.com can't reach the stats");
 
 // Every page but the ungated ones (astro.config.mjs) opens with the region gate.
-const UNGATED = /^(analytics|go|gmid|secure_sensor_with_puf)\//;
+const UNGATED = /^(analytics|go|gmid|secure_sensor_with_puf|puf)\//;
 for (const file of globSync("**/*.html", { cwd: DIST })) {
   const html = await readFile(join(DIST, file), "utf8");
   const at = html.indexOf(`<script>${SCRIPT}</script>`);

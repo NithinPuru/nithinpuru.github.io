@@ -180,7 +180,8 @@ JavaScript gets through.
 - Not gated: `ungated` in `astro.config.mjs` - `/analytics/` (the dashboard's
   sign-in hop and relay), `/go/`, `/gmid/` (a public tool, untracked) and
   `/secure_sensor_with_puf/`, which conference reviewers from every country
-  must be able to open - never gate it.
+  must be able to open - never gate it - and `/puf/`, the forward to the PUF
+  notebook on nithinpuru.com, which is open to everyone there too.
 - Let through: browsers with `np_notrack` or `np_owner` in localStorage (the
   owner's devices: the dashboard's sign-in hop through `/analytics/?optout=`
   sets both) and URLs with `?notrack` or `?owner=`. On a new device in India,
