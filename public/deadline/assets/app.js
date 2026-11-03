@@ -3,7 +3,7 @@
    Nothing here edits data; all updates come from the scheduled GitHub Action. */
 (() => {
   const DAY = 864e5;
-  const CAT = { t1: "Top tier", ssc: "SSCS / RF", casf: "CAS flagship", cas: "CAS", eda: "EDA / VLSI" };
+  const CAT = { t1: "Top tier", ssc: "SSCS / RF", casf: "CAS flagship", cas: "CAS", eda: "EDA / VLSI", pwr: "Power / sensors" };
   const VERIFY = {
     "official-page": "Verified on official page", reviewed: "Verified by a maintainer",
     listing: "From an IEEE listing", "web-search": "From web search, not yet confirmed",

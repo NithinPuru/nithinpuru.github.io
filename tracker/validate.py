@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-CATEGORIES = {"t1", "ssc", "casf", "cas", "eda"}
+CATEGORIES = {"t1", "ssc", "casf", "cas", "eda", "pwr"}
 CONFIDENCE = {"seed", "official-page", "listing", "web-search", "reviewed", "unverified", "manual"}
 REQUIRED_SERIES = ("id", "name", "full", "org", "category", "focus", "url")
 

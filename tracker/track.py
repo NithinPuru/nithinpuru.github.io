@@ -7,7 +7,8 @@ Runs on a schedule (GitHub Actions) and keeps docs/data/*.json up to date:
   1. Roll over: when every tracked edition of a series is over, add next year's.
   2. Pick what is due: near deadlines daily, unannounced every 3 days, the rest weekly.
   3. Fetch official pages and keep only the text that mentions dates.
-  4. Ask Claude to extract dates for exactly that edition, with a verbatim quote.
+  4. Read the dates for exactly that edition, with a verbatim quote: by fixed rules
+     (default, no key needed), or by Claude when ANTHROPIC_API_KEY is set.
   5. Verify: the quote must appear on the fetched page, and the dates must pass
      sanity rules. Risky changes go to docs/data/review.json instead of the site.
   6. Log every change to docs/data/changelog.json, then rebuild the feeds.
@@ -254,7 +255,7 @@ def gather_pages(s: dict, e: dict, shared: list[dict]) -> list[dict]:
         if t:
             win = name_windows(t, names)
             if win:
-                pages.append({"url": src["url"], "official": bool(src.get("official")), "text": win})
+                pages.append({"url": src["url"], "official": bool(src.get("official")), "text": win, "shared": True})
     return pages
 
 
@@ -379,6 +380,219 @@ def quote_has_date(quote, day: dt.date | None) -> bool:
     has_month = MONTH_ABBR[day.month - 1] in q or re.search(rf"\b0?{day.month}[/.-]0?{day.day}\b|\b0?{day.day}[/.-]0?{day.month}\b", q)
     has_day = re.search(rf"(?<!\d)0?{day.day}(st|nd|rd|th)?(?!\d)", q)
     return bool(has_month and has_day)
+
+
+# ---------------------------------------------------------------- keyless extraction
+# Used when ANTHROPIC_API_KEY is not set (the default). Reads the dates straight off the
+# fetched page text with fixed rules. The evidence is always a verbatim line of the page,
+# so apply_result's checks (quote on the page, quote states the date, sanity) still hold.
+_MON = {m: i + 1 for i, m in enumerate(MONTH_ABBR)}
+_MONTH_RE = r"(?P<{n}>jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?"
+_ORD = r"(?:st|nd|rd|th)?"
+_DATE_PATTERNS = [
+    # 2026-11-16, 2026/11/16
+    re.compile(r"\b(?P<y>20\d\d)[-/.](?P<m>\d{1,2})[-/.](?P<d>\d{1,2})\b"),
+    # November 16, 2026 / Nov. 16th 2026 / November 16 (no year)
+    re.compile(rf"\b{_MONTH_RE.format(n='mon')}\s+(?P<d>\d{{1,2}}){_ORD}(?:\s*,?\s*(?P<y>20\d\d))?(?!\d)", re.I),
+    # 16 November 2026 / 16th Nov, 2026 / 16 November (no year)
+    re.compile(rf"(?<![\d/.-])(?P<d>\d{{1,2}}){_ORD}\s+(?:of\s+)?{_MONTH_RE.format(n='mon')}(?:\s*,?\s*(?P<y>20\d\d))?\b", re.I),
+]
+_RANGE_PATTERNS = [
+    # June 6-9, 2027 / June 6 – 9, 2027 / May 31 - June 3, 2027
+    re.compile(rf"\b{_MONTH_RE.format(n='m1')}\s+(?P<d1>\d{{1,2}}){_ORD}\s*(?:-|–|—|to|until)\s*"
+               rf"(?:{_MONTH_RE.format(n='m2')}\s+)?(?P<d2>\d{{1,2}}){_ORD}\s*,?\s*(?P<y>20\d\d)\b", re.I),
+    # 6-9 June 2027 / 31 May - 3 June 2027 / 6th to 9th June, 2027
+    re.compile(rf"(?<![\d/.-])(?P<d1>\d{{1,2}}){_ORD}\s*(?:{_MONTH_RE.format(n='m1')}\s*)?(?:-|–|—|to|until)\s*"
+               rf"(?P<d2>\d{{1,2}}){_ORD}\s+{_MONTH_RE.format(n='m2')}\s*,?\s*(?P<y>20\d\d)\b", re.I),
+]
+DEADLINE_WORDS = re.compile(r"deadline|submission|submit|due\b", re.I)
+PAPER_WORDS = re.compile(r"paper|manuscript|digest|regular|full|abstract|contribution", re.I)
+NOT_PAPER = re.compile(r"camera|final|notification|notice|accept|registration|register|special session|tutorial|"
+                       r"workshop|demo|late[- ]?breaking|lbn|competition|grand challenge|student|travel|grant|award|"
+                       r"proposal|panel|exhibit|sponsor|hotel|visa|rebuttal|review|forum|journal|transactions|"
+                       r"poster|industry|track proposal|copyright|presentation|video|slides|program|application|late news|"
+                       r"opens|closed|phd|ph\.d|scholarship|nomination|fellow", re.I)
+CONF_WORDS = re.compile(r"conference|symposium|congress|held|take place|takes place|venue|welcome|join us|"
+                        r"will be in|dates", re.I)
+
+
+_ALL_EDITIONS: list[dict] = []   # every edition, set by main() (previous-year lookup)
+
+
+def _mon(s: str) -> int:
+    return _MON[s[:3].lower()]
+
+
+def _mkdate(y: int, m: int, d: int) -> dt.date | None:
+    try:
+        return dt.date(y, m, d)
+    except ValueError:
+        return None
+
+
+def find_dates(text: str, year_hint: int) -> list[tuple[dt.date, bool]]:
+    """Every date in the text, with whether it stated its year. Dates without a year
+    are returned for both year_hint-1 and year_hint; the caller filters."""
+    out, spans = [], []
+    for pat in _DATE_PATTERNS:
+        for m in pat.finditer(text):
+            if any(a <= m.start() < b for a, b in spans):
+                continue
+            g = m.groupdict()
+            mon = int(g["m"]) if g.get("m") else _mon(g["mon"])
+            day = int(g["d"])
+            if g.get("y"):
+                cands = [int(g["y"])]
+            else:
+                cands = [year_hint - 1, year_hint]
+            for y in cands:
+                d = _mkdate(y, mon, day)
+                if d:
+                    out.append((d, bool(g.get("y"))))
+            spans.append((m.start(), m.end()))
+    return out
+
+
+def find_ranges(text: str, year: int) -> list[tuple[dt.date, dt.date]]:
+    out = []
+    for pat in _RANGE_PATTERNS:
+        for m in pat.finditer(text):
+            g = m.groupdict()
+            y = int(g["y"])
+            if y != year:
+                continue
+            m2 = _mon(g["m2"]) if g.get("m2") else None
+            m1 = _mon(g["m1"]) if g.get("m1") else m2
+            m2 = m2 or m1
+            a, b = _mkdate(y, m1, int(g["d1"])), _mkdate(y, m2, int(g["d2"]))
+            if a and b and 0 <= (b - a).days <= 10:
+                out.append((a, b))
+    return out
+
+
+def _lines_with_next(text: str):
+    lines = text.split("\n")
+    for i, ln in enumerate(lines):
+        nxt = lines[i + 1] if i + 1 < len(lines) else ""
+        yield ln, nxt
+
+
+LABEL_WORDS = re.compile(r"deadline|submission|notification|camera|registration|due\b", re.I)
+
+
+def _table_layout(lines: list[str], is_date: list[bool]) -> str | None:
+    """Important-dates tables flatten to alternating lines. Decide per page whether each
+    label follows its date ("date-first") or precedes it ("label-first"): a label whose
+    only date-line neighbour is on one side votes for that side. None if unclear."""
+    first = last = 0
+    for i, ln in enumerate(lines):
+        if not LABEL_WORDS.search(ln) or len(ln) > 120 or find_dates(ln, 2000):
+            continue
+        prev = i > 0 and is_date[i - 1]
+        nxt = i + 1 < len(lines) and is_date[i + 1]
+        if prev and not nxt:
+            first += 1
+        elif nxt and not prev:
+            last += 1
+    if first > last:
+        return "date-first"
+    if last > first:
+        return "label-first"
+    return None
+
+
+def extract_rules(s: dict, e: dict, pages: list[dict]) -> dict | None:
+    """Keyless counterpart of the Claude extraction: same result fields."""
+    year = e["year"]
+    start = pdate(e.get("start"))
+    # no dates yet: expect it a year after the previous edition, so last year's
+    # call for papers (still on many sites) is not read as this year's
+    guess = None
+    prev = [x for x in _ALL_EDITIONS if x["series"] == e["series"] and x["year"] == year - 1 and pdate(x.get("start"))]
+    if prev:
+        p0 = pdate(prev[0]["start"])
+        guess = _mkdate(year, p0.month, min(p0.day, 28))
+    names = [s["name"].lower(), s["id"].lower()]
+    # listing pages mix many conferences in one window; without a model to tell them
+    # apart, only the conference's own pages are read
+    pages = [p for p in pages if not p.get("shared")]
+
+    # conference dates: the range most often stated for this year, preferring lines
+    # that name the conference or read like an announcement
+    votes: dict[tuple, list] = {}
+    for p in pages:
+        for ln, nxt in _lines_with_next(p["text"]):
+            for rng in find_ranges(ln, year):
+                score = 1 + (2 if any(n in ln.lower() for n in names) else 0) + (1 if CONF_WORDS.search(ln) else 0)
+                if NOT_PAPER.search(ln) or DEADLINE_WORDS.search(ln):
+                    score -= 2
+                if score <= 0:
+                    continue
+                v = votes.setdefault(rng, [0, ln, p])
+                v[0] += score * (2 if p["official"] else 1)
+    best_rng = max(votes.items(), key=lambda kv: kv[1][0], default=None)
+    if best_rng and start is None:
+        start = best_rng[0][0]
+
+    # paper deadline: lines that say "paper ... submission/deadline" and nothing else;
+    # a struck-through extension leaves both dates in the line, so take the latest one
+    best = None   # (score, date, quote, page)
+    for p in pages:
+        lines = p["text"].split("\n")
+        is_date = [bool(find_dates(ln, year)) and len(ln) < 60 and not DEADLINE_WORDS.search(ln) for ln in lines]
+        layout = _table_layout(lines, is_date)
+        page_has_year = str(year) in p["text"]
+        for i, ln in enumerate(lines):
+            if not DEADLINE_WORDS.search(ln) or len(ln) > 260 or NOT_PAPER.search(ln):
+                continue
+            dates, quote = find_dates(ln, year), ln
+            if not dates:                       # table layout: the date is on its own line
+                if ln.rstrip().endswith(":"):
+                    j = i + 1                   # "Paper submission:" - the date follows
+                else:
+                    j = i - 1 if layout == "date-first" else i + 1 if layout == "label-first" else None
+                if j is None or not (0 <= j < len(lines)) or not is_date[j]:
+                    continue
+                dates = find_dates(lines[j], year)
+                quote = f"{lines[j]} {ln}" if j < i else f"{ln} {lines[j]}"
+            ref = start or guess
+            ok = []
+            for d, had_year in dates:
+                if not had_year and not (ref and page_has_year):
+                    continue                    # "May 1" alone could be any year's call
+                if ref:
+                    if d < ref and (ref - d).days <= (430 if start else 330):
+                        ok.append(d)
+                elif year - 1 <= d.year <= year and d >= TODAY - dt.timedelta(days=90):
+                    ok.append(d)
+            if not ok:
+                continue
+            # the line must say it is about papers or name the conference: org homepages
+            # (e.g. ieee-cas.org) carry deadlines of unrelated events
+            if not PAPER_WORDS.search(ln) and not any(n in quote.lower() for n in names):
+                continue
+            score = (2 if PAPER_WORDS.search(ln) else 0) + (1 if re.search(r"deadline", ln, re.I) else 0) \
+                + (2 if p["official"] else 0) + (1 if re.search(r"extend", ln, re.I) else 0)
+            cand = (score, max(ok), quote[:300], p)
+            if best is None or cand[:2] > best[:2]:
+                best = cand
+
+    if not best and not best_rng:
+        return None
+    res = {"paper_deadline": None, "deadline_tz": None, "deadline_evidence": None, "start_date": None,
+           "end_date": None, "location": None, "dates_evidence": None, "note": None, "source_url": None,
+           "edition_url": None, "used_web_search": False}
+    if best and best[0] >= 3:            # needs a paper/deadline label or an official page
+        res.update(paper_deadline=best[1].isoformat(), deadline_evidence=best[2], source_url=best[3]["url"])
+        tz = re.search(r"\b(AoE|anywhere on earth|PST|PDT|PT|EST|EDT|ET|CET|CEST|UTC[+-]?\d*|GMT[+-]?\d*|JST|KST)\b",
+                       best[2])
+        if tz:
+            res["deadline_tz"] = "AoE" if tz.group(1).lower().startswith("anywhere") else tz.group(1)
+    if best_rng and best_rng[1][0] >= 2:
+        (a, b), (_, quote, p) = best_rng
+        res.update(start_date=a.isoformat(), end_date=b.isoformat(), dates_evidence=quote[:300])
+        res["source_url"] = res["source_url"] or p["url"]
+    return res if (res["paper_deadline"] or res["start_date"]) else None
 
 
 def sanity(e: dict, dl, st, en) -> list[str]:
@@ -545,8 +759,9 @@ def main() -> int:
     reviews = load_json(REVIEW_FILE, [])
     n_reviews_before = len(reviews)
 
-    log(f"Tracker run {NOW:%Y-%m-%d %H:%M} UTC, model {MODEL}")
+    log(f"Tracker run {NOW:%Y-%m-%d %H:%M} UTC, " + (f"model {MODEL}" if API_KEY else "rule-based extraction"))
     editions = [e for e in editions if e["series"] in by_id]
+    _ALL_EDITIONS[:] = editions
     rollover(series, editions, changes)
 
     todo = [e for e in editions if not is_held(e)]
@@ -560,12 +775,8 @@ def main() -> int:
     log(f"{len(todo)} edition(s) due for a check" + (f", {skipped} deferred to the next run" if skipped else ""))
 
     api_calls = errors = checked = 0
-    if not API_KEY and not a.dry_run:
-        log("ANTHROPIC_API_KEY is not set: skipping web checks (rollover and feeds still run).")
-        if os.environ.get("GITHUB_ACTIONS"):
-            print("::warning title=Deadline checks skipped::ANTHROPIC_API_KEY secret is not set, so no conference page was checked.")
-        skipped += len(todo)
-        todo = []
+    if not API_KEY:
+        log("No ANTHROPIC_API_KEY: reading dates with the built-in rules (no API, no key needed).")
     for e in todo:
         s = by_id[e["series"]]
         log(f"- {e['id']}")
@@ -573,13 +784,17 @@ def main() -> int:
             continue
         pages = gather_pages(s, e, shared)
         log(f"    {len(pages)} page(s) with date text")
-        res, pages, calls = extract(s, e, pages)
-        api_calls += calls
+        if API_KEY:
+            res, pages, calls = extract(s, e, pages)
+            api_calls += calls
+        else:
+            res = extract_rules(s, e, pages)
         e["last_checked"] = NOW.isoformat(timespec="seconds")
         checked += 1
         if not res:
-            errors += 1
-            log("    no result")
+            if API_KEY:
+                errors += 1
+            log("    nothing found" if not API_KEY else "    no result")
             continue
         apply_result(s, e, res, pages, changes, reviews)
 
@@ -596,10 +811,11 @@ def main() -> int:
     meta = load_json(META_FILE, {})
     if checked:   # the page's "Last checked" is the last run that actually checked a page
         meta["last_check"] = NOW.isoformat(timespec="seconds")
-    meta.update({"last_run": NOW.isoformat(timespec="seconds"), "web_checks": bool(API_KEY),
+    meta.update({"last_run": NOW.isoformat(timespec="seconds"), "web_checks": True,
+                 "extractor": "claude" if API_KEY else "rules",
                  "checked": checked, "api_calls": api_calls,
                  "errors": errors, "deferred": skipped, "changes": len(changes),
-                 "pending_review": len(reviews), "model": MODEL,
+                 "pending_review": len(reviews), "model": MODEL if API_KEY else None,
                  "tracked_series": len(series), "tracked_editions": len(editions)})
     save_json(META_FILE, meta)
 
