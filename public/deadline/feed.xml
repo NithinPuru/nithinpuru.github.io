@@ -2,26 +2,250 @@
 <rss version="2.0">
 <channel>
   <title>Chip conference deadlines: changes</title>
-  <link>https://nithinpuru.github.io/deadline/updates.html</link>
+  <link>https://github.com</link>
   <description>New editions, announced deadlines and extensions for analog, VLSI and CAS conferences.</description>
-  <lastBuildDate>Tue, 03 Nov 2026 09:36:40 +0000</lastBuildDate>
+  <lastBuildDate>Tue, 03 Nov 2026 12:41:27 +0000</lastBuildDate>
+  <item>
+    <title>Now tracking VLSI TSA 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">vlsitsa-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking SMACD 2027. Deadline 19 Feb 2027.</title>
+    <link>https://www.smacd-conference.org/</link>
+    <guid isPermaLink="false">smacd-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking IEEE SENSORS 2027. Deadline 18 Jun 2027.</title>
+    <link>https://ieee-sensorsconference.org/2027/authors/call-for-papers</link>
+    <guid isPermaLink="false">sensors-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking SBCCI 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">sbcci-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking RFIT 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">rfit-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking PRIME 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">prime-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>LASCAS 2027 paper deadline corrected: 29 Sep 2026 (was 22 Sep).</title>
+    <link>https://attend.ieee.org/lascas-2027</link>
+    <guid isPermaLink="false">lascas-2027-deadline-2026-09-29-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>extended</category>
+  </item>
+  <item>
+    <title>Now tracking ITC 2027. Deadline 05 Mar 2027.</title>
+    <link>https://itctestweek.org/</link>
+    <guid isPermaLink="false">itc-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>ISQED 2027 paper deadline corrected: 17 Nov 2026 (was 17 Sep).</title>
+    <link>https://www.isqed.org/English/Conference/Call_for_Papers.html</link>
+    <guid isPermaLink="false">isqed-2027-deadline-2026-11-17-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>changed</category>
+  </item>
+  <item>
+    <title>Now tracking ISPSD 2027. Deadline 16 Dec 2026.</title>
+    <link>https://ispsd2027.com/</link>
+    <guid isPermaLink="false">ispsd-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>ISPD 2027 end date announced: 02 Apr 2027.</title>
+    <link>https://ispd.cc/</link>
+    <guid isPermaLink="false">ispd-2027-end-2027-04-02-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>ISCAS 2027 paper deadline corrected: 26 Oct 2026 (was 22 Oct).</title>
+    <link>https://ieee-cas.org/event/conference/2027-ieee-international-symposium-circuits-and-systems</link>
+    <guid isPermaLink="false">iscas-2027-deadline-2026-10-26-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>extended</category>
+  </item>
+  <item>
+    <title>Now tracking IMS 2027. Deadline 08 Dec 2026.</title>
+    <link>https://ims-ieee.org/sites/ims/files/ims2027cfp_june2026.pdf</link>
+    <guid isPermaLink="false">ims-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking IEDM 2027.</title>
+    <link>https://ieee-iedm.org/about/future-conferences/</link>
+    <guid isPermaLink="false">iedm-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>IEDM 2026 end date announced: 16 Dec 2026.</title>
+    <link>https://ieee-iedm.org/</link>
+    <guid isPermaLink="false">iedm-2026-end-2026-12-16-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>IEDM 2026 start date corrected: 12 Dec 2026 (was 06 Dec).</title>
+    <link>https://ieee-iedm.org/</link>
+    <guid isPermaLink="false">iedm-2026-start-2026-12-12-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>changed</category>
+  </item>
+  <item>
+    <title>Now tracking ICTA 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">icta-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking HOST 2027. Deadline 08 Nov 2026.</title>
+    <link>https://host.conferences.computer.org/2027/call-for-papers/</link>
+    <guid isPermaLink="false">host-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>Now tracking EuMIC 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">eumic-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>ESSERC 2027 end date announced: 09 Sep 2027.</title>
+    <link>https://www.esserc2027.org/</link>
+    <guid isPermaLink="false">esserc-2027-end-2027-09-09-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>ESSERC 2027 start date announced: 06 Sep 2027.</title>
+    <link>https://www.esserc2027.org/</link>
+    <guid isPermaLink="false">esserc-2027-start-2027-09-06-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>Now tracking ECCE 2027. Deadline 19 Feb 2027.</title>
+    <link>https://www.ieee-ecce.org/2027/call-for-papers/</link>
+    <guid isPermaLink="false">ecce-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>DATE 2027 end date announced: 24 Mar 2027.</title>
+    <link>https://www.date-conference.com/call-for-papers</link>
+    <guid isPermaLink="false">date-2027-end-2027-03-24-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>DAC 2027 end date corrected: 14 Jul 2027 (was 16 Jul).</title>
+    <link>https://dac.com/2027/program/research-manuscript-submissions</link>
+    <guid isPermaLink="false">dac-2027-end-2027-07-14-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>changed</category>
+  </item>
+  <item>
+    <title>DAC 2027 start date corrected: 11 Jul 2027 (was 10 Jul).</title>
+    <link>https://dac.com/2027/program/research-manuscript-submissions</link>
+    <guid isPermaLink="false">dac-2027-start-2027-07-11-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>changed</category>
+  </item>
+  <item>
+    <title>DAC 2027 paper deadline announced: 11 Nov 2026.</title>
+    <link>https://dac.com/2027/program/research-manuscript-submissions</link>
+    <guid isPermaLink="false">dac-2027-deadline-2026-11-11-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>Now tracking CHES 2027. Deadline 15 Jan 2027.</title>
+    <link>https://ches.iacr.org/2027/</link>
+    <guid isPermaLink="false">ches-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>BioCAS 2027 paper deadline announced: 11 Jun 2027.</title>
+    <link>https://2027.ieee-biocas.org/</link>
+    <guid isPermaLink="false">biocas-2027-deadline-2027-06-11-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>Now tracking BCICTS 2027.</title>
+    <link>https://github.com</link>
+    <guid isPermaLink="false">bcicts-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>ASP-DAC 2027 end date announced: 28 Jan 2027.</title>
+    <link>https://www.aspdac.com/aspdac2027/cfp/</link>
+    <guid isPermaLink="false">aspdac-2027-end-2027-01-28-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
+  <item>
+    <title>Now tracking APEC 2027. Deadline 21 Aug 2026.</title>
+    <link>https://apec-conf.org/speakers/ts-author-info/</link>
+    <guid isPermaLink="false">apec-2027-None-None-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>new-edition</category>
+  </item>
+  <item>
+    <title>AICAS 2027 paper deadline announced: 13 Apr 2027.</title>
+    <link>https://2027.ieee-aicas.org/</link>
+    <guid isPermaLink="false">aicas-2027-deadline-2027-04-13-2026-11-03</guid>
+    <pubDate>Tue, 03 Nov 2026 12:00:00 +0000</pubDate>
+    <category>announced</category>
+  </item>
   <item>
     <title>Now tracking NorCAS 2027. Dates will appear once announced.</title>
-    <link>https://nithinpuru.github.io/deadline</link>
+    <link>https://github.com</link>
     <guid isPermaLink="false">norcas-2027-None-None-2026-10-22</guid>
     <pubDate>Thu, 22 Oct 2026 12:00:00 +0000</pubDate>
     <category>new-edition</category>
   </item>
   <item>
     <title>Now tracking VLSI-SoC 2027. Dates will appear once announced.</title>
-    <link>https://nithinpuru.github.io/deadline</link>
+    <link>https://github.com</link>
     <guid isPermaLink="false">vlsisoc-2027-None-None-2026-10-15</guid>
     <pubDate>Thu, 15 Oct 2026 12:00:00 +0000</pubDate>
     <category>new-edition</category>
   </item>
   <item>
     <title>Now tracking ISOCC 2027. Dates will appear once announced.</title>
-    <link>https://nithinpuru.github.io/deadline</link>
+    <link>https://github.com</link>
     <guid isPermaLink="false">isocc-2027-None-None-2026-10-15</guid>
     <pubDate>Thu, 15 Oct 2026 12:00:00 +0000</pubDate>
     <category>new-edition</category>
@@ -35,7 +259,7 @@
   </item>
   <item>
     <title>Now tracking SOCC 2027. Dates will appear once announced.</title>
-    <link>https://nithinpuru.github.io/deadline</link>
+    <link>https://github.com</link>
     <guid isPermaLink="false">socc-2027-None-None-2026-10-03</guid>
     <pubDate>Sat, 03 Oct 2026 12:00:00 +0000</pubDate>
     <category>new-edition</category>

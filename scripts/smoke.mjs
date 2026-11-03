@@ -105,7 +105,7 @@ const dl = await json("deadline/data/meta.json");
 if (dl) {
   if (hoursOld(dl.last_run) > 3 * 24) fail(`Deadline tracker: last run ${dl.last_run} is over 3 days old (tracker-track.yml)`);
   if (dl.errors) warn(`Deadline tracker: ${dl.errors} errors in the last run`);
-  if (dl.deferred && !dl.api_calls) warn(`Deadline tracker: ${dl.deferred} checks deferred, no API calls (ANTHROPIC_API_KEY secret set?)`);
+  if (dl.deferred && !dl.checked) warn(`Deadline tracker: ${dl.deferred} checks deferred, no page checked`);
 }
 
 // ---- keeping the two sites in step (warnings only) ------------------------------

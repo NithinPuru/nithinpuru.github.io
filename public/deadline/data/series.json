@@ -60,6 +60,46 @@
     "typical": "Paper deadline usually early January"
   },
   {
+    "id": "ims",
+    "name": "IMS",
+    "full": "International Microwave Symposium",
+    "org": "IEEE MTT-S",
+    "category": "ssc",
+    "focus": "RF, microwave, mm-wave and THz circuits and systems (co-located with RFIC)",
+    "url": "https://ims-ieee.org/",
+    "typical": "Paper deadline usually early December"
+  },
+  {
+    "id": "bcicts",
+    "name": "BCICTS",
+    "full": "BiCMOS and Compound Semiconductor Integrated Circuits and Technology Symposium",
+    "org": "IEEE EDS / MTT-S",
+    "category": "ssc",
+    "focus": "SiGe BiCMOS and III-V circuits and devices",
+    "url": "https://bcicts.org/",
+    "typical": "Paper deadline usually May"
+  },
+  {
+    "id": "rfit",
+    "name": "RFIT",
+    "full": "International Symposium on Radio-Frequency Integration Technology",
+    "org": "IEEE MTT-S",
+    "category": "ssc",
+    "focus": "RF, mm-wave and THz ICs and integration (Asia-Pacific)",
+    "url": "https://rfit2026.org/",
+    "typical": "Paper deadline usually March to May"
+  },
+  {
+    "id": "eumic",
+    "name": "EuMIC",
+    "full": "European Microwave Integrated Circuits Conference (European Microwave Week)",
+    "org": "EuMA",
+    "category": "ssc",
+    "focus": "Microwave and mm-wave ICs and semiconductor technology",
+    "url": "https://www.eumw.eu/",
+    "typical": "Paper deadline usually late March to April"
+  },
+  {
     "id": "iscas",
     "name": "ISCAS",
     "full": "International Symposium on Circuits and Systems",
@@ -210,6 +250,46 @@
     "typical": null
   },
   {
+    "id": "smacd",
+    "name": "SMACD",
+    "full": "International Conference on Synthesis, Modeling, Analysis and Simulation Methods and Applications to Circuit Design",
+    "org": "IEEE CAS (co-sponsor)",
+    "category": "cas",
+    "focus": "Analog, mixed-signal and RF design automation, modelling and simulation",
+    "url": "https://www.smacd-conference.org/",
+    "typical": "Paper deadline usually February to March"
+  },
+  {
+    "id": "prime",
+    "name": "PRIME",
+    "full": "Conference on Ph.D. Research in Microelectronics and Electronics",
+    "org": "IEEE / IEEE CAS",
+    "category": "cas",
+    "focus": "PhD and early postdoc research in microelectronics and circuits",
+    "url": "https://www.prime-conference.org/",
+    "typical": "Paper deadline usually April"
+  },
+  {
+    "id": "icta",
+    "name": "ICTA",
+    "full": "International Conference on Integrated Circuits, Technologies and Applications",
+    "org": "IEEE",
+    "category": "cas",
+    "focus": "RF, analog/mixed-signal, power management, digital ICs and devices",
+    "url": "https://www.ieee-icta.org/",
+    "typical": "Paper deadline usually July to August"
+  },
+  {
+    "id": "sbcci",
+    "name": "SBCCI",
+    "full": "Symposium on Integrated Circuits and Systems Design (Chip in Brazil)",
+    "org": "SBC / SBMicro / IEEE CAS",
+    "category": "cas",
+    "focus": "IC and systems design, test and CAD (Latin America)",
+    "url": "https://sbmicro.org.br/",
+    "typical": "Paper deadline usually late March to April"
+  },
+  {
     "id": "dac",
     "name": "DAC",
     "full": "Design Automation Conference",
@@ -338,5 +418,85 @@
     "focus": "Semiconductor devices",
     "url": "https://www.ieee-iedm.org/",
     "typical": "Paper deadline usually mid-July"
+  },
+  {
+    "id": "host",
+    "name": "HOST",
+    "full": "International Symposium on Hardware Oriented Security and Trust",
+    "org": "IEEE CS / CEDA",
+    "category": "eda",
+    "focus": "Hardware security, PUFs, side channels, trust",
+    "url": "https://host.conferences.computer.org/",
+    "typical": "Two windows: full paper late July and early November"
+  },
+  {
+    "id": "ches",
+    "name": "CHES",
+    "full": "Conference on Cryptographic Hardware and Embedded Systems",
+    "org": "IACR",
+    "category": "eda",
+    "focus": "Crypto hardware, embedded security, side-channel and fault attacks (TCHES rounds)",
+    "url": "https://ches.iacr.org/",
+    "typical": "TCHES rounds on 15 Jan, Apr, Jul and Oct"
+  },
+  {
+    "id": "itc",
+    "name": "ITC",
+    "full": "International Test Conference",
+    "org": "IEEE CS TTTC",
+    "category": "eda",
+    "focus": "IC and system test, DFT, test-based reliability and security",
+    "url": "https://itctestweek.org/",
+    "typical": "Abstract deadline usually early March"
+  },
+  {
+    "id": "vlsitsa",
+    "name": "VLSI TSA",
+    "full": "International VLSI Symposium on Technology, Systems and Applications (incl. former VLSI-DAT)",
+    "org": "ITRI / IEEE",
+    "category": "eda",
+    "focus": "VLSI design, automation, test and technology (Taiwan)",
+    "url": "https://expo.itri.org.tw/2027VLSITSA",
+    "typical": "Paper deadline usually late November to early December"
+  },
+  {
+    "id": "apec",
+    "name": "APEC",
+    "full": "Applied Power Electronics Conference and Exposition",
+    "org": "IEEE PELS / IAS / PSMA",
+    "category": "pwr",
+    "focus": "Power electronics, converters and power-management ICs",
+    "url": "https://apec-conf.org/",
+    "typical": "Digest deadline usually mid to late August"
+  },
+  {
+    "id": "ecce",
+    "name": "ECCE",
+    "full": "Energy Conversion Congress and Exposition",
+    "org": "IEEE PELS / IAS",
+    "category": "pwr",
+    "focus": "Power conversion, power electronics, machines and drives",
+    "url": "https://www.ieee-ecce.org/",
+    "typical": "Digest deadline usually late February"
+  },
+  {
+    "id": "ispsd",
+    "name": "ISPSD",
+    "full": "International Symposium on Power Semiconductor Devices and ICs",
+    "org": "IEEE EDS / IEEJ",
+    "category": "pwr",
+    "focus": "Power devices (GaN, SiC, Si) and power ICs",
+    "url": "https://ispsd2027.com/",
+    "typical": "Paper deadline usually mid-December to mid-January"
+  },
+  {
+    "id": "sensors",
+    "name": "IEEE SENSORS",
+    "full": "IEEE SENSORS Conference",
+    "org": "IEEE Sensors Council",
+    "category": "pwr",
+    "focus": "Sensors, sensor interfaces and readout circuits",
+    "url": "https://ieee-sensorsconference.org/",
+    "typical": "Proceedings deadline usually late June"
   }
 ]

@@ -58,5 +58,335 @@
     "new": null,
     "message": "Now tracking NorCAS 2027. Dates will appear once announced.",
     "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "aicas-2027",
+    "kind": "announced",
+    "field": "deadline",
+    "old": null,
+    "new": "2027-04-13",
+    "message": "AICAS 2027 paper deadline announced: 13 Apr 2027.",
+    "source": "https://2027.ieee-aicas.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "apec-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking APEC 2027. Deadline 21 Aug 2026.",
+    "source": "https://apec-conf.org/speakers/ts-author-info/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "aspdac-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-01-28",
+    "message": "ASP-DAC 2027 end date announced: 28 Jan 2027.",
+    "source": "https://www.aspdac.com/aspdac2027/cfp/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "bcicts-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking BCICTS 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "biocas-2027",
+    "kind": "announced",
+    "field": "deadline",
+    "old": null,
+    "new": "2027-06-11",
+    "message": "BioCAS 2027 paper deadline announced: 11 Jun 2027.",
+    "source": "https://2027.ieee-biocas.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "ches-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking CHES 2027. Deadline 15 Jan 2027.",
+    "source": "https://ches.iacr.org/2027/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "dac-2027",
+    "kind": "announced",
+    "field": "deadline",
+    "old": null,
+    "new": "2026-11-11",
+    "message": "DAC 2027 paper deadline announced: 11 Nov 2026.",
+    "source": "https://dac.com/2027/program/research-manuscript-submissions"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "dac-2027",
+    "kind": "changed",
+    "field": "start",
+    "old": "2027-07-10",
+    "new": "2027-07-11",
+    "message": "DAC 2027 start date corrected: 11 Jul 2027 (was 10 Jul).",
+    "source": "https://dac.com/2027/program/research-manuscript-submissions"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "dac-2027",
+    "kind": "changed",
+    "field": "end",
+    "old": "2027-07-16",
+    "new": "2027-07-14",
+    "message": "DAC 2027 end date corrected: 14 Jul 2027 (was 16 Jul).",
+    "source": "https://dac.com/2027/program/research-manuscript-submissions"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "date-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-03-24",
+    "message": "DATE 2027 end date announced: 24 Mar 2027.",
+    "source": "https://www.date-conference.com/call-for-papers"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "ecce-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ECCE 2027. Deadline 19 Feb 2027.",
+    "source": "https://www.ieee-ecce.org/2027/call-for-papers/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "esserc-2027",
+    "kind": "announced",
+    "field": "start",
+    "old": null,
+    "new": "2027-09-06",
+    "message": "ESSERC 2027 start date announced: 06 Sep 2027.",
+    "source": "https://www.esserc2027.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "esserc-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-09-09",
+    "message": "ESSERC 2027 end date announced: 09 Sep 2027.",
+    "source": "https://www.esserc2027.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "eumic-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking EuMIC 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "host-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking HOST 2027. Deadline 08 Nov 2026.",
+    "source": "https://host.conferences.computer.org/2027/call-for-papers/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "icta-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ICTA 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "iedm-2026",
+    "kind": "changed",
+    "field": "start",
+    "old": "2026-12-06",
+    "new": "2026-12-12",
+    "message": "IEDM 2026 start date corrected: 12 Dec 2026 (was 06 Dec).",
+    "source": "https://ieee-iedm.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "iedm-2026",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2026-12-16",
+    "message": "IEDM 2026 end date announced: 16 Dec 2026.",
+    "source": "https://ieee-iedm.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "iedm-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking IEDM 2027.",
+    "source": "https://ieee-iedm.org/about/future-conferences/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "ims-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking IMS 2027. Deadline 08 Dec 2026.",
+    "source": "https://ims-ieee.org/sites/ims/files/ims2027cfp_june2026.pdf"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "iscas-2027",
+    "kind": "extended",
+    "field": "deadline",
+    "old": "2026-10-22",
+    "new": "2026-10-26",
+    "message": "ISCAS 2027 paper deadline corrected: 26 Oct 2026 (was 22 Oct).",
+    "source": "https://ieee-cas.org/event/conference/2027-ieee-international-symposium-circuits-and-systems"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "ispd-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-04-02",
+    "message": "ISPD 2027 end date announced: 02 Apr 2027.",
+    "source": "https://ispd.cc/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "ispsd-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ISPSD 2027. Deadline 16 Dec 2026.",
+    "source": "https://ispsd2027.com/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "isqed-2027",
+    "kind": "changed",
+    "field": "deadline",
+    "old": "2026-09-17",
+    "new": "2026-11-17",
+    "message": "ISQED 2027 paper deadline corrected: 17 Nov 2026 (was 17 Sep).",
+    "source": "https://www.isqed.org/English/Conference/Call_for_Papers.html"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "itc-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ITC 2027. Deadline 05 Mar 2027.",
+    "source": "https://itctestweek.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "lascas-2027",
+    "kind": "extended",
+    "field": "deadline",
+    "old": "2026-09-22",
+    "new": "2026-09-29",
+    "message": "LASCAS 2027 paper deadline corrected: 29 Sep 2026 (was 22 Sep).",
+    "source": "https://attend.ieee.org/lascas-2027"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "prime-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking PRIME 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "rfit-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking RFIT 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "sbcci-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking SBCCI 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "sensors-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking IEEE SENSORS 2027. Deadline 18 Jun 2027.",
+    "source": "https://ieee-sensorsconference.org/2027/authors/call-for-papers"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "smacd-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking SMACD 2027. Deadline 19 Feb 2027.",
+    "source": "https://www.smacd-conference.org/"
+  },
+  {
+    "date": "2026-11-03",
+    "edition": "vlsitsa-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking VLSI TSA 2027.",
+    "source": null
+  },
+  {
+    "date": "2026-11-03",
+    "edition": null,
+    "kind": "note",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Dates re-checked against official pages; 16 conferences added (IMS, BCICTS, RFIT, EuMIC, SMACD, PRIME, ICTA, SBCCI, HOST, CHES, ITC, VLSI TSA, APEC, ECCE, ISPSD, IEEE SENSORS). The tracker now reads pages without an API key.",
+    "source": null
   }
 ]

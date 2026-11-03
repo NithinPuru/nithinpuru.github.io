@@ -1,13 +1,15 @@
 {
-  "last_run": "2026-11-03T09:36:40+00:00",
-  "checked": 0,
+  "last_run": "2026-11-03T12:40:30+00:00",
+  "checked": 59,
   "api_calls": 0,
   "errors": 0,
-  "deferred": 42,
+  "deferred": 0,
   "changes": 0,
   "pending_review": 0,
-  "model": "claude-sonnet-4-6",
-  "tracked_series": 34,
-  "tracked_editions": 48,
-  "web_checks": false
+  "model": null,
+  "tracked_series": 50,
+  "tracked_editions": 65,
+  "web_checks": true,
+  "last_check": "2026-11-03T12:40:30+00:00",
+  "extractor": "rules"
 }
