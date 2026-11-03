@@ -18,9 +18,10 @@ const toolPages = tools.groups.flatMap((g) => g.entries).map((e) => new URL(e.ur
 
 // Every built page gets the South Asia region gate (scripts/region-gate.mjs)
 // except the dashboard's hop and relay, the owner's /go/ page, gm/ID (a
-// public tool, deliberately untracked) and the secure sensor explorer, which
-// conference reviewers from every country must be able to open.
-const ungated = ["analytics/", "go/", "gmid/", "secure_sensor_with_puf/"];
+// public tool, deliberately untracked), the secure sensor explorer, which
+// conference reviewers from every country must be able to open, and /puf/,
+// which forwards to the PUF notebook on nithinpuru.com (open to everyone too).
+const ungated = ["analytics/", "go/", "gmid/", "secure_sensor_with_puf/", "puf/"];
 
 export default defineConfig({
   output: "static",
