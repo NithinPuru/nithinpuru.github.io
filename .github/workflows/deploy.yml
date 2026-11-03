@@ -42,8 +42,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: research-radar/requirements.txt
+          # no pip cache: pip only runs on radar refreshes, and on other deploys the
+          # missing cache folder fails the job in the post-step cache save
 
       - name: Research Radar snapshots
         timeout-minutes: 30
