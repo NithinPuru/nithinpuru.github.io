@@ -108,6 +108,24 @@
     "pinned": []
   },
   {
+    "id": "asscc-2027",
+    "series": "asscc",
+    "year": 2027,
+    "name": "A-SSCC 2027",
+    "start": null,
+    "end": null,
+    "location": null,
+    "deadline": null,
+    "deadline_tz": null,
+    "note": null,
+    "url": "https://a-sscc2027.org/",
+    "source": null,
+    "confidence": "unverified",
+    "last_checked": "2026-11-05T09:31:22+00:00",
+    "last_changed": "2026-11-05",
+    "pinned": []
+  },
+  {
     "id": "bcicts-2027",
     "series": "bcicts",
     "year": 2027,
@@ -195,7 +213,7 @@
     "url": "https://www.ieee-cicc.org/",
     "source": "https://www.ieee-cicc.org/2027-call-for-papers/",
     "confidence": "manual",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-05T09:31:22+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -231,7 +249,7 @@
     "url": "https://dac.com/2027/",
     "source": "https://dac.com/2027/program/research-manuscript-submissions",
     "confidence": "manual",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-05T09:31:22+00:00",
     "last_changed": "2026-11-03",
     "pinned": [
       "deadline"
@@ -359,7 +377,7 @@
     "url": "https://host.conferences.computer.org/2027/",
     "source": "https://host.conferences.computer.org/2027/call-for-papers/",
     "confidence": "official-page",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-05T09:31:22+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -701,7 +719,7 @@
     "url": "https://www.isqed.org/",
     "source": "https://www.isqed.org/English/Conference/Call_for_Papers.html",
     "confidence": "manual",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-05T09:31:22+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -1171,7 +1189,7 @@
     "url": "https://tttc-vts.org/",
     "source": "https://tttc-vts.org/",
     "confidence": "seed",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-05T09:31:22+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   }

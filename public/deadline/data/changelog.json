@@ -388,5 +388,15 @@
     "new": null,
     "message": "Dates re-checked against official pages; 16 conferences added (IMS, BCICTS, RFIT, EuMIC, SMACD, PRIME, ICTA, SBCCI, HOST, CHES, ITC, VLSI TSA, APEC, ECCE, ISPSD, IEEE SENSORS). The tracker now reads pages without an API key.",
     "source": null
+  },
+  {
+    "date": "2026-11-05",
+    "edition": "asscc-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking A-SSCC 2027. Dates will appear once announced.",
+    "source": null
   }
 ]
