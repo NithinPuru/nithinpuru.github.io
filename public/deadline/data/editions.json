@@ -121,7 +121,7 @@
     "url": "https://a-sscc2027.org/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-05T09:31:22+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-05",
     "pinned": []
   },
@@ -213,7 +213,7 @@
     "url": "https://www.ieee-cicc.org/",
     "source": "https://www.ieee-cicc.org/2027-call-for-papers/",
     "confidence": "manual",
-    "last_checked": "2026-11-07T08:49:59+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -249,7 +249,7 @@
     "url": "https://dac.com/2027/",
     "source": "https://dac.com/2027/program/research-manuscript-submissions",
     "confidence": "manual",
-    "last_checked": "2026-11-07T08:49:59+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": [
       "deadline"
@@ -377,7 +377,7 @@
     "url": "https://host.conferences.computer.org/2027/",
     "source": "https://host.conferences.computer.org/2027/call-for-papers/",
     "confidence": "official-page",
-    "last_checked": "2026-11-07T08:49:59+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -539,7 +539,7 @@
     "url": "https://ims-ieee.org/",
     "source": "https://ims-ieee.org/sites/ims/files/ims2027cfp_june2026.pdf",
     "confidence": "official-page",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -719,7 +719,7 @@
     "url": "https://www.isqed.org/",
     "source": "https://www.isqed.org/English/Conference/Call_for_Papers.html",
     "confidence": "manual",
-    "last_checked": "2026-11-07T08:49:59+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -973,7 +973,7 @@
     "url": "https://rfit2027.org/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -991,7 +991,7 @@
     "url": "https://sbmicro.org.br/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -1063,7 +1063,7 @@
     "url": "https://www.ieee-socc.org/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-10-03",
     "pinned": []
   },
@@ -1099,7 +1099,7 @@
     "url": "https://www.vlsisymposium.org/",
     "source": "https://www.vlsisymposium.org/",
     "confidence": "seed",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -1153,7 +1153,7 @@
     "url": "https://vlsi-soc.com/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-10-15",
     "pinned": []
   },
@@ -1171,7 +1171,7 @@
     "url": "https://expo.itri.org.tw/2027VLSITSA",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-03T12:40:30+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -1189,7 +1189,7 @@
     "url": "https://tttc-vts.org/",
     "source": "https://tttc-vts.org/",
     "confidence": "seed",
-    "last_checked": "2026-11-07T08:49:59+00:00",
+    "last_checked": "2026-11-08T09:02:26+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   }
