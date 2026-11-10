@@ -4,17 +4,22 @@
 //   view   once per page load: path, referrer, query, #fragment, language,
 //          timezone, screen size and pixel ratio, window size, touch points and
 //          a few headless-browser hints (to tell people from scanners)
-//   end    time visible so far, deepest scroll (%), the sections read
-//          (section[id], else h2[id], that crossed mid-screen) and how long
-//          each was at mid-screen, whether the visitor interacted, how many
+//   end    time engaged so far (`ms`: the page shown and some input - mouse,
+//          scroll, wheel, touch or key - within the last minute, so a tab left
+//          open on a desk stops counting; `vm`: plain time visible), deepest
+//          scroll (%), the sections read (section[id], else h2[id], that
+//          crossed mid-screen; on the home page's side-by-side pages, each page
+//          shown) and the engaged time each held the screen, whether the visitor interacted, how many
 //          clicks / taps / key presses, the time to the first one, text copies,
 //          the page load time and what they did: buttons, tabs, #links,
-//          menu choices, switches and sliders (never typed text) and the
+//          menu choices, switches and sliders (never typed text), links to
+//          other pages of the site, the side-by-side pages turned to and the
 //          section they copied text from (up to 30 steps). Sent at the
 //          first tap / click / key / wheel / touch / mouse move (not plain
 //          scroll events: the browser scrolls by itself for #links), every
-//          15 s while something changes (at least once a minute, for 30 min:
-//          phones often drop the last report) and when the page is hidden
+//          15 s while something changes (at least once a minute while engaged,
+//          for 30 min: phones often drop the last report) and when the page is
+//          hidden
 //   click  outbound links and mailto:, with their target and link text
 // Events of one page load share a random id `v` (not stored anywhere else).
 // No cookies are set; the Worker hashes the IP and never stores it.
@@ -70,30 +75,71 @@
     // Engagement: time the page was visible and how far down it was read.
     var shownAt = document.visibilityState === "visible" ? Date.now() : 0, visibleMs = 0, depth = 0;
     function visibleNow() { return visibleMs + (shownAt ? Date.now() - shownAt : 0); }
+    // Engaged time: counted only while the page is shown and the visitor gave some input
+    // (mouse, scroll, wheel, touch, key) within the last IDLE ms. A tab left open counts
+    // at most IDLE after the last input; time is added up in tick().
+    var IDLE = 60000, lastInput = Date.now(), engagedMs = 0, tickedAt = 0;
+    function poke(e) {
+      // Browsers fake a still pointermove when the page moves under the cursor: not input.
+      if (e && e.type === "pointermove" && !e.movementX && !e.movementY) return;
+      lastInput = Date.now();
+    }
+    ["pointerdown", "pointermove", "keydown", "wheel", "touchstart", "scroll"].forEach(function (t) {
+      addEventListener(t, poke, { capture: true, passive: true });
+    });
+    function engaged() { return !!shownAt && Date.now() - lastInput < IDLE; }
     function measure() {
       var max = document.documentElement.scrollHeight - innerHeight;
       var pct = max > 0 ? Math.round((100 * scrollY) / max) : 100;
+      // Home page in side-by-side pages: depth = pages turned plus the share
+      // of the current page read.
+      var deck = document.documentElement.getAttribute("data-layout") === "deck" && document.querySelector("[data-deck]");
+      if (deck) {
+        var ps = deck.querySelectorAll(".panel"), i = Math.min(ps.length - 1, Math.round(deck.scrollLeft / (deck.clientWidth || 1)));
+        var pm = ps[i].scrollHeight - ps[i].clientHeight;
+        pct = Math.round((100 * (i + (pm > 0 ? ps[i].scrollTop / pm : 1))) / ps.length);
+      }
       if (pct > depth) depth = Math.min(100, pct);
     }
-    addEventListener("scroll", measure, { passive: true });
+    addEventListener("scroll", measure, { capture: true, passive: true });
     addEventListener("load", measure);
 
     // Sections read: ids of section[id] (else h2[id]) that crossed the middle of the screen,
-    // and the time each one held mid-screen (sampled every second while the page is shown;
-    // a heading's section runs to the next heading).
-    var seen = [], parts = [], whole = false, dwell = {}, nDwell = 0, sampledAt = 0;
-    function sample() {
-      var now = Date.now(), dt = sampledAt ? Math.min(now - sampledAt, 2000) : 0;
-      sampledAt = now;
-      if (!shownAt || !parts.length) return;
+    // and the engaged time each one held mid-screen (sampled every second; a heading's
+    // section runs to the next heading). On the home page's side-by-side pages (deck) all
+    // sections share one top, so there the page in view counts instead (its data-panel name).
+    var seen = [], parts = [], whole = false, dwell = {}, nDwell = 0, lastPage = "", prevId = "";
+    function deckPage() {
+      var deck = document.documentElement.getAttribute("data-layout") === "deck" && document.querySelector("[data-deck]");
+      if (!deck) return null;
+      var ps = deck.querySelectorAll(".panel");
+      var p = ps[Math.min(ps.length - 1, Math.round(deck.scrollLeft / (deck.clientWidth || 1)))];
+      return p ? p.getAttribute("data-panel") || (p.querySelector("section[id]") || {}).id || "" : "";
+    }
+    function current() {
+      var page = deckPage();
+      if (page !== null) return page;
+      if (!parts.length) return "";
       var mid = innerHeight / 2, cur = null;
       for (var i = 0; i < parts.length && parts[i].getBoundingClientRect().top <= mid; i++) cur = parts[i];
-      if (!cur || (whole && cur.getBoundingClientRect().bottom <= mid)) return;
-      var id = cur.id.slice(0, 40);
+      if (!cur || (whole && cur.getBoundingClientRect().bottom <= mid)) return "";
+      return cur.id;
+    }
+    function tick() {
+      var now = Date.now(), dt = tickedAt ? Math.min(now - tickedAt, 2000) : 0;
+      tickedAt = now;
+      if (!engaged()) return;
+      engagedMs += dt;
+      var id = current().slice(0, 40), deck = deckPage() !== null;
+      if (!id) return;
+      // A page counts as turned to once it holds for two ticks (a jump slides past the pages between).
+      if (deck && id === prevId && id !== lastPage) { if (lastPage) step("page", id); lastPage = id; }
+      prevId = id;
+      if (deck && seen.indexOf(id) < 0 && seen.length < 40) seen.push(id);
       if (!(id in dwell)) { if (nDwell >= 40) return; nDwell++; dwell[id] = 0; }
       dwell[id] += dt;
     }
-    setInterval(sample, 1000);
+    setInterval(tick, 1000);
     function watch() {
       var els = document.querySelectorAll("section[id]");
       whole = els.length > 0;
@@ -121,8 +167,8 @@
       var ms = visibleNow();
       var st = {};
       for (var id in dwell) if (dwell[id] >= 500) st[id] = Math.round(dwell[id]);
-      sentKey = [depth, seen.length, acted, taps, copies, steps.length].join(); sentAt = ms;
-      send({ t: "end", ms: ms, s: depth, sec: seen, st: st, a: acted, n: taps, fi: firstMs, cp: copies, lt: loadMs(), ac: steps });
+      sentKey = [depth, seen.length, acted, taps, copies, steps.length].join(); sentAt = engagedMs;
+      send({ t: "end", ms: Math.round(engagedMs), vm: ms, s: depth, sec: seen, st: st, a: acted, n: taps, fi: firstMs, cp: copies, lt: loadMs(), ac: steps });
     }
 
     // First real interaction: report it straight away (people stay; scanners don't touch the page).
@@ -156,8 +202,15 @@
       return el.getAttribute("aria-label") || (lab && lab.textContent) || el.title || el.name || el.id || "";
     }
     document.addEventListener("click", function (e) {
-      var el = e.target && e.target.closest && e.target.closest("button, [role=button], [role=tab], summary, a[href^='#']");
-      if (el) step(el.tagName === "A" ? "link" : "click", el.getAttribute("aria-label") || el.title || el.textContent);
+      var el = e.target && e.target.closest && e.target.closest("button, [role=button], [role=tab], summary, a[href]");
+      if (!el) return;
+      if (el.tagName !== "A") return step("click", el.getAttribute("aria-label") || el.title || el.textContent);
+      if (el.getAttribute("href").charAt(0) === "#") return step("link", label(el));
+      try { var u = new URL(el.href); } catch (err) { return; }
+      // Another page of this site (a lab, the notebook, the CV): its label and address.
+      if (!/^https?:$/.test(u.protocol) || u.hostname !== host) return;
+      if (u.pathname !== location.pathname) step("open", label(el).slice(0, 48 - Math.min(u.pathname.length, 30)) + " (" + u.pathname.slice(0, 30) + ")");
+      else if (u.hash) step("link", label(el));   // "/#cv" from the page itself
     }, true);
     document.addEventListener("change", function (e) {
       var el = e.target;
@@ -167,20 +220,21 @@
       else if (el.type === "number") step("set", nameOf(el));   // typed by the visitor: the field only, never its value
     }, true);
 
-    // While the page is shown: report every 15 s if anything changed, else once a minute, for 30 min.
+    // While the page is shown: report every 15 s if anything changed, else once a minute
+    // while engaged (an idle tab sends nothing new), for 30 min of engaged time.
     setInterval(function () {
-      if (!shownAt || visibleNow() > 18e5) return;
+      if (!shownAt || engagedMs > 18e5) return;
       measure();
-      if ([depth, seen.length, acted, taps, copies, steps.length].join() !== sentKey || visibleNow() - sentAt >= 6e4) report();
+      if ([depth, seen.length, acted, taps, copies, steps.length].join() !== sentKey || engagedMs - sentAt >= 6e4) report();
     }, 15000);
 
     function flush() {
-      sample();
+      tick();
       if (shownAt) { visibleMs += Date.now() - shownAt; shownAt = 0; }
       report();
     }
     document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "visible") { shownAt = Date.now(); sampledAt = 0; }
+      if (document.visibilityState === "visible") { shownAt = Date.now(); tickedAt = 0; poke(); }
       else flush();
     });
     addEventListener("pagehide", flush); // Safari may skip visibilitychange on navigation
