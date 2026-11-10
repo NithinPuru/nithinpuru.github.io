@@ -57,7 +57,6 @@ public/
 quant-terminal/ fx-quant/ research-radar/ tracker/   # data-bot back ends
 scripts/smoke.mjs            # smoke test (CI "checks" job)
 scripts/gen-brand.mjs        # regenerates the favicons and og-image
-scripts/region-gate.mjs      # South Asia region gate, written into every built page (see Region gate)
 ```
 
 To add a tool: put it in `public/<tool>/`, add an entry to `src/data/tools.json`
@@ -148,8 +147,8 @@ scores visits. Two small files stay here:
   #fragment (`?key=` becomes `?owner=`, which the geo rule lets through). On the
   way, `?optout=1` / `?optout=0` stops or resumes counting this browser on the
   tools (`np_notrack`): the dashboard's sign-in and opt-out switch hop through it.
-  Either hop also sets `np_owner` in localStorage, which lets the browser past
-  the region gate (below) even while it is being counted.
+  Either hop also sets `np_owner` in localStorage (the portfolio's region gate
+  still reads it).
 - `public/analytics/relay.html`: the Worker answers `/stats` and `/owner` only to
   this origin (CORS), so the dashboard loads this page in a hidden frame and
   sends those calls through it with `postMessage`. It accepts messages only from
@@ -161,38 +160,21 @@ and `CLOUD` in its `src/index.js`), matching the "Block cloud bots" WAF rule on
 nithinpuru.com. Cloudflare, Akamai, Fastly (iCloud Private Relay), Microsoft,
 Google and Zscaler are deliberately not on that list - they carry real people.
 
-## Region gate (South Asia)
+## No region gate (open to everyone)
 
-`scripts/region-gate.mjs` - an Astro integration, identical in the portfolio
-repo (keep the copies in sync) - writes a small script into every built page,
-Astro's and the plain ones from `public/` alike (the synced Quant Terminal
-too), as the first script in `<head>`. A browser whose clock is on a South
-Asian time zone (India, Pakistan, Bangladesh, Sri Lanka, Nepal, Bhutan, the
-Maldives, Afghanistan: `ZONES`) sees the site as crashed, never as blocked:
-the gate stops the page loading and empties it, so nothing else runs, np.js
-never counts the visit and the page stays blank. (On nithinpuru.com it also
-sets the `np_b` cookie and reloads once, so the server answers that browser
-with an empty HTTP 500 - the browser's own "This page isn't working" - from
-then on.) GitHub Pages can't run server code, so this is the only gate on the
-tools - and a client-side one: a visitor who changes their clock or turns off
-JavaScript gets through.
-
-- Not gated: `ungated` in `astro.config.mjs` - `/analytics/` (the dashboard's
-  sign-in hop and relay), `/go/`, `/gmid/` (a public tool, untracked) and
-  `/secure_sensor_with_puf/`, which conference reviewers from every country
-  must be able to open - never gate it - and `/puf/`, the forward to the PUF
-  notebook on nithinpuru.com, which is open to everyone there too.
-- Let through: browsers with `np_notrack` or `np_owner` in localStorage (the
-  owner's devices: the dashboard's sign-in hop through `/analytics/?optout=`
-  sets both) and URLs with `?notrack` or `?owner=`. On a new device in India,
-  sign in on the dashboard once, or open any tool once with `?notrack`.
-- Countries: edit `ZONES` here and in the portfolio repo, and keep the
-  portfolio's server-side list (`BLOCKED` in `functions/_middleware.js`) the same.
+The tools on nithinpuru.github.io are open to everyone, from every country,
+with no geo restriction of any kind (owner, 2026-11-10). Only nithinpuru.com is
+geo-blocked for South Asia (its `scripts/region-gate.mjs` and
+`functions/_middleware.js`, in the portfolio repo), with `/puf/` there as the
+one page open worldwide. Never add a region gate, a time-zone check or an IP
+check here; `npm run smoke` fails if a page carries one or goes blank on an
+Indian or Pakistani clock. The `/`, `/tools/` and `/puf/` stubs only forward to
+nithinpuru.com, so they follow that site's rules.
 
 ## Secure sensor + PUF explorer (`/secure_sensor_with_puf/`)
 
 Reviewed by conference reviewers worldwide: it must open from every country and
-device, so it stays out of the region gate (and the smoke test checks that).
+device (no tool here is geo-blocked; the smoke test checks that).
 
 Not a copied repo: built here. `model.js` holds the whole behavioural model (S-DSM link, SRAM PUF +
 BCH fuzzy extractor, Grain-128a with its MAC, the attacks, calibration, PUF reliability, sweeps) with no
@@ -240,8 +222,8 @@ the published build - the 404 page and every tool in both themes at phone and
 laptop widths: no script errors, no
 broken same-origin requests, no horizontal overflow (on a UTC clock, so it
 also runs from India); the redirect stubs still forward to nithinpuru.com;
-every page but the ungated ones opens with the region gate, which stops an
-Indian clock but not the owner's opted-out browsers; and the data bots fresh (FX <= 6 days, Quant
+no page carries a region gate and every tool opens on an Indian and a
+Pakistani clock; and the data bots fresh (FX <= 6 days, Quant
 Terminal <= 4 days, Research Radar <= 12 h, deadline tracker <= 3 days). It
 runs beside the deploy and never blocks it.
 

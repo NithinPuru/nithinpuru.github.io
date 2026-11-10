@@ -1,6 +1,5 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
-import regionGate from "./scripts/region-gate.mjs";
 import tools from "./src/data/tools.json" with { type: "json" };
 
 // SITE_URL and ASTRO_BASE are injected by the GitHub Pages workflow (see
@@ -16,12 +15,8 @@ const base = process.env.ASTRO_BASE || "/";
 const unlisted = ["/", "/rongm/", "/tools/", "/puf/", "/go/"];
 const toolPages = tools.groups.flatMap((g) => g.entries).map((e) => new URL(e.url, site).href);
 
-// Every built page gets the South Asia region gate (scripts/region-gate.mjs)
-// except the dashboard's hop and relay, the owner's /go/ page, gm/ID (a
-// public tool, deliberately untracked), the secure sensor explorer, which
-// conference reviewers from every country must be able to open, and /puf/,
-// which forwards to the PUF notebook on nithinpuru.com (open to everyone too).
-const ungated = ["analytics/", "go/", "gmid/", "secure_sensor_with_puf/", "puf/"];
+// No region gate here: the tools on nithinpuru.github.io are open to everyone,
+// from every country (owner, 2026-11-10). Only nithinpuru.com is geo-blocked.
 
 export default defineConfig({
   output: "static",
@@ -33,7 +28,6 @@ export default defineConfig({
       filter: (page) => !unlisted.includes(new URL(page).pathname),
       customPages: toolPages,
     }),
-    regionGate({ skip: ungated }),
   ],
   build: {
     inlineStylesheets: "always",

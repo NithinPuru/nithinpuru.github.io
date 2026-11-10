@@ -2,7 +2,7 @@
 // errors or broken same-origin requests, nothing overflows horizontally at
 // phone / "desktop site" / laptop widths in either theme, the old portfolio
 // addresses still forward to nithinpuru.com, the data bots are still
-// delivering, and the region gate stops South Asian clocks.
+// delivering, and no tool is geo-blocked (they open on a South Asian clock too).
 //
 //   npm run build && npm run smoke        (CI: the "checks" job in deploy.yml)
 //
@@ -13,7 +13,6 @@ import { existsSync, globSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { homedir } from "node:os";
 import { chromium } from "playwright-core";
-import { SCRIPT } from "./region-gate.mjs";
 
 const DIST = new URL("../dist/", import.meta.url).pathname;
 const failures = [];
@@ -69,13 +68,12 @@ for (const [file] of STUBS) {
 
 if (!existsSync(join(DIST, "analytics/relay.html"))) fail("dist/analytics/relay.html: missing - the dashboard on nithinpuru.com can't reach the stats");
 
-// Every page but the ungated ones (astro.config.mjs) opens with the region gate.
-const UNGATED = /^(analytics|go|gmid|secure_sensor_with_puf|puf)\//;
+// The tools are open to everyone (owner, 2026-11-10): no page may carry a region
+// gate (nithinpuru.com's gate script empties the page for South Asian clocks).
 for (const file of globSync("**/*.html", { cwd: DIST })) {
   const html = await readFile(join(DIST, file), "utf8");
-  const at = html.indexOf(`<script>${SCRIPT}</script>`);
-  if (UNGATED.test(file)) { if (at >= 0) fail(`dist/${file}: has the region gate, but it should stay open`); }
-  else if (at < 0 || html.indexOf("<script") !== at) fail(`dist/${file}: the region gate isn't the first script in <head>`);
+  if (/Asia\/(Kolkata|Calcutta|Karachi|Dhaka)/.test(html) && html.includes("innerHTML"))
+    fail(`dist/${file}: has a region gate, but the tools must open from every country`);
 }
 
 // ---- data freshness ------------------------------------------------------------
@@ -154,7 +152,6 @@ function browserPath() {
 const exe = browserPath();
 const browser = await chromium.launch(exe && existsSync(exe) ? { executablePath: exe } : {});
 
-// On a UTC clock, so that a run from India checks the pages, not the region gate's notice.
 for (const theme of ["light", "dark"]) {
   for (const path of PAGES) {
     for (const width of WIDTHS[path] || DEFAULT_WIDTHS) {
@@ -189,31 +186,25 @@ for (const theme of ["light", "dark"]) {
   }
 }
 
-// ---- region gate ---------------------------------------------------------------
-// On an Indian clock a tool goes blank here (on nithinpuru.com the gate then has
-// the server answer with an empty 500), while the owner's opted-out browsers still get it and gm/ID
-// stays open. A stopped page never fires "load": wait for the commit, then for the document to settle.
-async function shown(path, timezoneId, init) {
+// ---- open from every country ---------------------------------------------------
+// The tools must open on a South Asian clock too, for every visitor (no opt-out needed).
+// A stopped page never fires "load": wait for the commit, then for the document to settle.
+async function shown(path, timezoneId) {
   const ctx = await browser.newContext({ timezoneId });
-  if (init) await ctx.addInitScript(init);
   const page = await ctx.newPage();
   try {
     await page.goto(BASE + path, { waitUntil: "commit", timeout: 45000 });
     await page.waitForFunction(() => document.readyState === "complete", null, { timeout: 45000 });
     return await page.evaluate(() => document.body.innerText.trim());
   } catch (e) {
-    return `error: ${e.message.split("\n")[0]}`;
+    return "";
   } finally {
     await ctx.close();
   }
 }
-if ((await shown("/fx-quant/", "Asia/Kolkata")) !== "") fail("/fx-quant/: an Indian clock still gets the page - the region gate didn't stop it");
-if ((await shown("/fx-quant/", "Asia/Kolkata", () => localStorage.setItem("np_notrack", "1"))) === "")
-  fail("/fx-quant/: the region gate stops the owner's opted-out browsers too");
-if ((await shown("/gmid/", "Asia/Kolkata")) === "") fail("/gmid/: the region gate stops it, but gm/ID should stay open");
-// Conference reviewers open the secure sensor explorer from every country.
-if ((await shown("/secure_sensor_with_puf/", "Asia/Kolkata")) === "")
-  fail("/secure_sensor_with_puf/: blank on an Indian clock - reviewers from every country must be able to open it");
+for (const path of PAGES.filter((p) => p !== "/404.html"))
+  for (const tz of ["Asia/Kolkata", "Asia/Karachi"])
+    if ((await shown(path, tz)) === "") fail(`${path}: blank on a ${tz} clock - the tools must open from every country`);
 await browser.close();
 server.close();
 
