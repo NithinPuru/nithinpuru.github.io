@@ -1,6 +1,6 @@
 {
-  "last_run": "2026-11-11T09:29:04+00:00",
-  "checked": 23,
+  "last_run": "2026-11-12T09:52:31+00:00",
+  "checked": 4,
   "api_calls": 0,
   "errors": 0,
   "deferred": 0,
@@ -10,6 +10,6 @@
   "tracked_series": 50,
   "tracked_editions": 66,
   "web_checks": true,
-  "last_check": "2026-11-11T09:29:04+00:00",
+  "last_check": "2026-11-12T09:52:31+00:00",
   "extractor": "rules"
 }
