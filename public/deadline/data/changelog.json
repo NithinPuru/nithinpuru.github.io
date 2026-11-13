@@ -398,5 +398,15 @@
     "new": null,
     "message": "Now tracking A-SSCC 2027. Dates will appear once announced.",
     "source": null
+  },
+  {
+    "date": "2026-11-13",
+    "edition": "iccad-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ICCAD 2027. Dates will appear once announced.",
+    "source": null
   }
 ]
