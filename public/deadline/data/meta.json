@@ -1,15 +1,15 @@
 {
-  "last_run": "2026-11-16T09:48:32+00:00",
-  "checked": 25,
+  "last_run": "2026-11-17T10:46:13+00:00",
+  "checked": 13,
   "api_calls": 0,
   "errors": 0,
-  "deferred": 1,
-  "changes": 0,
+  "deferred": 0,
+  "changes": 1,
   "pending_review": 0,
   "model": null,
   "tracked_series": 50,
-  "tracked_editions": 67,
+  "tracked_editions": 68,
   "web_checks": true,
-  "last_check": "2026-11-16T09:48:32+00:00",
+  "last_check": "2026-11-17T10:46:13+00:00",
   "extractor": "rules"
 }

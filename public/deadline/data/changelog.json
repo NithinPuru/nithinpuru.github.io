@@ -408,5 +408,15 @@
     "new": null,
     "message": "Now tracking ICCAD 2027. Dates will appear once announced.",
     "source": null
+  },
+  {
+    "date": "2026-11-17",
+    "edition": "iccd-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking ICCD 2027. Dates will appear once announced.",
+    "source": null
   }
 ]
