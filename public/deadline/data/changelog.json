@@ -418,5 +418,35 @@
     "new": null,
     "message": "Now tracking ICCD 2027. Dates will appear once announced.",
     "source": null
+  },
+  {
+    "date": "2026-11-19",
+    "edition": "norcas-2027",
+    "kind": "announced",
+    "field": "deadline",
+    "old": null,
+    "new": "2027-08-16",
+    "message": "NorCAS 2027 paper deadline announced: 16 Aug 2027.",
+    "source": "https://events.tuni.fi/norcas/"
+  },
+  {
+    "date": "2026-11-19",
+    "edition": "norcas-2027",
+    "kind": "announced",
+    "field": "start",
+    "old": null,
+    "new": "2027-10-26",
+    "message": "NorCAS 2027 start date announced: 26 Oct 2027.",
+    "source": "https://events.tuni.fi/norcas/"
+  },
+  {
+    "date": "2026-11-19",
+    "edition": "norcas-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-10-27",
+    "message": "NorCAS 2027 end date announced: 27 Oct 2027.",
+    "source": "https://events.tuni.fi/norcas/"
   }
 ]
