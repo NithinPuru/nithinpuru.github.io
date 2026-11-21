@@ -448,5 +448,15 @@
     "new": "2027-10-27",
     "message": "NorCAS 2027 end date announced: 27 Oct 2027.",
     "source": "https://events.tuni.fi/norcas/"
+  },
+  {
+    "date": "2026-11-21",
+    "edition": "dcis-2027",
+    "kind": "new-edition",
+    "field": null,
+    "old": null,
+    "new": null,
+    "message": "Now tracking DCIS 2027. Dates will appear once announced.",
+    "source": null
   }
 ]
