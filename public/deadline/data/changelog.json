@@ -458,5 +458,25 @@
     "new": null,
     "message": "Now tracking DCIS 2027. Dates will appear once announced.",
     "source": null
+  },
+  {
+    "date": "2026-11-22",
+    "edition": "bcicts-2027",
+    "kind": "announced",
+    "field": "start",
+    "old": null,
+    "new": "2027-10-24",
+    "message": "BCICTS 2027 start date announced: 24 Oct 2027.",
+    "source": "https://bcicts.org/"
+  },
+  {
+    "date": "2026-11-22",
+    "edition": "bcicts-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-10-27",
+    "message": "BCICTS 2027 end date announced: 27 Oct 2027.",
+    "source": "https://bcicts.org/"
   }
 ]
