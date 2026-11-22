@@ -197,6 +197,14 @@
       if (!text || steps.length >= 30 || (last && last[1] === kind && last[2] === text)) return;
       steps.push([Math.round(visibleNow() / 1000), kind, text]);
     }
+    // Which entry a button belongs to - "Details" alone doesn't say whose: the title of the list
+    // item or article around it, as "Details · LP-CAS Lab, IIT Gandhinagar".
+    function whose(el, text) {
+      text = (text || "").replace(/\s+/g, " ").trim();
+      var box = el.closest("li, article"), h = box && box.querySelector("h2, h3, h4");
+      var t = h && !h.contains(el) ? (h.textContent || "").replace(/\s+/g, " ").trim() : "";
+      return t && text.indexOf(t) < 0 ? text.slice(0, 18) + " · " + t : text;
+    }
     function nameOf(el) {
       var lab = el.labels && el.labels[0];
       return el.getAttribute("aria-label") || (lab && lab.textContent) || el.title || el.name || el.id || "";
@@ -204,7 +212,7 @@
     document.addEventListener("click", function (e) {
       var el = e.target && e.target.closest && e.target.closest("button, [role=button], [role=tab], summary, a[href]");
       if (!el) return;
-      if (el.tagName !== "A") return step("click", el.getAttribute("aria-label") || el.title || el.textContent);
+      if (el.tagName !== "A") return step("click", whose(el, el.getAttribute("aria-label") || el.title || el.innerText || el.textContent));
       if (el.getAttribute("href").charAt(0) === "#") return step("link", label(el));
       try { var u = new URL(el.href); } catch (err) { return; }
       // Another page of this site (a lab, the notebook, the CV): its label and address.
