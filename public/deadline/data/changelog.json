@@ -478,5 +478,35 @@
     "new": "2027-10-27",
     "message": "BCICTS 2027 end date announced: 27 Oct 2027.",
     "source": "https://bcicts.org/"
+  },
+  {
+    "date": "2026-11-25",
+    "edition": "eumic-2027",
+    "kind": "announced",
+    "field": "deadline",
+    "old": null,
+    "new": "2027-03-31",
+    "message": "EuMIC 2027 paper deadline announced: 31 Mar 2027.",
+    "source": "https://www.eumw.eu/"
+  },
+  {
+    "date": "2026-11-25",
+    "edition": "eumic-2027",
+    "kind": "announced",
+    "field": "start",
+    "old": null,
+    "new": "2027-10-03",
+    "message": "EuMIC 2027 start date announced: 03 Oct 2027.",
+    "source": "https://www.eumw.eu/"
+  },
+  {
+    "date": "2026-11-25",
+    "edition": "eumic-2027",
+    "kind": "announced",
+    "field": "end",
+    "old": null,
+    "new": "2027-10-08",
+    "message": "EuMIC 2027 end date announced: 08 Oct 2027.",
+    "source": "https://www.eumw.eu/"
   }
 ]

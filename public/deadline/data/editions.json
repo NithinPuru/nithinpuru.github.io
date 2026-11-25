@@ -13,7 +13,7 @@
     "url": "https://2027.ieee-aicas.org/",
     "source": "https://2027.ieee-aicas.org/",
     "confidence": "manual",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -49,7 +49,7 @@
     "url": "https://ieee-cas.org/",
     "source": "https://ieee-cas.org/",
     "confidence": "listing",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -139,7 +139,7 @@
     "url": "https://bcicts.org/",
     "source": "https://bcicts.org/",
     "confidence": "official-page",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-22",
     "pinned": []
   },
@@ -175,7 +175,7 @@
     "url": "https://2027.ieee-biocas.org/",
     "source": "https://2027.ieee-biocas.org/",
     "confidence": "manual",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -193,7 +193,7 @@
     "url": "https://ches.iacr.org/2027/",
     "source": "https://ches.iacr.org/2027/",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": [
       "deadline"
@@ -231,7 +231,7 @@
     "url": "https://www.ieee-cicc.org/",
     "source": "https://www.ieee-cicc.org/",
     "confidence": "seed",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -323,7 +323,7 @@
     "url": "https://www.ieee-ecce.org/2027/",
     "source": "https://www.ieee-ecce.org/2027/call-for-papers/",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -341,7 +341,7 @@
     "url": "https://www.esserc2027.org/",
     "source": "https://www.esserc2027.org/",
     "confidence": "manual",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -350,17 +350,17 @@
     "series": "eumic",
     "year": 2027,
     "name": "EuMIC 2027",
-    "start": null,
-    "end": null,
+    "start": "2027-10-03",
+    "end": "2027-10-08",
     "location": "Milan, Italy",
-    "deadline": null,
+    "deadline": "2027-03-31",
     "deadline_tz": null,
     "note": "Within European Microwave Week 2027 in Milan; dates not yet official.",
     "url": "https://www.eumw.eu/",
-    "source": null,
-    "confidence": "unverified",
-    "last_checked": "2026-11-22T09:49:36+00:00",
-    "last_changed": "2026-11-03",
+    "source": "https://www.eumw.eu/",
+    "confidence": "official-page",
+    "last_checked": "2026-11-25T11:21:29+00:00",
+    "last_changed": "2026-11-25",
     "pinned": []
   },
   {
@@ -377,7 +377,7 @@
     "url": "https://www.glsvlsi.org/",
     "source": null,
     "confidence": "seed",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -431,7 +431,7 @@
     "url": "https://iccad.com/2027",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-13",
     "pinned": []
   },
@@ -503,7 +503,7 @@
     "url": "https://ieee-cas.org/",
     "source": "https://ieee-cas.org/",
     "confidence": "listing",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -539,7 +539,7 @@
     "url": "https://www.ieee-icta.org/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -575,7 +575,7 @@
     "url": "https://www.ieee-iedm.org/",
     "source": "https://ieee-iedm.org/about/future-conferences/",
     "confidence": "manual",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -629,7 +629,7 @@
     "url": "https://ieee-cas.org/",
     "source": "https://ieee-cas.org/",
     "confidence": "seed",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -665,7 +665,7 @@
     "url": "https://ieee-cas.org/",
     "source": "https://ieee-cas.org/",
     "confidence": "listing",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -683,7 +683,7 @@
     "url": "https://www.islped.org/2027/",
     "source": null,
     "confidence": "seed",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -719,7 +719,7 @@
     "url": "https://isocc.org/",
     "source": null,
     "confidence": "unverified",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-10-15",
     "pinned": []
   },
@@ -809,7 +809,7 @@
     "url": "https://www.isscc.org/future-conferences",
     "source": "https://www.isscc.org/future-conferences",
     "confidence": "seed",
-    "last_checked": "2026-11-22T09:49:36+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -845,7 +845,7 @@
     "url": "https://itctestweek.org/",
     "source": "https://itctestweek.org/",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": [
       "deadline"
@@ -919,7 +919,7 @@
     "url": "https://ieee-newcas.org/2027",
     "source": "https://ieee-newcas.org/2027",
     "confidence": "listing",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -1009,7 +1009,7 @@
     "url": "https://rfic-ieee.org/",
     "source": "https://rfic-ieee.org/",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
@@ -1063,7 +1063,7 @@
     "url": "https://ieee-sensorsconference.org/2027",
     "source": "https://ieee-sensorsconference.org/2027/authors/call-for-papers",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -1081,7 +1081,7 @@
     "url": "https://www.smacd-conference.org/",
     "source": "https://www.smacd-conference.org/",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-11-03",
     "pinned": []
   },
@@ -1135,7 +1135,7 @@
     "url": "https://www.vlsisymposium.org/",
     "source": "https://www.vlsisymposium.org/",
     "confidence": "official-page",
-    "last_checked": "2026-11-18T10:13:57+00:00",
+    "last_checked": "2026-11-25T11:21:29+00:00",
     "last_changed": "2026-09-26",
     "pinned": []
   },
