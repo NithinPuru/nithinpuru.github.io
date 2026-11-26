@@ -240,7 +240,8 @@
     return h;
   }
   function applyHash(h) {
-    if (h.d && devOf(S.pdk, h.d)) S.dev = h.d;
+    // a linked device brings its own default lengths (the PDK's first device may have others)
+    if (h.d && devOf(S.pdk, h.d)) setDevice(h.d);
     if (CORNERS.indexOf(h.c) >= 0) S.c = h.c;
     if (SUPS.indexOf(h.s) >= 0) S.s = h.s;
     if (TEMPS.indexOf(+h.t) >= 0) S.t = +h.t;
@@ -658,7 +659,17 @@
   }
 
   /* ── views, PDK switch ────────────────────────────────────────── */
+  /* lengths must exist for the current device, whatever set them (link, PDK switch) */
+  function fixLengths() {
+    var dev = devOf(S.pdk, S.dev);
+    if (!dev) { setDevice(devs(S.pdk)[0].id); dev = devOf(S.pdk, S.dev); }
+    S.Ls = (S.Ls || []).filter(function (L) { return dev.L.indexOf(L) >= 0; });
+    if (!S.Ls.length) S.Ls = defaultLs(dev);
+    if (dev.L.indexOf(S.l1) < 0) S.l1 = nearest(dev.L, S.l1 || 0.5);
+    if (dev.L.indexOf(S.szL) < 0) S.szL = nearest(dev.L, S.szL || 0.5);
+  }
   function render() {
+    fixLengths();
     $$(".view").forEach(function (b) { var on = b.getAttribute("data-view") === S.view; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
     ["curves", "size", "compare", "reference"].forEach(function (v) { $("#v-" + v).hidden = v !== S.view; });
     $$("[data-for]").forEach(function (n) { n.hidden = n.getAttribute("data-for").split(" ").indexOf(S.view) < 0; });
