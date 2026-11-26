@@ -306,6 +306,37 @@ select.sel:hover, input.num:hover { border-color: var(--ink-3); }
 .legend li { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-2); }
 .key { width: 24px; height: 8px; flex: none; }
 
+/* cursor card (chart.js): every curve's value beside the cursor, top curve first; follows the pointer, stays when pinned */
+.gm-tip {
+  position: absolute; z-index: 2; top: 0; left: 0; pointer-events: none;
+  display: grid; grid-template-columns: 22px auto auto; column-gap: 0.55rem; row-gap: 0.12rem; align-items: center;
+  max-width: calc(100% - 4px); overflow: hidden; white-space: nowrap; padding: 0.3rem 0.6rem 0.4rem;
+  background: var(--paper); border: 1px solid var(--rule-strong); color: var(--ink-2);
+  font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.3;
+}
+.gm-tip__x {
+  grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: 0.9rem;
+  margin-bottom: 0.15rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--rule);
+  font-family: var(--font-serif); font-size: 0.88rem; color: var(--ink);
+}
+.gm-tip__x sub, .gm-tip__x sup { font-size: 0.72em; line-height: 0; }
+.gm-tip__pin { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.gm-tip__r { display: contents; }
+.gm-tip__k { display: block; width: 22px; height: 8px; }
+.gm-tip__n { color: var(--ink-3); }
+.gm-tip__v { justify-self: end; font-family: var(--font-serif); font-size: 0.86rem; color: var(--ink); }
+.gm-tip__more { grid-column: 1 / -1; color: var(--ink-3); }
+.gm-tip__r--band .gm-tip__n, .gm-tip__r--band .gm-tip__v { grid-column: 2 / -1; }   /* the range on its own line: the card stays narrow */
+.gm-tip--compact { grid-template-columns: 16px auto auto; column-gap: 0.4rem; row-gap: 0.04rem; padding: 0.2rem 0.4rem 0.3rem; font-size: 0.68rem; }
+.gm-tip--compact .gm-tip__x { font-size: 0.78rem; padding-bottom: 0.15rem; }
+.gm-tip--compact .gm-tip__k { width: 16px; height: 6px; }
+.gm-tip--compact .gm-tip__v { font-size: 0.76rem; }
+@media (max-width: 560px) {
+  .gm-tip { grid-template-columns: 16px auto auto; column-gap: 0.4rem; row-gap: 0.04rem; padding: 0.2rem 0.45rem 0.3rem; font-size: 0.68rem; }
+  .gm-tip__x { font-size: 0.8rem; padding-bottom: 0.15rem; }
+  .gm-tip__k { width: 16px; height: 6px; }
+  .gm-tip__v { font-size: 0.78rem; }
+}
 .readout { margin-top: 1rem; background: var(--paper); border: 1px solid var(--rule); padding: 0.1rem 1rem 0.4rem; }
 .readout__head { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-3); }
 .tbl { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
@@ -323,7 +354,7 @@ select.sel:hover, input.num:hover { border-color: var(--ink-3); }
 
 .overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
 .overview figure { margin: 0; background: var(--paper); border: 1px solid var(--rule); padding: 0.7rem 0.8rem 0.6rem; }
-.overview .mini { height: 250px; }
+.overview .mini { position: relative; height: 250px; }
 .overview figcaption { font-size: 0.88rem; color: var(--ink-2); margin-top: 0.2rem; }
 
 /* ── sizing ───────────────────────────────────────────────────── */
@@ -405,7 +436,7 @@ select.sel:hover, input.num:hover { border-color: var(--ink-3); }
   .pdk { min-width: 9.5rem; padding: 0.6rem 0.8rem 0.55rem; gap: 0.6rem; }
   .pdk__node { font-size: 1.45rem; }
   .pdk__name { font-size: 1rem; }
-  .fig__plot { height: auto; aspect-ratio: 4 / 3.6; min-height: 280px; }
+  .fig__plot { width: 100%; height: auto; aspect-ratio: 4 / 3.6; min-height: 280px; }   /* width: 100% stops the ratio turning min-height into a min-width wider than a 320 px screen */
   .plate { padding: 0.75rem 0.7rem 0.7rem; }
   .overview { grid-template-columns: minmax(0, 1fr); }
   .cmp-row { grid-template-columns: 26px minmax(0, 1fr) minmax(0, 1fr); }

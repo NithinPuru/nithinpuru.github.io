@@ -104,6 +104,12 @@ temperatures; light enough for phones and free static hosting).
 - **Code**: `app.js` (data, views: Curves, Sizing, Compare devices, Reference &
   method), `chart.js` (a small SVG line-chart component: log axes, hover readout,
   click / arrow-key cursor, box zoom, SVG/PNG export with embedded fonts),
+  where the cursor carries its own readout (owner, 2026-11-26: no scrolling to the
+  table to read values): a card beside the cursor with every curve's value, top
+  curve first, and the PVT band's min-max (computed from its 27 curves), plus the
+  x value as a tag on the x axis. It follows the mouse; once pinned (click, tap,
+  arrow keys) it parks where it hides the fewest curve points. The table under
+  the figure stays as the accessible (`aria-live`) copy;
   `app.css` (DESIGN.md: paper, ink, one accent, hairlines, square corners). No
   Plotly or other library; the whole app is about 100 KB before gzip.
 - **Data**: `gmid/characterise.py` simulates every device with one testbench

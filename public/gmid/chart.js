@@ -3,11 +3,14 @@
  *   var c = GmChart.create(host, { compact, label, onHover(x, values, pinned), onPin(x), onZoom(on) });
  *   c.update(spec[, keepZoom])
  *     spec   = { x: axis, y: axis, series: [...], bands: [...], refs: [...] }
- *     axis   = { label: "g_m/I_D", unit: "V^{-1}", log: false, min, max, zero }
+ *     axis   = { label: "g_m/I_D", unit: "V^{-1}", log: false, min, max, zero, fmt(v) -> "12.3 V⁻¹" }
  *     series = { name, color, width, dash, x: [], y: [] }    (non-finite value = gap)
- *     bands  = { x: [], lo: [], hi: [], color, opacity }      (filled envelope)
+ *     bands  = { x: [], lo: [], hi: [], color, opacity, name, lines }   (filled envelope; lines: its curves, optional, for an exact range in the card)
  *     refs   = { axis: "x" | "y", value, label }              (dashed reference line)
  *   GmChart.download(c, "svg" | "png", filename)
+ *
+ * Hovering, tapping or arrow keys show a cursor: a dot on every curve, the x value as a tag on the
+ * x axis and a card beside the cursor with every curve's value (top curve first) and the band's range.
  *
  * Labels use a small markup: "_x" / "_{xy}" subscript, "^x" / "^{-1}" superscript.
  * Chrome colours come from the page's CSS custom properties (--paper, --ink-2,
@@ -116,7 +119,13 @@
     var compact = !!opts.compact;
     var svg = el("svg", { class: "gm-svg", role: "img", "aria-label": opts.label || "Chart" }, host);
     var spec = null, zoom = null, pinned = null, size = { w: 0, h: 0 }, geo = null, raf = 0;
-    var gHover = null, hit = null, drag = null;
+    var gHover = null, hit = null, drag = null, pinY = null, lastAt = null;   // pinY: tap height as a fraction of the plot; lastAt: where the pinned card sits
+    // on-chart readout beside the cursor (the table under the figure stays the accessible copy)
+    var tip = document.createElement("div");
+    tip.className = "gm-tip" + (compact ? " gm-tip--compact" : "");
+    tip.setAttribute("aria-hidden", "true");
+    tip.hidden = true;
+    host.appendChild(tip);
 
     function draw() {
       raf = 0;
@@ -202,50 +211,172 @@
           .setAttribute("style", "stroke:" + ink3 + ";stroke-width:1;stroke-dasharray:5 4");
         if (r.label) richText(el("text", isX ? { x: p + 5, y: T + fs + 3 } : { x: L + W - 5, y: p - 5, "text-anchor": "end" }, plot), r.label, fs);
       });
+      var pts = [];
       (spec.series || []).forEach(function (s) {
-        var d = "", pen = false;
+        var d = "", pen = false, X0 = 0, Y0 = 0;
         for (var i = 0; i < s.x.length; i++) {
           var xv = s.x[i], yv = s.y[i];
           if (!isFinite(xv) || !isFinite(yv) || (spec.x.log && xv <= 0) || (spec.y.log && yv <= 0)) { pen = false; continue; }
-          d += (pen ? "L" : "M") + tx(xv).toFixed(1) + "," + ty(yv).toFixed(1);
+          var X = tx(xv), Y = ty(yv);
+          d += (pen ? "L" : "M") + X.toFixed(1) + "," + Y.toFixed(1);
+          var n = pen ? Math.min(60, Math.ceil(Math.hypot(X - X0, Y - Y0) / 6)) : 1;
+          for (var j = 1; j <= n; j++) {
+            var qx = X0 + (X - X0) * j / n, qy = Y0 + (Y - Y0) * j / n;
+            if (!pen) { qx = X; qy = Y; }
+            if (qx >= L && qx <= L + W && qy >= T && qy <= T + H) pts.push(qx, qy);
+          }
+          X0 = X; Y0 = Y;
           pen = true;
         }
         if (d) el("path", { d: d, fill: "none", stroke: s.color, "stroke-width": s.width || (compact ? 1.6 : 2.25),
                             "stroke-dasharray": s.dash || null, "stroke-linejoin": "round", "stroke-linecap": "round" }, plot);
       });
+      geo.pts = pts;
       gHover = el("g", { class: "gm-hover", "pointer-events": "none" }, root);
       hit = el("rect", { x: L, y: T, width: W, height: H, fill: "transparent", class: "gm-hit" }, root);
       bind();
       if (pinned != null) show(pinned, true);
     }
 
-    /* value of every series at data x (linear, or log-linear on a log y axis) */
-    function valuesAt(xv) {
-      return (spec.series || []).map(function (s) {
-        for (var i = 0; i < s.x.length - 1; i++) {
-          var a = s.x[i], b = s.x[i + 1], ya = s.y[i], yb = s.y[i + 1];
-          if (!isFinite(a) || !isFinite(b) || !isFinite(ya) || !isFinite(yb) || a === b) continue;
-          if ((xv - a) * (xv - b) > 0) continue;
-          var f = (xv - a) / (b - a);
-          var y = spec.y.log && ya > 0 && yb > 0 ? Math.pow(10, Math.log10(ya) + f * (Math.log10(yb) - Math.log10(ya))) : ya + f * (yb - ya);
-          return { x: xv, y: y, i: i + f };
-        }
-        return null;
-      });
+    /* value of a curve at data x (linear, or log-linear on a log y axis); null where the curve does not reach */
+    function interp(s, xv) {
+      for (var i = 0; i < s.x.length - 1; i++) {
+        var a = s.x[i], b = s.x[i + 1], ya = s.y[i], yb = s.y[i + 1];
+        if (!isFinite(a) || !isFinite(b) || !isFinite(ya) || !isFinite(yb) || a === b) continue;
+        if ((xv - a) * (xv - b) > 0) continue;
+        var f = (xv - a) / (b - a);
+        var y = spec.y.log && ya > 0 && yb > 0 ? Math.pow(10, Math.log10(ya) + f * (Math.log10(yb) - Math.log10(ya))) : ya + f * (yb - ya);
+        return { x: xv, y: y, i: i + f };
+      }
+      return null;
     }
+    function valuesAt(xv) { return (spec.series || []).map(function (s) { return interp(s, xv); }); }
 
-    function show(xv, isPin) {
+    function show(xv, isPin, py) {
       if (!gHover) return;
       while (gHover.firstChild) gHover.removeChild(gHover.firstChild);
-      if (xv == null || !geo) return;
-      if (xv < Math.min(geo.xr[0], geo.xr[1]) || xv > Math.max(geo.xr[0], geo.xr[1])) return;
+      if (xv == null || !geo || xv < Math.min(geo.xr[0], geo.xr[1]) || xv > Math.max(geo.xr[0], geo.xr[1])) { tip.hidden = true; return; }
+      if (isPin && py == null && pinY != null) py = geo.T + pinY * geo.H;
       var px = geo.tx(xv), vals = valuesAt(xv), paper = css("--paper");
       el("line", { x1: px, x2: px, y1: geo.T, y2: geo.T + geo.H, stroke: css("--ink-3"), "stroke-width": 1, "stroke-dasharray": isPin ? null : "2 3" }, gHover);
       vals.forEach(function (v, k) {
         if (!v || !isFinite(v.y) || v.y < Math.min(geo.yr[0], geo.yr[1]) || v.y > Math.max(geo.yr[0], geo.yr[1])) return;
         el("circle", { cx: px.toFixed(1), cy: geo.ty(v.y).toFixed(1), r: 4, fill: spec.series[k].color, stroke: paper, "stroke-width": 2 }, gHover);
       });
+      // the cursor's x value as a tag on the x axis, over the tick labels
+      var fsTag = compact ? 10.5 : 12, tag = el("g", null, gHover), box = el("rect", { y: geo.T + geo.H + 2, height: fsTag + 9, fill: css("--ink") }, tag);
+      var txt = el("text", { y: geo.T + geo.H + 2 + fsTag + 2.5, "text-anchor": "middle", fill: paper, "font-family": css("--font-mono") || "monospace", "font-size": fsTag }, tag);
+      txt.textContent = (spec.x.fmt || dflt)(xv);
+      var tw = (txt.getComputedTextLength ? txt.getComputedTextLength() : txt.textContent.length * fsTag * 0.55) + 14;
+      var tx0 = Math.max(geo.L, Math.min(px - tw / 2, geo.L + geo.W - tw));
+      box.setAttribute("x", tx0.toFixed(1)); box.setAttribute("width", tw.toFixed(1));
+      txt.setAttribute("x", (tx0 + tw / 2).toFixed(1));
+      renderTip(xv, vals, px, py, !!isPin);
       if (opts.onHover) opts.onHover(xv, vals, !!isPin);
+    }
+
+    function dflt(v) { return isFinite(v) ? String(+v.toPrecision(4)) : "—"; }
+    /* min and max of a band (the PVT spread) at x */
+    function bandAt(b, x) {
+      if (b.lines) {
+        var lo = Infinity, hi = -Infinity;
+        b.lines.forEach(function (l) { var v = interp(l, x); if (v && isFinite(v.y)) { lo = Math.min(lo, v.y); hi = Math.max(hi, v.y); } });
+        return isFinite(lo) ? { lo: lo, hi: hi } : null;
+      }
+      for (var i = 0; i < b.x.length - 1; i++) {
+        var a = b.x[i], c = b.x[i + 1];
+        if (!isFinite(a) || !isFinite(c) || a === c || (x - a) * (x - c) > 0) continue;
+        if (!isFinite(b.lo[i]) || !isFinite(b.lo[i + 1]) || !isFinite(b.hi[i]) || !isFinite(b.hi[i + 1])) return null;
+        var f = (x - a) / (c - a);
+        return { lo: b.lo[i] + f * (b.lo[i + 1] - b.lo[i]), hi: b.hi[i] + f * (b.hi[i + 1] - b.hi[i]) };
+      }
+      return null;
+    }
+    /* "1.52 µA/µm", "5.48 µA/µm" -> "1.52 to 5.48 µA/µm" (the unit once when both share it) */
+    function range(a, b) {
+      var i = a.search(/\s/), j = b.search(/\s/);   // the formats put a thin space before the unit
+      return i > 0 && j > 0 && a.slice(i) === b.slice(j) ? a.slice(0, i) + " to " + b : a + " to " + b;
+    }
+    /* one row of the card: colour key (line or band swatch), name, value; text nodes only */
+    function tipRow(color, dash, name, value, band) {
+      var r = document.createElement("div"), k = el("svg", { viewBox: "0 0 22 8", class: "gm-tip__k", "aria-hidden": "true" });
+      var n = document.createElement("span"), v = document.createElement("span");
+      if (band) el("rect", { width: 22, height: 8, fill: color, "fill-opacity": band.opacity || 0.12 }, k);
+      else el("line", { x1: 1, y1: 4, x2: 21, y2: 4, stroke: color, "stroke-width": 2.4, "stroke-dasharray": dash || null }, k);
+      r.className = "gm-tip__r" + (band ? " gm-tip__r--band" : "");
+      n.className = "gm-tip__n"; n.textContent = name;
+      v.className = "gm-tip__v"; v.textContent = value;
+      r.appendChild(k); r.appendChild(n); r.appendChild(v);
+      return r;
+    }
+    /* the card beside the cursor: x value, then every curve top to bottom with its value, and the band's range */
+    function renderTip(xv, vals, px, py, isPin) {
+      var yf = spec.y.fmt || dflt, rows = [];
+      (spec.series || []).forEach(function (s, k) { var v = vals[k]; if (s.name && v && isFinite(v.y)) rows.push({ s: s, y: v.y }); });
+      var band = (spec.bands || [])[0], br = band ? bandAt(band, xv) : null;
+      if (!rows.length && !br) { tip.hidden = true; return; }
+      rows.sort(function (a, b) { return b.y - a.y; });   // same order as the curves on the figure
+      while (tip.firstChild) tip.removeChild(tip.firstChild);
+      var head = document.createElement("div"), hx = document.createElement("span");
+      head.className = "gm-tip__x";
+      segments(spec.x.label).forEach(function (sg) {
+        var node = document.createElement(sg.k > 0 ? "sup" : sg.k < 0 ? "sub" : "span");
+        node.textContent = sg.t;
+        hx.appendChild(node);
+      });
+      hx.appendChild(document.createTextNode(" = " + (spec.x.fmt || dflt)(xv)));
+      head.appendChild(hx);
+      if (isPin) { var pin = document.createElement("span"); pin.className = "gm-tip__pin"; pin.textContent = "pinned"; head.appendChild(pin); }
+      tip.appendChild(head);
+      if (br) tip.appendChild(tipRow(band.color, null, band.name || "range", range(yf(br.lo), yf(br.hi)), band));
+      var nodes = rows.map(function (r) { return tip.appendChild(tipRow(r.s.color, r.s.dash, r.s.name, yf(r.y))); });
+      tip.hidden = false;
+      // a card taller than the plot drops its lowest rows (the table under the figure keeps them all)
+      var more = null, cut = 0;
+      while (nodes.length > 1 && tip.offsetHeight > geo.H - 4) {
+        tip.removeChild(nodes.pop());
+        cut++;
+        if (!more) { more = document.createElement("div"); more.className = "gm-tip__more"; tip.appendChild(more); }
+        more.textContent = "+ " + cut + " more" + (compact ? "" : " in the table below");
+      }
+      var at = place(px, py, tip.offsetWidth, tip.offsetHeight, isPin, vals);
+      tip.style.left = Math.round(at.x) + "px";
+      tip.style.top = Math.round(at.y) + "px";
+    }
+    /* where the card goes. Following the mouse: beside the cursor at the pointer's height, flipped near the
+       right edge. Pinned (click, tap, arrow keys): of the places beside the cursor (at the tap's height, top,
+       bottom; right, left) the one that hides the fewest curve points and none of the marked points; it stays
+       put while the cursor moves unless another place is clearly better. */
+    function place(px, py, w, h, isPin, vals) {
+      var gap = compact ? 10 : 16, xmax = geo.L + geo.W - w - 2;
+      function cx(x) { return Math.max(0, Math.max(Math.min(x, xmax), Math.min(geo.L + 2, xmax))); }
+      function cy(y) { return Math.max(geo.T + 2, Math.min(y, geo.T + geo.H - h - 2)); }
+      if (!isPin) {
+        lastAt = null;
+        var x = px + gap;
+        if (x + w > geo.L + geo.W) x = px - gap - w;
+        return { x: cx(x), y: cy(py != null ? py - h / 2 : geo.T + 6) };
+      }
+      var dots = [];
+      vals.forEach(function (v) { if (v && isFinite(v.y)) dots.push(geo.ty(v.y)); });
+      var best = null, keep = null;
+      [["r", px + gap], ["l", px - gap - w]].forEach(function (sx) {
+        [["p", py != null ? py - h / 2 : null], ["t", geo.T + 6], ["b", geo.T + geo.H - h - 6]].forEach(function (sy, k) {
+          if (sy[1] == null) return;
+          var x = cx(sx[1]), y = cy(sy[1]), n = 0, i;
+          for (i = 0; i < geo.pts.length; i += 2) {
+            var qx = geo.pts[i], qy = geo.pts[i + 1];
+            if (qx > x - 3 && qx < x + w + 3 && qy > y - 3 && qy < y + h + 3) n++;
+          }
+          if (px > x - 8 && px < x + w + 8) dots.forEach(function (dy) { if (dy > y - 8 && dy < y + h + 8) n += 1000; });
+          var c = { key: sx[0] + sy[0], x: x, y: y, score: n + k * 0.5 };
+          if (!best || c.score < best.score) best = c;
+          if (lastAt && c.key === lastAt) keep = c;
+        });
+      });
+      if (keep && keep.score <= best.score + Math.max(12, best.score * 0.25)) best = keep;
+      lastAt = best.key;
+      return best;
     }
 
     function point(e) {
@@ -262,12 +393,12 @@
       hit.addEventListener("pointermove", function (e) {
         var p = point(e);
         if (drag && drag.mouse && (Math.abs(p.x - drag.x0) > 4 || Math.abs(p.y - drag.y0) > 4)) {
-          if (!drag.box) drag.box = el("rect", { fill: css("--accent"), "fill-opacity": 0.08, stroke: css("--accent"), "stroke-width": 1 }, gHover);
+          if (!drag.box) { drag.box = el("rect", { fill: css("--accent"), "fill-opacity": 0.08, stroke: css("--accent"), "stroke-width": 1 }, gHover); tip.hidden = true; }
           drag.box.setAttribute("x", Math.min(p.x, drag.x0)); drag.box.setAttribute("y", Math.min(p.y, drag.y0));
           drag.box.setAttribute("width", Math.abs(p.x - drag.x0)); drag.box.setAttribute("height", Math.abs(p.y - drag.y0));
           return;
         }
-        if (e.pointerType === "mouse") show(geo.ix(p.x), false);
+        if (e.pointerType === "mouse") show(geo.ix(p.x), false, p.y);
       });
       hit.addEventListener("pointerup", function (e) {
         var p = point(e), d = drag;
@@ -282,8 +413,10 @@
         if (d.box) { show(null); return; }
         // a click or tap pins the cursor; clicking the pinned cursor again releases it
         var xv = geo.ix(p.x);
-        pinned = pinned != null && Math.abs(geo.tx(pinned) - p.x) < 6 ? null : xv;
-        show(pinned != null ? pinned : xv, pinned != null);
+        pinned = pinned != null && Math.abs(geo.tx(pinned) - p.x) < (d.mouse ? 6 : 14) ? null : xv;   // a finger needs a wider target
+        pinY = pinned != null ? (p.y - geo.T) / geo.H : null;
+        if (pinned == null && !d.mouse) show(null);   // a second tap on a phone releases the cursor and the card
+        else show(pinned != null ? pinned : xv, pinned != null, p.y);
         if (opts.onPin) opts.onPin(pinned);
       });
       hit.addEventListener("pointerleave", function () {
@@ -309,7 +442,7 @@
     host.addEventListener("keydown", function (e) {
       if (!geo || !spec) return;
       var k = e.key, span = geo.W;
-      if (k === "Escape") { pinned = null; show(null); if (opts.onHover) opts.onHover(null, null, false); if (opts.onPin) opts.onPin(null); return; }
+      if (k === "Escape") { pinned = null; pinY = null; show(null); if (opts.onHover) opts.onHover(null, null, false); if (opts.onPin) opts.onPin(null); return; }
       if (k !== "ArrowLeft" && k !== "ArrowRight" && k !== "Home" && k !== "End") return;
       e.preventDefault();
       var px = pinned != null ? geo.tx(pinned) : geo.L + span / 2;
@@ -348,12 +481,12 @@
       redraw: schedule,
       resetZoom: reset,
       zoomed: function () { return !!zoom; },
-      unpin: function () { pinned = null; show(null); },
+      unpin: function () { pinned = null; pinY = null; show(null); },
       pin: function (x) { pinned = x; show(x, x != null); },
       valuesAt: function (x) { return spec ? valuesAt(x) : []; },
       svgString: svgString,
       size: function () { return { w: size.w, h: size.h }; },
-      destroy: function () { ro.disconnect(); if (svg.parentNode) svg.parentNode.removeChild(svg); }
+      destroy: function () { ro.disconnect(); [svg, tip].forEach(function (n) { if (n.parentNode) n.parentNode.removeChild(n); }); }
     };
   }
 
