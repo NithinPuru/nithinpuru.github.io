@@ -1,7 +1,7 @@
 # nithinpuru.github.io
 
 Browser tools at [nithinpuru.github.io](https://nithinpuru.github.io) -
-gm/ID explorer for open PDKs, semiconductor and FX quant terminals, Research
+gm/ID explorer for three open PDKs across PVT corners, semiconductor and FX quant terminals, Research
 Radar, a conference deadline tracker and a secure-sensor signal-path explorer,
 plus the data bots that keep them fresh.
 

@@ -3,10 +3,10 @@
     {
       "entries": [
         {
-          "title": "gm/ID Explorer - Open PDK Hub",
-          "meta": "IHP SG13G2 · SKY130A · GF180MCU-D",
+          "title": "gm/ID Explorer - Open PDKs",
+          "meta": "IHP SG13G2 · SKY130A · GF180MCU-D · PVT corners",
           "url": "/gmid/",
-          "desc": "Unified gm/ID explorer for three open-source PDKs: interactive MOSFET characterisation curves (gm/ID, fT, gm/gds and more versus V<sub>GS</sub>, V<sub>ov</sub> and channel length) for gm/ID-based analog design.",
+          "desc": "gm/ID design curves for 21 MOSFETs of three open-source PDKs, all from one testbench and each at 27 PVT points (TT, SS and FF; VDD ±10 %; −40, 27 and 125 °C): gm/ID, f<sub>T</sub>, gm/gds, I<sub>D</sub>/W and capacitances, a sizing calculator with PVT tables, cross-PDK comparison and a device reference. Static and light: about 20 KB of data per view.",
           "links": [
             {
               "label": "Open tool",
@@ -26,7 +26,7 @@
             },
             {
               "label": "Source code",
-              "url": "https://github.com/chennakeshavadasa/gmid-hub"
+              "url": "https://github.com/NithinPuru/nithinpuru.github.io/tree/main/gmid"
             }
           ]
         },

@@ -1,1070 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IHP SG13G2 gm/ID Explorer</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly-basic.min.js"></script>
-<link rel="stylesheet" href="/gmid/theme/gmid-theme.css">
-<script src="/gmid/theme/gmid-theme.js"></script>
-<style>
-:root {
-  --bg:#0a0c0f; --surf:#111318; --card:#171c23; --card2:#1d2430;
-  --b1:#21272e; --b2:#2d3540; --b3:#3a4452;
-  --t1:#e8edf5; --t2:#b8c5d3; --t3:#7a8fa3;
-  --acc:#58a6ff; --acc2:#1f6feb; --grn:#3fb950; --red:#f85149; --gold:#e3b341;
-  --amber:#e3b341; --plasma0:#0d0887; --plasma1:#f0f921;
-  --font:var(--qt-mono); --sans:var(--qt-serif);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
-
-/* HEADER */
-.hdr{background:linear-gradient(135deg,var(--qt-well) 0%,var(--qt-well) 60%,var(--qt-well) 100%);border-bottom:1px solid var(--b2);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.hdr-brand{display:flex;align-items:center;gap:14px}
-.hdr-logo{width:38px;height:38px;background:linear-gradient(135deg,var(--acc),var(--qt-accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:800;font-size:13px;color:#fff;letter-spacing:-0.5px;flex-shrink:0}
-.hdr-title{font-family:var(--sans);font-size:18px;font-weight:700;letter-spacing:-0.4px;color:var(--t1)}
-.hdr-sub{font-size:11px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
-.hdr-bdg{display:flex;gap:7px;align-items:center}
-.bdg{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase}
-.bdg-b{background:rgba(88,166,255,.12);color:var(--acc);border:1px solid rgba(88,166,255,.25)}
-.bdg-g{background:rgba(63,185,80,.12);color:var(--grn);border:1px solid rgba(63,185,80,.25)}
-
-/* TOP NAV */
-.topnav{background:var(--surf);border-bottom:1px solid var(--b2);display:flex;gap:0;overflow-x:auto;flex-shrink:0}
-.topnav::-webkit-scrollbar{height:2px}
-.topnav::-webkit-scrollbar-thumb{background:var(--b2)}
-.navbtn{padding:12px 20px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;color:var(--t3);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:8px;letter-spacing:.3px;background:none;border-top:none;border-left:none;border-right:none}
-.navbtn:hover{color:var(--t2);background:rgba(255,255,255,.03)}
-.navbtn.active{color:var(--t1);border-bottom-color:var(--acc);background:rgba(88,166,255,.05)}
-.navbtn .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.8;flex-shrink:0}
-
-/* SECTIONS */
-.section{display:none;flex:1;overflow:hidden}
-.section.active{display:flex;flex-direction:column}
-
-/* ── EXPLORER LAYOUT ── */
-.explorer{display:flex;flex:1;overflow:hidden}
-.sidebar{width:228px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--b2);display:flex;flex-direction:column;overflow-y:auto;padding:14px}
-.sidebar::-webkit-scrollbar{width:4px}
-.sidebar::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
-.sb-sect{margin-bottom:16px}
-.sb-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-weight:600}
-.dev-btn{width:100%;text-align:left;padding:8px 11px;border-radius:6px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:500;color:var(--t2);background:transparent;border:1px solid var(--b1);margin-bottom:5px;transition:all .15s;display:flex;align-items:center;gap:9px}
-.dev-btn:hover{color:var(--t1);border-color:var(--b2);background:rgba(var(--qt-ink-rgb),.04)}
-.dev-btn.active{background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.35);color:var(--t1)}
-.dev-pill{font-size:8.5px;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:.5px}
-.pill-n{background:rgba(88,166,255,.18);color:var(--acc)}
-.pill-p{background:rgba(248,81,73,.18);color:#ff7b72}
-.len-grid{display:flex;flex-wrap:wrap;gap:4px}
-.len-btn{font-family:var(--font);font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--t3);transition:all .12s}
-.len-btn:hover{color:var(--t2);border-color:var(--b3)}
-.len-btn.active{background:rgba(88,166,255,.12);border-color:rgba(88,166,255,.35);color:var(--acc)}
-.len-ctrl{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
-.ctrl-btn{font-family:var(--font);font-size:9.5px;padding:3px 8px;border-radius:3px;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--t3);transition:all .12s;letter-spacing:.3px}
-.ctrl-btn:hover{color:var(--t1);border-color:var(--t3)}
-.sb-toggle{display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer}
-.sb-toggle input[type=checkbox]{appearance:none;width:15px;height:15px;border:1.5px solid var(--b3);border-radius:3px;background:transparent;cursor:pointer;position:relative;flex-shrink:0}
-.sb-toggle input[type=checkbox]:checked{background:var(--acc);border-color:var(--acc)}
-.sb-toggle input[type=checkbox]:checked::after{content:'✓';position:absolute;top:-2px;left:1px;font-size:12px;color:#000;font-weight:800}
-.sb-toggle label{font-size:11px;color:var(--t2);cursor:pointer;user-select:none}
-.sb-status{background:var(--card);border:1px solid var(--b2);border-radius:6px;padding:9px 11px;font-size:11px}
-.sb-status div{display:flex;justify-content:space-between;margin-bottom:3px;color:var(--t3)}
-.sb-status div:last-child{margin-bottom:0}
-.sb-status span{color:var(--t1);font-weight:600}
-
-/* MAIN PLOT AREA */
-.plot-area{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
-.plot-header{display:flex;align-items:center;gap:0;background:var(--card);border-bottom:1px solid var(--b2);overflow-x:auto;flex-shrink:0}
-.plot-header::-webkit-scrollbar{height:2px}
-.plot-header::-webkit-scrollbar-thumb{background:var(--b2)}
-.tab-btn{padding:10px 15px;cursor:pointer;font-family:var(--font);font-size:11px;font-weight:500;color:var(--t3);border-bottom:2px solid transparent;white-space:nowrap;transition:all .12s;background:none;border-top:none;border-left:none;border-right:none;letter-spacing:.3px}
-.tab-btn:hover{color:var(--t2);background:rgba(var(--qt-ink-rgb),.025)}
-.tab-btn.active{color:var(--acc);border-bottom-color:var(--acc);background:rgba(88,166,255,.06)}
-.plot-title-bar{padding:9px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b2);flex-shrink:0;min-height:40px}
-.plot-title{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--t1)}
-.plot-subtitle{font-size:11px;color:var(--t3);margin-top:1px}
-.export-btn{font-family:var(--font);font-size:10.5px;padding:5px 12px;border-radius:4px;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--t2);transition:all .12s}
-.export-btn:hover{color:var(--t1);border-color:var(--t3);background:rgba(var(--qt-ink-rgb),.04)}
-#mainPlot{flex:1;min-height:0}
-.overview-grid{display:none;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--b1);flex:1;overflow:hidden}
-.mini-wrap{background:var(--card)}
-.mini-plot{height:100%;min-height:190px}
-
-/* ── DESIGN HELPER ── */
-.helper-layout{flex:1;display:flex;overflow:hidden}
-.helper-ctrl{width:270px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--b2);padding:16px;display:flex;flex-direction:column;gap:13px;overflow-y:auto}
-.helper-ctrl::-webkit-scrollbar{width:4px}
-.helper-ctrl::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
-.helper-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.helper-plots{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);height:340px;flex-shrink:0}
-.helper-plot-wrap{background:var(--card)}
-.helper-output{flex:1;overflow-y:auto;padding:16px}
-.helper-output::-webkit-scrollbar{width:4px}
-.helper-output::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
-.h-field{display:flex;flex-direction:column;gap:5px}
-.h-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
-.h-sub{font-size:10px;color:var(--t3)}
-.h-inp{background:var(--card);border:1.5px solid var(--b2);border-radius:5px;padding:8px 10px;font-family:var(--font);font-size:13px;color:var(--t1);width:100%;transition:border-color .15s}
-.h-inp:focus{outline:none;border-color:var(--acc)}
-.h-sel{background:var(--card);border:1.5px solid var(--b2);border-radius:5px;padding:8px 10px;font-family:var(--font);font-size:12px;color:var(--t1);width:100%;cursor:pointer;appearance:none}
-.h-sel:focus{outline:none;border-color:var(--acc)}
-.h-range{width:100%;accent-color:var(--acc)}
-.h-range-val{font-size:12px;color:var(--acc);font-weight:600;text-align:right}
-.run-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:6px;font-family:var(--font);font-size:13px;font-weight:600;color:#fff;cursor:pointer;transition:opacity .15s;letter-spacing:.3px;margin-top:4px}
-.run-btn:hover{opacity:.88}
-.dev-multi{background:var(--card);border:1.5px solid var(--b2);border-radius:6px;overflow:hidden}
-.dev-multi-item{display:flex;align-items:center;gap:8px;padding:7px 11px;cursor:pointer;transition:background .12s;font-size:12px}
-.dev-multi-item:hover{background:rgba(var(--qt-ink-rgb),.04)}
-.dev-multi-item input[type=checkbox]{width:14px;height:14px;border:1.5px solid var(--b3);border-radius:3px;background:transparent;cursor:pointer;appearance:none;position:relative;flex-shrink:0}
-.dev-multi-item input[type=checkbox]:checked{background:var(--acc);border-color:var(--acc)}
-.dev-multi-item input[type=checkbox]:checked::after{content:'✓';position:absolute;top:-2px;left:1px;font-size:11px;color:#000;font-weight:800}
-.dev-multi-item label{cursor:pointer;color:var(--t2);user-select:none}
-.helper-empty{text-align:center;padding:48px 24px;color:var(--t3);font-size:13px}
-.helper-empty .icon{font-size:36px;margin-bottom:14px;opacity:.5}
-/* Convergence & metrics */
-.conv-block{background:var(--card);border:1px solid var(--b2);border-radius:7px;padding:12px 14px;margin-bottom:12px}
-.conv-title{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;font-weight:600}
-.conv-trace{font-family:var(--font);font-size:11px;color:var(--t3);display:flex;gap:8px;flex-wrap:wrap}
-.conv-trace span{color:var(--t2)}
-.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:9px;margin-bottom:12px}
-.metric-item{background:var(--card);border:1px solid var(--b2);border-radius:7px;padding:9px 12px}
-.metric-item.best{border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.06)}
-.metric-lbl{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
-.metric-val{font-size:16px;font-weight:700;color:var(--t1);margin-top:3px}
-.metric-unit{font-size:10px;color:var(--t2);margin-left:2px;font-weight:400}
-/* Top-5 table */
-.top5-wrap{background:var(--card);border:1px solid var(--b2);border-radius:7px;overflow:hidden;margin-bottom:12px}
-.top5-hdr{padding:10px 14px;border-bottom:1px solid var(--b2);display:flex;align-items:center;gap:8px}
-.top5-title{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--t1)}
-.top5-table{width:100%;border-collapse:collapse;font-size:12px}
-.top5-table th{background:rgba(var(--qt-ink-rgb),.04);color:var(--t3);font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;padding:8px 12px;text-align:left;font-weight:600;border-bottom:1px solid var(--b2)}
-.top5-table td{padding:8px 12px;border-bottom:1px solid rgba(33,39,46,.7);color:var(--t2);font-size:12px}
-.top5-table td:first-child{color:var(--t1);font-weight:600}
-.top5-table tr:last-child td{border-bottom:none}
-.top5-table .row-best td{color:var(--t1);background:rgba(63,185,80,.08)}
-.top5-table .row-mid td{background:rgba(227,179,65,.04)}
-.dist-bar{display:inline-block;height:5px;border-radius:3px;vertical-align:middle;margin-left:4px}
-
-/* ── PDK REFERENCE ── */
-.pdk-wrap{flex:1;overflow-y:auto;padding:22px 28px;background:var(--bg)}
-.pdk-wrap::-webkit-scrollbar{width:5px}
-.pdk-wrap::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
-.pdk-intro{background:var(--card);border:1px solid rgba(88,166,255,.25);border-left:3px solid var(--acc);border-radius:8px;padding:16px 18px;margin-bottom:20px}
-.pdk-intro h2{font-family:var(--sans);font-size:16px;font-weight:700;color:var(--acc);margin-bottom:8px}
-.pdk-intro p{font-size:13px;color:var(--t2);line-height:1.8}
-.pdk-device-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.pdk-card{background:var(--card);border:1px solid var(--b2);border-radius:8px;overflow:hidden}
-.pdk-card-hdr{padding:12px 16px;border-bottom:1px solid var(--b2);display:flex;align-items:center;gap:11px}
-.pdk-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.pdk-model-name{font-family:var(--font);font-size:13px;font-weight:700;color:var(--t1)}
-.pdk-type-lbl{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-top:1px}
-.pdk-body{padding:14px 16px}
-.pdk-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:12px}
-.pdk-spec-lbl{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
-.pdk-spec-val{font-size:13px;font-weight:700;color:var(--t1);margin-top:2px}
-.pdk-note{font-size:12px;color:var(--t2);line-height:1.75}
-.pdk-section{background:var(--card);border:1px solid var(--b2);border-radius:8px;overflow:hidden;margin-bottom:14px}
-.pdk-sec-hdr{padding:12px 16px;border-bottom:1px solid var(--b2);display:flex;align-items:center;gap:8px;cursor:pointer}
-.pdk-sec-hdr h3{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--t1)}
-.pdk-sec-body{padding:14px 16px}
-.pdk-sec-body p{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:10px}
-.pdk-sec-body p:last-child{margin-bottom:0}
-.pdk-sec-body code{font-family:var(--font);font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px;color:var(--acc)}
-.pdk-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
-.pdk-table th{background:rgba(255,255,255,.06);color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.8px;padding:9px 12px;text-align:left;font-weight:600;border-bottom:1px solid var(--b2)}
-.pdk-table td{padding:9px 12px;border-bottom:1px solid var(--b2);color:var(--t2);line-height:1.6;font-size:12px}
-.pdk-table td:first-child{color:var(--t1);font-weight:600;white-space:nowrap}
-.pdk-table tr:last-child td{border-bottom:none}
-.pdk-table tr:hover td{background:rgba(var(--qt-ink-rgb),.025)}
-.pdk-link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.pdk-link{display:flex;align-items:center;gap:9px;padding:10px 13px;background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);border-radius:7px;text-decoration:none;transition:all .15s}
-.pdk-link:hover{background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.4)}
-.pdk-link-icon{font-size:18px;flex-shrink:0}
-.pdk-link-text{font-size:12px;color:var(--acc);font-weight:500}
-.pdk-link-sub{font-size:10px;color:var(--t3);margin-top:1px}
-.warn-box{background:rgba(227,179,65,.08);border:1px solid rgba(227,179,65,.25);border-radius:6px;padding:11px 14px;margin-bottom:12px;font-size:12px;color:var(--t2);line-height:1.75}
-.warn-box strong{color:var(--gold)}
-
-/* FOOTER */
-.footer{padding:11px 22px;border-top:1px solid var(--b2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--surf)}
-.footer a{color:var(--acc);text-decoration:none;font-size:11px}
-.footer a:hover{color:#fff}
-.footer span{font-size:11px;color:var(--t3)}
-
-@media(max-width:1000px){.pdk-device-grid{grid-template-columns:1fr}}
-@media(max-width:900px){.overview-grid{grid-template-columns:1fr 1fr};.helper-plots{grid-template-columns:1fr}}
-@media(max-width:650px){.sidebar,.helper-ctrl{display:none}}
-
-/* gmid theme: map this tool's variables onto the shared tokens */
-:root, :root[data-theme] { --bg: var(--qt-page); --surf: var(--qt-card); --card: var(--qt-card); --card2: var(--qt-well); --b1: var(--qt-rule); --b2: var(--qt-rule-strong); --b3: var(--qt-ink-4); --t1: var(--qt-ink); --t2: var(--qt-ink-2); --t3: var(--qt-ink-3); --acc: var(--qt-accent); --acc2: var(--qt-accent); --grn: var(--qt-up); --red: var(--qt-down); --gold: var(--qt-warn); --amber: var(--qt-warn); --font: var(--qt-mono); --sans: var(--qt-serif); }
-body { font-family: var(--qt-serif); }
-</style>
-  <meta name="description" content="Interactive gm/ID curves, a design helper and a device reference for the IHP SG13G2 130 nm BiCMOS open-source PDK.">
-  <link rel="canonical" href="https://nithinpuru.github.io/gmid/ihp-sg13g2/">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://nithinpuru.github.io/gmid/ihp-sg13g2/">
-  <meta property="og:title" content="IHP SG13G2 gm/ID Explorer">
-  <meta property="og:description" content="Interactive gm/ID curves, a design helper and a device reference for the IHP SG13G2 130 nm BiCMOS open-source PDK.">
-  <meta property="og:image" content="https://nithinpuru.github.io/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IHP SG13G2 gm/ID Explorer: curves, sizing and PVT corners</title>
+<meta name="description" content="gm/ID, f_T, gm/gds, I_D/W and capacitance curves of the IHP SG13G2 130 nm BiCMOS MOSFETs (PSP 103) at TT, SS and FF, VDD +/-10 % and -40 to 125 C, with a sizing calculator and device reference.">
+<link rel="canonical" href="https://nithinpuru.github.io/gmid/ihp-sg13g2/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1620" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nithinpuru.github.io/gmid/ihp-sg13g2/">
+<meta property="og:title" content="IHP SG13G2 gm/ID Explorer: curves, sizing and PVT corners">
+<meta property="og:description" content="gm/ID, f_T, gm/gds, I_D/W and capacitance curves of the IHP SG13G2 130 nm BiCMOS MOSFETs (PSP 103) at TT, SS and FF, VDD +/-10 % and -40 to 125 C, with a sizing calculator and device reference.">
+<meta property="og:image" content="https://nithinpuru.github.io/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
+<link rel="preload" href="/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/KaTeX_Typewriter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/gmid/data/manifest.json?v=7f1a7306fc" as="fetch" crossorigin>
+<link rel="stylesheet" href="/gmid/app.css?v=28b38718b1">
+<script src="/gmid/chart.js?v=28b38718b1" defer></script>
+<script src="/gmid/app.js?v=28b38718b1" defer></script>
 </head>
-<body>
+<body data-pdk="ihp-sg13g2" data-v="7f1a7306fc">
+<a class="skip" href="#main">Skip to the explorer</a>
 
-<header class="hdr">
-  <div class="hdr-brand">
-    <div class="hdr-logo">IHP</div>
-    <div>
-      <div class="hdr-title">SG13G2 gm/ID Explorer</div>
-      <div class="hdr-sub">IHP 130nm BiCMOS Open Source PDK · MOSFET Characterisation</div>
-    </div>
-  </div>
-  <div class="hdr-bdg">
-    <span class="bdg bdg-b">SG13G2</span>
-    <span class="bdg bdg-g">Open Source</span>
-    <span class="bdg bdg-b">TT 27°C</span>
+<header class="rh">
+  <a class="rh__mark" href="/gmid/" aria-label="gm/ID Explorer, all PDKs"><span class="rh__name">g<sub>m</sub>/I<sub>D</sub> Explorer</span><span class="rh__sub">Open PDKs · PVT</span></a>
+  <div class="rh__right">
+    <a class="rh__link" href="https://nithinpuru.com/#tools" title="All tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11 12 4l8.5 7M6 9.5V20h12V9.5"/></svg><span>nithinpuru.com</span></a>
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch colour theme" title="Switch colour theme">
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>
+      <span class="theme-toggle__label">Theme</span>
+    </button>
   </div>
 </header>
 
-<nav class="topnav">
-  <button class="navbtn active" onclick="switchPage('explorer',this)"><span class="dot" style="background:var(--acc)"></span>gm/ID Explorer</button>
-  <button class="navbtn" onclick="switchPage('helper',this)"><span class="dot" style="background:var(--grn)"></span>Design Helper</button>
-  <button class="navbtn" onclick="switchPage('pdk',this)"><span class="dot" style="background:var(--t3)"></span>PDK Reference</button>
+<nav class="pdks" aria-label="Process design kit">
+  <a class="pdk" data-pdk="ihp-sg13g2" href="/gmid/ihp-sg13g2/" aria-current="page"><span class="pdk__name">IHP SG13G2</span><span class="pdk__meta">130 nm SiGe BiCMOS<span class="wide"> · PSP 103</span></span></a>
+  <a class="pdk" data-pdk="sky130a" href="/gmid/sky130a/"><span class="pdk__name">SKY130A</span><span class="pdk__meta">130 nm CMOS<span class="wide"> · BSIM4</span></span></a>
+  <a class="pdk" data-pdk="gf180mcu-d" href="/gmid/gf180mcu-d/"><span class="pdk__name">GF180MCU-D</span><span class="pdk__meta">180 nm CMOS<span class="wide"> · BSIM4</span></span></a>
 </nav>
 
-<!-- ──────────── EXPLORER ──────────── -->
-<div class="section active" id="sec-explorer">
-  <div class="explorer">
-    <div class="sidebar">
-      <div class="sb-sect">
-        <div class="sb-lbl">Device</div>
-        <div id="devGrid"></div>
+<div class="shell">
+  <aside class="side" aria-label="Device and operating conditions">
+   <div class="side__a">
+    <div data-for="curves size reference">
+      <h2 class="rubric">Device <span class="rubric__aside" id="devcount"></span></h2>
+      <label class="sr" for="devsel">Device</label>
+      <select class="devsel" id="devsel"></select>
+      <div class="devs" id="devs"></div>
+    </div>
+
+    <h2 class="rubric">Operating point <span class="rubric__aside">PVT</span></h2>
+    <div class="field"><span class="field__k" id="k-corner">Process</span>
+      <div class="seg" role="group" aria-labelledby="k-corner" id="seg-corner">
+        <button type="button" data-v="ss" aria-pressed="false" title="Slow NMOS, slow PMOS">SS</button><button type="button" data-v="tt" aria-pressed="true" title="Typical">TT</button><button type="button" data-v="ff" aria-pressed="false" title="Fast NMOS, fast PMOS">FF</button>
+      </div></div>
+    <div class="field"><span class="field__k" id="k-supply">Supply</span>
+      <div class="seg" role="group" aria-labelledby="k-supply" id="seg-supply">
+        <button type="button" data-v="lo" aria-pressed="false">&minus;10&thinsp;%</button><button type="button" data-v="nom" aria-pressed="true">VDD</button><button type="button" data-v="hi" aria-pressed="false">+10&thinsp;%</button>
+      </div></div>
+    <div class="field"><span class="field__k" id="k-temp">Temp.</span>
+      <div class="seg" role="group" aria-labelledby="k-temp" id="seg-temp">
+        <button type="button" data-v="-40" aria-pressed="false">&minus;40&thinsp;°C</button><button type="button" data-v="27" aria-pressed="true">27&thinsp;°C</button><button type="button" data-v="125" aria-pressed="false">125&thinsp;°C</button>
+      </div></div>
+    <p class="note" id="biasnote">V<sub>DS</sub> = VDD/2, V<sub>SB</sub> = 0, W = 5&nbsp;µm.</p>
+   </div>
+
+    <div class="side__b" data-for="curves">
+      <h2 class="rubric">Show</h2>
+      <div class="seg seg--wrap" role="group" aria-label="What the curves compare" id="seg-mode">
+        <button type="button" data-v="lengths" aria-pressed="true">Lengths</button><button type="button" data-v="corner" aria-pressed="false">Corners</button><button type="button" data-v="supply" aria-pressed="false">Supplies</button><button type="button" data-v="temp" aria-pressed="false">Temps</button><button type="button" data-v="pvt" aria-pressed="false">All 27 PVT</button>
       </div>
-      <div class="sb-sect">
-        <div class="sb-lbl">Channel Length</div>
-        <div class="len-ctrl">
-          <button class="ctrl-btn" onclick="selectAllLengths()">All</button>
-          <button class="ctrl-btn" onclick="selectNoneLengths()">None</button>
-          <button class="ctrl-btn" onclick="selectShortLengths()">Short</button>
-          <button class="ctrl-btn" onclick="selectLongLengths()">Long</button>
-        </div>
-        <div class="len-grid" id="lenFilter"></div>
-      </div>
-      <div class="sb-sect">
-        <div class="sb-lbl">Scale</div>
-        <div class="sb-toggle"><input type="checkbox" id="logX" onchange="replot()"><label for="logX">Log X axis</label></div>
-        <div class="sb-toggle"><input type="checkbox" id="logY" onchange="replot()"><label for="logY">Log Y axis</label></div>
-      </div>
-      <div class="sb-sect">
-        <div class="sb-lbl">Status</div>
-        <div class="sb-status">
-          <div>Device<span id="sb-dev">—</span></div>
-          <div>Curves<span id="sb-curves">—</span></div>
-          <div>Pts/curve<span id="sb-pts">—</span></div>
-        </div>
+      <p class="note" id="modenote">One curve per channel length at the operating point above.</p>
+      <div class="field" id="l1field" hidden><label class="field__k" for="l1">Length</label><select class="sel" id="l1"></select></div>
+
+      <div id="lensbox">
+        <h2 class="rubric">Channel length <span class="rubric__aside">µm</span></h2>
+        <div class="lens" id="lens" role="group" aria-label="Channel lengths shown"></div>
+        <div class="minibtns"><button type="button" class="linkbtn" data-lens="all">All</button><button type="button" class="linkbtn" data-lens="few">Six</button><button type="button" class="linkbtn" data-lens="short">Short</button><button type="button" class="linkbtn" data-lens="long">Long</button></div>
       </div>
     </div>
-    <div class="plot-area">
-      <div class="plot-header" id="plotTabs">
-        <button class="tab-btn active" data-plot="gmid_vgs">gm/ID vs Vgs</button>
-        <button class="tab-btn" data-plot="gmid_vov">gm/ID vs Vov</button>
-        <button class="tab-btn" data-plot="gmgds">gm/gds vs gm/ID</button>
-        <button class="tab-btn" data-plot="idw">ID/W vs gm/ID</button>
-        <button class="tab-btn" data-plot="ft">fT vs gm/ID</button>
-        <button class="tab-btn" data-plot="cgd">Cgd/Cgg vs gm/ID</button>
-        <button class="tab-btn" data-plot="cgs">Cgs/Cgg vs gm/ID</button>
-        <button class="tab-btn" data-plot="overview">⊞ Overview</button>
-      </div>
-      <div class="plot-title-bar">
-        <div><div class="plot-title" id="plotTitle">gm/ID vs Vgs</div><div class="plot-subtitle" id="plotSubtitle"></div></div>
-        <button class="export-btn" onclick="exportPlot()">↓ Export PNG</button>
-      </div>
-      <div id="mainPlot" style="flex:1;min-height:0;display:flex"></div>
-      <div class="overview-grid" id="overviewGrid">
-        <div class="mini-wrap"><div class="mini-plot" id="mini0"></div></div>
-        <div class="mini-wrap"><div class="mini-plot" id="mini1"></div></div>
-        <div class="mini-wrap"><div class="mini-plot" id="mini2"></div></div>
-        <div class="mini-wrap"><div class="mini-plot" id="mini3"></div></div>
-        <div class="mini-wrap"><div class="mini-plot" id="mini4"></div></div>
-        <div class="mini-wrap"><div class="mini-plot" id="mini5"></div></div>
-      </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="views" role="tablist" aria-label="Views">
+      <button class="view" role="tab" id="t-curves" aria-controls="v-curves" aria-selected="true" data-view="curves">Curves</button>
+      <button class="view" role="tab" id="t-size" aria-controls="v-size" aria-selected="false" tabindex="-1" data-view="size">Sizing</button>
+      <button class="view" role="tab" id="t-compare" aria-controls="v-compare" aria-selected="false" tabindex="-1" data-view="compare">Compare<span class="wide"> devices</span></button>
+      <button class="view" role="tab" id="t-reference" aria-controls="v-reference" aria-selected="false" tabindex="-1" data-view="reference">Reference<span class="wide"> &amp; method</span></button>
     </div>
-  </div>
+
+    <h1 class="sr">IHP SG13G2 gm/ID Explorer</h1>
+
+    <!-- ── Curves ── -->
+    <section id="v-curves" role="tabpanel" aria-labelledby="t-curves">
+      <div class="toolbar">
+        <div class="toolbar__presets"><label class="sr" for="fig">Figure</label><select class="sel" id="fig"></select></div>
+        <div class="axes" id="custom" hidden>
+          <label for="cy">y</label><select class="sel" id="cy"></select>
+          <label for="cx">x</label><select class="sel" id="cx"></select>
+        </div>
+        <div class="axes" id="atgmid" hidden><label for="gstar">at g<sub>m</sub>/I<sub>D</sub> =</label><input class="num" id="gstar" type="number" min="3" max="30" step="0.5" value="12" style="width:5rem"><span>V<sup>&minus;1</sup></span></div>
+        <label class="check"><input type="checkbox" id="logx">log x</label>
+        <label class="check"><input type="checkbox" id="logy">log y</label>
+        <label class="check"><input type="checkbox" id="ovw">Overview</label>
+      </div>
+      <figure class="fig">
+        <div class="fig__plot" id="plot"><div class="fig__status" id="status">Loading data…</div></div>
+        <ul class="legend" id="legend"></ul>
+        <figcaption class="fig__caption" id="caption"></figcaption>
+      </figure>
+      <div class="toolbar" style="margin-top:0.6rem">
+        <span class="zoomhint" id="zoomhint">Hover to read values · click or use the arrow keys to pin a cursor · drag to zoom</span>
+        <div class="actions">
+          <button type="button" class="btn" id="unzoom" hidden>Reset zoom</button>
+          <button type="button" class="btn" data-export="png">PNG</button>
+          <button type="button" class="btn" data-export="svg">SVG</button>
+          <button type="button" class="btn" data-export="csv">CSV</button>
+          <button type="button" class="btn" id="share">Copy link</button>
+        </div>
+      </div>
+      <div class="readout" id="readout" aria-live="polite"></div>
+      <div class="overview" id="overview" hidden></div>
+    </section>
+
+    <!-- ── Sizing ── -->
+    <section id="v-size" role="tabpanel" aria-labelledby="t-size" hidden>
+      <p class="lede">Pick a channel length and an inversion level (g<sub>m</sub>/I<sub>D</sub>), then size for a transconductance, a current or a width. The result uses the operating point chosen on the left; the tables below show the same transistor at every length and at all 27 PVT conditions.</p>
+      <div class="size-grid">
+        <div class="form">
+          <div class="field"><label class="field__k" for="sz-l">Length L</label><select class="sel" id="sz-l"></select></div>
+          <div class="field"><label class="field__k" for="sz-g">g<sub>m</sub>/I<sub>D</sub></label><div class="row"><input class="num" id="sz-g" type="number" min="2" max="30" step="0.5" value="12"><span class="unit">V<sup>&minus;1</sup></span></div></div>
+          <div class="field"><span class="field__k" id="k-by">Size for</span>
+            <div class="seg" role="group" aria-labelledby="k-by" id="seg-by"><button type="button" data-v="gm" aria-pressed="true">g<sub>m</sub></button><button type="button" data-v="id" aria-pressed="false">I<sub>D</sub></button><button type="button" data-v="w" aria-pressed="false">W</button></div></div>
+          <div class="field"><label class="field__k" for="sz-v" id="sz-vk">g<sub>m</sub></label><div class="row"><input class="num" id="sz-v" type="number" min="0" step="any" value="100"><span class="unit" id="sz-vu">µS</span></div></div>
+          <div class="field"><span class="field__k" id="k-hold">Across PVT</span>
+            <div class="seg" role="group" aria-labelledby="k-hold" id="seg-hold"><button type="button" data-v="id" aria-pressed="true" title="Bias current fixed (current mirror)">Hold I<sub>D</sub></button><button type="button" data-v="vgs" aria-pressed="false" title="Gate voltage fixed">Hold V<sub>GS</sub></button><button type="button" data-v="gmid" aria-pressed="false" title="Inversion level fixed">Hold g<sub>m</sub>/I<sub>D</sub></button></div></div>
+          <p class="note">W is the total width. The curves were characterised on 5&nbsp;µm fingers, so lay a wide device out as fingers of about 5&nbsp;µm.</p>
+        </div>
+        <div class="result" id="sz-out"></div>
+      </div>
+      <h3 class="h3">The same g<sub>m</sub>/I<sub>D</sub> at every length</h3>
+      <p class="lede" id="sz-ltext"></p>
+      <div class="tbl-wrap" id="sz-ltab"></div>
+      <h3 class="h3">Across process, supply and temperature</h3>
+      <p class="lede" id="sz-ptext"></p>
+      <div class="tbl-wrap" id="sz-ptab"></div>
+    </section>
+
+    <!-- ── Compare ── -->
+    <section id="v-compare" role="tabpanel" aria-labelledby="t-compare" hidden>
+      <p class="lede">Every device on this site comes from the same testbench (W = 5&nbsp;µm, V<sub>DS</sub> = VDD/2, V<sub>SB</sub> = 0), so devices of different PDKs can be compared point for point. Up to four series, all at the operating point chosen on the left.</p>
+      <div class="cmp-rows" id="cmp-rows"></div>
+      <div class="toolbar">
+        <button type="button" class="btn" id="cmp-add">Add series</button>
+        <div class="toolbar__presets"><label class="sr" for="cfig">Figure</label><select class="sel" id="cfig"></select></div>
+        <div class="axes" id="catgmid" hidden><label for="cgstar">at g<sub>m</sub>/I<sub>D</sub> =</label><input class="num" id="cgstar" type="number" min="3" max="30" step="0.5" value="12" style="width:5rem"><span>V<sup>&minus;1</sup></span></div>
+        <label class="check"><input type="checkbox" id="clogx">log x</label>
+        <label class="check"><input type="checkbox" id="clogy">log y</label>
+        <div class="actions"><button type="button" class="btn" data-cexport="png">PNG</button><button type="button" class="btn" data-cexport="svg">SVG</button><button type="button" class="btn" data-cexport="csv">CSV</button></div>
+      </div>
+      <figure class="fig">
+        <div class="fig__plot" id="cplot"></div>
+        <figcaption class="fig__caption" id="ccaption"></figcaption>
+      </figure>
+      <div class="readout" id="creadout" aria-live="polite"></div>
+    </section>
+
+    <!-- ── Reference ── -->
+    <section id="v-reference" role="tabpanel" aria-labelledby="t-reference" hidden>
+      <article class="ref" data-ref="ihp-sg13g2" hidden>
+        <h2>IHP SG13G2</h2>
+        <p class="meta">130 nm SiGe:C BiCMOS · IHP Microelectronics · PSP 103 · Apache 2.0</p>
+        <h3>The process</h3>
+        <p>SG13G2 is IHP's 130&nbsp;nm SiGe:C BiCMOS technology, published as an open-source PDK under the Apache&nbsp;2.0 licence. Besides the MOSFETs characterised here it offers SiGe:C npn heterojunction bipolar transistors (f<sub>T</sub>/f<sub>max</sub> up to 350/450&nbsp;GHz), MIM capacitors, polysilicon resistors and a back end of five thin aluminium layers with two thick top metals. The MOSFETs come in two gate oxides: thin-oxide LV devices for the 1.2&nbsp;V core and thick-oxide HV devices for 3.3&nbsp;V I/O.</p>
+        <p>The transistors use the PSP&nbsp;103 surface-potential model, which IHP ships as Verilog-A; here it is compiled for ngspice with OpenVAF. The model library offers the process corners <code>mos_tt</code>, <code>mos_ss</code>, <code>mos_ff</code>, <code>mos_sf</code> and <code>mos_fs</code>; this explorer uses TT, SS and FF.</p>
+        <h3>Devices characterised here</h3>
+        <div class="tbl-wrap" data-sheet></div>
+        <ul>
+          <li><code>sg13_lv_nmos</code>, <code>sg13_lv_pmos</code>: thin-oxide core devices, L&nbsp;≥&nbsp;0.13&nbsp;µm, 1.2&nbsp;V (the model files give 1.5&nbsp;V as the maximum drain voltage).</li>
+          <li><code>sg13_hv_nmos</code>, <code>sg13_hv_pmos</code>: thick-oxide I/O devices for 3.3&nbsp;V, L&nbsp;≥&nbsp;0.45&nbsp;µm (NMOS) and 0.40&nbsp;µm (PMOS).</li>
+        </ul>
+        <h3>Worth knowing</h3>
+        <ul>
+          <li>The LV NMOS shows a strong reverse short-channel effect: at TT and 27&nbsp;°C its V<sub>th</sub> is <span data-v="sg13_lv_nmos/lmin/vth"></span> at 0.13&nbsp;µm but <span data-v="sg13_lv_nmos/l1/vth"></span> at 1&nbsp;µm. Long LV devices therefore turn on at a lower V<sub>GS</sub> than short ones.</li>
+          <li>Intrinsic gain grows slowly with length in the LV NMOS (g<sub>m</sub>/g<sub>ds</sub> at g<sub>m</sub>/I<sub>D</sub> = 10&nbsp;V<sup>&minus;1</sup>: <span data-v="sg13_lv_nmos/lmin/gain10"></span> at L<sub>min</sub>, <span data-v="sg13_lv_nmos/l1/gain10"></span> at 1&nbsp;µm); the LV PMOS gains more from length (<span data-v="sg13_lv_pmos/l1/gain10"></span> at 1&nbsp;µm).</li>
+          <li>The thin gate oxide tunnels: at &minus;40&nbsp;°C and nanoampere currents part of the drain current of the LV devices is gate&ndash;drain tunnelling. The curves here use the channel current; see the method below.</li>
+        </ul>
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://github.com/IHP-GmbH/IHP-Open-PDK">IHP-Open-PDK</a> on GitHub (models, cells, rule decks)</li>
+          <li><a href="https://ihp-open-pdk-docs.readthedocs.io/">IHP Open PDK documentation</a> (process specification, layout rules)</li>
+          <li><a href="https://iic-jku.github.io/analog-circuit-design/">Analog circuit design course</a> by JKU Linz, built on SG13G2</li>
+        </ul>
+      </article>
+
+      <article class="ref" data-ref="sky130a" hidden>
+        <h2>SKY130A</h2>
+        <p class="meta">130 nm CMOS · SkyWater Technology · BSIM4 · Apache 2.0</p>
+        <h3>The process</h3>
+        <p>SKY130 is SkyWater Technology's 130&nbsp;nm CMOS process, open-sourced together with Google under the Apache&nbsp;2.0 licence; SKY130A is the variant installed by open_pdks. Besides 1.8&nbsp;V core transistors in three threshold-voltage flavours it offers 5&nbsp;V and 20&nbsp;V devices with extended drains, native transistors, MIM and MOS capacitors, polysilicon resistors, a local-interconnect layer and five metal layers.</p>
+        <p>The transistors use BSIM4. Current open_pdks installs SkyWater's continuous models, which were re-extracted to stay smooth across W and L; they replace the original micro-binned models, which were accurate only close to the sizes that had been measured. Corners in the library: tt, ss, ff, sf and fs (and ll, hh, hl, lh); this explorer uses TT, SS and FF.</p>
+        <h3>Devices characterised here</h3>
+        <div class="tbl-wrap" data-sheet></div>
+        <ul>
+          <li><code>nfet_01v8</code>, <code>pfet_01v8</code>: standard-V<sub>th</sub> 1.8&nbsp;V devices, L&nbsp;≥&nbsp;0.15&nbsp;µm.</li>
+          <li><code>nfet_01v8_lvt</code> (L&nbsp;≥&nbsp;0.15&nbsp;µm) and <code>pfet_01v8_lvt</code> (L&nbsp;≥&nbsp;0.35&nbsp;µm): low-V<sub>th</sub> devices, with more drive current and more leakage.</li>
+          <li><code>pfet_01v8_hvt</code>: high-V<sub>th</sub> PMOS for low leakage; the 1.8&nbsp;V family has no high-V<sub>th</sub> NMOS.</li>
+          <li><code>nfet_g5v0d10v5</code>, <code>pfet_g5v0d10v5</code>: 5&nbsp;V gate oxide with a drain extended to 10.5&nbsp;V, L&nbsp;≥&nbsp;0.5&nbsp;µm; characterised here at VDD&nbsp;=&nbsp;5&nbsp;V, so V<sub>DS</sub>&nbsp;=&nbsp;2.5&nbsp;V.</li>
+        </ul>
+        <h3>Worth knowing</h3>
+        <ul>
+          <li>Narrow transistors have a noticeably higher threshold: for <code>nfet_01v8</code> at L&nbsp;=&nbsp;0.15&nbsp;µm (TT, 27&nbsp;°C) V<sub>th</sub> is about 0.77&nbsp;V at W&nbsp;=&nbsp;1&nbsp;µm against 0.71&nbsp;V at W&nbsp;=&nbsp;5&nbsp;µm. The per-width numbers here hold for fingers of about 5&nbsp;µm.</li>
+          <li>Short-channel effects are strong in the PMOS: <code>pfet_01v8</code> has V<sub>th</sub> = <span data-v="pfet_01v8/lmin/vth"></span> at 0.15&nbsp;µm and <span data-v="pfet_01v8/l1/vth"></span> at 1&nbsp;µm (TT, 27&nbsp;°C).</li>
+          <li>The extended-drain devices trade speed for voltage: peak f<sub>T</sub> of <code>nfet_g5v0d10v5</code> at its minimum length is <span data-v="nfet_g5v0d10v5/lmin/ftpk"></span>, against <span data-v="nfet_01v8/lmin/ftpk"></span> for <code>nfet_01v8</code>.</li>
+          <li>Two models have a bump in g<sub>m</sub>/I<sub>D</sub> between weak and strong inversion, where it rises again by about 1&nbsp;V<sup>&minus;1</sup> before falling: <code>pfet_01v8</code> at its shortest lengths (|V<sub>GS</sub>| near 0.6 to 0.7&nbsp;V) and <code>nfet_g5v0d10v5</code> from L&nbsp;=&nbsp;1.5&nbsp;µm (near 0.73&nbsp;V). The drain current is smooth there and g<sub>m</sub> matches its slope, so the bump belongs to the models; plotted against g<sub>m</sub>/I<sub>D</sub> it shows as a fold, and other quantities step where g<sub>m</sub>/I<sub>D</sub> stays nearly flat.</li>
+        </ul>
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://skywater-pdk.readthedocs.io/">SkyWater SKY130 PDK documentation</a></li>
+          <li><a href="https://github.com/fossi-foundation/skywater-pdk-libs-sky130_fd_pr">sky130_fd_pr primitive library</a> (FOSSi Foundation; continuous models in <code>combined_models</code>)</li>
+          <li><a href="https://github.com/RTimothyEdwards/open_pdks">open_pdks</a>, which builds SKY130A</li>
+        </ul>
+      </article>
+
+      <article class="ref" data-ref="gf180mcu-d" hidden>
+        <h2>GF180MCU-D</h2>
+        <p class="meta">180 nm CMOS · GlobalFoundries · BSIM4 · Apache 2.0</p>
+        <h3>The process</h3>
+        <p>GF180MCU is GlobalFoundries' 180&nbsp;nm mixed-signal microcontroller process, open-sourced together with Google under the Apache&nbsp;2.0 licence. Its MOSFETs come as 3.3&nbsp;V devices and thick-oxide 5&nbsp;V and 6&nbsp;V devices; the letter D names one of the metal-stack options that open_pdks packages, and the transistor models are the same in every option.</p>
+        <p>The transistors use BSIM4 (version 4.5) with models binned by width and length. Corners in the library: typical, ff, ss, fs and sf, plus a statistical set; this explorer uses TT (typical), SS and FF.</p>
+        <h3>Devices characterised here</h3>
+        <div class="tbl-wrap" data-sheet></div>
+        <ul>
+          <li><code>nfet_03v3</code>, <code>pfet_03v3</code>: 3.3&nbsp;V devices, L&nbsp;≥&nbsp;0.28&nbsp;µm.</li>
+          <li><code>nfet_05v0</code> (L&nbsp;≥&nbsp;0.6&nbsp;µm) and <code>pfet_05v0</code> (L&nbsp;≥&nbsp;0.5&nbsp;µm): 5&nbsp;V devices. Their subcircuits use the 6&nbsp;V model cards, so they are the 6&nbsp;V transistors at a shorter minimum length and a lower supply.</li>
+          <li><code>nfet_06v0</code> (L&nbsp;≥&nbsp;0.7&nbsp;µm) and <code>pfet_06v0</code> (L&nbsp;≥&nbsp;0.55&nbsp;µm): 6&nbsp;V thick-oxide devices.</li>
+          <li><code>*_dss</code>: drain-side silicide block. The drain and source diffusions are left unsilicided over <code>d_sab</code> (1.78&nbsp;µm for 3.3&nbsp;V; 3.78&nbsp;µm for the 6&nbsp;V NMOS, 2.78&nbsp;µm for the 6&nbsp;V PMOS) and <code>s_sab</code> (0.48&nbsp;µm; 0.28&nbsp;µm), which the model represents as resistors in series with drain and source; the extra ballast resistance is why such devices are used where ESD robustness matters. Here g<sub>m</sub>, g<sub>ds</sub> and g<sub>mb</sub> of these devices are referred to the outer terminals, so they include those resistors.</li>
+        </ul>
+        <h3>Worth knowing</h3>
+        <ul>
+          <li>At W&nbsp;=&nbsp;5&nbsp;µm the series resistors of the DSS devices cost little: the on-current of <code>nfet_03v3_dss</code> at L<sub>min</sub> is <span data-v="nfet_03v3_dss/lmin/ion"></span> against <span data-v="nfet_03v3/lmin/ion"></span> for <code>nfet_03v3</code> (TT, 27&nbsp;°C, V<sub>GS</sub> = VDD, V<sub>DS</sub> = VDD/2).</li>
+          <li>The 3.3&nbsp;V devices reach high intrinsic gain at moderate length: <code>nfet_03v3</code> at 1&nbsp;µm gives g<sub>m</sub>/g<sub>ds</sub> = <span data-v="nfet_03v3/l1/gain10"></span> at g<sub>m</sub>/I<sub>D</sub> = 10&nbsp;V<sup>&minus;1</sup>.</li>
+        </ul>
+        <h3>Sources</h3>
+        <ul>
+          <li><a href="https://gf180mcu-pdk.readthedocs.io/">GF180MCU PDK documentation</a></li>
+          <li><a href="https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_pr">gf180mcu_fd_pr primitive library</a> (FOSSi Foundation; ngspice models)</li>
+          <li><a href="https://github.com/RTimothyEdwards/open_pdks">open_pdks</a>, which builds GF180MCU-D</li>
+        </ul>
+      </article>
+
+      <article class="ref" id="method">
+        <h2>How the curves were made</h2>
+        <p class="meta" id="method-meta"></p>
+        <p>Every transistor of the three PDKs went through one testbench, so curves of different devices and PDKs can be compared directly. One transistor, W&nbsp;=&nbsp;5&nbsp;µm in a single finger, source and bulk at 0&nbsp;V (V<sub>SB</sub>&nbsp;=&nbsp;0), V<sub>DS</sub>&nbsp;=&nbsp;VDD/2, and V<sub>GS</sub> swept from 0 to VDD in steps of VDD<sub>nom</sub>/150. PMOS devices are driven with the mirrored voltages and shown as magnitudes.</p>
+        <dl class="dl">
+          <dt>Process</dt><dd>TT, SS and FF corners of each PDK's model library: global (die-to-die) variation. Local mismatch is not included.</dd>
+          <dt>Supply</dt><dd>0.9, 1.0 and 1.1 times the device's nominal VDD. The supply sets V<sub>DS</sub>&nbsp;=&nbsp;VDD/2 and the end of the V<sub>GS</sub> sweep.</dd>
+          <dt>Temperature</dt><dd>&minus;40, 27 and 125&nbsp;°C.</dd>
+          <dt>Lengths</dt><dd>L<sub>min</sub>, then 0.18, 0.25, 0.35, 0.5, 0.7, 1, 1.5, 2, 3, 4 and 5&nbsp;µm, from 1.15&nbsp;L<sub>min</sub> upwards.</dd>
+          <dt>Quantities</dt><dd>I<sub>D</sub>, g<sub>m</sub>, g<sub>ds</sub>, g<sub>mb</sub>, V<sub>th</sub> and V<sub>DS,sat</sub> from the model's operating point. C<sub>gg</sub>, C<sub>gd</sub> and C<sub>gs</sub> from small-signal AC solutions at 1&nbsp;MHz at every bias point, so they include the gate overlap and fringe capacitances that the models' operating-point capacitances leave out. f<sub>T</sub> = g<sub>m</sub>/(2&pi;C<sub>gg</sub>).</dd>
+          <dt>Low currents</dt><dd>I<sub>D</sub> is the channel current. Below 10&nbsp;nA/µm, where the reported g<sub>m</sub>/I<sub>D</sub> differs from the slope d&thinsp;ln&thinsp;I<sub>D</sub>/dV<sub>GS</sub> by more than 2&nbsp;%, the slope is used (it happens in the thin-oxide IHP devices at &minus;40&nbsp;°C, where PSP's g<sub>m</sub> includes gate&ndash;drain tunnelling). Points below 1&nbsp;fA/µm, the simulator's numerical floor, are left out.</dd>
+          <dt>Not modelled</dt><dd>Layout effects (diffusion length, well proximity), narrow-width effects at widths far from 5&nbsp;µm per finger, and interconnect parasitics.</dd>
+          <dt>Storage</dt><dd>567 tables (21 devices &times; 27 conditions) of 16-bit values, resolution better than 0.1&nbsp;%, about 20&nbsp;KB each and loaded only when shown.</dd>
+        </dl>
+        <p>The script that runs the simulations, <a href="https://github.com/NithinPuru/nithinpuru.github.io/blob/main/gmid/characterise.py">gmid/characterise.py</a>, and the setup script that fetches the pinned model files are in this site's repository, so every curve can be regenerated.</p>
+        <h3>Using the explorer</h3>
+        <ul>
+          <li>Hover a figure to read every curve at that x; click to pin the cursor (click it again to release); drag a box to zoom and double-click to zoom out.</li>
+          <li>The address bar keeps the device, operating point and figure, so a copied link opens the same view.</li>
+          <li>PNG and SVG exports carry their own legend and fonts; CSV gives the plotted points.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
 </div>
 
-<!-- ──────────── DESIGN HELPER ──────────── -->
-<div class="section" id="sec-helper">
-  <div class="helper-layout">
-    <div class="helper-ctrl">
-      <div class="h-field">
-        <span class="h-lbl">Devices</span>
-        <div class="dev-multi" id="helperDevMulti">
-          <label class="dev-multi-item"><input type="checkbox" value="LV_NMOS" checked><span class="dev-pill pill-n" style="font-size:8px;padding:1px 5px">N</span><span class="h-lbl" style="text-transform:none;letter-spacing:0;font-size:12px;color:var(--t2)">LV-NMOS (1.2V)</span></label>
-          <label class="dev-multi-item"><input type="checkbox" value="LV_PMOS"><span class="dev-pill pill-p" style="font-size:8px;padding:1px 5px">P</span><span class="h-lbl" style="text-transform:none;letter-spacing:0;font-size:12px;color:var(--t2)">LV-PMOS (1.2V)</span></label>
-          <label class="dev-multi-item"><input type="checkbox" value="HV_NMOS"><span class="dev-pill pill-n" style="font-size:8px;padding:1px 5px">N</span><span class="h-lbl" style="text-transform:none;letter-spacing:0;font-size:12px;color:var(--t2)">HV-NMOS (3.3V)</span></label>
-          <label class="dev-multi-item"><input type="checkbox" value="HV_PMOS"><span class="dev-pill pill-p" style="font-size:8px;padding:1px 5px">P</span><span class="h-lbl" style="text-transform:none;letter-spacing:0;font-size:12px;color:var(--t2)">HV-PMOS (3.3V)</span></label>
-        </div>
-      </div>
-      <div class="h-field">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span class="h-lbl">Target gm/ID</span>
-          <span class="h-range-val" id="v-tA">15.0 V⁻¹</span>
-        </div>
-        <span class="h-sub">Transconductance efficiency (V⁻¹)</span>
-        <input type="range" class="h-range" id="s-tA" min="1" max="28" step="0.1" value="15" oninput="document.getElementById('v-tA').textContent=parseFloat(this.value).toFixed(1)+' V⁻¹'">
-      </div>
-      <div class="h-field">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span class="h-lbl">Target gm/gds</span>
-          <span class="h-range-val" id="v-tB">50</span>
-        </div>
-        <span class="h-sub">Target intrinsic voltage gain</span>
-        <input type="range" class="h-range" id="s-tB" min="2" max="400" step="1" value="50" oninput="document.getElementById('v-tB').textContent=this.value">
-      </div>
-      <div class="h-field">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span class="h-lbl">Bound (min gm/gds)</span>
-          <span class="h-range-val" id="v-bB">55</span>
-        </div>
-        <span class="h-sub">Hard lower bound — optimizer never goes below this</span>
-        <input type="range" class="h-range" id="s-bB" min="2" max="400" step="1" value="55" oninput="document.getElementById('v-bB').textContent=this.value">
-      </div>
-      <div style="background:var(--card);border:1px solid var(--b2);border-radius:6px;padding:9px 12px;font-size:11px;color:var(--t3)">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span>w₁ — gm/ID importance</span>
-          <span style="color:var(--acc);font-weight:700">10</span>
-        </div>
-        <div style="display:flex;justify-content:space-between">
-          <span>w₂ — gm/gds importance</span>
-          <span style="color:var(--acc);font-weight:700">20</span>
-        </div>
-        <div style="margin-top:6px;font-size:10px;color:var(--t3);border-top:1px solid var(--b1);padding-top:5px">Fixed weights — calibrated for gm/ID design methodology</div>
-      </div>
-      <button class="run-btn" onclick="runHelper()">▶ Run Optimiser</button>
-    </div>
-    <div class="helper-main">
-      <div class="helper-plots">
-        <div class="helper-plot-wrap"><div style="height:100%" id="hPlotScatter"></div></div>
-        <div class="helper-plot-wrap"><div style="height:100%" id="hPlotLoss"></div></div>
-      </div>
-      <div class="helper-output" id="helperOutput">
-        <div class="helper-empty">
-          <div style="color:var(--t2);font-size:13px">Set your target specifications and press <strong style="color:var(--t1)">Run Optimiser</strong>.<br><br>
-          The helper searches the entire characterisation LUT across all selected devices and channel lengths. It minimises a σ-normalised weighted L² loss:<br><br>
-          <code style="font-size:12px;color:var(--gold)">ℒ = w₁·((gm/ID − tA)/σA)² + w₂·((gm/gds − tB)/σB)²</code><br><br>
-          subject to a hard lower bound on gm/gds. Returns top-5 matching operating points.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ──────────── PDK REFERENCE ──────────── -->
-<div class="section" id="sec-pdk">
-  <div class="pdk-wrap">
-
-    <div class="pdk-intro">
-      <h2>IHP SG13G2 — 130nm BiCMOS Open Source PDK</h2>
-      <p>SG13G2 is IHP Microelectronics' high-performance 130nm BiCMOS technology offering SiGe:C npn-HBT bipolar transistors with f<sub>T</sub> = 300 GHz and f<sub>max</sub> = 500 GHz, alongside a full CMOS module. The PDK is open source under Apache 2.0 and hosted on GitHub. It provides two gate oxide options (1.2V thin-oxide and 3.3V thick-oxide), a 7-layer aluminium back-end, poly resistors, MIM capacitors, and inductors. All characterisation data in this tool was generated with ngspice using the PSP 103 compact MOSFET models at the TT corner, T = 27°C, V<sub>DS</sub> = V<sub>DD</sub>/2, W = 2µm.</p>
-    </div>
-
-    <div class="pdk-device-grid">
-      <!-- LV NMOS -->
-      <div class="pdk-card">
-        <div class="pdk-card-hdr">
-          <div class="pdk-dot" style="background:#58a6ff"></div>
-          <div><div class="pdk-model-name">sg13g2_lv_nmos</div><div class="pdk-type-lbl">LV NMOS — Core Device</div></div>
-        </div>
-        <div class="pdk-body">
-          <div class="pdk-specs">
-            <div><div class="pdk-spec-lbl">Supply</div><div class="pdk-spec-val" style="color:#58a6ff">1.2V nom / 1.5V max</div></div>
-            <div><div class="pdk-spec-lbl">L<sub>min</sub></div><div class="pdk-spec-val">0.13 µm</div></div>
-            <div><div class="pdk-spec-lbl">V<sub>th0</sub> typ</div><div class="pdk-spec-val">≈ +0.50 V</div></div>
-            <div><div class="pdk-spec-lbl">I<sub>Dsat</sub></div><div class="pdk-spec-val">~520 µA/µm</div></div>
-            <div><div class="pdk-spec-lbl">f<sub>T</sub> at L<sub>min</sub></div><div class="pdk-spec-val">&gt; 100 GHz</div></div>
-            <div><div class="pdk-spec-lbl">Compact Model</div><div class="pdk-spec-val">PSP 103</div></div>
-          </div>
-          <div class="pdk-note">Thin-oxide core NMOS. Highest speed of the CMOS module. Supports standard 4-terminal and deep-N-well isolated variant (<code>sg13_lv_nmos_inh</code>). Body tied to most-negative supply in standard use. Gate stack: thin SiO₂ with poly gate.</div>
-        </div>
-      </div>
-      <!-- LV PMOS -->
-      <div class="pdk-card">
-        <div class="pdk-card-hdr">
-          <div class="pdk-dot" style="background:#ff7b72"></div>
-          <div><div class="pdk-model-name">sg13g2_lv_pmos</div><div class="pdk-type-lbl">LV PMOS — Core Device</div></div>
-        </div>
-        <div class="pdk-body">
-          <div class="pdk-specs">
-            <div><div class="pdk-spec-lbl">Supply</div><div class="pdk-spec-val" style="color:#ff7b72">1.2V nom / 1.5V max</div></div>
-            <div><div class="pdk-spec-lbl">L<sub>min</sub></div><div class="pdk-spec-val">0.13 µm</div></div>
-            <div><div class="pdk-spec-lbl">V<sub>th0</sub> typ</div><div class="pdk-spec-val">≈ −0.47 V</div></div>
-            <div><div class="pdk-spec-lbl">I<sub>Dsat</sub></div><div class="pdk-spec-val">~280 µA/µm</div></div>
-            <div><div class="pdk-spec-lbl">f<sub>T</sub> at L<sub>min</sub></div><div class="pdk-spec-val">&gt; 75 GHz</div></div>
-            <div><div class="pdk-spec-lbl">Compact Model</div><div class="pdk-spec-val">PSP 103</div></div>
-          </div>
-          <div class="pdk-note">Thin-oxide core PMOS. Hole mobility ~40–50% lower than electrons; expect lower I<sub>Dsat</sub> and f<sub>T</sub> than NMOS at same L/W. Body tied to most-positive supply. Data plotted using absolute value convention: |V<sub>GS</sub>|, |V<sub>th</sub>|, |I<sub>DS</sub>|.</div>
-        </div>
-      </div>
-      <!-- HV NMOS -->
-      <div class="pdk-card">
-        <div class="pdk-card-hdr">
-          <div class="pdk-dot" style="background:#e3b341"></div>
-          <div><div class="pdk-model-name">sg13g2_hv_nmos</div><div class="pdk-type-lbl">HV NMOS — I/O Device</div></div>
-        </div>
-        <div class="pdk-body">
-          <div class="pdk-specs">
-            <div><div class="pdk-spec-lbl">Supply</div><div class="pdk-spec-val" style="color:#e3b341">3.3V nom / 3.6V max</div></div>
-            <div><div class="pdk-spec-lbl">L<sub>min</sub></div><div class="pdk-spec-val">0.45 µm</div></div>
-            <div><div class="pdk-spec-lbl">V<sub>th0</sub> typ</div><div class="pdk-spec-val">≈ +0.70 V</div></div>
-            <div><div class="pdk-spec-lbl">I<sub>Dsat</sub></div><div class="pdk-spec-val">~400 µA/µm</div></div>
-            <div><div class="pdk-spec-lbl">f<sub>T</sub> at L<sub>min</sub></div><div class="pdk-spec-val">~21 GHz</div></div>
-            <div><div class="pdk-spec-lbl">Compact Model</div><div class="pdk-spec-val">PSP 103</div></div>
-          </div>
-          <div class="pdk-note">Thick-oxide I/O NMOS for 3.3V interfaces. Higher V<sub>th</sub> due to thicker gate oxide. L<sub>min</sub> = 0.45 µm per PDK design rules. Isolated variant available (<code>sg13_hv_nmos_inh</code>). Used for ESD protection, power switches, and mixed-voltage interfaces.</div>
-        </div>
-      </div>
-      <!-- HV PMOS -->
-      <div class="pdk-card">
-        <div class="pdk-card-hdr">
-          <div class="pdk-dot" style="background:#ff8c42"></div>
-          <div><div class="pdk-model-name">sg13g2_hv_pmos</div><div class="pdk-type-lbl">HV PMOS — I/O Device</div></div>
-        </div>
-        <div class="pdk-body">
-          <div class="pdk-specs">
-            <div><div class="pdk-spec-lbl">Supply</div><div class="pdk-spec-val" style="color:#ff8c42">3.3V nom / 3.6V max</div></div>
-            <div><div class="pdk-spec-lbl">L<sub>min</sub></div><div class="pdk-spec-val">0.45 µm</div></div>
-            <div><div class="pdk-spec-lbl">V<sub>th0</sub> typ</div><div class="pdk-spec-val">≈ −0.65 V</div></div>
-            <div><div class="pdk-spec-lbl">I<sub>Dsat</sub></div><div class="pdk-spec-val">~200 µA/µm</div></div>
-            <div><div class="pdk-spec-lbl">f<sub>T</sub> at L<sub>min</sub></div><div class="pdk-spec-val">~7.5 GHz</div></div>
-            <div><div class="pdk-spec-lbl">Compact Model</div><div class="pdk-spec-val">PSP 103</div></div>
-          </div>
-          <div class="pdk-note">Thick-oxide I/O PMOS. Complements HV-NMOS in push-pull I/O stages and level shifters. Data plotted with |V<sub>GS</sub>| convention. Lowest f<sub>T</sub> of the four devices; typically used where speed is not critical.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Passives -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>Passive Components</h3></div>
-      <div class="pdk-sec-body">
-        <table class="pdk-table">
-          <tr><th>Component</th><th>Cell Name</th><th>Key Specs</th><th>Typical Use</th></tr>
-          <tr><td>Silicided poly R</td><td><code>rsil</code></td><td>R□ = 7 Ω/sq ±10%, TC₁ = 3100 ppm/K</td><td>Low-resistance ESD, bias</td></tr>
-          <tr><td>Poly resistor</td><td><code>rppd</code></td><td>R□ = 260 Ω/sq ±10%, TC₁ = 170 ppm/K</td><td>General analog, moderate matching</td></tr>
-          <tr><td>Poly resistor high</td><td><code>rhigh</code></td><td>R□ = 1360 Ω/sq ±15%, TC₁ = −2300 ppm/K</td><td>High-impedance, bias ladders</td></tr>
-          <tr><td>MIM capacitor</td><td><code>cap_cmim</code></td><td>C' = 1.5 fF/µm² ±10%, V-coeff = −26 ppm/V, TC₁ = 3.6 ppm/K, BV &gt; 15V</td><td>Precision analog, bypass, RF</td></tr>
-          <tr><td>MOM capacitor</td><td>metal stack</td><td>5 thin metal layers; no primitive; implement manually</td><td>RF, high-Q, compact decoupling</td></tr>
-          <tr><td>Inductor</td><td>via LVS lib</td><td>Spiral inductors; Q and L depend on geometry</td><td>LC-VCO, matching networks, RF</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- Metal Stack -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>Interconnect Metal Stack</h3></div>
-      <div class="pdk-sec-body">
-        <table class="pdk-table">
-          <tr><th>Layer</th><th>Type</th><th>Thickness</th><th>Sheet R</th><th>Notes</th></tr>
-          <tr><td>M1–M5</td><td>Thin Al</td><td>~0.35 µm each</td><td>~75 mΩ/sq</td><td>Signal routing, standard interconnect</td></tr>
-          <tr><td>M6 (TopMetal1)</td><td>Thick Al</td><td>2 µm</td><td>~10 mΩ/sq</td><td>Power, inductors, redistribution</td></tr>
-          <tr><td>M7 (TopMetal2)</td><td>Thick Al</td><td>3 µm</td><td>~7 mΩ/sq</td><td>Thick power bus, RF ground plane</td></tr>
-          <tr><td>MIM layer</td><td>TaN/TiN/Al</td><td>—</td><td>—</td><td>cap_cmim, between M6 and M7</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- gm/ID Reference -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>gm/ID Design Methodology — Quick Reference</h3></div>
-      <div class="pdk-sec-body">
-        <p>The gm/ID methodology uses transconductance efficiency (gm/I<sub>D</sub>, units V⁻¹) as the primary design variable instead of overdrive voltage V<sub>OV</sub>. It works across all inversion levels without approximation and naturally handles short-channel effects.</p>
-        <table class="pdk-table">
-          <tr><th>Region</th><th>gm/ID (V⁻¹)</th><th>Inversion</th><th>Optimised For</th><th>Trade-off</th></tr>
-          <tr><td>Sub-threshold (WI)</td><td>20 – 28</td><td>Weak</td><td>Ultra-low power, max current efficiency</td><td>Slow speed, exponential I<sub>DS</sub> sensitivity</td></tr>
-          <tr><td>Moderate (MI)</td><td>10 – 20</td><td>Moderate</td><td>Best power-bandwidth product (sweet spot)</td><td>Complex modelling region</td></tr>
-          <tr><td>Saturation (SI)</td><td>5 – 10</td><td>Strong</td><td>High speed, good matching, predictable</td><td>Higher I<sub>DS</sub> required for given g<sub>m</sub></td></tr>
-          <tr><td>Deep saturation</td><td>1 – 5</td><td>Very Strong</td><td>RF, maximum g<sub>m</sub> per area</td><td>Lowest current efficiency, self-heating risk</td></tr>
-        </table>
-        <p style="margin-top:12px">Key relations: <code>gm/ID = gm/IDS</code> · <code>gm·rds = gm/gds</code> (intrinsic gain) · <code>fT = gm/(2π·Cgg)</code> · <code>ID/W</code> (current density, µA/µm). For a sizing target with given g<sub>m</sub>, W = g<sub>m</sub> / (gm/ID × ID/W).</p>
-      </div>
-    </div>
-
-    <!-- Process Corners -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>Process Corners &amp; Simulation Setup</h3></div>
-      <div class="pdk-sec-body">
-        <table class="pdk-table">
-          <tr><th>Corner</th><th>NMOS</th><th>PMOS</th><th>I<sub>DS</sub> vs TT</th><th>Typical Use</th></tr>
-          <tr><td>TT (this tool)</td><td>Typical</td><td>Typical</td><td>Nominal</td><td>Nominal characterisation, bias point design</td></tr>
-          <tr><td>FF</td><td>Fast</td><td>Fast</td><td>Higher</td><td>Speed check, timing closure</td></tr>
-          <tr><td>SS</td><td>Slow</td><td>Slow</td><td>Lower</td><td>Minimum gain/bandwidth check</td></tr>
-          <tr><td>FS</td><td>Fast</td><td>Slow</td><td>—</td><td>NMOS-dominated path worst case</td></tr>
-          <tr><td>SF</td><td>Slow</td><td>Fast</td><td>—</td><td>PMOS-dominated path worst case</td></tr>
-        </table>
-        <p style="margin-top:12px">All data shown is <strong>TT corner, T = 27°C, V<sub>DS</sub> = V<sub>DD</sub>/2</strong> (0.6V LV, 1.65V HV), V<sub>SB</sub> = 0. Temperature range for device operation: −40°C to +125°C. Simulation requires ngspice ≥ 38 with the PSP 103 model patch. Model files: <code>sg13g2_lv_nmos.lib</code>, <code>sg13g2_lv_pmos.lib</code>, <code>sg13g2_hv_nmos.lib</code>, <code>sg13g2_hv_pmos.lib</code>.</p>
-        <div class="warn-box" style="margin-top:12px"><strong>Note:</strong> Process control transistor parameters in the spec sheet must not be used for circuit simulation. Use the PSP model parameters in <code>*.lib</code> files. V<sub>th0</sub> values listed are from process control measurements and may differ from PSP model extraction.</div>
-      </div>
-    </div>
-
-    <!-- PMOS Convention -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>PMOS Sign Convention in This Tool</h3></div>
-      <div class="pdk-sec-body">
-        <p>PMOS data is plotted using the <strong>absolute value convention</strong>: all quantities are converted to positive values for direct comparison with NMOS. Specifically: V<sub>GS</sub> → |V<sub>GS</sub>|, V<sub>th</sub> → |V<sub>th</sub>|, I<sub>DS</sub> → |I<sub>DS</sub>|, g<sub>m</sub> → |g<sub>m</sub>|. Overdrive voltage V<sub>OV</sub> = |V<sub>GS</sub>| − |V<sub>th</sub>|, which is negative in sub-threshold and positive in inversion — same sign as NMOS.</p>
-        <p>In ngspice simulation, PMOS nodes are: drain=negative-rail, source=positive-rail, gate biased from positive-rail. The |V<sub>GS</sub>| convention means V<sub>GS</sub> sweeps from 0 to |V<sub>DD</sub>| in the characterisation script. All gm/ID curves are directly comparable between NMOS and PMOS after this normalisation.</p>
-      </div>
-    </div>
-
-    <!-- Simulation Setup -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>Simulation Netlist &amp; Characterisation Details</h3></div>
-      <div class="pdk-sec-body">
-        <p>Each gm/ID LUT file was generated by an ngspice DC sweep with the following key parameters:</p>
-        <table class="pdk-table">
-          <tr><th>Parameter</th><th>LV (NMOS/PMOS)</th><th>HV (NMOS/PMOS)</th></tr>
-          <tr><td>W (width)</td><td>2 µm</td><td>2 µm</td></tr>
-          <tr><td>V<sub>DS</sub></td><td>0.6 V (V<sub>DD</sub>/2)</td><td>1.65 V (V<sub>DD</sub>/2)</td></tr>
-          <tr><td>V<sub>SB</sub></td><td>0 V</td><td>0 V</td></tr>
-          <tr><td>V<sub>GS</sub> sweep</td><td>0.01 V → 1.65 V (16401 pts)</td><td>0.01 V → 3.3 V (32901 pts)</td></tr>
-          <tr><td>Temperature</td><td>27°C (300 K)</td><td>27°C (300 K)</td></tr>
-          <tr><td>Process corner</td><td>TT</td><td>TT</td></tr>
-          <tr><td>Saved quantities</td><td>V<sub>gs</sub>, g<sub>m</sub>, I<sub>D</sub>, V<sub>th</sub>, g<sub>ds</sub>, C<sub>gg</sub>, C<sub>gs</sub>, C<sub>gd</sub></td><td colspan="1">Same</td></tr>
-        </table>
-        <p style="margin-top:10px">Derived metrics: <code>gm/ID = gm/IDS</code>, <code>gm/gds</code>, <code>ID/W = IDS/W_char</code> [µA/µm], <code>fT = gm/(2π·Cgg)</code> [GHz], <code>Cgd/Cgg</code>, <code>Cgs/Cgg</code>. Downsampled to 300 points/curve for web delivery.</p>
-      </div>
-    </div>
-
-    <!-- EDA Tools -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>EDA Tools &amp; Open-Source Ecosystem</h3></div>
-      <div class="pdk-sec-body">
-        <table class="pdk-table">
-          <tr><th>Tool</th><th>Role</th><th>Version</th></tr>
-          <tr><td>ngspice</td><td>Circuit simulation (SPICE-compatible)</td><td>≥ 38 with PSP103 patch</td></tr>
-          <tr><td>Xschem</td><td>Schematic entry, symbol library</td><td>≥ 3.4.0</td></tr>
-          <tr><td>Magic</td><td>Layout editor, DRC</td><td>≥ 8.3.336</td></tr>
-          <tr><td>KLayout</td><td>GDS viewer, DRC, LVS</td><td>≥ 0.28.6</td></tr>
-          <tr><td>netgen</td><td>LVS (layout vs schematic)</td><td>≥ 1.5.254</td></tr>
-          <tr><td>OpenEMS</td><td>EM simulation for RF passives</td><td>optional</td></tr>
-          <tr><td>IIC-OSIC-TOOLS</td><td>Docker image with all tools pre-installed</td><td>latest</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- Links -->
-    <div class="pdk-section">
-      <div class="pdk-sec-hdr"><h3>Official Documentation &amp; Resources</h3></div>
-      <div class="pdk-sec-body">
-        <div class="pdk-link-grid">
-          <a class="pdk-link" href="https://github.com/IHP-GmbH/IHP-Open-PDK" target="_blank"><div><div class="pdk-link-text">IHP-Open-PDK GitHub</div><div class="pdk-link-sub">Main repository — models, cells, DRC</div></div></a>
-          <a class="pdk-link" href="https://ihp-open-pdk-docs.readthedocs.io/en/main/" target="_blank"><div><div class="pdk-link-text">ReadTheDocs — Official Docs</div><div class="pdk-link-sub">Process specs, layout rules, analog guide</div></div></a>
-          <a class="pdk-link" href="https://github.com/IHP-GmbH/IHP-Open-PDK-docs" target="_blank"><div><div class="pdk-link-text">PDK Docs Source</div><div class="pdk-link-sub">RST source — contribute corrections</div></div></a>
-          <a class="pdk-link" href="https://iic-jku.github.io/analog-circuit-design/" target="_blank"><div><div class="pdk-link-text">JKU Analog Design Course</div><div class="pdk-link-sub">gm/ID characterisation notebooks</div></div></a>
-          <a class="pdk-link" href="https://github.com/chennakeshavadasa/gmid_IHP130" target="_blank"><div><div class="pdk-link-text">gmid_IHP130 — Data Source</div><div class="pdk-link-sub">ngspice sweep data used in this tool</div></div></a>
-          <a class="pdk-link" href="https://skillsurf.github.io/art_of_aicd/content/04-ihp-pdk.html" target="_blank"><div><div class="pdk-link-text">Art of Analog IC Design Workshop</div><div class="pdk-link-sub">SG13G2 device intro and tutorials</div></div></a>
-        </div>
-        <p style="margin-top:14px">Contact IHP for fabrication: <a href="mailto:openpdk@ihp-microelectronics.com" style="color:var(--acc)">openpdk@ihp-microelectronics.com</a>. The open-source PDK is released under Apache 2.0 (Copyright 2024 IHP PDK Authors).</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<footer class="footer">
-  <div style="display:flex;gap:18px">
-    <a href="https://github.com/IHP-GmbH/IHP-Open-PDK" target="_blank">IHP-Open-PDK (Apache 2.0)</a>
-    <a href="https://github.com/chennakeshavadasa/gmid_IHP130" target="_blank">gmid_IHP130</a>
-    <a href="https://ihp-open-pdk-docs.readthedocs.io" target="_blank">Official Docs</a>
-  </div>
-  <span>Plotly.js · TT 27°C · W=2µm · 300pts/curve · PSP103 model &nbsp;·&nbsp; Author: Nithin Purushothama</span>
+<footer class="foot">
+  <span>g<sub>m</sub>/I<sub>D</sub> Explorer · Nithin Purushothama</span>
+  <span id="foot-data">Data: ngspice simulations of the open PDKs</span>
+  <a href="https://github.com/NithinPuru/nithinpuru.github.io/tree/main/gmid">Source</a>
+  <a href="https://nithinpuru.com/#tools">More tools</a>
 </footer>
-
+<noscript><p style="padding:1rem 1.5rem">The explorer draws its figures with JavaScript. The method and device notes above remain readable without it.</p></noscript>
 <script>
-const DATA = {"LV_NMOS":{"labels":["0.13µm","0.25µm","0.50µm","0.75µm","1.0µm","1.25µm","1.5µm","1.75µm","2.0µm","2.25µm","2.5µm","2.75µm","3.0µm"]},"LV_PMOS":{"labels":["0.13µm","0.25µm","0.50µm","0.75µm","1.0µm","1.25µm","1.5µm","1.75µm","2.0µm","2.25µm","2.5µm","2.75µm","3.0µm"]},"HV_NMOS":{"labels":["0.50µm","0.75µm","1.0µm","1.25µm","1.5µm","1.75µm","2.0µm","2.25µm","2.5µm","2.75µm","3.0µm"]},"HV_PMOS":{"labels":["0.50µm","0.75µm","1.0µm","1.25µm","1.5µm","1.75µm","2.0µm","2.25µm","2.5µm","2.75µm","3.0µm"]}};
-
-// ── Lazy data: the page carries only a small device index; each device's
-// curve arrays live in data/<device>.json and load the first time the device
-// is shown (cached after). Values are byte-for-byte those of the original
-// embedded dataset.
-const DATA_V = '1';
-const _gmLoaded = {};
-function ensureDev(dev){
-  if (!DATA[dev]) return Promise.resolve();
-  if (!_gmLoaded[dev]) {
-    _gmLoaded[dev] = fetch('data/' + encodeURIComponent(dev) + '.json?v=' + DATA_V)
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (j) { Object.assign(DATA[dev], j); })
-      .catch(function (e) { delete _gmLoaded[dev]; throw e; });
-  }
-  return _gmLoaded[dev];
-}
-function gmWithData(devs, fn){
-  document.documentElement.classList.add('gm-loading');
-  return Promise.all(devs.map(ensureDev)).then(function () {
-    document.documentElement.classList.remove('gm-loading', 'gm-load-error');
-    return fn();
-  }, function (e) {
-    document.documentElement.classList.remove('gm-loading');
-    document.documentElement.classList.add('gm-load-error');
-    console.error('gm/ID data failed to load:', e);
-    var t = document.getElementById('gm-load-toast');
-    if (!t) { t = document.createElement('div'); t.id = 'gm-load-toast'; document.body.appendChild(t); }
-    t.textContent = 'Could not load device data (' + e.message + '). Check your connection and click again.';
-  });
-}
-function replot(){ return gmWithData([curDev], _replotSync); }
-
-
-const PLOT_CONFIGS = {
-  gmid_vgs:{ x:'vgs',  y:'gm_id',  xl:'Vgs (V)',      yl:'gm/ID (V⁻¹)',  title:'gm/ID vs Vgs'     },
-  gmid_vov:{ x:'vov',  y:'gm_id',  xl:'Vov (V)',      yl:'gm/ID (V⁻¹)',  title:'gm/ID vs Vov'     },
-  gmgds:   { x:'gm_id',y:'gm_gds', xl:'gm/ID (V⁻¹)', yl:'gm/gds',       title:'gm/gds vs gm/ID'  },
-  idw:     { x:'gm_id',y:'id_w',   xl:'gm/ID (V⁻¹)', yl:'ID/W (µA/µm)', title:'ID/W vs gm/ID'    },
-  ft:      { x:'gm_id',y:'ft',     xl:'gm/ID (V⁻¹)', yl:'fT (GHz)',      title:'fT vs gm/ID'      },
-  cgd:     { x:'gm_id',y:'cgd_cgg',xl:'gm/ID (V⁻¹)', yl:'Cgd/Cgg',      title:'Cgd/Cgg vs gm/ID' },
-  cgs:     { x:'gm_id',y:'cgs_cgg',xl:'gm/ID (V⁻¹)', yl:'Cgs/Cgg',      title:'Cgs/Cgg vs gm/ID' },
-};
-const OVERVIEW_PLOTS = ['gmid_vgs','gmid_vov','gmgds','idw','ft','cgd'];
-
-const COLORS = ['#58a6ff','#3fb950','#e3b341','#ff7b72','#c084fc','#fb923c',
-                '#38bdf8','#4ade80','#f472b6','#facc15','#e879f9','#34d399','#f87171'];
-
-let curDev='LV_NMOS', curPlot='gmid_vgs', allLengths=[], activeLengths=new Set();
-
-function getColor(i){ return COLORS[i%COLORS.length]; }
-
-
-// ── PAGE NAV ──
-function switchPage(name,el){
-  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('sec-'+name).classList.add('active');
-  if(name==='explorer') setTimeout(replot,30);
-}
-
-// ── DEVICE GRID ──
-function initDeviceGrid(){
-  const grid=document.getElementById('devGrid');
-  Object.keys(DATA).forEach(dev=>{
-    const isN=dev.includes('NMOS');
-    const btn=document.createElement('button');
-    btn.className='dev-btn'+(dev===curDev?' active':'');
-    btn.innerHTML=`<span class="dev-pill ${isN?'pill-n':'pill-p'}">${isN?'N':'P'}</span>${dev.replace('_','-')}`;
-    btn.onclick=()=>selectDevice(dev);
-    grid.appendChild(btn);
-  });
-}
-function selectDevice(dev){
-  curDev=dev;
-  document.querySelectorAll('.dev-btn').forEach(b=>b.classList.toggle('active',b.textContent.includes(dev.replace('_','-'))));
-  initLengthFilter(); replot();
-}
-
-// ── LENGTH FILTER ──
-function initLengthFilter(){
-  allLengths=DATA[curDev].labels;
-  activeLengths=new Set(allLengths);
-  renderLengthBtns();
-}
-function renderLengthBtns(){
-  const el=document.getElementById('lenFilter'); el.innerHTML='';
-  allLengths.forEach(L=>{
-    const b=document.createElement('button');
-    b.className='len-btn'+(activeLengths.has(L)?' active':'');
-    b.textContent=L;
-    b.onclick=()=>{ if(activeLengths.has(L))activeLengths.delete(L); else activeLengths.add(L); b.classList.toggle('active',activeLengths.has(L)); replot(); };
-    el.appendChild(b);
-  });
-}
-function selectAllLengths(){ activeLengths=new Set(allLengths); renderLengthBtns(); replot(); }
-function selectNoneLengths(){ activeLengths.clear(); renderLengthBtns(); replot(); }
-function selectShortLengths(){ activeLengths.clear(); allLengths.slice(0,Math.ceil(allLengths.length/2)).forEach(L=>activeLengths.add(L)); renderLengthBtns(); replot(); }
-function selectLongLengths(){ activeLengths.clear(); allLengths.slice(Math.floor(allLengths.length/2)).forEach(L=>activeLengths.add(L)); renderLengthBtns(); replot(); }
-
-// ── PLOT TABS ──
-document.getElementById('plotTabs').addEventListener('click',e=>{
-  const btn=e.target.closest('.tab-btn'); if(!btn) return;
-  curPlot=btn.dataset.plot;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b===btn));
-  replot();
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("[data-theme-toggle]");
+  if (!b) return;
+  var r = document.documentElement, n = r.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  r.setAttribute("data-theme", n);
+  try { localStorage.setItem("theme", n); } catch (err) {}
+  document.dispatchEvent(new CustomEvent("gm-theme"));
 });
-
-// ── TRACES ──
-// ── UNIT-AWARE HOVER FORMATTERS ──
-// Each formatter returns a display string with appropriate scaled units.
-// Voltages: µV < 1mV < mV < 1V < V   |   gm/ID: V⁻¹   |   ID/W: scales to nA   |   fT: MHz/GHz
-const FMT = {
-  vgs:     v => { const a=Math.abs(v); if(a===0) return '0 V';
-                  if(a<1e-3) return `${(v*1e6).toFixed(1)} µV`;
-                  if(a<1)    return `${(v*1e3).toFixed(2)} mV`;
-                             return `${v.toFixed(4)} V`; },
-  vov:     v => { const a=Math.abs(v); if(a===0) return '0 V';
-                  if(a<1e-3) return `${(v*1e6).toFixed(1)} µV`;
-                  if(a<1)    return `${(v*1e3).toFixed(2)} mV`;
-                             return `${v.toFixed(4)} V`; },
-  gm_id:   v => `${v.toFixed(3)} V⁻¹`,
-  gm_gds:  v => v.toFixed(2),
-  id_w:    v => { if(v<0.001) return `${(v*1000).toFixed(3)} nA/µm`;
-                  if(v<1)    return `${v.toFixed(4)} µA/µm`;
-                  if(v<100)  return `${v.toFixed(3)} µA/µm`;
-                             return `${v.toFixed(2)} µA/µm`; },
-  ft:      v => { if(v<1e-3) return `${(v*1e6).toFixed(1)} kHz`;
-                  if(v<1)    return `${(v*1e3).toFixed(2)} MHz`;
-                             return `${v.toFixed(3)} GHz`; },
-  cgd_cgg: v => v.toFixed(5),
-  cgs_cgg: v => v.toFixed(5),
-};
-
-function buildTraces(plotKey){
-  const d=DATA[curDev]; const cfg=PLOT_CONFIGS[plotKey];
-  if(!cfg||!d) return [];
-  const xFmt=FMT[cfg.x]||(v=>v.toPrecision(4));
-  const yFmt=FMT[cfg.y]||(v=>v.toPrecision(4));
-  return d.labels.reduce((acc,L,i)=>{
-    if(!activeLengths.has(L)) return acc;
-    const xArr=d[cfg.x][i], yArr=d[cfg.y][i];
-    if(!xArr||!xArr.length) return acc;
-    const pts=xArr.map((x,j)=>[x,yArr[j]]).filter(([x,y])=>isFinite(x)&&isFinite(y)&&y>0);
-    if(!pts.length) return acc;
-    acc.push({ x:pts.map(p=>p[0]), y:pts.map(p=>p[1]),
-      customdata:pts.map(p=>[xFmt(p[0]),yFmt(p[1])]),
-      type:'scatter', mode:'lines', name:`L=${L}`,
-      line:{color:getColor(i),width:2},
-      hovertemplate:`<b>L=${L}</b><br>${cfg.xl}: %{customdata[0]}<br>${cfg.yl}: %{customdata[1]}<extra></extra>` });
-    return acc;
-  },[]);
-}
-
-// ── LAYOUT ──
-const BASE = {
-  paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'#0d1117',
-  font:{family:"'JetBrains Mono',monospace",color:'#8b949e',size:11},
-  margin:{l:62,r:20,t:20,b:54},
-  legend:{bgcolor:'rgba(13,17,23,0.92)',bordercolor:'#21272e',borderwidth:1,font:{size:11},orientation:'v',x:1.01,y:1,xanchor:'left'},
-  xaxis:{gridcolor:'#161b22',zerolinecolor:'#21272e',tickfont:{size:11},linecolor:'#21272e',
-         showspikes:true,spikecolor:'rgba(88,166,255,0.65)',spikemode:'toaxis+across',spikethickness:1,spikedash:'dot',spikesnap:'cursor'},
-  yaxis:{gridcolor:'#161b22',zerolinecolor:'#21272e',tickfont:{size:11},linecolor:'#21272e',
-         showspikes:true,spikecolor:'rgba(88,166,255,0.3)',spikemode:'toaxis',spikethickness:1,spikedash:'dot'},
-  hovermode:'x unified', hoverdistance:30,
-};
-function getLayout(cfg,logX,logY){
-  return {...BASE,
-    xaxis:{...BASE.xaxis,title:{text:cfg.xl,font:{size:12},standoff:9},type:logX?'log':'linear'},
-    yaxis:{...BASE.yaxis,title:{text:cfg.yl,font:{size:12},standoff:9},type:logY?'log':'linear'},
-    margin:{...BASE.margin,r:160}};
-}
-const PCFG={responsive:true,displayModeBar:true,modeBarButtonsToRemove:['select2d','lasso2d','autoScale2d'],displaylogo:false,
-  toImageButtonOptions:{format:'png',width:1800,height:750,scale:2,filename:'ihp_sg13g2_gmid'}};
-
-// ── REPLOT ──
-function _replotSync(){
-  const lX=document.getElementById('logX').checked, lY=document.getElementById('logY').checked;
-  document.getElementById('sb-dev').textContent=curDev.replace('_','-');
-  document.getElementById('sb-curves').textContent=activeLengths.size;
-  document.getElementById('plotSubtitle').textContent=`${curDev} · W=2µm · TT · 27°C`;
-  if(curPlot==='overview'){
-    document.getElementById('mainPlot').style.display='none';
-    document.getElementById('overviewGrid').style.display='grid';
-    document.getElementById('plotTitle').textContent='Overview — All Metrics';
-    document.getElementById('sb-pts').textContent='6 panels';
-    OVERVIEW_PLOTS.forEach((pk,idx)=>{
-      const c=PLOT_CONFIGS[pk];
-      const lo={...BASE,margin:{l:52,r:6,t:30,b:44},
-        title:{text:c.title,font:{size:10,color:'#8b949e'},x:0.5},
-        xaxis:{...BASE.xaxis,title:{text:c.xl,font:{size:9},standoff:4},type:lX?'log':'linear',tickfont:{size:9}},
-        yaxis:{...BASE.yaxis,title:{text:c.yl,font:{size:9},standoff:4},type:lY?'log':'linear',tickfont:{size:9}},
-        showlegend:false,hovermode:'x',hoverdistance:20};
-      Plotly.react(`mini${idx}`,buildTraces(pk),lo,{responsive:true,displayModeBar:false});
-    });
-    return;
-  }
-  document.getElementById('mainPlot').style.display='flex';
-  document.getElementById('overviewGrid').style.display='none';
-  const cfg=PLOT_CONFIGS[curPlot];
-  const traces=buildTraces(curPlot);
-  document.getElementById('plotTitle').textContent=cfg?cfg.title:curPlot;
-  document.getElementById('sb-pts').textContent=traces[0]?.x?.length??0;
-  Plotly.react('mainPlot',traces,getLayout(cfg,lX,lY),PCFG);
-}
-
-function exportPlot(){
-  if(curPlot==='overview'){ OVERVIEW_PLOTS.forEach((_,i)=>Plotly.downloadImage(`mini${i}`,{format:'png',width:900,height:420,scale:2,filename:`ihp_${curDev}_${OVERVIEW_PLOTS[i]}`})); }
-  else { Plotly.downloadImage('mainPlot',{format:'png',width:1800,height:750,scale:2,filename:`ihp_${curDev}_${curPlot}`}); }
-}
-
-// ═══════════════════════════════════════════════════════════
-// DESIGN HELPER — exact implementation from the notebook
-// Uses σ-normalised weighted L² loss with hard gm/gds bound
-// ═══════════════════════════════════════════════════════════
-
-function stdDev(arr){
-  const n=arr.length; if(n<2) return 1.0;
-  const mu=arr.reduce((s,v)=>s+v,0)/n;
-  const variance=arr.reduce((s,v)=>s+(v-mu)**2,0)/(n-1);
-  return Math.sqrt(variance)||1.0;
-}
-function mean(arr){ return arr.reduce((s,v)=>s+v,0)/arr.length; }
-
-function buildDfAll(selectedDevs, selectedLens){
-  // Flat LUT: {dev,length,gm_id,gm_gds,id_w[µA/µm],id_uA[µA@W=2µm],ft}
-  // Filter: gm_id∈[0.5,40], gm_gds∈[0.5,600], id_w>0, ft>0
-  const rows=[];
-  selectedDevs.forEach(dev=>{
-    const d=DATA[dev]; if(!d) return;
-    d.labels.forEach((L,li)=>{
-      if(selectedLens.size && !selectedLens.has(L)) return;
-      const gmidA=d.gm_id[li], gmgdsA=d.gm_gds[li];
-      const idwA=d.id_w[li], iduAA=d.id_uA[li], ftA=d.ft[li];
-      if(!gmidA) return;
-      gmidA.forEach((gm,j)=>{
-        const gg=gmgdsA[j], iw=idwA[j], iuA=iduAA[j], ft=ftA[j];
-        if(gm>=0.5&&gm<=40&&gg>=0.5&&gg<=600&&iw>0&&ft>0)
-          rows.push({dev,length:L,gm_id:gm,gm_gds:gg,id_w:iw,id_uA:iuA,ft});
-      });
-    });
-  });
-  return rows;
-}
-
-function solveOptimization(df, tA, tB, w1, w2, bB){
-  // σ-normalisation from the LUT subset (exact notebook method)
-  const gmidArr =df.map(r=>r.gm_id);
-  const gmgdsArr=df.map(r=>r.gm_gds);
-  const gmid_std =stdDev(gmidArr)  || 1.0;
-  const gmgds_std=stdDev(gmgdsArr) || 1.0;
-
-  // Continuous optimum (closed-form quadratic with box constraint)
-  const gm_gds_floor       = Math.max(bB, tB);
-  const optA               = tA;
-  const optB               = gm_gds_floor;
-  const max_achievable_gmgds = Math.max(...gmgdsArr);
-
-  // Clamp optB_search to what the data can actually deliver.
-  // When optB exceeds max_achievable, the raw gm/gds distance term swamps
-  // the gm/id term (100x larger) and the search returns wrong gm/id entirely.
-  const optB_search = Math.min(max_achievable_gmgds, optB);
-
-  // ── TWO-PHASE LUT SEARCH ─────────────────────────────────────────────────
-  // The gm/id and gm/gds at any operating point are physically correlated.
-  // If we blindly minimise the joint loss, an impossible gm/gds target can
-  // still pull gm/id far from the user's target (e.g. tA=10, tB=2 in LV_NMOS
-  // gives gm/id=1.3 because gm/gds≈2 only exists at deep saturation).
-  //
-  // Phase 1 — gm/id PRIMARY:
-  //   Restrict to rows where gm/id is within ±GMID_TOL of the target.
-  //   Tolerance = max(2.5, 30% of σ_A) ≈ 3 V⁻¹ for most devices.
-  //   Among those rows, rank by the full joint σ-normalised distance.
-  //
-  // Phase 2 — Fallback:
-  //   If fewer than 5 rows survive Phase 1 (extreme target outside data range),
-  //   fall back to unconstrained full-LUT search.
-  //
-  // For normal cases (achievable targets), Phase 1 is a no-op: the optimal
-  // point already lies inside the gm/id tolerance, so ranking is unchanged.
-
-  const GMID_TOL = Math.max(2.5, gmid_std * 0.30); // typically ~3 V⁻¹
-
-  const distFn = r =>
-    w1*((r.gm_id-optA)/gmid_std)**2 + w2*((r.gm_gds-optB_search)/gmgds_std)**2;
-
-  const phase1 = df.filter(r => Math.abs(r.gm_id - optA) <= GMID_TOL);
-  const searchSet = (phase1.length >= 5) ? phase1 : df;  // fallback if target OOB
-
-  const sorted = [...searchSet]
-    .map(r=>({...r, distance: distFn(r)}))
-    .sort((a,b)=>a.distance-b.distance);
-  const top5 = sorted.slice(0, 5);
-
-  // Convergence trace — 6 iterative steps from LUT mean (matches notebook display)
-  let aLog=mean(gmidArr), bLog=Math.max(bB, mean(gmgdsArr));
-  const logs=[];
-  for(let i=0;i<6;i++){
-    aLog+=(optA-aLog)*0.55; bLog+=(optB-bLog)*0.55;
-    const lv=w1*((aLog-tA)/gmid_std)**2+w2*((bLog-tB)/gmgds_std)**2;
-    logs.push(`i${i+1}: ${lv.toExponential(2)}`);
-  }
-
-  return {optA, optB, optB_search, top5, bestRow:top5[0], logs,
-          gmid_std, gmgds_std, max_achievable_gmgds, gmid_tol:GMID_TOL,
-          phase1_used: phase1.length >= 5,
-          df_gmid_mean:mean(gmidArr), df_gmgds_mean:mean(gmgdsArr)};
-}
-
-// Smart formatter for absolute drain current in µA (at W=2µm characterisation width)
-function formatIdUa(v){
-  if(!isFinite(v)||v<=0) return '—';
-  if(v<0.001)  return `${(v*1000).toFixed(2)} nA`;
-  if(v<1)      return `${v.toFixed(3)} µA`;
-  if(v<1000)   return `${v.toFixed(2)} µA`;
-  return `${(v/1000).toFixed(3)} mA`;
-}
-
-
-function plasmaColor(t){
-  const c=[[13,8,135],[84,2,163],[139,10,165],[185,50,137],[219,92,104],[244,136,73],[254,188,43],[240,249,33]];
-  const idx=t*(c.length-1); const lo=Math.floor(idx); const hi=Math.min(lo+1,c.length-1); const f=idx-lo;
-  return `rgb(${Math.round(c[lo][0]+f*(c[hi][0]-c[lo][0]))},${Math.round(c[lo][1]+f*(c[hi][1]-c[lo][1]))},${Math.round(c[lo][2]+f*(c[hi][2]-c[lo][2]))})`;
-}
-
-function runHelper(){ const _sel=[...document.querySelectorAll('#helperDevMulti input:checked')].map(i=>i.value); return gmWithData(_sel, _runHelperSync); }
-function _runHelperSync(){
-  // Collect selected devices
-  const selDevs=[...document.querySelectorAll('#helperDevMulti input:checked')].map(i=>i.value);
-  if(!selDevs.length){ alert('Select at least one device.'); return; }
-
-  // All lengths for selected devices (union)
-  const allLensForDevs=new Set();
-  selDevs.forEach(dev=>{ if(DATA[dev]) DATA[dev].labels.forEach(L=>allLensForDevs.add(L)); });
-  // No length filtering in helper (matches notebook: all lengths selected by default)
-  const selLens=new Set(); // empty = all
-
-  const tA=parseFloat(document.getElementById('s-tA').value)||15;
-  const tB=parseFloat(document.getElementById('s-tB').value)||50;
-  const bB=parseFloat(document.getElementById('s-bB').value)||55;
-  const w1=10, w2=20;  // Fixed weights — calibrated, not user-adjustable
-
-  const df=buildDfAll(selDevs,selLens);
-  if(!df.length){ document.getElementById('helperOutput').innerHTML='<div class="helper-empty"><div>No data for selected devices.</div></div>'; return; }
-
-  // Warning is generated after solve using res.max_achievable_gmgds
-
-  const res=solveOptimization(df,tA,tB,w1,w2,bB);
-
-  let warnHtml='';
-  if(tB > res.max_achievable_gmgds)
-    warnHtml=`<div class="warn-box">Target gm/gds = ${tB} exceeds the maximum achievable in the selected LUT (${res.max_achievable_gmgds.toFixed(1)}). Search clamped to ${res.optB_search.toFixed(1)} — results show best gm/ID match at highest available gm/gds.</div>`;
-  else if(bB > res.max_achievable_gmgds)
-    warnHtml=`<div class="warn-box">Bound (min gm/gds = ${bB}) exceeds max achievable (${res.max_achievable_gmgds.toFixed(1)}). Showing best available operating point.</div>`;
-  renderHelperPlots(df,res,tA,tB,bB,w1,w2);
-  renderHelperOutput(res,tA,tB,bB,warnHtml);
-}
-
-function renderHelperPlots(df,res,tA,tB,bB,w1,w2){
-  const {optA,optB,optB_search,bestRow,gmid_std,gmgds_std}=res;
-
-  // ── SCATTER: gm/gds vs gm/id (plasma by L) ──
-  const lengthSet=[]; df.forEach(r=>{ if(!lengthSet.includes(r.length)) lengthSet.push(r.length); });
-  lengthSet.sort();
-  const nL=lengthSet.length;
-  const scatterTraces=[];
-  lengthSet.forEach((L,li)=>{
-    const pts=df.filter(r=>r.length===L);
-    scatterTraces.push({ x:pts.map(r=>r.gm_id), y:pts.map(r=>r.gm_gds),
-      customdata:pts.map(r=>[FMT.gm_id(r.gm_id),FMT.gm_gds(r.gm_gds),FMT.id_w(r.id_w),FMT.ft(r.ft)]),
-      type:'scatter',mode:'markers',name:`L=${L}`,
-      marker:{color:plasmaColor(li/Math.max(nL-1,1)),size:4,opacity:0.35},
-      hovertemplate:`<b>L=${L}</b><br>gm/ID: %{customdata[0]}<br>gm/gds: %{customdata[1]}<br>ID/W: %{customdata[2]}<br>fT: %{customdata[3]}<extra></extra>` });
-  });
-  // Target (amber triangle)
-  scatterTraces.push({x:[tA],y:[tB],type:'scatter',mode:'markers',name:'Target',
-    marker:{symbol:'triangle-up',size:12,color:'#e3b341',line:{color:'#fff',width:1}},
-    hovertemplate:`Target<br>gm/ID: ${tA.toFixed(1)}<br>gm/gds: ${tB}<extra></extra>`});
-  // Optimum (green cross)
-  scatterTraces.push({x:[optA],y:[optB],type:'scatter',mode:'markers',name:'Optimum (clamped)',
-    marker:{symbol:'x',size:12,color:'#3fb950',line:{color:'#3fb950',width:2}},
-    hovertemplate:`Optimum<br>gm/ID: ${optA.toFixed(2)}<br>gm/gds: ${optB.toFixed(1)}<extra></extra>`});
-  // Best row (green star)
-  if(bestRow) scatterTraces.push({x:[bestRow.gm_id],y:[bestRow.gm_gds],type:'scatter',mode:'markers',name:'Best Match',
-    marker:{symbol:'star',size:14,color:'#3fb950',line:{color:'#fff',width:1}},
-    hovertemplate:`Best: L=${bestRow.length}<br>gm/ID: ${bestRow.gm_id.toFixed(2)}<br>gm/gds: ${bestRow.gm_gds.toFixed(1)}<extra></extra>`});
-  // Bound line
-  const xMin=Math.min(1,...df.map(r=>r.gm_id));
-  const xMax=Math.max(...df.map(r=>r.gm_id))+1;
-  scatterTraces.push({x:[xMin,xMax],y:[bB,bB],type:'scatter',mode:'lines',name:`Bound (${bB})`,
-    line:{color:'#f85149',dash:'dash',width:1.5},hoverinfo:'skip'});
-
-  const scatterLayout={...BASE,
-    xaxis:{...BASE.xaxis,title:{text:'gm/ID (V⁻¹)',font:{size:12},standoff:8}},
-    yaxis:{...BASE.yaxis,title:{text:'gm/gds',font:{size:12},standoff:8}},
-    margin:{l:58,r:10,t:30,b:50},
-    title:{text:'Scatter · gm/gds vs gm/id',font:{size:12,color:'#8b949e'},x:0.5},
-    showlegend:false,hovermode:'closest'};
-  Plotly.react('hPlotScatter',scatterTraces,scatterLayout,{responsive:true,displayModeBar:false});
-
-  // ── LOSS SURFACE: loss vs gm/id sweep (gm/gds fixed at optB) ──
-  const xSwp=[]; const step=(xMax-Math.max(0.5,tA-15))/200;
-  for(let x=Math.max(0.5,tA-15);x<=tA+15;x+=step) xSwp.push(x);
-  const yLoss=xSwp.map(x=>w1*((x-tA)/gmid_std)**2+w2*((optB_search-tB)/gmgds_std)**2);
-  const minLoss=w1*((optA-tA)/gmid_std)**2+w2*((optB_search-tB)/gmgds_std)**2;
-  const lossTraces=[
-    {x:xSwp,y:yLoss,
-     customdata:xSwp.map(x=>[FMT.gm_id(x)]),
-     type:'scatter',mode:'lines',name:'Loss Surface',
-     line:{color:'#e3b341',width:2},fill:'tozeroy',fillcolor:'rgba(227,179,65,0.07)',
-     hovertemplate:'gm/ID: %{customdata[0]}<br>Loss: %{y:.3e}<extra></extra>'},
-    {x:[tA],y:[w1*((0)/gmid_std)**2+w2*((optB-tB)/gmgds_std)**2],type:'scatter',mode:'lines',name:'Target',
-     line:{color:'#f85149',dash:'dash',width:1.5},hoverinfo:'skip'},
-    {x:[optA],y:[minLoss],type:'scatter',mode:'markers',name:'Optimum',
-     marker:{color:'#3fb950',size:10},
-     hovertemplate:`Optimum<br>gm/ID: ${FMT.gm_id(optA)}<br>Loss: ${minLoss.toExponential(3)}<extra></extra>`}
-  ];
-  const lossLayout={...BASE,
-    xaxis:{...BASE.xaxis,title:{text:'gm/ID (V⁻¹)',font:{size:12},standoff:8}},
-    yaxis:{...BASE.yaxis,title:{text:'Loss ℒ',font:{size:12},standoff:8},type:'log'},
-    margin:{l:60,r:10,t:30,b:50},
-    title:{text:`Loss Surface (gm/gds = ${optB_search.toFixed(1)}${optB_search<optB?' [clamped]':''})`,font:{size:12,color:'#8b949e'},x:0.5},
-    showlegend:false,hovermode:'x unified'};
-  Plotly.react('hPlotLoss',lossTraces,lossLayout,{responsive:true,displayModeBar:false});
-}
-
-function renderHelperOutput(res,tA,tB,bB,warnHtml){
-  const {top5,bestRow,logs,optA,optB,optB_search,gmid_tol,phase1_used}=res;
-  if(!bestRow){ document.getElementById('helperOutput').innerHTML=warnHtml+'<div class="helper-empty"><div>No valid operating point found. Relax constraints.</div></div>'; return; }
-
-  // Distance range for colour coding
-  const dMin=top5[0].distance, dMax=top5[top5.length-1].distance, dRange=dMax-dMin||1;
-  function rowClass(i){ const t=(top5[i].distance-dMin)/dRange; return t<0.33?'row-best':t<0.66?'row-mid':''; }
-  function distColor(i){ const t=(top5[i].distance-dMin)/dRange; return t<0.33?'#3fb950':t<0.66?'#e3b341':'#f85149'; }
-  function barWidth(i){ return Math.round((1-(top5[i].distance-dMin)/dRange)*60+6); }
-
-  document.getElementById('helperOutput').innerHTML=warnHtml+`
-  <div class="conv-block">
-    <div class="conv-title">── Convergence Trace (6 iterative steps from LUT mean) ─────────</div>
-    <div class="conv-trace">${logs.map(l=>`<span>${l}</span>`).join(' &nbsp;|&nbsp; ')}</div>
-  </div>
-  <div style="background:linear-gradient(90deg,rgba(63,185,80,.06),transparent);border:1px solid rgba(63,185,80,.25);border-left:3px solid #3fb950;border-radius:7px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--t2)">
-    <div style="display:flex;gap:24px;flex-wrap:wrap">
-      <div>Target gm/ID: <strong style="color:var(--t1)">${tA.toFixed(2)}</strong> → Searched: <strong style="color:#3fb950">${optA.toFixed(2)}</strong> <span style="color:var(--t3);font-size:10px">(tol ±${gmid_tol.toFixed(1)} V⁻¹)</span></div>
-      <div>Target gm/gds: <strong style="color:var(--t1)">${tB.toFixed(0)}</strong> → Searched: <strong style="color:#3fb950">${optB_search.toFixed(1)}</strong>${optB_search<optB?` <span style="color:var(--gold);font-size:10px">(clamped from ${optB.toFixed(0)})</span>`:''}</div>
-      <div>Bound (min gm/gds): <strong style="color:var(--t1)">${bB}</strong> &nbsp;·&nbsp; <span style="color:var(--t3);font-size:10px">Search: ${phase1_used?'Phase-1 (gm/ID-primary)':'Full-LUT fallback'}</span></div>
-    </div>
-  </div>
-  <div class="metric-grid">
-    <div class="metric-item best"><div class="metric-lbl">Best L</div><div class="metric-val">${bestRow.length}</div></div>
-    <div class="metric-item best"><div class="metric-lbl">fT</div><div class="metric-val">${bestRow.ft.toFixed(2)}<span class="metric-unit">GHz</span></div></div>
-    <div class="metric-item best"><div class="metric-lbl">ID <span style="font-size:9px;opacity:.7">(at W=2µm)</span></div><div class="metric-val">${formatIdUa(bestRow.id_uA)}</div></div>
-    <div class="metric-item best"><div class="metric-lbl">Device</div><div class="metric-val" style="font-size:13px">${bestRow.dev.replace('_','-')}</div></div>
-    <div class="metric-item"><div class="metric-lbl">gm/ID (actual)</div><div class="metric-val">${bestRow.gm_id.toFixed(2)}<span class="metric-unit">V⁻¹</span></div></div>
-    <div class="metric-item"><div class="metric-lbl">gm/gds (actual)</div><div class="metric-val">${bestRow.gm_gds.toFixed(1)}</div></div>
-  </div>
-  <div class="top5-wrap">
-    <div class="top5-hdr"><div class="top5-title">── TOP 5 MATCHES ────────────────────────────────────────────</div></div>
-    <div style="overflow-x:auto">
-    <table class="top5-table">
-      <tr><th>Device</th><th>L</th><th>gm/ID (V⁻¹)</th><th>gm/gds</th><th>ID (µA, W=2µm)</th><th>fT (GHz)</th><th>Distance</th></tr>
-      ${top5.map((r,i)=>`<tr class="${rowClass(i)}">
-        <td>${r.dev.replace('_','-')}</td><td>${r.length}</td>
-        <td>${r.gm_id.toFixed(2)}</td><td>${r.gm_gds.toFixed(1)}</td>
-        <td>${formatIdUa(r.id_uA)}</td><td>${r.ft.toFixed(2)}</td>
-        <td><span style="color:${distColor(i)}">${r.distance.toExponential(2)}</span>
-          <span class="dist-bar" style="width:${barWidth(i)}px;background:${distColor(i)};opacity:.7"></span></td>
-      </tr>`).join('')}
-    </table></div>
-  </div>`;
-}
-
-// ── INIT ──
-initDeviceGrid();
-initLengthFilter();
-replot();
-const ro=new ResizeObserver(()=>{
-  if(curPlot!=='overview') Plotly.Plots.resize('mainPlot');
-  else OVERVIEW_PLOTS.forEach((_,i)=>Plotly.Plots.resize(`mini${i}`));
-});
-ro.observe(document.querySelector('.plot-area'));
 </script>
 </body>
 </html>
