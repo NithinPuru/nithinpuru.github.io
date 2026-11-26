@@ -89,6 +89,10 @@ const qt = await json("quant-terminal/market_data.json");
 if (qt && hoursOld(qt.meta.generated_at) > 4 * 24)
   fail(`Quant Terminal: market data from ${qt.meta.generated_at} is over 4 days old (quant-terminal-data.yml)`);
 if (qt?.meta.failed?.length) warn(`Quant Terminal: tickers failed: ${qt.meta.failed.join(", ")}`);
+const qa = await json("quant-terminal/app/data/meta.json");
+if (qa && hoursOld(qa.built_at) > 24)
+  fail(`Quant Terminal app: data from ${qa.built_at} is over a day old (deploy.yml quant refresh)`);
+if (qa?.errors?.length) warn(`Quant Terminal app: ${qa.errors.length} sections kept older data, e.g. ${qa.errors[0]}`);
 const rr = await json("research-radar/data/index.json");
 if (rr) {
   if (hoursOld(rr.generated_at) > 12)
@@ -138,7 +142,7 @@ try {
 const PAGES = [
   "/404.html", "/go/", "/rongm/",
   "/gmid/", "/gmid/sky130a/", "/gmid/gf180mcu-d/", "/gmid/ihp-sg13g2/",
-  "/fx-quant/", "/research-radar/", "/quant-terminal/", "/deadline/", "/deadline/updates.html",
+  "/fx-quant/", "/research-radar/", "/quant-terminal/", "/quant-terminal/app/", "/deadline/", "/deadline/updates.html",
   "/secure_sensor_with_puf/",
 ];
 const WIDTHS = { "/404.html": [360, 768, 1440] };
