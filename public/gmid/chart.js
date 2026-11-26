@@ -59,11 +59,14 @@
   function logTicks(lo, hi, n) {
     var a = Math.floor(Math.log10(lo)), b = Math.ceil(Math.log10(hi)), dec = b - a, out = [];
     var every = Math.max(1, Math.ceil(dec / Math.max(n, 2)));
+    // decades inside the range: with fewer than two, also label the 2x and 5x ticks
+    var inside = 0;
+    for (var d = a; d <= b; d++) { var p = Math.pow(10, d); if (p >= lo * (1 - 1e-9) && p <= hi * (1 + 1e-9)) inside++; }
     for (var e = a; e <= b; e++) for (var m = 1; m <= 9; m++) {
       var v = m * Math.pow(10, e);
       if (v < lo * (1 - 1e-9) || v > hi * (1 + 1e-9)) continue;
       var major = m === 1 && (e - a) % every === 0;
-      out.push({ v: v, major: major, label: major || (dec <= 1 && (m === 2 || m === 5)) });
+      out.push({ v: v, major: major, label: major || ((dec <= 1 || inside < 2) && (m === 2 || m === 5)) });
     }
     return { ticks: out };
   }
