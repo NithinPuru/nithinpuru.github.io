@@ -55,6 +55,7 @@ public/
   favicon.svg, favicon.ico, apple-touch-icon.png, android-chrome-*.png, og-image.png
   _headers                   # security headers (Netlify/Cloudflare; inert on GH Pages)
 quant-terminal/ fx-quant/ research-radar/ tracker/   # data-bot back ends
+gmid/                        # gm/ID characterisation (ngspice) + page generator
 scripts/smoke.mjs            # smoke test (CI "checks" job)
 scripts/gen-brand.mjs        # regenerates the favicons and og-image
 ```
@@ -71,43 +72,64 @@ portfolio (`https://nithinpuru.com/#tools`); each tool's "home" link points ther
 
 | Path | Source repo (commit copied) | Notes |
 |---|---|---|
-| `/gmid/` | gmid-hub@4dd4cae | PDK iframe URLs point at the local sub-pages below (with `?v=` cache tags); themed, `injectTheme: false` |
-| `/gmid/sky130a/` | gmid_SKY130A@9fe3a6f | no longer a verbatim copy: theme block, lazy per-device data, plotly-basic (see below) |
-| `/gmid/gf180mcu-d/` | gmid_GF180MCUD@636ee89 | no longer a verbatim copy: theme block, lazy per-device data, plotly-basic (see below) |
-| `/gmid/ihp-sg13g2/` | gmid_IHP130_Tool@35abc75 | no longer a verbatim copy: theme block, lazy per-device data, plotly-basic (see below) |
+| `/gmid/`, `/gmid/ihp-sg13g2/`, `/gmid/sky130a/`, `/gmid/gf180mcu-d/` | built here (2026-11-26; replaced the gmid-hub / gmid_SKY130A / gmid_GF180MCUD / gmid_IHP130_Tool copies) | one app for the three PDKs, data from `gmid/characterise.py` - see "gm/ID Explorer" below |
 | `/fx-quant/` | rebuilt from FOREX_QUANT@0f404ba | Quant-Terminal-styled rewrite (`css/fx.css`, `js/fx.js`; models unchanged). Data: `fx_data.json` from `fx-quant/update_fx.py` via `fx-quant-data.yml` (weekdays after the ECB fixing) - the page calls no external API |
 | `/research-radar/` | Research-Radar@ee84a10 | loads snapshots from `research-radar/fetch.py`: `data/<domain>.json` (abstracts trimmed to 280-char excerpts), `data/<domain>-abstracts.json` (full text, fetched lazily for the detail panel, search and explainer) and `data/<domain>-explainers.json` (precomputed expert explainers, opt-in: repo variable `RADAR_EXPLAINERS=1` plus the `ANTHROPIC_API_KEY` secret; 10 newest papers per domain, at most 40 new calls per run). **The data is never committed** (`.gitignore`): `deploy.yml` refetches it on its 3-hourly schedule (or `workflow_dispatch` with `refresh_radar`), seeding from the live site so a failed source keeps its items; other deploys copy the live files back (`fetch.py --seed-only`; locally `npm run radar-data`). Sources in `research-radar/sources.json`; the explainer's system prompt is read from the page, so edit it only there. Live SerpApi Scholar and the in-browser Claude explainer (`claude-sonnet-5`) stay; keys in localStorage `rr_*`. Re-skinned to the shared palette (light/dark, KaTeX fonts) with a stacked layout under 820px |
 | `/quant-terminal/` | career-semi-quant | synced by `quant-terminal-sync.yml`; data by `quant-terminal-data.yml` - do not hand-edit |
 | `/deadline/` | Conf_Deadline_Tracker | driven by the `tracker-*` workflows (series in `tracker/series.yml`, categories `t1 ssc casf cas eda pwr`). No API key needed: `tracker/track.py` reads dates off the official pages with fixed rules (`extract_rules`: verbatim quote, table-layout detection, last year's call ignored); risky changes still go to `data/review.json` and a review issue. Setting the `ANTHROPIC_API_KEY` secret switches it to Claude extraction instead (optional). `assets/style.css` re-skinned to the shared palette (light/dark, KaTeX fonts) - bump its `?v=` (and `app.js?v=`) in both HTML pages when they change |
 
-The gm/ID pages are re-skinned, not rewritten: `public/gmid/theme/gmid-theme.css`
-(Quant Terminal tokens prefixed `--qt-`, Computer Modern fonts) and
-`gmid-theme.js` (pre-paint theme, `Plotly.react` wrapper that themes every
-chart, floating Theme button, cross-iframe sync via the `theme` key). Each page
-maps its own colour variables onto `--qt-*` in a block at the end of its
-`<style>`; Google Fonts were removed and the hub's old dark-theme injection is
-disabled (`injectTheme: false`).
-
-gm/ID data is lazy-loaded: each PDK page embeds only a small device index
-(`const DATA = {device: {labels, type}}`) and fetches `data/<device>.json`
-(the curve arrays, values identical to the original embedded dataset) the
-first time a device is shown - `replot()` / `runHelper()` wrap the tools'
-original `_replotSync()` / `_runHelperSync()`. Bump `DATA_V` in the page when
-the data files change. Pages load Plotly's `plotly-basic` build (scatter only).
-
-The gm/ID pages have diverged from their repos (theme, lazy data), so don't
-re-copy them wholesale: port upstream fixes into the local files by hand.
-When a PDK page changes, bump the `?v=` tag on its iframe URL in
-`public/gmid/index.html` - GitHub Pages lets browsers cache pages for 10
-minutes and iframes otherwise keep showing the old copy.
-
-The source repos stay as the tools' source code (the "Source code" links), but
-their own GitHub Pages copies are retired: gmid-hub, gmid_SKY130A,
-gmid_GF180MCUD, gmid_IHP130_Tool, FOREX_QUANT and Research-Radar forward to
+The source repos stay as the tools' source code (the "Source code" links; the
+gm/ID Explorer's source is now `gmid/` here), but their own GitHub Pages copies
+are retired: gmid-hub, gmid_SKY130A, gmid_GF180MCUD, gmid_IHP130_Tool,
+FOREX_QUANT and Research-Radar forward to
 the tools here with a hostname-gated `location.replace` at the top of their
 `index.html` (plus a canonical link), career-semi-quant shows a "moved" page,
 and Conf_Deadline_Tracker forwards and no longer runs its own tracker. Don't
 deploy a second copy of a tool anywhere else.
+
+## gm/ID Explorer (`/gmid/`)
+
+Built here, not copied: one app serves all three PDKs so they look and behave
+the same (owner, 2026-11-26: uniform UI, TT/SS/FF corners, VDD +/-10 %,
+temperatures; light enough for phones and free static hosting).
+
+- **Pages**: `gmid/page.html` is the single template; `python3 gmid/build_pages.py`
+  writes `public/gmid/index.html` and `public/gmid/<pdk>/index.html` (only the
+  title, description, canonical URL and the PDK they open on differ). Never edit
+  the generated pages; run the script after changing the template or
+  `public/gmid/{app.js,chart.js,app.css}` - it stamps `?v=` content hashes on the
+  assets and the manifest. `build_pages.py --check` (CI `checks` job) fails when a
+  page is stale. Switching PDK in the app changes the path with `pushState`; the
+  view state lives in the `#hash` (shareable links).
+- **Code**: `app.js` (data, views: Curves, Sizing, Compare devices, Reference &
+  method), `chart.js` (a small SVG line-chart component: log axes, hover readout,
+  click / arrow-key cursor, box zoom, SVG/PNG export with embedded fonts),
+  `app.css` (DESIGN.md: paper, ink, one accent, hairlines, square corners). No
+  Plotly or other library; the whole app is about 100 KB before gzip.
+- **Data**: `gmid/characterise.py` simulates every device with one testbench
+  (W = 5 um single finger, V_SB = 0, V_DS = VDD/2, V_GS 0 to VDD in VDD_nom/150
+  steps) at TT/SS/FF x 0.9/1.0/1.1 VDD x -40/27/125 C = 27 conditions, 21
+  devices (IHP 4, SKY130 7, GF180 10), 567 sweeps in about 40 s on 4 cores.
+  Cgg/Cgd/Cgs come from 1 MHz AC solves at every bias point (the models'
+  operating-point capacitances leave out overlap). Output in
+  `public/gmid/data/`: `manifest.json` (devices, lengths, quantisation,
+  `data_v` content hash), `<pdk>/sheet.json` (datasheet figures for the
+  Reference tables), `<pdk>/<device>/<corner>-<supply>-<temp>.bin` (uint16
+  tables + float32 V_th per length, format in the script's docstring, 15-31 KB
+  each, fetched only when shown). Re-run only to change the method or the PDK
+  pins; then run `build_pages.py`.
+- **Setup**: `gmid/setup_pdks.sh` fetches the pinned model files (IHP-Open-PDK,
+  FOSSi sky130_fd_pr continuous models, FOSSi gf180mcu_fd_pr) and compiles
+  IHP's PSP 103 with OpenVAF 23.5.0 (checksum-verified); ngspice 42 from apt.
+  Keep the commits in the script and `PDKS[...]["commit"]` in step.
+- **Facts on the pages**: the Reference prose is in `gmid/page.html`; numbers
+  inside it come from `sheet.json` through `data-v="<device>/<lmin|l1>/<key>"`
+  spans, so they always match the data. Don't type simulated numbers into prose.
+- **Colours** (validated with the dataviz skill's checker, both themes): lengths
+  use one ordinal blue-indigo ramp (`lenColor`), PVT comparisons red = slow side
+  (SS, -10 %, 125 C) / ink = typical / blue = fast side with dash patterns,
+  cross-PDK series the site's four domain hues.
+- Still deliberately untracked (no `/np.js`).
 
 ## Analytics
 

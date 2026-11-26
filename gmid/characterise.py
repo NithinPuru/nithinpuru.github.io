@@ -29,12 +29,12 @@ Usage (PDK model files from gmid/setup_pdks.sh):
 """
 import argparse
 import datetime
+import hashlib
 import json
 import math
 import os
 import re
 import shutil
-import struct
 import subprocess
 import sys
 import tempfile
@@ -91,11 +91,11 @@ PDKS = {
         repo_dir="skywater-pdk-libs-sky130_fd_pr", tnom=27,
         corner_names={"tt": "tt", "ss": "ss", "ff": "ff"},
         devices=[
-            dict(id="nfet_01v8", pol="n", vdd=1.8, lmin=0.15, group="1.8 V core", label="NMOS SVT", kind="Standard V_th"),
-            dict(id="nfet_01v8_lvt", pol="n", vdd=1.8, lmin=0.15, group="1.8 V core", label="NMOS LVT", kind="Low V_th"),
-            dict(id="pfet_01v8", pol="p", vdd=1.8, lmin=0.15, group="1.8 V core", label="PMOS SVT", kind="Standard V_th"),
-            dict(id="pfet_01v8_lvt", pol="p", vdd=1.8, lmin=0.35, group="1.8 V core", label="PMOS LVT", kind="Low V_th"),
-            dict(id="pfet_01v8_hvt", pol="p", vdd=1.8, lmin=0.15, group="1.8 V core", label="PMOS HVT", kind="High V_th"),
+            dict(id="nfet_01v8", pol="n", vdd=1.8, lmin=0.15, group="1.8 V core", label="NMOS SVT", kind="Standard V_{th}"),
+            dict(id="nfet_01v8_lvt", pol="n", vdd=1.8, lmin=0.15, group="1.8 V core", label="NMOS LVT", kind="Low V_{th}"),
+            dict(id="pfet_01v8", pol="p", vdd=1.8, lmin=0.15, group="1.8 V core", label="PMOS SVT", kind="Standard V_{th}"),
+            dict(id="pfet_01v8_lvt", pol="p", vdd=1.8, lmin=0.35, group="1.8 V core", label="PMOS LVT", kind="Low V_{th}"),
+            dict(id="pfet_01v8_hvt", pol="p", vdd=1.8, lmin=0.15, group="1.8 V core", label="PMOS HVT", kind="High V_{th}"),
             dict(id="nfet_g5v0d10v5", pol="n", vdd=5.0, lmin=0.5, group="5 V gate, 10.5 V drain", label="HV NMOS", kind="Thick oxide"),
             dict(id="pfet_g5v0d10v5", pol="p", vdd=5.0, lmin=0.5, group="5 V gate, 10.5 V drain", label="HV PMOS", kind="Thick oxide"),
         ]),
@@ -456,9 +456,17 @@ def main():
         old.update(sheets.get(pid, {}))
         with open(sp, "w") as f:
             json.dump(old, f, separators=(",", ":"))
+    # content version of all tables: cache tag for the pages (?v=...)
+    h = hashlib.sha1()
+    for dirpath, _, files in sorted(os.walk(OUT)):
+        for fn in sorted(files):
+            if fn.endswith(".bin") or fn == "sheet.json":
+                with open(os.path.join(dirpath, fn), "rb") as fh:
+                    h.update(fn.encode() + fh.read())
+    manifest["data_v"] = h.hexdigest()[:10]
     with open(man_path, "w") as f:
         json.dump(manifest, f, separators=(",", ":"))
-    print("wrote %s" % man_path)
+    print("wrote %s (data version %s)" % (man_path, manifest["data_v"]))
 
 
 def ngspice_version():

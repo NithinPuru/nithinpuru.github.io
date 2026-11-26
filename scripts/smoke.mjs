@@ -173,8 +173,11 @@ for (const theme of ["light", "dark"]) {
           sw: document.documentElement.scrollWidth, vw: window.innerWidth,
           text: document.body.innerText.trim().length,
           theme: document.documentElement.getAttribute("data-theme"),
+          curves: document.querySelectorAll("#plot svg path").length,
         }));
         if (o.sw > o.vw + 1) fail(`${tag}: horizontal overflow (${o.sw}px wide in a ${o.vw}px viewport)`);
+        // the gm/ID pages draw their first figure from /gmid/data/ (manifest + one table)
+        if (path.startsWith("/gmid/") && o.curves < 2) fail(`${tag}: the gm/ID figure did not draw`);
         if (o.text < 50) fail(`${tag}: page rendered almost no text`);
         if (o.theme && o.theme !== theme) warn(`${tag}: theme is "${o.theme}", expected "${theme}"`);
       } catch (e) {
