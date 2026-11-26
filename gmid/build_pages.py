@@ -27,16 +27,19 @@ PAGES = {
              "simulated with one testbench at TT, SS and FF, three supplies and three temperatures.",
         h1="gm/ID Explorer for open PDKs"),
     "ihp-sg13g2": dict(
+        pdkname="IHP SG13G2",
         title="IHP SG13G2 gm/ID Explorer: curves, sizing and PVT corners",
         desc="gm/ID, f_T, gm/gds, I_D/W and capacitance curves of the IHP SG13G2 130 nm BiCMOS MOSFETs (PSP 103) "
              "at TT, SS and FF, VDD +/-10 % and -40 to 125 C, with a sizing calculator and device reference.",
         h1="IHP SG13G2 gm/ID Explorer"),
     "sky130a": dict(
+        pdkname="SKY130A",
         title="SKY130A gm/ID Explorer: curves, sizing and PVT corners",
         desc="gm/ID, f_T, gm/gds, I_D/W and capacitance curves of the SkyWater SKY130A MOSFETs (continuous BSIM4 models) "
              "at TT, SS and FF, VDD +/-10 % and -40 to 125 C, with a sizing calculator and device reference.",
         h1="SKY130A gm/ID Explorer"),
     "gf180mcu-d": dict(
+        pdkname="GF180MCU-D",
         title="GF180MCU-D gm/ID Explorer: curves, sizing and PVT corners",
         desc="gm/ID, f_T, gm/gds, I_D/W and capacitance curves of the GlobalFoundries GF180MCU-D 3.3 V, 5 V and 6 V MOSFETs "
              "at TT, SS and FF, VDD +/-10 % and -40 to 125 C, with a sizing calculator and device reference.",
@@ -54,7 +57,7 @@ def build():
     out = {}
     for pdk, p in PAGES.items():
         path = "/gmid/" + (pdk + "/" if pdk else "")
-        s = (tpl.replace("{{TITLE}}", p["title"]).replace("{{DESC}}", p["desc"]).replace("{{H1}}", p["h1"])
+        s = (tpl.replace("{{TITLE}}", p["title"]).replace("{{DESC}}", p["desc"]).replace("{{H1PDK}}", ("<span class=\"mast__sep\"> \u00b7 </span>" + p["pdkname"]) if p.get("pdkname") else "")
              .replace("{{PATH}}", path).replace("{{PDK}}", pdk).replace("{{ASSET_V}}", asset_v).replace("{{DATA_V}}", data_v))
         for other in PAGES:
             if other:

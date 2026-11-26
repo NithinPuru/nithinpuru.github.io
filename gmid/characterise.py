@@ -75,9 +75,9 @@ PDKS = {
         corner_names={"tt": "mos_tt", "ss": "mos_ss", "ff": "mos_ff"},
         devices=[
             dict(id="sg13_lv_nmos", pol="n", vdd=1.2, lmin=0.13, lib="cornerMOSlv.lib",
-                 group="LV core, 1.2 V", label="LV NMOS", kind="Core"),
+                 group="LV core, 1.2 V", label="LV NMOS", kind="Thin oxide"),
             dict(id="sg13_lv_pmos", pol="p", vdd=1.2, lmin=0.13, lib="cornerMOSlv.lib",
-                 group="LV core, 1.2 V", label="LV PMOS", kind="Core"),
+                 group="LV core, 1.2 V", label="LV PMOS", kind="Thin oxide"),
             dict(id="sg13_hv_nmos", pol="n", vdd=3.3, lmin=0.45, lib="cornerMOShv.lib",
                  group="HV I/O, 3.3 V", label="HV NMOS", kind="Thick oxide"),
             dict(id="sg13_hv_pmos", pol="p", vdd=3.3, lmin=0.40, lib="cornerMOShv.lib",

@@ -30,10 +30,17 @@
       return ("0" + Math.round(Math.min(1, Math.max(0, v)) * 255).toString(16)).slice(-2);
     }).join("");
   }
-  /* channel length: one hue family, light (short) to dark (long); validated ordinal ramp, flipped in dark mode */
+  /* channel length: neighbouring hues azure to violet, light (short) to dark (long); an ordinal ramp
+     checked with the dataviz validator (monotone lightness, steps >= 0.06, light end >= 2:1), flipped in dark mode */
   function lenColor(dev, L) {
-    var t = dev.L.length > 1 ? Math.log(L / dev.L[0]) / Math.log(dev.L[dev.L.length - 1] / dev.L[0]) : 0.5, h = 248 + 36 * t;
-    return dark() ? oklch(0.5 + 0.38 * t, 0.13 - 0.03 * t, h) : oklch(0.745 - 0.42 * t, 0.11 + 0.06 * t, h);
+    var t = dev.L.length > 1 ? Math.log(L / dev.L[0]) / Math.log(dev.L[dev.L.length - 1] / dev.L[0]) : 0.5, h = 222 + 100 * t;
+    return dark() ? oklch(0.53 + 0.37 * t, 0.09 + 0.03 * (1 - t), h) : oklch(0.74 - 0.4 * t, 0.12 + 0.06 * t, h);
+  }
+  /* MOSFET symbols, 1.5 px line art in currentColor: NMOS arrow leaves the source, PMOS has the gate bubble */
+  function sym(pol) {
+    var body = '<path d="M9 6v12M12 4.5v15M12 7h5.5V2.5M12 17h5.5v4.5"/>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + body +
+      (pol === "n" ? '<path d="M2.5 12H9M14.6 15.3 17 17l-2.4 1.7"/>' : '<path d="M2.5 12h4"/><circle cx="7.75" cy="12" r="1.25"/><path d="M14.9 5.3 12.5 7l2.4 1.7"/>') + "</svg>";
   }
   /* PVT: slow side red, typical ink, fast side blue (plus dash patterns) */
   var SIDE = { slow: ["#b42318", "#e67060"], typ: ["#131c28", "#cfd7e3"], fast: ["#1f4fd1", "#6996ee"] };
@@ -297,7 +304,7 @@
     box.innerHTML = groups.map(function (g) {
       return '<p class="devs__group">' + html(g) + "</p>" + list.filter(function (d) { return d.group === g; }).map(function (d) {
         return '<button type="button" class="dev" data-dev="' + d.id + '" aria-pressed="' + (d.id === S.dev) + '">' +
-          '<span class="dev__pol" aria-hidden="true">' + (d.pol === "n" ? "n" : "p") + "</span>" +
+          '<span class="dev__pol" aria-hidden="true">' + sym(d.pol) + "</span>" +
           '<span class="dev__id">' + d.id + "</span>" +
           '<span class="dev__kind">' + (d.pol === "n" ? "NMOS" : "PMOS") + " · " + html(d.kind) + "</span></button>";
       }).join("");
@@ -464,6 +471,9 @@
     }).join("");
   }
   function caption(f, dev) {
+    $("#figtitle").innerHTML = f.id === "custom" ? html(Q[f.y].l) + " versus " + html(Q[f.x].l) : html(figTitle(f, S.gstar));
+    $("#figsub").innerHTML = '<span class="mono">' + dev.id + "</span> · " + (S.mode === "lengths" ? condName(dev, S.c, S.s, S.t) + " · " + S.Ls.length + " lengths" :
+      "L = " + lstr(S.l1) + " µm · " + { corner: "SS, TT, FF", supply: "VDD −10 %, nominal, +10 %", temp: "−40, 27, 125 °C", pvt: "spread of 27 PVT points" }[S.mode]);
     var what = f.id === "custom" ? html(Q[f.y].l) + " versus " + html(Q[f.x].l) : html(figTitle(f, S.gstar));
     var where = S.mode === "lengths" ? condName(dev, S.c, S.s, S.t) : "L = " + lstr(S.l1) + " µm, " +
       { corner: "process corners at " + volts(vddOf(dev, S.s)) + ", " + S.t + " °C", supply: "supply at " + S.c.toUpperCase() + ", " + S.t + " °C", temp: "temperature at " + S.c.toUpperCase() + ", " + volts(vddOf(dev, S.s)), pvt: "all 27 PVT conditions" }[S.mode];
@@ -630,6 +640,7 @@
       charts.cmp.update(spec);
       charts.cmp.mainSpec = spec;
       readout("#creadout", charts.cmp, null, null, false);
+      $("#cfigtitle").innerHTML = html(figTitle(f, S.cgstar));
       $("#ccaption").innerHTML = "<b>Fig. 2.</b> " + html(figTitle(f, S.cgstar)) + ", " + S.c.toUpperCase() + ", supply " + { lo: "−10 %", nom: "nominal", hi: "+10 %" }[S.s] + " (each device at its own VDD), " + S.t + " °C. W = 5 µm, V<sub>DS</sub> = VDD/2, V<sub>SB</sub> = 0.";
     }, function (e) { $("#ccaption").textContent = "Could not load the data (" + e.message + ")."; });
     writeHash();
@@ -641,7 +652,7 @@
     var p = man.pdks[S.pdk];
     $("#method-meta").textContent = "Generated " + man.generated + " · " + man.method.simulator + " · " + p.name + " models from " + p.source + " @ " + p.commit.slice(0, 7);
     var art = $('.ref[data-ref="' + S.pdk + '"]');
-    (sheets[S.pdk] || (sheets[S.pdk] = getJSON(DATA + S.pdk + "/sheet.json?v=" + (man.data_v || man.generated)))).then(function (sh) {
+    sheet(S.pdk).then(function (sh) {
       var c = S.c, rows = devs(S.pdk).map(function (d) {
         var a = sh[d.id][c + "-27"], h = sh[d.id][c + "-125"];
         var ss = a.l1.gmidmax ? 1000 * Math.LN10 / a.l1.gmidmax : NaN;
@@ -658,6 +669,32 @@
     });
   }
 
+  /* ── PDK identity and the device header ───────────────────────── */
+  function brand(pdk) {
+    document.body.setAttribute("data-pdk", pdk);
+    var m = $("#mast-pdk");
+    if (m) m.innerHTML = '<span class="mast__sep"> · </span>' + NAMES[pdk];
+  }
+  function sheet(pdk) { return sheets[pdk] || (sheets[pdk] = getJSON(DATA + pdk + "/sheet.json?v=" + (man.data_v || man.generated))); }
+  function renderDevHead() {
+    var dev = devOf(S.pdk, S.dev);
+    $("#dh-sym").innerHTML = sym(dev.pol);
+    $("#dh-name").textContent = dev.id;
+    $("#dh-kind").innerHTML = (dev.pol === "n" ? "NMOS" : "PMOS") + " · " + html(dev.kind) + " · " + html(dev.group) + " · L ≥ " + lstr(dev.lmin) + " µm, " + dev.L.length + " lengths";
+    var temp = S.t === 125 ? 125 : 27, pdk = S.pdk, id = S.dev;
+    sheet(pdk).then(function (sh) {
+      if (S.pdk !== pdk || S.dev !== id) return;
+      var a = sh[id][S.c + "-" + temp], d = $$("#dh-strip dd"), sw = a.l1.gmidmax ? 1000 * Math.LN10 / a.l1.gmidmax : NaN;
+      var v = [a.lmin.vth.toFixed(3) + " V", a.l1.vth.toFixed(3) + " V", eng(a.lmin.ftpk, "Hz"), a.l1.gain10 ? sig(a.l1.gain10, 3) : "—",
+               eng(a.lmin.ion * 1e-6, "A/µm"), eng(a.lmin.ioff * 1e-6, "A/µm"), sw.toFixed(0) + " mV/dec"];
+      d.forEach(function (n, i) { n.textContent = v[i]; });
+      var note = $("#dh-note");
+      if (!note) { note = document.createElement("p"); note.className = "strip-note"; note.id = "dh-note"; $(".devhead").appendChild(note); }
+      note.innerHTML = S.c.toUpperCase() + ", nominal VDD, " + temp + " °C" + (S.t === -40 ? " (key figures exist for 27 and 125 °C)" : "") +
+        "; V<sub>DS</sub> = VDD/2. I<sub>on</sub> at V<sub>GS</sub> = VDD, I<sub>off</sub> at V<sub>GS</sub> = 0, g<sub>m</sub>/g<sub>ds</sub> at g<sub>m</sub>/I<sub>D</sub> = 10 V<sup>−1</sup>.";
+    });
+  }
+
   /* ── views, PDK switch ────────────────────────────────────────── */
   /* lengths must exist for the current device, whatever set them (link, PDK switch) */
   function fixLengths() {
@@ -670,6 +707,7 @@
   }
   function render() {
     fixLengths();
+    renderDevHead();
     $$(".view").forEach(function (b) { var on = b.getAttribute("data-view") === S.view; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
     ["curves", "size", "compare", "reference"].forEach(function (v) { $("#v-" + v).hidden = v !== S.view; });
     $$("[data-for]").forEach(function (n) { n.hidden = n.getAttribute("data-for").split(" ").indexOf(S.view) < 0; });
@@ -690,6 +728,7 @@
     setDevice(pick.id);
     $$(".pdk").forEach(function (a) { if (a.getAttribute("data-pdk") === pdk) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     document.title = NAMES[pdk] + " gm/ID Explorer: PVT curves, sizing and reference";
+    brand(pdk);
     if (push) history.pushState(null, "", ROOT + pdk + "/");
     renderSide();
   }
@@ -827,6 +866,7 @@
       $("#cx").innerHTML = axisOpts.map(function (k) { return '<option value="' + k + '"' + (k === S.cx ? " selected" : "") + ">" + plain(Q[k].l) + "</option>"; }).join("");
       $("#cy").innerHTML = axisOpts.map(function (k) { return '<option value="' + k + '"' + (k === S.cy ? " selected" : "") + ">" + plain(Q[k].l) + "</option>"; }).join("");
       $$(".pdk").forEach(function (a) { if (a.getAttribute("data-pdk") === pdk) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+      brand(pdk);
       if (!location.pathname.match(/\/gmid\/[^/]+\//)) history.replaceState(null, "", ROOT + pdk + "/" + location.hash);
       renderSide();
       bind();
