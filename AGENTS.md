@@ -125,10 +125,20 @@ temperatures; light enough for phones and free static hosting).
 - **Facts on the pages**: the Reference prose is in `gmid/page.html`; numbers
   inside it come from `sheet.json` through `data-v="<device>/<lmin|l1>/<key>"`
   spans, so they always match the data. Don't type simulated numbers into prose.
-- **Colours** (validated with the dataviz skill's checker, both themes): lengths
-  use one ordinal blue-indigo ramp (`lenColor`), PVT comparisons red = slow side
-  (SS, -10 %, 125 C) / ink = typical / blue = fast side with dash patterns,
-  cross-PDK series the site's four domain hues.
+- **Look** (2026-11-26 refresh, owner: "make it less dull"): page/panel two-tone
+  (`--page` behind white `--paper` plates), a masthead with the stats and a
+  figure thumbnail, PDK tabs with node numerals, a device header (MOSFET
+  symbol + key-figure strip from `sheet.json`) and figure plates with titles.
+  Still DESIGN.md: square, flat, hairlines, no shadows or gradients (the
+  masthead's graph-paper texture is an SVG data URI).
+- **Colours** (validated with the dataviz skill's checker, both themes): each
+  PDK has a signature hue from the site's domain hues on `body[data-pdk]` ->
+  `--pdk` / `--pdk-fill` (IHP blue, SKY130 teal, GF180 amber; fills use deeper
+  steps so white text stays >= 4.5:1). Lengths use one ordinal ramp of
+  neighbouring hues, azure to violet (`lenColor`, monotone lightness; the
+  length chips are its scale legend). PVT comparisons: red = slow side (SS,
+  -10 %, 125 C) / ink = typical / blue = fast side, with dash patterns.
+  Cross-PDK series use the four domain hues.
 - Still deliberately untracked (no `/np.js`).
 
 ## Analytics

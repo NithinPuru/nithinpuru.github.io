@@ -156,6 +156,8 @@
       var clipId = "gmc" + Math.random().toString(36).slice(2, 9);
       el("rect", { x: L, y: T, width: W, height: H }, el("clipPath", { id: clipId }, el("defs", null, root)));
 
+      var plotBg = css("--plot");
+      if (plotBg) el("rect", { x: L, y: T, width: W, height: H, fill: plotBg }, root);
       var grid = el("g", { stroke: rule, "stroke-width": 1, "shape-rendering": "crispEdges" }, root);
       yt.ticks.forEach(function (t) {
         var y = Math.round(ty(t.v)) + 0.5;
@@ -205,7 +207,7 @@
           d += (pen ? "L" : "M") + tx(xv).toFixed(1) + "," + ty(yv).toFixed(1);
           pen = true;
         }
-        if (d) el("path", { d: d, fill: "none", stroke: s.color, "stroke-width": s.width || (compact ? 1.5 : 2),
+        if (d) el("path", { d: d, fill: "none", stroke: s.color, "stroke-width": s.width || (compact ? 1.6 : 2.25),
                             "stroke-dasharray": s.dash || null, "stroke-linejoin": "round", "stroke-linecap": "round" }, plot);
       });
       gHover = el("g", { class: "gm-hover", "pointer-events": "none" }, root);
