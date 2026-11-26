@@ -102,7 +102,12 @@
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
       .replace(/([_^])(\{[^}]*\}|.)/g, function (m, k, b) { b = b.charAt(0) === "{" ? b.slice(1, -1) : b; return k === "^" ? "<sup>" + b + "</sup>" : "<sub>" + b + "</sub>"; });
   }
-  function axisFor(id, logOverride) { var q = Q[id]; return { label: q.l, unit: q.u, log: logOverride != null ? logOverride : !!q.log, zero: /^(cgdr|cgsr|gmbr|cggw|vdsat|fom)$/.test(id) }; }
+  /* fmt: the value with its unit, for the cursor card and the x-axis tag on the figures (gain without the dB, to keep the card narrow) */
+  function axisFor(id, logOverride) {
+    var q = Q[id];
+    return { label: q.l, unit: q.u, log: logOverride != null ? logOverride : !!q.log, zero: /^(cgdr|cgsr|gmbr|cggw|vdsat|fom)$/.test(id),
+             fmt: function (v) { return id === "gain" ? sig(v, 3) : fmt(id, v); } };
+  }
 
   /* ── number formats ───────────────────────────────────────────── */
   function sig(v, n) { if (!isFinite(v)) return "—"; var a = Math.abs(v); var s = a >= 100 ? v.toFixed(0) : a >= 10 ? v.toFixed(n > 2 ? 1 : 0) : a >= 1 ? v.toFixed(n > 2 ? 2 : 1) : +v.toPrecision(n) + ""; return s.replace("-", "−"); }
@@ -387,7 +392,7 @@
         if (k[0] === "ff" && k[1] === "hi" && k[2] === -40) iF = i;
       });
       var band = envelope(lines, spec.x.log);
-      if (band) spec.bands.push({ x: band.x, lo: band.lo, hi: band.hi, color: side("fast"), opacity: dark() ? 0.26 : 0.16 });
+      if (band) spec.bands.push({ name: "All 27 PVT", x: band.x, lo: band.lo, hi: band.hi, lines: lines, color: side("fast"), opacity: dark() ? 0.26 : 0.16 });
       else lines.forEach(function (p) { spec.series.push({ name: "", color: side("fast"), width: 1, x: p.x, y: p.y }); });
       [[iS, "slow", condName(dev, "ss", "lo", 125)], [i0, "typ", condName(dev, "tt", "nom", 27)], [iF, "fast", condName(dev, "ff", "hi", -40)]].forEach(function (z) {
         spec.series.push({ name: z[2], color: side(z[1]), dash: DASH[z[1]], x: lines[z[0]].x, y: lines[z[0]].y });
