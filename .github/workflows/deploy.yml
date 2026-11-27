@@ -7,8 +7,14 @@ on:
   # never committed - they're rewritten wholesale each run and would grow the
   # repo by ~1 GB a year - so this build fetches them and they live only in
   # the deployed site. Other deploys copy the live snapshots back in.
+  # Quant Terminal web edition (/quant-terminal/app/, see below): republished every
+  # 15 minutes on weekdays 07:00-24:00 UTC (Europe, then the US pre-market, session and
+  # after-hours) and every 30 minutes overnight (Asian markets); the 3-hourly run above
+  # covers weekends. These two schedules only refresh data: no radar refetch, no smoke test.
   schedule:
     - cron: "41 */3 * * *"
+    - cron: "7,22,37,52 7-23 * * 1-5"
+    - cron: "7,37 0-6 * * 1-5"
   workflow_dispatch:
     inputs:
       refresh_radar:
@@ -48,7 +54,7 @@ jobs:
       - name: Research Radar snapshots
         timeout-minutes: 30
         env:
-          REFRESH: ${{ github.event_name == 'schedule' || inputs.refresh_radar == true }}
+          REFRESH: ${{ (github.event_name == 'schedule' && github.event.schedule == '41 */3 * * *') || inputs.refresh_radar == true }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RADAR_EXPLAINERS: ${{ vars.RADAR_EXPLAINERS }}   # "1" enables precomputed explainers
         run: |
@@ -75,6 +81,44 @@ jobs:
           # Read-only token for the build-time GitHub stars lookup (src/lib/github.ts).
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Quant Terminal web edition: the dashboard of career-semi-quant's local edition,
+      # published as static files (UI + data/*.json) by `semiquant publish`. Its refresh
+      # tiers (live every run, hourly, 3-hourly, daily) plus this cache keep a 15-minute
+      # schedule light. Never committed (like the radar snapshots); a failed run keeps the
+      # previous output, and it never blocks the rest of the site.
+      - name: Quant terminal cache keys
+        id: qt
+        run: |
+          echo "hour=qt-$(date -u +%Y%m%d%H)" >> "$GITHUB_OUTPUT"
+          echo "week=qt-pip-$(date -u +%G%V)" >> "$GITHUB_OUTPUT"
+      - name: Restore quant terminal data
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.semiquant/cache
+            .qt-out
+          key: ${{ steps.qt.outputs.hour }}
+          restore-keys: qt-2
+      - name: Restore pip downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ steps.qt.outputs.week }}
+          restore-keys: qt-pip-
+      - name: Quant terminal web edition
+        timeout-minutes: 25
+        continue-on-error: true
+        run: |
+          python -m pip install --quiet "semiquant @ git+https://github.com/chennakeshavadasa/career-semi-quant.git@master#subdirectory=local"
+          semiquant publish --out .qt-out --budget 18
+      - name: Add the web edition to the site
+        if: always()
+        run: |
+          if [ -f .qt-out/index.html ]; then
+            mkdir -p dist/quant-terminal/app
+            cp -r .qt-out/. dist/quant-terminal/app/
+          fi
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
@@ -97,6 +141,8 @@ jobs:
   # deploy - a red run flags a problem (and emails you), it never blocks it.
   checks:
     needs: build
+    # The 15- and 30-minute quant schedules only republish data: no smoke test on those.
+    if: github.event_name != 'schedule' || github.event.schedule == '41 */3 * * *'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
