@@ -21,6 +21,10 @@ on:
         description: "Refetch Research Radar sources"
         type: boolean
         default: false
+      quick:
+        description: "Quant terminal: 2-minute analytics pass (layout changes go live in minutes)"
+        type: boolean
+        default: false
   # Commits pushed by the tracker workflows use GITHUB_TOKEN, which does not
   # trigger other workflows - redeploy explicitly once they finish.
   workflow_run:
@@ -110,7 +114,9 @@ jobs:
         continue-on-error: true
         run: |
           python -m pip install --quiet "semiquant @ git+https://github.com/chennakeshavadasa/career-semi-quant.git@master#subdirectory=local"
-          semiquant publish --out .qt-out --budget 18
+          # A push or a quick dispatch (a layout change) gets a 2-minute heavy-analytics pass so it goes
+          # live in minutes; scheduled runs keep 18 minutes and catch up on what that skipped.
+          semiquant publish --out .qt-out --budget ${{ (github.event_name == 'push' || inputs.quick == true) && 2 || 18 }}
       - name: Add the web edition to the site
         if: always()
         run: |
