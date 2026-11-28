@@ -117,6 +117,12 @@ jobs:
           if [ -f .qt-out/index.html ]; then
             mkdir -p dist/quant-terminal/app
             cp -r .qt-out/. dist/quant-terminal/app/
+            # /quant-terminal/ opens the web edition; the classic single-page terminal
+            # (synced from career-semi-quant/public) moves to /quant-terminal/classic.html.
+            if [ -f dist/quant-terminal/index.html ] && [ ! -f dist/quant-terminal/classic.html ]; then
+              mv dist/quant-terminal/index.html dist/quant-terminal/classic.html
+              cp scripts/quant-terminal-redirect.html dist/quant-terminal/index.html
+            fi
           fi
 
       - name: Upload Pages artifact

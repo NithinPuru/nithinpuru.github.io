@@ -31,14 +31,18 @@
           ]
         },
         {
-          "title": "Career Semi-Quant Terminal",
-          "meta": "Semiconductor equities · in-browser analytics",
+          "title": "Semi Quant Terminal",
+          "meta": "Markets · semiconductors · quant analytics",
           "url": "/quant-terminal/",
-          "desc": "Quantitative stock analytics for semiconductor professionals evaluating equity offers. Runs entirely in the browser.",
+          "desc": "Live quotes, screeners, risk, volatility, options and a factor lab for semiconductors, US large caps, global leaders and ETFs, plus equity-offer valuation. Installable as a phone app.",
           "links": [
             {
               "label": "Open tool",
               "url": "/quant-terminal/"
+            },
+            {
+              "label": "Classic terminal",
+              "url": "/quant-terminal/classic.html"
             },
             {
               "label": "Source code",

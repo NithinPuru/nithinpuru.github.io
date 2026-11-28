@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semi Quant Terminal</title>
+<link rel="canonical" href="https://nithinpuru.github.io/quant-terminal/app/">
+<script>
+  // /quant-terminal/ opens the web edition (deploy.yml puts this page here when the
+  // web edition built). The classic page's stock links (?company=TICKER) open that stock.
+  (function () {
+    var t = new URLSearchParams(location.search).get('company') || '';
+    var route = location.hash.indexOf('#/') === 0 ? location.hash
+      : /^[A-Za-z0-9.^=-]{1,15}$/.test(t) ? '#/t/' + t.toUpperCase() : '';
+    location.replace('app/' + route);
+  })();
+</script>
+<meta http-equiv="refresh" content="0; url=app/">
+<style>
+  html { background: #000; color: #e8e8e8; font: 15px/1.6 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace; }
+  body { margin: 0; padding: 32px; }
+  a { color: #FB8B1E; }
+</style>
+</head>
+<body>
+<p>Opening the <a href="app/">Semi Quant Terminal</a>…</p>
+<p>The classic single-page terminal is at <a href="classic.html">classic.html</a>.</p>
+</body>
+</html>
