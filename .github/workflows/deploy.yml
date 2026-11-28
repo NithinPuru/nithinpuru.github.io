@@ -109,6 +109,9 @@ jobs:
           path: ~/.cache/pip
           key: ${{ steps.qt.outputs.week }}
           restore-keys: qt-pip-
+      - name: OCR engine for the quant terminal (scanned paper Congress reports)
+        continue-on-error: true   # without it those reports stay "unreadable"; nothing else depends on it
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr
       - name: Quant terminal web edition
         timeout-minutes: 25
         continue-on-error: true

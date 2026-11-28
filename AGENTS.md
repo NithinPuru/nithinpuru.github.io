@@ -173,6 +173,8 @@ snapshots): `~/.semiquant/cache` and `.qt-out/` persist between runs through
   smoke test fails if `quant-terminal/app/data/meta.json` is over a day old.
 - The browser polls `data/meta.json` every minute and refreshes prices when a new build
   lands. Fix bugs in career-semi-quant (`local/`), never here.
+- `deploy.yml` installs `tesseract-ocr` before publishing (continue-on-error): the publisher reads scanned paper
+  Congress reports with OCR; without it those stay "unreadable" and nothing else changes.
 - Locally: `pip install -e career-semi-quant/local && semiquant publish --out /tmp/qt`
   then `python -m http.server -d /tmp 8000` and open `/qt/`.
 
